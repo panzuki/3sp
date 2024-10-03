@@ -1,5 +1,5 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
-let tag=['14400','D.C.6000','D.C.4000','d','e'];
+let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
   const mySwiper_sub = new Swiper('.flow01 .swiper-sub', {
     spaceBetween: 24,
     grabCursor: true,
