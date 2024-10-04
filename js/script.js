@@ -1,5 +1,35 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
+    const myDelay = 7000;
+
+  const slideLength = document.querySelectorAll('.mv05 .swiper-slide').length;
+  const total = ('00' + slideLength).slice(-2);
+
+  const fractionNum = document.querySelector('.mv05 .fraction .num');
+  const fractionTotal = document.querySelector('.mv05 .fraction .total');
+  fractionTotal.textContent = total;
+
+  const updateFraction = (index) => {
+    let current = ('00' + (index + 1)).slice(-2);
+    fractionNum.classList.add('anm-started');
+    setTimeout(() => {
+      fractionNum.textContent = current;
+    }, 400);
+  }
+
+  const startAnimation = (index) => {
+    let activeSlide = document.querySelectorAll('.mv05 .content')[index];
+    activeSlide.classList.remove('anm-finished');
+    activeSlide.classList.add('anm-started');
+  }
+
+  const finishAnimation = () => {
+    let activeSlide = document.querySelector('.mv05 .content.anm-started');
+    if (activeSlide) {
+      activeSlide.classList.remove('anm-started');
+      activeSlide.classList.add('anm-finished');
+    }
+  }
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
     spaceBetween: 0,
     speed: 3000,
