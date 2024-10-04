@@ -1,7 +1,7 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
   const mySwiper_sub = new Swiper('.flow01 .swiper-sub', {
-    spaceBetween: 24,
+    spaceBetween: 0,
     grabCursor: true,
     nested: true,
     pagination: {
@@ -29,7 +29,7 @@ let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
     },
     breakpoints: {
       1025: {
-        spaceBetween: 80,
+        spaceBetween: 0,
       }
     },
     keyboard: {
