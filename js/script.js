@@ -1,17 +1,22 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
-  const mySwiper_sub = new Swiper('.flow01 .swiper-sub', {
-    spaceBetween: 0,
-    grabCursor: true,
-    nested: true,
-    pagination: {
-      el: '.flow01 .swiper-pagination-sub',
-      clickable: true,
-    },
-  });
-
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
     spaceBetween: 0,
+    speed: 3000,
+    followFinger: false,
+    observeParents: true,
+    on: {
+      slideChange: (swiper) => {
+        updateFraction(swiper.realIndex);
+        finishAnimation();
+      },
+      slideChangeTransitionStart: (swiper) => {
+        startAnimation(swiper.realIndex);
+      },
+      slideChangeTransitionEnd: () => {
+        fractionNum.classList.remove('anm-started');
+      },
+    },
     centeredSlides: true,
     grabCursor: true,
     pagination: {
