@@ -11,7 +11,7 @@ let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
   });
 
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
-    spaceBetween: 24,
+    spaceBetween: 0,
     centeredSlides: true,
     grabCursor: true,
     pagination: {
