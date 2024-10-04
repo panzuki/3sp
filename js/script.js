@@ -1,21 +1,21 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
-  const mySwiper_sub = new Swiper('.flow01 .swiper-sub', {
+  const mySwiper_sub = new Swiper('.mv05 .swiper-sub', {
     spaceBetween: 24,
     grabCursor: true,
     nested: true,
     pagination: {
-      el: '.flow01 .swiper-pagination-sub',
+      el: '.mv05 .swiper-pagination-sub',
       clickable: true,
     },
   });
 
-  const mySwiper_main = new Swiper('.flow01 .swiper-main', {
+  const mySwiper_main = new Swiper('.mv05 .swiper-main', {
     spaceBetween: 24,
     centeredSlides: true,
     grabCursor: true,
     pagination: {
-      el: '.flow01 .swiper-pagination-main',
+      el: '.mv05 .swiper-pagination-main',
       clickable: true,
       renderBullet: (index, className) => {
         let num = ('00' + (index + 1)).slice(-2);
@@ -24,8 +24,8 @@ let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
       },
     },
     navigation: {
-      nextEl: '.flow01 .swiper-button-next',
-      prevEl: '.flow01 .swiper-button-prev',
+      nextEl: '.mv05 .swiper-button-next',
+      prevEl: '.mv05 .swiper-button-prev',
     },
     breakpoints: {
       1025: {
