@@ -9,8 +9,8 @@ const myDelay = 7000;
   const fractionTotal = document.querySelector('.flow01 .fraction .total');
 
 
-  const startAnimation = (index) => {
-    let activeSlide = document.querySelectorAll('.flow01 .content')[index];
+  const startAnimation = (index1) => {
+    let activeSlide = document.querySelectorAll('.flow01 .content')[index1];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
