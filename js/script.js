@@ -2,11 +2,11 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
     const myDelay = 7000;
 
-  const slideLength = document.querySelectorAll('.mv05 .swiper-slide').length;
+  const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
   const total = ('00' + slideLength).slice(-2);
 
-  const fractionNum = document.querySelector('.mv05 .fraction .num');
-  const fractionTotal = document.querySelector('.mv05 .fraction .total');
+  const fractionNum = document.querySelector('.flow01 .fraction .num');
+  const fractionTotal = document.querySelector('.flow01 .fraction .total');
   fractionTotal.textContent = total;
 
   const updateFraction = (index) => {
@@ -18,13 +18,13 @@ let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
   }
 
   const startAnimation = (index) => {
-    let activeSlide = document.querySelectorAll('.mv05 .content')[index];
+    let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
 
   const finishAnimation = () => {
-    let activeSlide = document.querySelector('.mv05 .content.anm-started');
+    let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
       activeSlide.classList.remove('anm-started');
       activeSlide.classList.add('anm-finished');
