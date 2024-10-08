@@ -19,7 +19,6 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   }
 
   const startAnimation = (index) => {
-    alert("start2");
     let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
@@ -29,15 +28,12 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
       if(first === 1){
-        alert(first);
       activeSlide.classList.remove('anm-started');
       activeSlide.classList.add('anm-finished');
       }else{ 
-        alert(first);
         first = 1;
       }
     }
-    alert(first);
   }
 
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
@@ -55,16 +51,20 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
       afterInit: (swiper) =>{
         startAnimation(swiper.realIndex);
         updateFraction(swiper.realIndex);
+        alert("init");
       },
       slideChange: (swiper) => {
          updateFraction(swiper.realIndex);
          finishAnimation();
+        alert("change");
        },
       slideChangeTransitionStart: (swiper) => {
         startAnimation(swiper.realIndex);
+        alert("transStart");
       },
       slideChangeTransitionEnd: () => {
         fractionNum.classList.remove('anm-started');
+        alert("transEnd");
       },
     },
     centeredSlides: true,
