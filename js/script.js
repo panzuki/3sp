@@ -1,6 +1,6 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   let tag = ['Start', '14,400 years ago', '6,000 B.C.E', '4,000 B.C.E', 'd'];
-  const first = 0;
+  let first = 0;
   const myDelay = 3000;
   const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
   const total = ('00' + slideLength).slice(-2);
@@ -10,7 +10,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   fractionTotal.textContent = total;
 
   const updateFraction = (index) => {
-    alert("update");
+    alert("update2");
     let current = ('00' + (index + 1)).slice(-2);
     fractionNum.classList.add('anm-started');
     setTimeout(() => {
@@ -19,20 +19,21 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   }
 
   const startAnimation = (index) => {
-    alert("start");
+    alert("start2");
     let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
   
   const finishAnimation = () => {
-    alert(first);
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
       if(first === 1){
+        alert(first);
       activeSlide.classList.remove('anm-started');
       activeSlide.classList.add('anm-finished');
-      }else{
+      }else{ 
+        alert(first);
         first = 1;
       }
     }
