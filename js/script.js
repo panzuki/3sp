@@ -29,7 +29,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     alert(first);
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
-      if(first === 0){
+      if(first === 1){
       activeSlide.classList.remove('anm-started');
       activeSlide.classList.add('anm-finished');
       }else{
