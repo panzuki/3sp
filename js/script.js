@@ -1,16 +1,24 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
-let tag=['14,400 years ago','6,000 B.C.E','4,000 B.C.E','d','e'];
-    
-const myDelay = 7000;
+  let tag = ['Start','14,400 years ago', '6,000 B.C.E', '4,000 B.C.E', 'd'];
+
+  const myDelay = 3000;
   const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
   const total = ('00' + slideLength).slice(-2);
 
   const fractionNum = document.querySelector('.flow01 .fraction .num');
   const fractionTotal = document.querySelector('.flow01 .fraction .total');
+  fractionTotal.textContent = total;
 
+  const updateFraction = (index) => {
+    let current = ('00' + (index + 1)).slice(-2);
+    fractionNum.classList.add('anm-started');
+    setTimeout(() => {
+      fractionNum.textContent = current;
+    }, 400);
+  }
 
-  const startAnimation = (index1) => {
-    let activeSlide = document.querySelectorAll('.flow01 .content')[index1];
+  const startAnimation = (index) => {
+    let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
@@ -22,10 +30,16 @@ const myDelay = 7000;
       activeSlide.classList.add('anm-finished');
     }
   }
-    
+
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
+
+    loop: true,
+    loopAdditionalSlides: 1,
     spaceBetween: 0,
     speed: 3000,
+      delay: myDelay,
+      disableOnInteraction: false,
+      waitForTransition: false,
     followFinger: false,
     observeParents: true,
     on: {
@@ -47,14 +61,13 @@ const myDelay = 7000;
       clickable: true,
       renderBullet: (index, className) => {
         let num = ('00' + (index + 1)).slice(-2);
-        // return '<span class="' + className + '"><span class="step">STEP.</span>' + num + '</span>';
         return '<span class="' + className + '"><span class="step"></span>' + tag[index] + '</span>';
       },
     },
-    navigation: {
-      nextEl: '.flow01 .swiper-button-next',
-      prevEl: '.flow01 .swiper-button-prev',
-    },
+    // navigation: {
+    //   nextEl: '.flow01 .swiper-button-next',
+    //   prevEl: '.flow01 .swiper-button-prev',
+    // },
     breakpoints: {
       1025: {
         spaceBetween: 0,
