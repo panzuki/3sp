@@ -1,5 +1,5 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
-  let tag = ['Start','14,400 years ago', '6,000 B.C.E', '4,000 B.C.E', 'd'];
+  let tag = ['Start', '14,400 years ago', '6,000 B.C.E', '4,000 B.C.E', 'd'];
 
   const myDelay = 3000;
   const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
@@ -23,6 +23,13 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     activeSlide.classList.add('anm-started');
   }
 
+  const startAnimation0 = (index) => {
+    let activeSlide = document.querySelectorAll('.flow01 .content')[index];
+    activeSlide.classList.remove('anm-finished');
+    activeSlide.classList.add('anm-started');
+  }
+
+
   const finishAnimation = () => {
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
@@ -32,23 +39,29 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   }
 
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
-
     loop: true,
     loopAdditionalSlides: 1,
     spaceBetween: 0,
     speed: 3000,
-      delay: myDelay,
-      disableOnInteraction: false,
-      waitForTransition: false,
+    delay: myDelay,
+    disableOnInteraction: false,
+    waitForTransition: false,
     followFinger: false,
     observeParents: true,
+
     on: {
-      slideChange: (swiper) => {
+      afterInit: (swiper) =>{
+        startAnimation0(swiper.realIndex);
         updateFraction(swiper.realIndex);
-        finishAnimation();
       },
+      // slideChange: (swiper) => {
+      //   updateFraction(swiper.realIndex);
+      //   finishAnimation();
+      // },
       slideChangeTransitionStart: (swiper) => {
+        finishAnimation();
         startAnimation(swiper.realIndex);
+        updateFraction(swiper.realIndex);
       },
       slideChangeTransitionEnd: () => {
         fractionNum.classList.remove('anm-started');
@@ -78,4 +91,11 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
       onlyInViewport: false,
     },
   });
+
+    window.addEventListener('load', function() {
+      console.log('ページ内のすべてのリソースが読み込まれました。');
+      // ここで実行したい関数を呼び出す
+      onPageFullyLoaded();
+    });
+
 });
