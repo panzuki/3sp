@@ -10,6 +10,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   fractionTotal.textContent = total;
 
   const updateFraction = (index) => {
+    alert("update");
     let current = ('00' + (index + 1)).slice(-2);
     fractionNum.classList.add('anm-started');
     setTimeout(() => {
@@ -18,12 +19,14 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   }
 
   const startAnimation = (index) => {
+    alert("start");
     let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
   
   const finishAnimation = () => {
+    alert(first);
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
       if(first === 0){
@@ -33,6 +36,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
         first = 1;
       }
     }
+    alert(first);
   }
 
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
