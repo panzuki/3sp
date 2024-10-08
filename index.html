@@ -1,167 +1,159 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>パンのことわざ</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
- 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
     <style>
       html {
-  font-family: "Spartan", "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif;
-  font-size: 62.5%;
-  line-height: 1.8;
-  height: 100%;
-  word-break: break-word;
-  color: #333;
-  background-color: var(--color-base);
-  appearance: none;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-}
-body {
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  overflow-y: hidden;
-  overflow-x: hidden;
-  height: 100vh;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(208, 147, 82, 0.6),
-      rgba(192, 134, 70, 0.6) 60%,
-      rgba(208, 147, 82, 0.6)
-    ),
-    repeating-radial-gradient(
-      ellipse at 60% 500%,
-      #c08646,
-      #c08646 0.2%,
-      #d09352 0.6%,
-      #d09352 1%
-    );  
+        font-family: "Spartan", "游ゴシック体", YuGothic, "游ゴシック",
+          "Yu Gothic", "メイリオ", Meiryo, sans-serif;
+        font-size: 62.5%;
+        line-height: 1.8;
+        height: 100%;
+        word-break: break-word;
+        color: #333;
+        background-color: var(--color-base);
+        appearance: none;
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-y: hidden;
+        overflow-x: hidden;
+        height: 100vh;
+        background: linear-gradient(
+            90deg,
+            rgba(208, 147, 82, 0.6),
+            rgba(192, 134, 70, 0.6) 60%,
+            rgba(208, 147, 82, 0.6)
+          ),
+          repeating-radial-gradient(
+            ellipse at 60% 500%,
+            #c08646,
+            #c08646 0.2%,
+            #d09352 0.6%,
+            #d09352 1%
+          );
 
-  width: 100vw;
-  height: 100vh;
-  background-size: 250% 250%;
- 
-}
+        width: 100vw;
+        height: 100vh;
+        background-size: 250% 250%;
+      }
 
-.container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 20px;
-            width: 80vw;
-            height: 80vh;
-            position: relative;
-            transition: all 0.5s ease; /* レイアウト変更時のアニメーション */
-        }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 20px;
+        width: 80vw;
+        height: 80vh;
+        position: relative;
+        transition: all 0.5s ease; /* レイアウト変更時のアニメーション */
+      }
 
-        .center-text {
-          position: relative;
-          margin: 40px;
-            grid-column: 2 / 4;
-            grid-row: 2 / 4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10vw; /* 文字をできるだけ大きく */
-            font-weight: bold;
-            color: #000;
-  /* background-color: #fff; */
-  border-radius: 5%;
-            text-shadow: 0 8px 12px rgba(0, 0, 0, 0.8); /* 文字に濃い影を追加 */
-            /* box-shadow: 6px 6px 0px 0px #777; */
-        }
+      .center-text {
+        position: relative;
+        margin: 40px;
+        grid-column: 2 / 4;
+        grid-row: 2 / 4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10vw; /* 文字をできるだけ大きく */
+        font-weight: bold;
+        color: #000;
+        /* background-color: #fff; */
+        border-radius: 5%;
+        text-shadow: 0 8px 12px rgba(0, 0, 0, 0.8); /* 文字に濃い影を追加 */
+        /* box-shadow: 6px 6px 0px 0px #777; */
+      }
 
-
-
-.box {
-  position: relative;
-            /* display: flex;
+      .box {
+        position: relative;
+        /* display: flex;
             justify-content: center;
             align-items: center; */
 
-            /* width: 100%;
+        /* width: 100%;
             height: 100%; */
-            
-    padding: .5em 1em;
-    font-size: 1.5vw;
-            text-align: center;
-            color: #000;
-    border-right: 27px solid #2589d0;
-    background-color: #f5f5f5;
-    color: #333333;
-    font-weight: bold;
-    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7); /* 文字に濃い影を追加 */
 
-}
+        padding: 0.5em 1em;
+        font-size: 1.5vw;
+        text-align: center;
+        color: #000;
+        border-right: 27px solid #2589d0;
+        background-color: #f5f5f5;
+        color: #333333;
+        font-weight: bold;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7); /* 文字に濃い影を追加 */
+      }
 
-.box::before {
-    position: absolute;
-    bottom: 2px;
-    right: -20px;
-    z-index: -1;
-    transform: rotate(5deg);
-    width: 100%;
-    height: 50%;
-    background-color: rgba(0, 0, 0, 0.9);
-    content: "";
-    filter: blur(4px);
-    z-index: -1;
-  -webkit-transition: all .3s ease-in-out;
-          transition: all .3s ease-in-out;
-    
-}
-.box:hover{
-  border-right: 27px solid #d02525;
+      .box::before {
+        position: absolute;
+        bottom: 2px;
+        right: -20px;
+        z-index: -1;
+        transform: rotate(5deg);
+        width: 100%;
+        height: 50%;
+        background-color: rgba(0, 0, 0, 0.9);
+        content: "";
+        filter: blur(4px);
+        z-index: -1;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+      .box:hover {
+        border-right: 27px solid #d02525;
+      }
+      .box:hover::before,
+      .box:hover::after {
+        box-shadow: 0 15px 14px rgba(0, 0, 0, 0.9);
+      }
 
-}
-.box:hover::before,
-.box:hover::after {
-  box-shadow: 0 15px 14px rgba(0, 0, 0, 0.9);
-}
- 
-        a {
-            color: inherit; /* リンクの文字色をボックスに合わせる */
-            text-decoration: none; /* 下線を消す */
-            display: block; /* 全体をリンク範囲に */
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      a {
+        color: inherit; /* リンクの文字色をボックスに合わせる */
+        text-decoration: none; /* 下線を消す */
+        display: block; /* 全体をリンク範囲に */
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .menu-layout {
-            grid-template-columns: none;
-            grid-template-rows: repeat(13, 1fr); /* すべてのボックスが縦に並ぶ */
-            justify-content: flex-start; /* 左端に揃える */
-            gap: 3px; /* メニュー項目間のスペースを縮小 */
-            width: 15vw; /* メニュー全体の幅を15vwに */
-            height: 100vh; /* 画面全体の高さに拡大 */
-            position: fixed; /* 左端に固定 */
-            top: 0;
-            left: 0;
-        }
+      .menu-layout {
+        grid-template-columns: none;
+        grid-template-rows: repeat(13, 1fr); /* すべてのボックスが縦に並ぶ */
+        justify-content: flex-start; /* 左端に揃える */
+        gap: 3px; /* メニュー項目間のスペースを縮小 */
+        width: 15vw; /* メニュー全体の幅を15vwに */
+        height: 100vh; /* 画面全体の高さに拡大 */
+        position: fixed; /* 左端に固定 */
+        top: 0;
+        left: 0;
+      }
 
-        .menu-layout .box {
-            width: 100%; /* 幅を100%にして左側に配置 */
-            height: 6vh; /* 各ボックスの高さをvhで設定して縦に並べる */
-            font-size: 1vw;
-            padding: 0;
-        }
+      .menu-layout .box {
+        width: 100%; /* 幅を100%にして左側に配置 */
+        height: 6vh; /* 各ボックスの高さをvhで設定して縦に並べる */
+        font-size: 1vw;
+        padding: 0;
+      }
 
-        .menu-layout .center-text {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-            font-size: 2vw; /* メニューの一番上に小さめのパンを表示 */
-            align-self: center; /* 上に揃える */
-            margin: 5px;
-
-        }
-
+      .menu-layout .center-text {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        font-size: 2vw; /* メニューの一番上に小さめのパンを表示 */
+        align-self: center; /* 上に揃える */
+        margin: 5px;
+      }
     </style>
   </head>
   <body>
@@ -172,7 +164,8 @@ body {
       <div class="box"><a href="#food">料理</a></div>
       <div class="box"><a href="#language">言語</a></div>
       <div class="box"><a href="#economy">経済</a></div>
-      <div class="center-text"><a href="/index.html">パンの</a></div> <!-- 中央のパン -->
+      <div class="center-text"><a href="/index.html">パンの</a></div>
+      <!-- 中央のパン -->
       <div class="box"><a href="#politics">政治</a></div>
       <div class="box"><a href="#science">科学</a></div>
       <div class="box"><a href="#education">教育</a></div>
@@ -190,6 +183,5 @@ body {
           });
       });
   </script> -->
-
   </body>
 </html>
