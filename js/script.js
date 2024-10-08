@@ -1,6 +1,6 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   let tag = ['Start', '14,400 years ago', '6,000 B.C.E', '4,000 B.C.E', 'd'];
-
+  const first = 0;
   const myDelay = 3000;
   const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
   const total = ('00' + slideLength).slice(-2);
@@ -22,19 +22,16 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
-
-  const startAnimation0 = (index) => {
-    let activeSlide = document.querySelectorAll('.flow01 .content')[index];
-    activeSlide.classList.remove('anm-finished');
-    activeSlide.classList.add('anm-started');
-  }
-
-
+  
   const finishAnimation = () => {
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
+      if(first === 0){
       activeSlide.classList.remove('anm-started');
       activeSlide.classList.add('anm-finished');
+      }else{
+        first = 1;
+      }
     }
   }
 
@@ -51,17 +48,15 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 
     on: {
       afterInit: (swiper) =>{
-        startAnimation0(swiper.realIndex);
-        updateFraction(swiper.realIndex);
-      },
-      // slideChange: (swiper) => {
-      //   updateFraction(swiper.realIndex);
-      //   finishAnimation();
-      // },
-      slideChangeTransitionStart: (swiper) => {
-        finishAnimation();
         startAnimation(swiper.realIndex);
         updateFraction(swiper.realIndex);
+      },
+      slideChange: (swiper) => {
+         updateFraction(swiper.realIndex);
+         finishAnimation();
+       },
+      slideChangeTransitionStart: (swiper) => {
+        startAnimation(swiper.realIndex);
       },
       slideChangeTransitionEnd: () => {
         fractionNum.classList.remove('anm-started');
@@ -77,10 +72,6 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
         return '<span class="' + className + '"><span class="step"></span>' + tag[index] + '</span>';
       },
     },
-    // navigation: {
-    //   nextEl: '.flow01 .swiper-button-next',
-    //   prevEl: '.flow01 .swiper-button-prev',
-    // },
     breakpoints: {
       1025: {
         spaceBetween: 0,
@@ -91,11 +82,4 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
       onlyInViewport: false,
     },
   });
-
-    window.addEventListener('load', function() {
-      console.log('ページ内のすべてのリソースが読み込まれました。');
-      // ここで実行したい関数を呼び出す
-      onPageFullyLoaded();
-    });
-
 });
