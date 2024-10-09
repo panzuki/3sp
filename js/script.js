@@ -48,8 +48,8 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 
     on: {
       afterInit: (swiper) =>{
-        updateFraction(swiper.realIndex);
-        finishAnimation();
+        //updateFraction(swiper.realIndex);
+        //finishAnimation();
         startAnimation(swiper.realIndex);
         fractionNum.classList.remove('anm-started');
       },
