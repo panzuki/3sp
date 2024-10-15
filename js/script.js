@@ -10,6 +10,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   fractionTotal.textContent = total;
 
   const updateFraction = (index) => {
+    console.log("update");
     let current = ('00' + (index + 1)).slice(-2);
     fractionNum.classList.add('anm-started');
     setTimeout(() => {
@@ -18,20 +19,23 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   }
 
   const startAnimation = (index) => {
+    console.log("start");
     let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
   }
-  
+
   const finishAnimation = () => {
     let activeSlide = document.querySelector('.flow01 .content.anm-started');
     if (activeSlide) {
-      if(first === 1){
-      activeSlide.classList.remove('anm-started');
-      activeSlide.classList.add('anm-finished');
-      }else{ 
-        first = 1;
-      }
+      // if (first == 1) {
+        activeSlide.classList.remove('anm-started');
+        activeSlide.classList.add('anm-finished');
+        console.log("finish1");
+      // } else {
+        // first = 1;
+        // console.log("finish else");
+      // }
     }
   }
 
@@ -47,20 +51,30 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     observeParents: true,
 
     on: {
-      afterInit: (swiper) =>{
+      afterInit: (swiper) => {
+        console.log(swiper.realIndex);
         //updateFraction(swiper.realIndex);
         //finishAnimation();
-        startAnimation(swiper.realIndex);
-        fractionNum.classList.remove('anm-started');
+        //startAnimation(swiper.realIndex);
+        //fractionNum.classList.remove('anm-started');
       },
       slideChange: (swiper) => {
-         updateFraction(swiper.realIndex);
-         finishAnimation();
-       },
+        console.log("CHANGE");
+        updateFraction(swiper.realIndex);
+        finishAnimation();
+        console.log(swiper.realIndex);
+        if (swiper.realIndex == "0") {
+          console.log("finish1");
+          startAnimation(swiper.realIndex);
+          fractionNum.classList.remove('anm-started');
+        };
+      },
       slideChangeTransitionStart: (swiper) => {
+        console.log("TRANS-START");
         startAnimation(swiper.realIndex);
       },
       slideChangeTransitionEnd: () => {
+        console.log("TRANS-END");
         fractionNum.classList.remove('anm-started');
       },
     },
