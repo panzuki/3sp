@@ -45,7 +45,7 @@ body {
   background: linear-gradient(90deg, rgba(208, 147, 82, 0.6), rgba(192, 134, 70, 0.6) 60%, rgba(208, 147, 82, 0.6)),
     repeating-radial-gradient(ellipse at 60% 500%, #c08646, #c08646 0.2%, #d09352 0.6%, #d09352 1%);
 
-  background: url(../img/bg2.jpg) no-repeat 0 0 / cover fixed;
+  
   z-index: -1;
 }
 
