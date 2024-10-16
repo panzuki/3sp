@@ -6,15 +6,19 @@
     <title>Wheat Spread Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        #map {
-            height: 90vh;
-            width: 100%;
-        }
+#map {
+    height: 90vh;
+    width: 100%;
+    position: relative;
+}
 
-        #slider {
-            width: 80%;
-            margin: 20px auto;
-        }
+#slider {
+    width: 80%;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 5vh;  /* 5vh分だけ上に配置 */
+    left: 10%;    /* 中央に配置 */
+}
     </style>
 </head>
 <body>
