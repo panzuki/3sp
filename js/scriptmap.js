@@ -42,26 +42,29 @@ function drawArrow(start, end) {
 // Current marker index to track user's position
 var currentIndex = 0;
 
-// Function to move to the next marker and draw an arrow
-function moveToNextMarker(direction) {
-    if (direction === 'next' && currentIndex < locations.length - 1) {
-        drawArrow(locations[currentIndex].latlng, locations[currentIndex + 1].latlng);
-        markers[currentIndex + 1].openPopup();
-        currentIndex++;
-    } else if (direction === 'prev' && currentIndex > 0) {
-        drawArrow(locations[currentIndex].latlng, locations[currentIndex - 1].latlng);
-        markers[currentIndex - 1].openPopup();
-        currentIndex--;
+// Function to move to the specific marker and draw an arrow
+function moveToMarker(index) {
+    if (index >= 0 && index < locations.length - 1) {
+        drawArrow(locations[index].latlng, locations[index + 1].latlng);
+        markers[index + 1].openPopup();
+        currentIndex = index;
     }
 }
 
 // Listen for arrow key presses
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
-        moveToNextMarker('next');  // Move to the next marker on right arrow
+        moveToMarker(currentIndex + 1);  // Move to the next marker on right arrow
     } else if (event.key === 'ArrowLeft') {
-        moveToNextMarker('prev');  // Move to the previous marker on left arrow
+        moveToMarker(currentIndex - 1);  // Move to the previous marker on left arrow
     }
+});
+
+// Add slider control
+var slider = document.getElementById('slider');
+slider.addEventListener('input', function() {
+    var index = parseInt(slider.value);
+    moveToMarker(index);
 });
 
 // Start by drawing the first arrow
