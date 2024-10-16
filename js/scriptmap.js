@@ -12,9 +12,9 @@ var locations = [
     { latlng: [31.0461, 34.8516], popup: "Egypt (5000 BC) - Bread Becomes Staple Food" ,nextp: [2] },
     { latlng: [37.9838, 23.7275], popup: "Greece (3000 BC) - Wheat Spreads to the Mediterranean" ,nextp: [3] },
     { latlng: [41.9028, 12.4964], popup: "Rome (1000 BC) - Public Bakeries in the Roman Empire" ,nextp: [4]},
-    { latlng: [48.8566, 2.3522], popup: "France (500 AD) - Wheat Cultivation and Bread Making Flourish",nextp: [none] },
-    { latlng: [51.5074, -0.1278], popup: "United Kingdom (1000 AD) - Bread as a Staple for All Classes" ,nextp: [none] },
-    { latlng: [40.7128, -74.0060], popup: "United States (1700 AD) - Wheat Cultivation Expands to the New World" ,nextp: [none] }
+    { latlng: [48.8566, 2.3522], popup: "France (500 AD) - Wheat Cultivation and Bread Making Flourish",nextp: ["none"] },
+    { latlng: [51.5074, -0.1278], popup: "United Kingdom (1000 AD) - Bread as a Staple for All Classes" ,nextp: ["none"] },
+    { latlng: [40.7128, -74.0060], popup: "United States (1700 AD) - Wheat Cultivation Expands to the New World" ,nextp: ["none"] }
 ];
 
 // Add markers to the map
