@@ -7,13 +7,19 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         #map {
-            height: 100vh;
+            height: 90vh;
             width: 100%;
+        }
+
+        #slider {
+            width: 80%;
+            margin: 20px auto;
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <input type="range" id="slider" min="0" max="4" value="0" step="1" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="js/scriptmap.js"></script>
 </body>
