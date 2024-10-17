@@ -55,10 +55,10 @@ function moveToMarker(index) {
         // Draw arrows from the selected marker to multiple locations
         for (var j = 0 ; j <= locations[currentIndex].nextp.length; j++) {
             console.log('Length'+locations[currentIndex].nextp.length);
+            console.log('j='+j);
             if (locations[currentIndex].nextp[j] == "none") {
                 
             }else{
-                console.log('j='+j);
                 console.log(locations[currentIndex].nextp[j]);
                 var next = locations[currentIndex].nextp[j];
                                 console.log(start);
