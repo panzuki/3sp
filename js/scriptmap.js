@@ -78,17 +78,17 @@ slider.addEventListener('input', function() {
 // Function to draw multiple arrows from a single point
 function drawMultipleArrowsFromMarker(markerIndex) {
     var start = locations[markerIndex].latlng;
-    alert(locations[markerIndex].latlng.length);
     
-    alert(locations[markerIndex].latlng.length);
+    console.log(locations[markerIndex].nextp.length);
     
     var j = 0;
     // Draw arrows from the selected marker to multiple locations
     for (var i = markerIndex + 1; i < locations.length; i++) {
-        for (var j = j + 1; j < locations[i].nextp.length; j++) {
-            if (locations[i].nextp[j] == 'none') {
+        for (j = j + 1; j < locations[i].nextp.length; j++) {
+            if (locations[i].nextp[j] == "none") {
                 
             }else{
+                console.log(locations[i].nextp[j]);
                 var next = locations[i].nextp[j];
                 drawArrow(start, locations[next].latlng);
             }
