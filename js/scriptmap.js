@@ -53,7 +53,7 @@ function moveToMarker(index) {
     // Draw arrows from the selected marker to multiple locations
         var start = locations[currentIndex].latlng;
         // Draw arrows from the selected marker to multiple locations
-        for (var j = 0 ; j < locations[currentIndex].nextp.length; j++) {
+        for (var j = 0 ; j <= locations[currentIndex].nextp.length; j++) {
                 console.log('FIRST'+locations[currentIndex].nextp[j]);
             if (locations[currentIndex].nextp[j] == "none") {
                 
