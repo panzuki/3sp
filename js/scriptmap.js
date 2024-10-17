@@ -47,7 +47,7 @@ var currentIndex = 0;
 // Function to move to the specific marker, draw an arrow, and manage popups
 function moveToMarker(index) {
     console.log('index'+index);
-    if(index = currentIndex){
+    if(index == currentIndex){
         var start = locations[index].latlng;
         markers[index].openPopup();
 
