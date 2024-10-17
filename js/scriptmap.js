@@ -61,6 +61,7 @@ function moveToMarker(index) {
                                 console.log(locations[next].latlng);
                 drawArrow(start, locations[next].latlng);
                 markers[next].openPopup();
+                console.log(polylines);
             }
             
         });
