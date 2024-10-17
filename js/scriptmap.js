@@ -16,10 +16,6 @@ var locations = [
     { latlng: [51.5074, -0.1278], popup: "United Kingdom (1000 AD) - Bread as a Staple for All Classes" ,nextp: ["none"] },
     { latlng: [40.7128, -74.0060], popup: "United States (1700 AD) - Wheat Cultivation Expands to the New World" ,nextp: ["none"] }
 ];
-var locationset = [
-    {locations[0],locations[1]},
-    {locations[1],locations[2]}
-];
 
 // Add markers to the map
 var markers = [];
