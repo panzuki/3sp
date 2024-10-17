@@ -79,11 +79,10 @@ slider.addEventListener('input', function() {
 function drawMultipleArrowsFromMarker(markerIndex) {
     var start = locations[markerIndex].latlng;
         
-    var j = 0;
     // Draw arrows from the selected marker to multiple locations
-    for (var i = markerIndex + 1; i < locations.length; i++) {
+    for (var i = markerIndex ; i < locations.length; i++) {
         console.log(locations[i]);
-        for (j = j + 1; j < locations[i].nextp.length; j++) {
+        for (var j = 0 ; j < locations[i].nextp.length; j++) {
                 console.log(locations[i].nextp[j]);
             if (locations[i].nextp[j] == "none") {
                 
