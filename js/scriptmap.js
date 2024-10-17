@@ -46,13 +46,14 @@ var currentIndex = 0;
 
 // Function to move to the specific marker, draw an arrow, and manage popups
 function moveToMarker(index) {
+    console.log('index'+index);
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
 
     var start = locations[index].latlng;
     // Draw arrows from the selected marker to multiple locations
         for (var j = 0 ; j < locations[index].nextp.length; j++) {
-                console.log(locations[index].nextp[j]);
+                console.log('FIRST'+locations[index].nextp[j]);
             if (locations[index].nextp[j] == "none") {
                 
             }else{
