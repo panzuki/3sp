@@ -51,16 +51,16 @@ function moveToMarker(index) {
         // Draw arrows and open popups for all points between currentIndex and the new index
         var start = locations[currentIndex].latlng;
         // console.log('Length'+locations[currentIndex].nextp.length);
-        locations[currentIndex].forEach(nextp =>{
-            if (nextp === "none") {
+        locations[currentIndex].nextp.forEach(nextpv =>{
+            if (nextpv === "none") {
                 
             }else{
                 // console.log(locations[currentIndex].nextp[j]);
-                var next = nextp;
+                var next = nextpv;
                                 console.log(start);
                                 console.log(locations[next].latlng);
                 drawArrow(start, locations[next].latlng);
-                markers[nextp].openPopup();
+                markers[next].openPopup();
             }
             
         });
