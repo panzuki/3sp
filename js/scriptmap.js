@@ -82,6 +82,7 @@ function drawMultipleArrowsFromMarker(markerIndex) {
     var j = 0;
     // Draw arrows from the selected marker to multiple locations
     for (var i = markerIndex + 1; i < locations.length; i++) {
+        console.log(locations[i]);
         for (j = j + 1; j < locations[i].nextp.length; j++) {
                 console.log(locations[i].nextp[j]);
             if (locations[i].nextp[j] == "none") {
