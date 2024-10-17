@@ -36,8 +36,8 @@ locations.forEach(function(location) {
 var polylines = [];
 
 // Function to draw an arrow (polyline) between markers and save it to the array
-function drawArrow(start, end) {
-    var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
+function drawArrow(start, end, next) {
+    var polyline = L.polyline([start, end], {color: 'orange'}, {classname: next}).addTo(map);
     polylines.push(polyline);
 }
 
@@ -59,7 +59,7 @@ function moveToMarker(index) {
                 var next = nextpv;
                                 console.log(start);
                                 console.log(locations[next].latlng);
-                drawArrow(start, locations[next].latlng);
+                drawArrow(start, locations[next].latlng, next);
                 markers[next].openPopup();
                 console.log(polylines);
             }
