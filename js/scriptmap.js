@@ -49,7 +49,7 @@ function moveToMarker(index) {
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
 
-    //var start = locations[Index].latlng;
+    var start = locations[index].latlng;
     // Draw arrows from the selected marker to multiple locations
         for (var j = 0 ; j < locations[index].nextp.length; j++) {
                 console.log(locations[index].nextp[j]);
