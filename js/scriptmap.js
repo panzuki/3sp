@@ -94,3 +94,19 @@ slider.addEventListener('input', function() {
 
 // Start by drawing multiple arrows from the first marker
 markers[0].openPopup();
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowRight') {
+        // Increase slider value (move forward)
+        if (slider.value < locations.length - 1) {
+            slider.value = parseInt(slider.value) + 1;
+            moveToMarker(parseInt(slider.value));
+        }
+    } else if (event.key === 'ArrowLeft') {
+        // Decrease slider value (move backward)
+        if (slider.value > 0) {
+            slider.value = parseInt(slider.value) - 1;
+            moveToMarker(parseInt(slider.value));
+        }
+    }
+});
