@@ -8,7 +8,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Define locations and popups for markers
 var locations = [
-    { latlng: [33.5, 44.4], popup: "Fertile Crescent (10,000 BC) - Origin of Wheat Cultivation" ,nextp: [1,5,6,2]},
+    { latlng: [33.5, 44.4], popup: "Fertile Crescent (10,000 BC) - Origin of Wheat Cultivation" ,nextp: [1,5,6]},
     { latlng: [31.0461, 34.8516], popup: "Egypt (5000 BC) - Bread Becomes Staple Food" ,nextp: [2] },
     { latlng: [37.9838, 23.7275], popup: "Greece (3000 BC) - Wheat Spreads to the Mediterranean" ,nextp: [3] },
     { latlng: [41.9028, 12.4964], popup: "Rome (1000 BC) - Public Bakeries in the Roman Empire" ,nextp: [4]},
@@ -50,7 +50,20 @@ function moveToMarker(index) {
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
     var start = locations[currentIndex].latlng;
-            console.log('Length'+locations[currentIndex].nextp.length);
+            // console.log('Length'+locations[currentIndex].nextp.length);
+        locations[currentIndex].forEach(nextp =>{
+            if (nextp === "none") {
+                
+            }else{
+                // console.log(locations[currentIndex].nextp[j]);
+                var next = nextp;
+                                console.log(start);
+                                console.log(locations[next].latlng);
+                drawArrow(start, locations[next].latlng);
+                markers[nextp].openPopup();
+            }
+            
+        });
 
         // Draw arrows from the selected marker to multiple locations
         for (var j = 0 ; j < locations[currentIndex].nextp.length; j++) {
