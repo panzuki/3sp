@@ -51,13 +51,13 @@ function moveToMarker(index) {
 
     //var start = locations[Index].latlng;
     // Draw arrows from the selected marker to multiple locations
-        for (var j = 0 ; j < locations[Index].nextp.length; j++) {
-                console.log(locations[Index].nextp[j]);
-            if (locations[i].nextp[j] == "none") {
+        for (var j = 0 ; j < locations[index].nextp.length; j++) {
+                console.log(locations[index].nextp[j]);
+            if (locations[index].nextp[j] == "none") {
                 
             }else{
-                console.log(locations[i].nextp[j]);
-                var next = locations[i].nextp[j];
+                console.log(locations[index].nextp[j]);
+                var next = locations[index].nextp[j];
                 drawArrow(start, locations[next].latlng);
             }
     }
