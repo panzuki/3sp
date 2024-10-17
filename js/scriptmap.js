@@ -66,7 +66,7 @@ function moveToMarker(index) {
                 markers[locations[index].nextp[j]].openPopup();
             }
         }         
-    } else if (index <= currentIndex) {
+    } else if (index < currentIndex) {
         // Remove arrows and close popups when moving backwards
         for (var i = polylines.length - 1; i >= index; i--) {
             map.removeLayer(polylines[i]);
