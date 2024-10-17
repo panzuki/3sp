@@ -78,7 +78,7 @@ slider.addEventListener('input', function() {
 // Function to draw multiple arrows from a single point
 function drawMultipleArrowsFromMarker(markerIndex) {
     var start = locations[markerIndex].latlng;
-    alert(locations[markerIndex][latlng].length);
+    alert(locations[markerIndex].latlng.length);
     
     alert(locations[markerIndex].latlng.length);
     
