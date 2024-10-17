@@ -49,8 +49,8 @@ function moveToMarker(index) {
     console.log('index'+index);
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
-    var start = locations[currentIndex].latlng;
-            // console.log('Length'+locations[currentIndex].nextp.length);
+        var start = locations[currentIndex].latlng;
+        // console.log('Length'+locations[currentIndex].nextp.length);
         locations[currentIndex].forEach(nextp =>{
             if (nextp === "none") {
                 
@@ -64,22 +64,6 @@ function moveToMarker(index) {
             }
             
         });
-
-        // Draw arrows from the selected marker to multiple locations
-        for (var j = 0 ; j < locations[currentIndex].nextp.length; j++) {
-            console.log('Length'+locations[currentIndex].nextp.length);
-            console.log('j='+j);
-            if (locations[currentIndex].nextp[j] == "none") {
-                
-            }else{
-                console.log(locations[currentIndex].nextp[j]);
-                var next = locations[currentIndex].nextp[j];
-                                console.log(start);
-                                console.log(locations[next].latlng);
-                drawArrow(start, locations[next].latlng);
-                markers[locations[index].nextp[j]].openPopup();
-            }
-        }         
     } else if (index < currentIndex) {
         // Remove arrows and close popups when moving backwards
         for (var i = polylines.length - 1; i >= index; i--) {
