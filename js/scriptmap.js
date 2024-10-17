@@ -59,9 +59,11 @@ function moveToMarker(index) {
             }else{
                 console.log(locations[index].nextp[j]);
                 var next = locations[index].nextp[j];
+                                console.log(start);
+                                console.log(locations[next].latlng);
                 drawArrow(start, locations[next].latlng);
             }
-    }
+        }
         
         for (var i = currentIndex; i < index; i++) {
             drawArrow(locations[i].latlng, locations[i + 1].latlng);
@@ -94,4 +96,4 @@ slider.addEventListener('input', function() {
 
 // Start by drawing multiple arrows from the first marker
 moveToMarker(0);
-markers[0].openPopup();
+markers[0].openPopup()
