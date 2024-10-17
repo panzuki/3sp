@@ -48,6 +48,20 @@ var currentIndex = 0;
 function moveToMarker(index) {
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
+
+    //var start = locations[Index].latlng;
+    // Draw arrows from the selected marker to multiple locations
+        for (var j = 0 ; j < locations[Index].nextp.length; j++) {
+                console.log(locations[Index].nextp[j]);
+            if (locations[i].nextp[j] == "none") {
+                
+            }else{
+                console.log(locations[i].nextp[j]);
+                var next = locations[i].nextp[j];
+                drawArrow(start, locations[next].latlng);
+            }
+    }
+        
         for (var i = currentIndex; i < index; i++) {
             drawArrow(locations[i].latlng, locations[i + 1].latlng);
             markers[i + 1].openPopup();
@@ -75,26 +89,8 @@ slider.addEventListener('input', function() {
     moveToMarker(index);
 });
 
-// Function to draw multiple arrows from a single point
-function drawMultipleArrowsFromMarker(markerIndex) {
-    var start = locations[markerIndex].latlng;
-        
-    // Draw arrows from the selected marker to multiple locations
-    for (var i = markerIndex ; i < locations.length; i++) {
-        console.log(locations[i]);
-        for (var j = 0 ; j < locations[i].nextp.length; j++) {
-                console.log(locations[i].nextp[j]);
-            if (locations[i].nextp[j] == "none") {
-                
-            }else{
-                console.log(locations[i].nextp[j]);
-                var next = locations[i].nextp[j];
-                drawArrow(start, locations[next].latlng);
-            }
-        }
-    }
-}
+
 
 // Start by drawing multiple arrows from the first marker
-drawMultipleArrowsFromMarker(0);
+moveToMarker(0);
 markers[0].openPopup();
