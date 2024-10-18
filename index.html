@@ -14,7 +14,7 @@
         line-height: 1.8;
         height: 100%;
         word-break: break-word;
-        color: #333;
+        color: #222;
         background-color: var(--color-base);
         appearance: none;
         -webkit-appearance: none;
@@ -80,7 +80,7 @@
 
   background-color: rgba(255, 255, 255, 0.1); /* 背景色 */
   border: 1px solid rgba(255, 255, 255, 0.4); /* ボーダー */
-  border-right-color: rgba(255, 255, 255, 0.2);
+  border-right-color: 27px solid rgba(37, 137, 208, 0.3);
   border-bottom-color: rgba(255, 255, 255, 0.2);
   border-radius: 15px;
   -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
@@ -109,7 +109,8 @@
         transition: all 0.3s ease-in-out;
       } */
       .box:hover {
-        border-right: 27px solid #d02525;
+          border-right-color: 27px solid rgba(208, 37, 37, 0.3);
+/*         border-right: 27px solid #d02525; */
       }
       .box:hover::before,
       .box:hover::after {
