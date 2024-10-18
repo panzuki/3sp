@@ -19,27 +19,40 @@ var locations = [
 
 // Add markers to the map
 var markers = [];
-locations.forEach(function(location) {
-    var marker = L.marker(location.latlng).addTo(map).bindPopup(location.popup);
+var slidePopups = {};
+locations.forEach(function(location,index) {
+//    var marker = L.marker(location.latlng).addTo(map).bindPopup(location.popup);
+    var marker = L.marker(location.latlng).addTo(map);
     markers.push(marker);
 
     // Show popup on hover
     marker.on('mouseover', function() {
+        if(!slidePopups[index]){
+            var popup = L.popup()
+                .setLatLng(location.latlng)
+                .setContent(location.popup)
+                .openOn(map);
+            marker.bindPopup(popup);
+        }
         marker.openPopup();
     });
     marker.on('mouseout', function() {
-        marker.closePopup();
+        if(!slidePopups[index]){ 
+            map.closePopup();
+        }
     });
+    markers.push(marker);
 });
 
 var activePopups = [];
 
-function showPopup(marker, content) {
+function showPopup(marker, content, index) {
     var popup = L.popup()
         .setLatLng(marker.getLatLng())
         .setContent(content)
         .openOn(map);
 
+    slidePopups[index] = popup;
     // Add the popup to active popups list (this prevents it from being closed when another popup opens)
     activePopups.push(popup);
 }
@@ -56,7 +69,8 @@ var polylines = [];
 var layers = {};
 
 // Function to draw an arrow (polyline) between markers and save it to the array
-function drawArrow(start, end, group) {
+function drawArrow(startLatLng, endLatLng,startndex,endIndex,group) {
+    
     var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
     //polylines.push(polyline);
     layers[group].addLayer(polyline);
@@ -78,8 +92,8 @@ function moveToMarker(index) {
             }else{
                 // console.log(locations[currentIndex].nextp[j]);
                 var next = nextpv;
-                drawArrow(start, locations[next].latlng, currentIndex);
-                showPopup(markers[next],locations[next].popup)
+                drawArrow(start, locations[next].latlng, currentIndex, next, currentIndex);
+                showPopup(markers[next],locations[next].popup,next)
                 //markers[next].openPopup();
             }
         });
@@ -100,7 +114,7 @@ function moveToMarker(index) {
             }else{
                 // console.log(locations[currentIndex].nextp[j]);
                 var back = backpv;
-                showPopup(markers[back],locations[back].popup)
+                showPopup(markers[back],locations[back].popup,back)
                 //markers[next].openPopup();
             }
         });
@@ -123,7 +137,7 @@ slider.addEventListener('input', function() {
 
 // Start by drawing multiple arrows from the first marker
 //markers[0].openPopup();
-showPopup(markers[0],locations[0].popup)
+showPopup(markers[0],locations[0].popup,0)
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
