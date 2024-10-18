@@ -47,7 +47,6 @@ var currentIndex = 0;
 
 // Function to move to the specific marker, draw an arrow, and manage popups
 function moveToMarker(index) {
-    console.log('index'+index);
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
         var start = locations[currentIndex].latlng;
@@ -62,9 +61,7 @@ function moveToMarker(index) {
                                 console.log(locations[next].latlng);
                 drawArrow(start, locations[next].latlng, next);
                 markers[next].openPopup();
-                console.log(polylines);
             }
-            
         });
     } else if (index < currentIndex) {
         // Remove arrows and close popups when moving backwards
