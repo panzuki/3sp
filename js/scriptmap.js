@@ -23,7 +23,6 @@ var slidePopups = {};
 locations.forEach(function(location,index) {
 //    var marker = L.marker(location.latlng).addTo(map).bindPopup(location.popup);
     var marker = L.marker(location.latlng).addTo(map);
-    markers.push(marker);
 
     // Show popup on hover
     marker.on('mouseover', function() {
