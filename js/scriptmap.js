@@ -155,6 +155,7 @@ slider.addEventListener('input', function() {
 // Start by drawing multiple arrows from the first marker
 //markers[0].openPopup();
 showPopup(markers[0],locations[0].popup,0);
+showPopup(markers[1],locations[1].popup,1);
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
