@@ -122,8 +122,7 @@ function moveToMarker(index) {
         // Close popups after the new index
         map.removeLayer(layers[index]);
         closeAllPopups();
-        console.log(layers[index]);
-        layers[index].nextp.forEach(backpv =>{
+        locations[index].nextp.forEach(backpv =>{
             if (backpv === "none") {
                 
             }else{
