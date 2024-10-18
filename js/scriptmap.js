@@ -122,16 +122,20 @@ function moveToMarker(index) {
         // Close popups after the new index
         map.removeLayer(layers[index]);
         closeAllPopups();
-        locations[index].nextp.forEach(backpv =>{
-            if (backpv === "none") {
-                
-            }else{
-                // console.log(locations[currentIndex].nextp[j]);
-                var back = backpv;
-                showPopup(markers[back],locations[back].popup,back)
-                //markers[next].openPopup();
-            }
-        });
+        if(index==0){
+            showPopup(markers[0],locations[0].popup,0);
+        }else{
+            locations[index-1].nextp.forEach(backpv =>{
+                // if (backpv === "none") {
+                    // showPopup(markers[back],locations[back].popup,back)
+                // }else{
+                    // console.log(locations[currentIndex].nextp[j]);
+                    var back = backpv;
+                    showPopup(markers[back],locations[back].popup,back)
+                    //markers[next].openPopup();
+                // }
+            });
+        }
         
 //        for (var i = currentIndex; i > index; i--) {
 //            markers[i].closePopup();
@@ -151,7 +155,7 @@ slider.addEventListener('input', function() {
 
 // Start by drawing multiple arrows from the first marker
 //markers[0].openPopup();
-showPopup(markers[0],locations[0].popup,0)
+showPopup(markers[0],locations[0].popup,0);
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
