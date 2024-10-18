@@ -34,12 +34,14 @@ locations.forEach(function(location) {
 
 // Array to keep track of all drawn arrows (polylines)
 var polylines = [];
+var layers = {};
 
 // Function to draw an arrow (polyline) between markers and save it to the array
-function drawArrow(start, end, next) {
-    var polyline = L.polyline([start, end], {color: 'orange'}, {classname: next}).addTo(map);
+function drawArrow(start, end, group) {
+    var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
     polylines.push(polyline);
-    console.log(polylines[0].options);
+    layers[group].addLayer(polyline);
+    console.log(layers[group]);
 }
 
 // Current marker index to track user's position
@@ -50,6 +52,7 @@ function moveToMarker(index) {
     if (index > currentIndex) {
         // Draw arrows and open popups for all points between currentIndex and the new index
         var start = locations[currentIndex].latlng;
+        layers[currentIndex] = L.layerGroup();
         // console.log('Length'+locations[currentIndex].nextp.length);
         locations[currentIndex].nextp.forEach(nextpv =>{
             if (nextpv === "none") {
@@ -59,7 +62,7 @@ function moveToMarker(index) {
                 var next = nextpv;
                                 console.log(start);
                                 console.log(locations[next].latlng);
-                drawArrow(start, locations[next].latlng, next);
+                drawArrow(start, locations[next].latlng, currentIndex);
                 markers[next].openPopup();
             }
         });
