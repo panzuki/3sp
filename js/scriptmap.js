@@ -123,7 +123,7 @@ function moveToMarker(index) {
         // Close popups after the new index
         map.removeLayer(layers[index]);
         closeAllPopups();
-        layers[index].nextp.forEach(backpv ->{
+        layers[index].nextp.forEach(backpv =>{
             if (backpv === "none") {
                 
             }else{
