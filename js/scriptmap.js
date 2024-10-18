@@ -70,8 +70,23 @@ var layers = {};
 
 // Function to draw an arrow (polyline) between markers and save it to the array
 function drawArrow(startLatLng, endLatLng,startndex,endIndex,group) {
-    
-    var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
+    var startLat = startLatLng[0];
+    var startLng = startLatLng[1];
+    var endLat = endLatLng[0];
+    var endLng = endLatLng[1];
+
+    // Coordinates for the right-angle path:
+    // Step 1: Move horizontally first
+    var midLatLng1 = [startLat, endLng]; // Move horizontally to the same longitude as the end point
+    // Step 2: Move vertically
+    var midLatLng2 = [endLat, endLng]; // Move vertically to the end point
+
+    // Create the polyline path
+    var path = [startLatLng, midLatLng1, midLatLng2]; // Path combining the two steps
+
+    // Draw the polyline on the map
+    var polyline = L.polyline(path, { color: 'blue', weight: 2 }).addTo(map);
+    //var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
     //polylines.push(polyline);
     layers[group].addLayer(polyline);
 }
