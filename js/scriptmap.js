@@ -39,7 +39,7 @@ var polylines = [];
 function drawArrow(start, end, next) {
     var polyline = L.polyline([start, end], {color: 'orange'}, {classname: next}).addTo(map);
     polylines.push(polyline);
-    console.log(polylines[0].classname);
+    console.log(polylines[0].options);
 }
 
 // Current marker index to track user's position
