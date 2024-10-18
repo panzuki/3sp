@@ -68,11 +68,13 @@ function moveToMarker(index) {
         });
     } else if (index < currentIndex) {
         // Remove arrows and close popups when moving backwards
-        for (var i = polylines.length - 1; i >= index; i--) {
-            map.removeLayer(polylines[i]);
-            polylines.pop();
-        }
+        //for (var i = polylines.length - 1; i >= index; i--) {
+         //   map.removeLayer(polylines[i]);
+          //  polylines.pop();
+        //}
         // Close popups after the new index
+        map.removeLayer(layers[currentIndex]);
+        
         for (var i = currentIndex; i > index; i--) {
             markers[i].closePopup();
         }
