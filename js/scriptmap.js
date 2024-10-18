@@ -16,6 +16,22 @@ var locations = [
     { latlng: [51.5074, -0.1278], popup: "United Kingdom (1000 AD) - Bread as a Staple for All Classes" ,nextp: ["none"] },
     { latlng: [40.7128, -74.0060], popup: "United States (1700 AD) - Wheat Cultivation Expands to the New World" ,nextp: ["none"] }
 ];
+
+// Add markers to the map
+var markers = [];
+locations.forEach(function(location) {
+    var marker = L.marker(location.latlng).addTo(map).bindPopup(location.popup);
+    markers.push(marker);
+
+    // Show popup on hover
+    marker.on('mouseover', function() {
+        marker.openPopup();
+    });
+    marker.on('mouseout', function() {
+        marker.closePopup();
+    });
+});
+
 var activePopups = [];
 
 function showPopup(marker, content) {
@@ -34,20 +50,6 @@ function closeAllPopups() {
     });
     activePopups = [];  // Clear the list
 }
-// Add markers to the map
-var markers = [];
-locations.forEach(function(location) {
-    var marker = L.marker(location.latlng).addTo(map).bindPopup(location.popup);
-    markers.push(marker);
-
-    // Show popup on hover
-    marker.on('mouseover', function() {
-        marker.openPopup();
-    });
-    marker.on('mouseout', function() {
-        marker.closePopup();
-    });
-});
 
 // Array to keep track of all drawn arrows (polylines)
 var polylines = [];
@@ -77,7 +79,8 @@ function moveToMarker(index) {
                 // console.log(locations[currentIndex].nextp[j]);
                 var next = nextpv;
                 drawArrow(start, locations[next].latlng, currentIndex);
-                markers[next].openPopup();
+                showPopup(markers[next],locations[next].popup)
+                //markers[next].openPopup();
             }
         });
         map.addLayer(layers[currentIndex]);
@@ -89,15 +92,24 @@ function moveToMarker(index) {
           //  polylines.pop();
         //}
         // Close popups after the new index
-        console.log('removeindex'+index);
-        console.log('removecurrent'+currentIndex);
         map.removeLayer(layers[index]);
+        closeAllPopups();
+        layers[index].nextp.forEach(backpv ->{
+            if (backpv === "none") {
+                
+            }else{
+                // console.log(locations[currentIndex].nextp[j]);
+                var back = backpv;
+                showPopup(markers[back],locations[back].popup)
+                //markers[next].openPopup();
+            }
+        });
         
-        for (var i = currentIndex; i > index; i--) {
-            markers[i].closePopup();
-        }
+//        for (var i = currentIndex; i > index; i--) {
+//            markers[i].closePopup();
+//       }
         // Open the appropriate popup for the new index
-        markers[index].openPopup();
+//        markers[index].openPopup();
     }
     currentIndex = index;
 }
@@ -109,10 +121,9 @@ slider.addEventListener('input', function() {
     moveToMarker(index);
 });
 
-
-
 // Start by drawing multiple arrows from the first marker
-markers[0].openPopup();
+//markers[0].openPopup();
+showPopup(markers[0],locations[0].popup)
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
