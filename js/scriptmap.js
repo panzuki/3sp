@@ -74,7 +74,7 @@ function moveToMarker(index) {
         // Close popups after the new index
         console.log('removeindex'+index);
         console.log('removecurrent'+currentIndex);
-        map.removeLayer(layers[currentIndex]);
+        map.removeLayer(layers[index]);
         
         for (var i = currentIndex; i > index; i--) {
             markers[i].closePopup();
