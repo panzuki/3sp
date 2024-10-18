@@ -38,9 +38,9 @@ var layers = {};
 
 // Function to draw an arrow (polyline) between markers and save it to the array
 function drawArrow(start, end, group) {
-    //var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
+    var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
     //polylines.push(polyline);
-    layers[group].addLayer([start, end], {color: 'orange'});
+    layers[group].addLayer(polyline);
 }
 
 // Current marker index to track user's position
