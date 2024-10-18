@@ -64,6 +64,7 @@ function moveToMarker(index) {
             }
         });
         map.addLayer(layers[currentIndex]);
+        console.log('add'+currentIndex);
     } else if (index < currentIndex) {
         // Remove arrows and close popups when moving backwards
         //for (var i = polylines.length - 1; i >= index; i--) {
@@ -71,6 +72,8 @@ function moveToMarker(index) {
           //  polylines.pop();
         //}
         // Close popups after the new index
+        console.log('removeindex'+index);
+        console.log('removecurrent'+currentIndex);
         map.removeLayer(layers[currentIndex]);
         
         for (var i = currentIndex; i > index; i--) {
