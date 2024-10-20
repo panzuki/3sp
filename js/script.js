@@ -9,17 +9,17 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   const fractionTotal = document.querySelector('.flow01 .fraction .total');
   fractionTotal.textContent = total;
 
-  const updateFraction = (index) => {
-    console.log("update");
-    let current = ('00' + (index + 1)).slice(-2);
-    fractionNum.classList.add('anm-started');
-    setTimeout(() => {
-      fractionNum.textContent = current;
-    }, 400);
-  }
+  // const updateFraction = (index) => {
+  //   console.log("update");
+  //   let current = ('00' + (index + 1)).slice(-2);
+  //   fractionNum.classList.add('anm-started');
+  //   setTimeout(() => {
+  //     fractionNum.textContent = current;
+  //   }, 400);
+  // }
 
   const startAnimation = (index) => {
-    console.log("start");
+    // console.log("start");
     let activeSlide = document.querySelectorAll('.flow01 .content')[index];
     activeSlide.classList.remove('anm-finished');
     activeSlide.classList.add('anm-started');
@@ -51,30 +51,25 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     observeParents: true,
 
     on: {
-      afterInit: (swiper) => {
-        console.log(swiper.realIndex);
+      // afterInit: (swiper) => {
         //updateFraction(swiper.realIndex);
         //finishAnimation();
         //startAnimation(swiper.realIndex);
         //fractionNum.classList.remove('anm-started');
-      },
+      // },
       slideChange: (swiper) => {
-        console.log("CHANGE");
-        updateFraction(swiper.realIndex);
+        // updateFraction(swiper.realIndex);
         finishAnimation();
         console.log(swiper.realIndex);
         if (swiper.realIndex == "0") {
-          console.log("finish1");
           startAnimation(swiper.realIndex);
           fractionNum.classList.remove('anm-started');
         };
       },
       slideChangeTransitionStart: (swiper) => {
-        console.log("TRANS-START");
         startAnimation(swiper.realIndex);
       },
       slideChangeTransitionEnd: () => {
-        console.log("TRANS-END");
         fractionNum.classList.remove('anm-started');
       },
     },
