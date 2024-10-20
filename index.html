@@ -59,11 +59,22 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 10vw; /* 文字をできるだけ大きく */
+        font-size: 9vw; /* 文字をできるだけ大きく */
         font-weight: bold;
         color: #000;
         /* background-color: #fff; */
-        border-radius: 5%;
+/*         border-radius: 5%; */
+
+        background-color: rgba(255, 255, 255, 0.1); /* 背景色 */
+        border: 1px solid rgba(255, 255, 255, 0.4); /* ボーダー */
+        border-right: 28px solid;
+        border-right-color: rgba(37, 137, 208, 0.5);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
+        backdrop-filter: blur(6px);
+        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */
+        
         text-shadow: 0 8px 12px rgba(0, 0, 0, 0.8); /* 文字に濃い影を追加 */
         /* box-shadow: 6px 6px 0px 0px #777; */
       }
@@ -78,22 +89,21 @@
             height: 100%; */
 
         padding: 0.5em 1em;
-        font-size: 1.5vw;
+        font-size: 3vw;
         text-align: center;
 /*         color: #000; */
-
-  background-color: rgba(255, 255, 255, 0.1); /* 背景色 */
-  border: 1px solid rgba(255, 255, 255, 0.4); /* ボーダー */
-  border-right: 28px solid;
-  border-right-color: rgba(37, 137, 208, 0.5);
-  border-bottom-color: rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
-  backdrop-filter: blur(8px);
-  box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */        
 /*         border-right: 27px solid #2589d0; */
 /*         background-color: #f5f5f5; */
 /*         color: #333333; */
+        background-color: rgba(255, 255, 255, 0.1); /* 背景色 */
+        border: 1px solid rgba(255, 255, 255, 0.4); /* ボーダー */
+        border-right: 28px solid;
+        border-right-color: rgba(37, 137, 208, 0.5);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
+        backdrop-filter: blur(6px);
+        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */
         font-weight: bold;
         text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7); /* 文字に濃い影を追加 */
       }
