@@ -5,9 +5,9 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
   const total = ('00' + slideLength).slice(-2);
 
-  const fractionNum = document.querySelector('.flow01 .fraction .num');
-  const fractionTotal = document.querySelector('.flow01 .fraction .total');
-  fractionTotal.textContent = total;
+  // const fractionNum = document.querySelector('.flow01 .fraction .num');
+  // const fractionTotal = document.querySelector('.flow01 .fraction .total');
+  // fractionTotal.textContent = total;
 
   // const updateFraction = (index) => {
   //   console.log("update");
