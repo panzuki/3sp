@@ -1,5 +1,5 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
-  let tag = ['Start', '14,400 years ago', '6,000 B.C.E', '4,000 B.C.E', 'd'];
+  let tag = ['Start', '1', '2', '3', '4', '5', 'おまけ'];
   let first = 0;
   const myDelay = 3000;
   const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
