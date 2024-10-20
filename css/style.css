@@ -27,7 +27,12 @@ img {
 }
 
 html {
-  font-family: "Spartan", "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif;
+    font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
   font-size: 62.5%;
   height: 100vh;
   word-break: break-word;
@@ -40,12 +45,9 @@ html {
 }
 
 body {
-  font-family: "Spartan", "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif;
-  font-size: 62.5%;
-  background: linear-gradient(90deg, rgba(208, 147, 82, 0.6), rgba(192, 134, 70, 0.6) 60%, rgba(208, 147, 82, 0.6)),
-    repeating-radial-gradient(ellipse at 60% 500%, #c08646, #c08646 0.2%, #d09352 0.6%, #d09352 1%);
-
   
+/*   background: linear-gradient(90deg, rgba(208, 147, 82, 0.6), rgba(192, 134, 70, 0.6) 60%, rgba(208, 147, 82, 0.6)), */
+/*     repeating-radial-gradient(ellipse at 60% 500%, #c08646, #c08646 0.2%, #d09352 0.6%, #d09352 1%); */
   z-index: -1;
 }
 
