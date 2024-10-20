@@ -2,11 +2,10 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   let tag = ['Start', '1', '2', '3', '4', 'おまけ'];
   let first = 0;
   const myDelay = 3000;
-  const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
-  const total = ('00' + slideLength).slice(-2);
+  // const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
+  // const total = ('00' + slideLength).slice(-2);
 
-  const fractionNum = document.querySelector('.flow01 .fraction .num');
-  const fractionTotal = tag.length-1;
+  // const fractionNum = document.querySelector('.flow01 .fraction .num');
   // const fractionTotal = document.querySelector('.flow01 .fraction .total');
   // fractionTotal.textContent = total;
 
@@ -64,14 +63,14 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
         console.log(swiper.realIndex);
         if (swiper.realIndex == "0") {
           startAnimation(swiper.realIndex);
-          fractionNum.classList.remove('anm-started');
+          // fractionNum.classList.remove('anm-started');
         };
       },
       slideChangeTransitionStart: (swiper) => {
         startAnimation(swiper.realIndex);
       },
       slideChangeTransitionEnd: () => {
-        fractionNum.classList.remove('anm-started');
+        // fractionNum.classList.remove('anm-started');
       },
     },
     centeredSlides: true,
