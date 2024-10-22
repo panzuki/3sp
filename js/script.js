@@ -50,16 +50,6 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
     waitForTransition: false,
     followFinger: false,
     observeParents: true,
-      const totalSlides = swiper.slides.length - 1; // 全スライド数（インデックスは0始まり）
-      const currentSlide = swiper.activeIndex; // 現在のスライドのインデックス
-
-      if (currentSlide === totalSlides - 1) { // 最後のスライドに達したか確認
-        // 1秒後に画像をスライドインさせる
-        setTimeout(function () {
-          const toBeContinuedImg = document.getElementById('toBeContinuedImg');
-          toBeContinuedImg.classList.add('slide-in');
-        }, 1000); // 1秒の遅延
-      },
     on: {
       // afterInit: (swiper) => {
         //updateFraction(swiper.realIndex);
@@ -75,6 +65,17 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
           startAnimation(swiper.realIndex);
           // fractionNum.classList.remove('anm-started');
         };
+
+      const totalSlides = swiper.slides.length - 1; // 全スライド数（インデックスは0始まり）
+      const currentSlide = swiper.activeIndex; // 現在のスライドのインデックス
+
+      if (currentSlide === totalSlides - 1) { // 最後のスライドに達したか確認
+        // 1秒後に画像をスライドインさせる
+        setTimeout(function () {
+          const toBeContinuedImg = document.getElementById('toBeContinuedImg');
+          toBeContinuedImg.classList.add('slide-in');
+        }, 1000); // 1秒の遅延
+      };
       },
       slideChangeTransitionStart: (swiper) => {
         startAnimation(swiper.realIndex);
