@@ -11,6 +11,409 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="js/swiper-bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <style>
+  @import url("https://fonts.googleapis.com/css2?family=Spartan:wght@400;700&display=swap");
+  :root {
+    --easing: cubic-bezier(.2, 1, .2, 1);
+    --transition: .8s var(--easing);
+    --color-base: #f8f8f8;
+    --color-gray: #ddd;
+    --color-theme: #f5695f;
+    --color-theme-darken: #f12617;
+    --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
+    --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, .1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
+  }
+
+  html {
+    font-family: "Spartan", "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif;
+    font-size: 62.5%;
+    line-height: 1.8;
+    height: 100%;
+    word-break: break-word;
+    color: #333;
+    background-color: var(--color-base);
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-size: 1.6rem;
+    margin: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+  }
+
+  ::-moz-selection {
+    color: #fff;
+    background: var(--color-theme);
+  }
+
+  ::selection {
+    color: #fff;
+    background: var(--color-theme);
+  }
+
+  img {
+    border: 0;
+    margin: 0;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: #333;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 1.6rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  main {
+    display: block;
+  }
+
+  .l-inner {
+    position: relative;
+    -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10rem;
+  }
+
+  .l-section {
+    border-top: 1px solid #eee;
+  }
+  .l-section .l-inner {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+
+  [class*=swiper]:focus {
+    outline: none;
+  }
+
+  .slide-media,
+  .thumb-media {
+    position: relative;
+    overflow: hidden;
+  }
+  .slide-media img,
+  .thumb-media img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
+  }
+
+
+  .swiper-button-prev, .swiper-button-next {
+    display: grid;
+    place-content: center;
+    width: 6.4rem;
+    height: 6.4rem;
+    cursor: pointer;
+    -webkit-transition: var(--transition);
+    transition: var(--transition);
+  }
+  .swiper-button-prev::before, .swiper-button-next::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    content: "";
+    border-radius: 50%;
+    -webkit-box-shadow: var(--box-shadow);
+            box-shadow: var(--box-shadow);
+  }
+  .swiper-button-prev::after, .swiper-button-next::after {
+    width: 1.2rem;
+    height: 1.2rem;
+    content: "";
+    border: solid var(--color-gray);
+    border-width: 3px 3px 0 0;
+  }
+  .swiper-button-prev::after {
+    margin-left: 0.4rem;
+    -webkit-transform: rotate(-135deg);
+            transform: rotate(-135deg);
+  }
+  .swiper-button-next::after {
+    margin-right: 0.4rem;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+  }
+  .swiper-button-disabled {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .flow01 {
+    overflow: hidden;
+  }
+  .flow01 .swiper-main {
+    overflow: visible;
+  }
+  .flow01 .swiper-main,
+  .flow01 .swiper-pagination-main {
+    max-width: 600px;
+    margin: auto;
+  }
+  .flow01 .swiper-pagination-main {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 6.4rem;
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet {
+    font-size: 3.2rem;
+    font-weight: bold;
+    line-height: 1;
+    position: relative;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    padding-bottom: 2.4rem;
+    cursor: pointer;
+    -webkit-transition: var(--transition);
+    transition: var(--transition);
+    text-align: center;
+    color: var(--color-gray);
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet::before, .flow01 .swiper-pagination-main .swiper-pagination-bullet::after {
+    position: absolute;
+    content: "";
+    -webkit-transition: var(--transition);
+    transition: var(--transition);
+    background-color: var(--color-theme);
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet::before {
+    z-index: 1;
+    right: 0;
+    bottom: -6px;
+    left: 0;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: auto;
+    border-radius: 100px;
+    -webkit-box-shadow: 0 0 0 5px var(--color-base);
+            box-shadow: 0 0 0 5px var(--color-base);
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet::after {
+    right: 50%;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet:first-child::after {
+    display: none;
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
+    font-size: 1.6rem;
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet-active {
+    color: var(--color-theme);
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet-active::before {
+    -webkit-box-shadow: 0 0 0 4px var(--color-base), 0 0 0 7px var(--color-theme);
+            box-shadow: 0 0 0 4px var(--color-base), 0 0 0 7px var(--color-theme);
+  }
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet-active ~ *::before, .flow01 .swiper-pagination-main .swiper-pagination-bullet-active ~ *::after {
+    background-color: var(--color-gray);
+  }
+  .flow01 .swiper-pagination-sub {
+    font-size: 0;
+    text-align: center;
+  }
+  .flow01 .swiper-pagination-sub .swiper-pagination-bullet {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    cursor: pointer;
+    -webkit-transition: var(--transition);
+    transition: var(--transition);
+    vertical-align: top;
+    background-color: var(--color-gray);
+  }
+  .flow01 .swiper-pagination-sub .swiper-pagination-bullet:not(:first-child) {
+    margin-left: 8px;
+  }
+  .flow01 .swiper-pagination-sub .swiper-pagination-bullet-active {
+    background-color: var(--color-theme);
+  }
+  .flow01 .swiper-button-prev, .flow01 .swiper-button-next {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+  .flow01 .swiper-button-prev::before, .flow01 .swiper-button-next::before {
+    display: none;
+  }
+  .flow01 .swiper-button-prev::after, .flow01 .swiper-button-next::after {
+    position: relative;
+    width: 1.6rem;
+    height: 1.6rem;
+    content: "";
+    border: solid var(--color-gray);
+    border-width: 3px 3px 0 0;
+  }
+  .flow01 .swiper-button-prev {
+    right: calc(100% + 0.6rem);
+  }
+  .flow01 .swiper-button-next {
+    left: calc(100% + 0.6rem);
+  }
+  .flow01 .swiper-slide {
+    height: auto;
+  }
+  .flow01 .mainslide {
+    width: 100%;
+    height: 100%;
+    padding: 6.4rem 0 4.8rem;
+    text-align: center;
+    border-radius: 4px;
+    -webkit-box-shadow: var(--box-shadow);
+            box-shadow: var(--box-shadow);
+  }
+  .flow01 .mainslide-title {
+    font-size: 2.4rem;
+    line-height: 1.6;
+    display: inline-block;
+    border-bottom: 3px solid currentColor;
+  }
+  .flow01 .subslide {
+    padding: 4.8rem;
+  }
+  .flow01 .subslide-media {
+    margin-bottom: 3.2rem;
+  }
+  .flow01 .subslide-media img {
+    width: 12rem;
+    height: 12rem;
+  }
+
+
+
+  @media only screen and (max-width: 1024px) {
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+    .l-inner {
+      padding: 0 4rem;
+    }
+    .pc {
+      display: none !important;
+    }
+    .flow01 .swiper-button-prev::after, .flow01 .swiper-button-next::after {
+      width: 3.2rem;
+      height: 3.2rem;
+    }
+    .flow01 .swiper-button-prev {
+      right: calc(100% - 4rem);
+    }
+    .flow01 .swiper-button-next {
+      left: calc(100% - 4rem);
+    }
+  }
+
+  @media only screen and (max-width: 599px) {
+    html {
+      font-size: 50%;
+    }
+    .pc-tab {
+      display: none !important;
+    }
+    .flow01 .swiper-main,
+  .flow01 .swiper-pagination-main {
+      max-width: calc(100% - 3.2rem);
+    }
+    .flow01 .swiper-pagination-main .swiper-pagination-bullet::before {
+      bottom: -5px;
+    }
+    .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
+      font-size: 1.4rem;
+      display: block;
+      margin-bottom: 0.5em;
+      text-indent: 0.5em;
+    }
+  }
+
+  @media only screen and (min-width: 1025px) {
+    .tab-sp {
+      display: none !important;
+    }
+    .swiper-button-prev::before, .swiper-button-next::before {
+      -webkit-transition: var(--transition);
+      transition: var(--transition);
+    }
+    .swiper-button-prev:hover::before, .swiper-button-next:hover::before {
+      -webkit-transform: scale(1.2);
+              transform: scale(1.2);
+    }
+    .flow01 .swiper-button-prev::after, .flow01 .swiper-button-next::after {
+      -webkit-transition: var(--transition);
+      transition: var(--transition);
+    }
+    .flow01 .swiper-button-prev:hover::after {
+      -webkit-transform: translateX(-0.8rem) rotate(-135deg);
+              transform: translateX(-0.8rem) rotate(-135deg);
+    }
+    .flow01 .swiper-button-next:hover::after {
+      -webkit-transform: translateX(0.8rem) rotate(45deg);
+              transform: translateX(0.8rem) rotate(45deg);
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    .sp {
+      display: none !important;
+    }
+  }
+
+  @media only screen and (max-width: 1024px) and (min-width: 600px) {
+    .flow01 .swiper-main,
+  .flow01 .swiper-pagination-main {
+      max-width: calc(100% - 6.4rem);
+    }
+  }
+</style>
   </head>
   <body>
     <div class="l-wrapper">
@@ -40,6 +443,123 @@
             </li>
           </ol>
         </nav>
+        <div id="demo10" class="flow01 l-section">
+  <div class="l-inner">
 
+    <div class="swiper-pagination-main"></div>
+    <div class="swiper swiper-main">
+      <div class="swiper-wrapper">
+
+        <div class="swiper-slide">
+          <div class="mainslide">
+            <h2 class="mainslide-title">Lorem ipsum</h2>
+            <div class="swiper swiper-sub">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                  <div class="subslide">
+                    <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+                    <p class="subslide-text">Dolor sit amet, consectetur adipiscing elit.</p>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="subslide">
+                    <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+                    <p class="subslide-text">Tempor incidunt ut labore et dolore magna aliqua.</p>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="subslide">
+                    <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+                    <p class="subslide-text">Ad minim veniam.</p>
+                  </div>
+                </div>
+              </div><!-- /swiper-wrapper -->
+              <div class="swiper-pagination-sub"></div>
+            </div><!-- /swiper-sub -->
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="mainslide">
+            <h2 class="mainslide-title">Sed eiusmod</h2>
+            <div class="subslide">
+              <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+              <p class="subslide-text">Dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="mainslide">
+            <h2 class="mainslide-title">Ut enim</h2>
+            <div class="swiper swiper-sub">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                  <div class="subslide">
+                    <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+                    <p class="subslide-text">Dolor sit amet, consectetur adipiscing elit.</p>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="subslide">
+                    <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+                    <p class="subslide-text">Tempor incidunt ut labore et dolore magna aliqua.</p>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="subslide">
+                    <div class="subslide-media"><img src="https://placehold.jp/300x300.png" alt=""></div>
+                    <p class="subslide-text">Ad minim veniam.</p>
+                  </div>
+                </div>
+              </div><!-- /swiper-wrapper -->
+              <div class="swiper-pagination-sub"></div>
+            </div><!-- /swiper-sub -->
+          </div>
+        </div>
+
+      </div><!-- /swiper-wrapper -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div><!-- /swiper-main -->
+
+  </div>
+</div>
+      </main>
+    </div><!-- /wrapper -->
+    <script>
+  const mySwiper_sub = new Swiper('.flow01 .swiper-sub', {
+    spaceBetween: 24,
+    grabCursor: true,
+    nested: true,
+    pagination: {
+      el: '.flow01 .swiper-pagination-sub',
+      clickable: true,
+    },
+  });
+
+  const mySwiper_main = new Swiper('.flow01 .swiper-main', {
+    spaceBetween: 24,
+    centeredSlides: true,
+    grabCursor: true,
+    pagination: {
+      el: '.flow01 .swiper-pagination-main',
+      clickable: true,
+      renderBullet: (index, className) => {
+        let num = ('00' + (index + 1)).slice(-2);
+        return '<span class="' + className + '"><span class="step">STEP.</span>' + num + '</span>';
+      },
+    },
+    navigation: {
+      nextEl: '.flow01 .swiper-button-next',
+      prevEl: '.flow01 .swiper-button-prev',
+    },
+    breakpoints: {
+      1025: {
+        spaceBetween: 80,
+      }
+    },
+  });
+</script>
   </body>
 </html>
