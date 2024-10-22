@@ -491,8 +491,9 @@ main {
    .to-be-continued {
       position: fixed;
       bottom: 20px;
-      right: -200px; /* 初期状態では画面外に */
-      width: 150px;
+      right: -400px; /* 初期状態では画面外に */
+      width: 360px;
+     hight:225px;
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
@@ -506,7 +507,7 @@ main {
     /* アニメーションの定義 */
     @keyframes slideIn {
       from {
-        right: -200px;
+        right: -400px;
         opacity: 0;
       }
       to {
