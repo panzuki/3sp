@@ -194,7 +194,7 @@ main {
   height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
-  object-position:center 15%;
+  object-position:center 12%;
 }
 
 .flow01 {
