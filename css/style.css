@@ -451,14 +451,14 @@ main {
   clip-path: inset(0 100% 0 0);
 /*   background: rgba(255,255,255,0.5); */
 
-        background-color: rgba(255, 255, 255, 0.1); /* 背景色 */
+        background-color: rgba(255, 255, 255, 0.2); /* 背景色 */
         border: 1px solid rgba(255, 255, 255, 0.4); /* ボーダー */
         border-right-color: rgba(255, 255, 255, 0.2);
         border-bottom-color: rgba(255, 255, 255, 0.2);
         border-radius: 10px;
-        -webkit-backdrop-filter: blur(6px); /* ぼかしエフェクト */
-        backdrop-filter: blur(3px);
-        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */
+        -webkit-backdrop-filter: blur(7px); /* ぼかしエフェクト */
+        backdrop-filter: blur(4px);
+        box-shadow: 0 8px 16px rgba(100, 100, 100, 0.5); /* 薄い影 */
 }
 .flow01 .marker::after {
   position: absolute;
