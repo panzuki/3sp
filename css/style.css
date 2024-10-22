@@ -490,9 +490,9 @@ main {
 
    .to-be-continued {
       position: fixed;
-      bottom: 10px;
+      bottom: 0;
       right: -400px; /* 初期状態では画面外に */
-      width: 360px;
+      
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
@@ -515,14 +515,14 @@ main {
         opacity: 0;
       }
       to {
-        right: 20px;
+        right: 10px;
         opacity: 1;
       }
     }
 
     @keyframes slideOut {
       from {
-        right: 20px;
+        right: 10px;
         opacity: 1;
       }
       to {
