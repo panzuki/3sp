@@ -492,7 +492,8 @@ main {
       position: fixed;
       bottom: 0;
       right: -400px; /* 初期状態では画面外に */
-      
+      width: auto;
+     
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
