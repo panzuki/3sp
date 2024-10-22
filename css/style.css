@@ -449,7 +449,7 @@ main {
   display: inline-block;
   -webkit-clip-path: inset(0 100% 0 0);
   clip-path: inset(0 100% 0 0);
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.5);
 }
 .flow01 .marker::after {
   position: absolute;
