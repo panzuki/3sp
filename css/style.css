@@ -488,6 +488,32 @@ main {
   clip-path: inset(0 0 0 100%);
 }
 
+   .to-be-continued {
+      position: fixed;
+      bottom: 20px;
+      right: -200px; /* 初期状態では画面外に */
+      width: 150px;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    /* スライドインアニメーション */
+    .slide-in {
+      animation: slideIn 1s forwards;
+    }
+
+    /* アニメーションの定義 */
+    @keyframes slideIn {
+      from {
+        right: -200px;
+        opacity: 0;
+      }
+      to {
+        right: 20px;
+        opacity: 1;
+      }
+    }
+
 @-webkit-keyframes flow01-marker {
   60%,
   100% {
