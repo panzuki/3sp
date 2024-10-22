@@ -38,7 +38,18 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
       // }
     }
   }
+  
+      const totalSlides = swiper.slides.length - 1; // 全スライド数（インデックスは0始まり）
+      const currentSlide = swiper.activeIndex; // 現在のスライドのインデックス
 
+      if (currentSlide === totalSlides - 1) { // 最後のスライドに達したか確認
+        // 1秒後に画像をスライドインさせる
+        setTimeout(function () {
+          const toBeContinuedImg = document.getElementById('toBeContinuedImg');
+          toBeContinuedImg.classList.add('slide-in');
+        }, 1000); // 1秒の遅延
+      }
+  
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
     loop: true,
     loopAdditionalSlides: 1,
