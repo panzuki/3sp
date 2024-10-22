@@ -490,10 +490,10 @@ main {
 
    .to-be-continued {
       position: fixed;
-      bottom: 0;
+      bottom: -100px;
       right: -400px; /* 初期状態では画面外に */
-      width: auto;
-     
+      width: 360px;
+     hight:360px;
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
