@@ -113,6 +113,21 @@ main {
   display: block;
 }
 
+
+.l-inner {
+  position: relative;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  max-width: 100vm;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.l-section .l-inner {
+  padding: 0;
+}
+
 .breadcrumb {
   height: 8vh;
   margin: 0;
@@ -143,7 +158,7 @@ main {
 }
 
 .breadcrumb li a {
-  font-size: 2em;
+  font-size: 2rem;
   text-decoration: none;
   color: #3f60f1; /*色*/
 }
@@ -154,25 +169,12 @@ main {
 
 .breadcrumb li:last-child a {
   color: #333;
-  font-size: 2em;
+  font-size: 2rem;
   text-decoration: none;
   text-align: center;
   cursor: default;
 }
 
-.l-inner {
-  position: relative;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
-  max-width: 100vm;
-  height: 100vh;
-  margin: 0 auto;
-  padding: 0;
-}
-
-.l-section .l-inner {
-  padding: 0;
-}
 
 [class*="swiper"]:focus {
   outline: none;
