@@ -12,7 +12,6 @@ img {
   max-width: 100%;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Spartan:wght@400;700&display=swap");
 :root {
   --easing: cubic-bezier(0.2, 1, 0.2, 1);
   --transition: 0.8s var(--easing);
