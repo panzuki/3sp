@@ -493,15 +493,16 @@ main {
       bottom: 20px;
       right: -400px; /* 初期状態では画面外に */
       width: 360px;
-     hight:225px;
+     hight:125px;
       opacity: 0;
-      transition: opacity 1s ease-in-out;
+      transition: opacity 3
+s ease-in-out;
     }
 
     /* スライドインアニメーション */
     .slide-in {
       z-index:100;
-      animation: slideIn 1s forwards;
+      animation: slideIn 3s forwards;
     }
 
     /* アニメーションの定義 */
