@@ -500,8 +500,13 @@ main {
     /* スライドインアニメーション */
     .slide-in {
       z-index:100;
-      animation: slideIn 4s forwards;
+      animation: slideIn 1s forwards;
     }
+    /* スライドアウト（非表示時） */
+    .slide-out {
+      animation: slideOut 0.1s forwards;
+    }
+
 
     /* アニメーションの定義 */
     @keyframes slideIn {
@@ -512,6 +517,17 @@ main {
       to {
         right: 20px;
         opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        right: 20px;
+        opacity: 1;
+      }
+      to {
+        right: -400px;
+        opacity: 0;
       }
     }
 
