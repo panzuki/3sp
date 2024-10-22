@@ -493,7 +493,7 @@ main {
       bottom: 10px;
       right: -400px; /* 初期状態では画面外に */
       width: 360px;
-     hight:50px;
+     hight:100px;
       opacity: 0;
       transition: opacity 1
 s ease-in-out;
