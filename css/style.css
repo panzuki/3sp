@@ -489,7 +489,7 @@ main {
 
    .to-be-continued {
       position: fixed;
-      bottom: -50px;
+      bottom: 0;
       right: -400px; /* 初期状態では画面外に */
       width: 360px;
      height:360px;
