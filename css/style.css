@@ -499,6 +499,7 @@ main {
 
     /* スライドインアニメーション */
     .slide-in {
+      z-index:100;
       animation: slideIn 1s forwards;
     }
 
