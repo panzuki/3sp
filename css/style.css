@@ -299,7 +299,7 @@ main {
 
 .flow01 .swiper-main {
   max-width: 100vw;
-  height: 80vh;
+  height: 84vh;
 }
 
 .flow01 .l-inner {
@@ -307,7 +307,7 @@ main {
 }
 
 .flow01 .slide-media {
-  height: 80vh;
+  height: 84vh;
 }
 .flow01 .slide-media img {
   -webkit-transition: 3s;
@@ -492,7 +492,7 @@ main {
       bottom: 10px;
       right: -400px; /* 初期状態では画面外に */
       width: 360px;
-     height:350px;
+     height: 360px;
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
