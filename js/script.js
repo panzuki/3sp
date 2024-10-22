@@ -60,7 +60,6 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
       slideChange: (swiper) => {
         // updateFraction(swiper.realIndex);
         finishAnimation();
-        console.log(swiper.realIndex);
         if (swiper.realIndex == "0") {
           startAnimation(swiper.realIndex);
           // fractionNum.classList.remove('anm-started');
@@ -78,8 +77,6 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
         
       if (currentSlide === totalSlides) { // 最後のスライドに達したか確認
         // 1秒後に画像をスライドインさせる
-       
-        console.log("INcontinued");
         setTimeout(function () {
           const toBeContinuedImg = document.getElementById('toBeContinuedImg');
           toBeContinuedImg.classList.add('slide-in');
