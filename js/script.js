@@ -68,9 +68,11 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 
       const totalSlides = swiper.slides.length - 1; // 全スライド数（インデックスは0始まり）
       const currentSlide = swiper.activeIndex; // 現在のスライドのインデックス
-
+ console.log(currentSlide,totalSlides);
       if (currentSlide === totalSlides - 1) { // 最後のスライドに達したか確認
         // 1秒後に画像をスライドインさせる
+       
+        console.log("INcontinued");
         setTimeout(function () {
           const toBeContinuedImg = document.getElementById('toBeContinuedImg');
           toBeContinuedImg.classList.add('slide-in');
