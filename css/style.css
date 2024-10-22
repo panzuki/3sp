@@ -369,12 +369,12 @@ main {
   z-index: 2;
   top: 0;
   bottom: 0;
-  left:4rem;
+  left:0;
   right:0;
   height: -webkit-max-content;
   height: -moz-max-content;
   height: max-content;
-  margin: auto;
+  margin: auto 4rem;
 }
 .flow01 .fraction {
   position: absolute;
