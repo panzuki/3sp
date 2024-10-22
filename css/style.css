@@ -495,8 +495,7 @@ main {
       width: 360px;
      hight:100px;
       opacity: 0;
-      transition: opacity 1
-s ease-in-out;
+      transition: opacity 1s ease-in-out;
     }
 
     /* スライドインアニメーション */
