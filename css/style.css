@@ -397,8 +397,8 @@ main {
   -webkit-text-stroke:2px #FFF;
 }
 .flow01 .content-text {
-  font-size: 2rem;
-  margin: 4rem 0;
+  font-size: 3rem;
+  margin: 3rem 0;
   color: #000;
 }
 .flow01 .content-button {
@@ -449,7 +449,16 @@ main {
   display: inline-block;
   -webkit-clip-path: inset(0 100% 0 0);
   clip-path: inset(0 100% 0 0);
-  background: rgba(255,255,255,0.5);
+/*   background: rgba(255,255,255,0.5); */
+
+        background-color: rgba(255, 255, 255, 0.1); /* 背景色 */
+        border: 1px solid rgba(255, 255, 255, 0.4); /* ボーダー */
+        border-right-color: rgba(255, 255, 255, 0.2);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        -webkit-backdrop-filter: blur(6px); /* ぼかしエフェクト */
+        backdrop-filter: blur(3px);
+        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */
 }
 .flow01 .marker::after {
   position: absolute;
