@@ -501,8 +501,7 @@ main {
     /* スライドインアニメーション */
     .slide-in {
       z-index:100;
-      animation: slideIn 4
-s forwards;
+      animation: slideIn 4s forwards;
     }
 
     /* アニメーションの定義 */
