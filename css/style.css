@@ -139,17 +139,17 @@ main {
   list-style: none;
   font-weight: bold; /*太字*/
   text-align: center;
-  line-height: 8vh;
+  line-height: 4vh;
 }
 
 .breadcrumb li:after {
   /* >を表示*/
   content: ">";
   text-align: center;
-  line-height: 8vh;
+  line-height: 4vh;
   padding: 0 0.2em;
   color: #555;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .breadcrumb li:last-child:after {
@@ -157,7 +157,7 @@ main {
 }
 
 .breadcrumb li a {
-  font-size: 2rem;
+  font-size: 1.5rem;
   text-decoration: none;
   color: #3f60f1; /*色*/
 }
