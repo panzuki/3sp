@@ -68,7 +68,14 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
 
       const totalSlides = swiper.slides.length - 1; // 全スライド数（インデックスは0始まり）
       const currentSlide = swiper.realIndex; // 現在のスライドのインデックス
- console.log(currentSlide,totalSlides);
+        const toBeContinuedImg = document.getElementById('toBeContinuedImg');
+
+      // 最後のスライド以外では画像を非表示に
+      if (currentSlide !== totalSlides) {
+        toBeContinuedImg.classList.remove('slide-in');
+        toBeContinuedImg.classList.add('slide-out');
+      }
+        
       if (currentSlide === totalSlides) { // 最後のスライドに達したか確認
         // 1秒後に画像をスライドインさせる
        
@@ -76,7 +83,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
         setTimeout(function () {
           const toBeContinuedImg = document.getElementById('toBeContinuedImg');
           toBeContinuedImg.classList.add('slide-in');
-        }, 1000); // 1秒の遅延
+        }, 3000); // 1秒の遅延
       };
       },
       slideChangeTransitionStart: (swiper) => {
