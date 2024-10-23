@@ -149,9 +149,10 @@
 
     .timeline-container {
       position: relative;
-      width: 100%;
+      width: 80%;
       margin: 0 auto;
       display: flex;
+      justify-content: space-between;
     }
     .timeline {
       position: relative;
@@ -197,6 +198,12 @@
       text-align: right;
       padding-right: 10px;
     }
+    /* 左右のアイテムを上から順番に縦に並べる */
+    .events-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
 </style>
   </head>
   <body>
@@ -226,7 +233,7 @@
           </ol>
         </nav>
 
-   <div class="timeline-container">
+  <div class="timeline-container">
     <!-- 左側：世界の歴史的出来事（見出しのみ） -->
     <div class="fixed-event">
       <div>紀元前3200年: 古代メソポタミアの文明</div>
@@ -238,17 +245,19 @@
     <div class="timeline"></div>
 
     <!-- 右側：パンの歴史（スクロールで詳細表示） -->
-    <div class="event right">
-      <div class="title">紀元前30,000年: 最古のパンの痕跡</div>
-      <div class="popup-content" id="bread1">この時代のパンは粉を水で練って焼いたもので、非常に素朴なものだった。</div>
-    </div>
-    <div class="event right">
-      <div class="title">紀元前3,000年: エジプトで発酵パンが発明される</div>
-      <div class="popup-content" id="bread2">エジプトでは発酵技術が発明され、ふっくらとしたパンが作られるようになった。</div>
-    </div>
-    <div class="event right">
-      <div class="title">18世紀: 工業化とパン製造の進化</div>
-      <div class="popup-content" id="bread3">工業化によってパンの大量生産が可能となり、品質が向上した。</div>
+    <div class="events-container">
+      <div class="event right">
+        <div class="title">紀元前30,000年: 最古のパンの痕跡</div>
+        <div class="popup-content" id="bread1">この時代のパンは粉を水で練って焼いたもので、非常に素朴なものだった。</div>
+      </div>
+      <div class="event right">
+        <div class="title">紀元前3,000年: エジプトで発酵パンが発明される</div>
+        <div class="popup-content" id="bread2">エジプトでは発酵技術が発明され、ふっくらとしたパンが作られるようになった。</div>
+      </div>
+      <div class="event right">
+        <div class="title">18世紀: 工業化とパン製造の進化</div>
+        <div class="popup-content" id="bread3">工業化によってパンの大量生産が可能となり、品質が向上した。</div>
+      </div>
     </div>
   </div>
 
@@ -271,6 +280,36 @@
       .setClassToggle(breadId, "visible") // "visible" クラスで表示
       .addTo(controller);
     });
+
+    // 現在表示されているイベントインデックス
+    var currentIndex = 0;
+
+    // 上下キー操作でポップアップを表示・非表示
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "ArrowDown") {
+        if (currentIndex < breadEvents.length - 1) {
+          togglePopup(currentIndex, false);  // 現在のポップアップを閉じる
+          currentIndex++;
+          togglePopup(currentIndex, true);   // 次のポップアップを開く
+        }
+      } else if (event.key === "ArrowUp") {
+        if (currentIndex > 0) {
+          togglePopup(currentIndex, false);  // 現在のポップアップを閉じる
+          currentIndex--;
+          togglePopup(currentIndex, true);   // 前のポップアップを開く
+        }
+      }
+    });
+
+    // ポップアップの表示・非表示を切り替える関数
+    function togglePopup(index, show) {
+      var element = document.querySelector(breadEvents[index]);
+      if (show) {
+        element.classList.add("visible");
+      } else {
+        element.classList.remove("visible");
+      }
+    }
   </script>
   </body>
 </html>
