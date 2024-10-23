@@ -25,6 +25,32 @@
     </style>
 </head>
 <body>
+          <nav class="breadcrumb">
+          <ol itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li
+              itemprop="itemListElement"
+              itemscope
+              itemtype="http://schema.org/ListItem"
+            >
+              <a itemprop="item" href="https://panzuki.github.io/3sp/"
+                ><span itemprop="name">ホーム</span></a
+              >
+              <meta itemprop="position" content="1" />
+            </li>
+            <li
+              class="page"
+              itemprop="itemListElement"
+              itemscope
+              itemtype="http://schema.org/ListItem"
+            >
+              <a itemprop="item" href="" tabindex="-1"
+                ><span itemprop="name">パンの小麦の伝来</span></a
+              >
+              <meta itemprop="position" content="2" />
+            </li>
+          </ol>
+          </nav>
+  
     <div id="map"></div>
     <input type="range" id="slider" min="0" max="4" value="0" step="1" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
