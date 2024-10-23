@@ -156,21 +156,19 @@
       position: relative;
       width: 100%;
       margin: 0 auto;
+      display: flex;
     }
     .timeline {
-      position: absolute;
-      top: 0;
-      left: 50%;
+      position: relative;
       width: 2px;
-      height: 100%;
       background: #000;
+      height: 100vh;
+      margin: 0 auto;
     }
     .event {
       position: relative;
       width: 45%;
       margin-bottom: 100px;
-      opacity: 0;
-      transition: opacity 0.5s ease;
     }
     .event.left {
       left: 0;
@@ -182,14 +180,24 @@
       text-align: left;
       padding-left: 10px;
     }
-    .event.visible {
-      opacity: 1;
-    }
-    .popup {
+    .event .popup {
+      opacity: 0;
       background: #fff;
       border: 2px solid #000;
-      padding: 10px;  
+      padding: 10px;
       display: inline-block;
+      transition: opacity 0.5s ease;
+    }
+    .event.right .popup.visible {
+      opacity: 1;
+    }
+    /* 固定表示のスタイル */
+    .fixed-event {
+      position: sticky;
+      top: 10px;
+      width: 45%;
+      text-align: right;
+      padding-right: 10px;
     }
 
 </style>
@@ -222,49 +230,47 @@
           </ol>
         </nav>
 
-  <div class="timeline-container">
+<div class="timeline-container">
+    <!-- 左側：世界の歴史的出来事（見出しのみ） -->
+    <div class="fixed-event">
+      <div>紀元前3200年: 古代メソポタミアの文明</div>
+      <div>紀元前753年: ローマの建国</div>
+      <div>1492年: コロンブスがアメリカ大陸に到達</div>
+    </div>
+
+    <!-- タイムライン -->
     <div class="timeline"></div>
 
-    <!-- 左側：世界の歴史的出来事 -->
-    <div id="event1" class="event left">
-      <div class="popup">紀元前3200年：古代メソポタミアの文明が始まる</div>
+    <!-- 右側：パンの歴史（スクロールで詳細表示） -->
+    <div class="event right">
+      <div class="popup" id="bread1">紀元前30,000年: 最古のパンの痕跡</div>
     </div>
-    <div id="event2" class="event left">
-      <div class="popup">紀元前753年：ローマの建国</div>
+    <div class="event right">
+      <div class="popup" id="bread2">紀元前3,000年: エジプトで発酵パンが発明される</div>
     </div>
-    <div id="event3" class="event left">
-      <div class="popup">1492年：コロンブスがアメリカ大陸に到達</div>
+    <div class="event right">
+      <div class="popup" id="bread3">18世紀: 工業化とパン製造の進化</div>
     </div>
-
-  <!-- 右側：パンの歴史 -->
-    <div id="bread1" class="event right">
-      <div class="popup">紀元前30,000年：最古のパンの痕跡</div>
-    </div>
-    <div id="bread2" class="event right">
-      <div class="popup">紀元前3,000年：エジプトで発酵パンが発明される</div>
-    </div>
-    <div id="bread3" class="event right">
-      <div class="popup">18世紀：工業化とパン製造の進化</div>
-    </div>
-  </div>
+</div>
         
       </main>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/animation.gsap.min.js"></script>
   <script>
-    // ScrollMagicコントローラーの初期化
+// ScrollMagicコントローラーの初期化
     var controller = new ScrollMagic.Controller();
 
-    // イベントごとのトリガー設定
-    var events = ["#event1", "#event2", "#event3", "#bread1", "#bread2", "#bread3"];
-
-    events.forEach(function(eventId) {
+    // 右側のパンの歴史のポップアップをスクロール時に表示する設定
+    var breadEvents = ["#bread1", "#bread2", "#bread3"];
+    
+    breadEvents.forEach(function(breadId) {
       new ScrollMagic.Scene({
-        triggerElement: eventId,
-        triggerHook: 0.9 // スクロール位置に応じてトリガーを設定
+        triggerElement: breadId, // ポップアップを表示する要素
+        triggerHook: 0.9, // スクロール時のトリガー位置
+        duration: '50%' // 表示時間の調整
       })
-      .setClassToggle(eventId, "visible") // 表示するためのクラスを付与
+      .setClassToggle(breadId, "visible") // "visible" クラスで表示
       .addTo(controller);
     });
   </script>
