@@ -73,14 +73,9 @@
         text-shadow: 0 8px 12px rgba(0, 0, 0, 0.8); 
 
       }
-      .clip-path-shadow {
-        filter: blur(4px);
-        filter: drop-shadow(-2px 2px 0px rgba(37, 137, 208, 0.5)) drop-shadow(2px -2px 0px rgba(37, 137, 208, 0.5)) drop-shadow(-2px -2px 0 rgba(255, 247, 240, 0.2)) drop-shadow(2px 2px 0 rgba(255, 247, 240, 0.2)) drop-shadow(5px 5px 5px rgba(100, 100, 100, 0.4));
-      }
+
       .box {
         position: relative;
-        width:100%;
-        height:100%;
         clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
         padding: 0em 0em 0em 0em;
         font-size: 4.5em;
@@ -98,6 +93,20 @@
         font-weight: bold;
         transition: all 0.1s ease;  
       }
+      .box::before {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    filter: drop-shadow(4px 0 5px rgba(0, 0, 0, 0.3)) 
+            drop-shadow(4px 0 5px rgba(0, 0, 0, 0.1)); /* 右側の薄い影 */
+}
+
+.box::after {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5)); /* 下側の濃い影 */
+}
 
 /*       .box::before {
         position: absolute;
@@ -168,19 +177,19 @@
   </head>
   <body>
     <div class="container" id="container">   
-      <div class="clip-path-shadow"><div class="box"><a href="saying.html">ことわざ</a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="short.html">小ネタ</a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="map.html">小麦の伝来</a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="history1.html">歴史1</a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#culture"></a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#economy"></a></div></div>
+      <div class="box"><a href="saying.html">ことわざ</a></div>
+      <div class="box"><a href="short.html">小ネタ</a></div>
+      <div class="box"><a href="map.html">小麦の伝来</a></div>
+      <div class="box"><a href="history1.html">歴史1</a></div>
+      <div class="box"><a href="#culture"></a></div>
+      <div class="box"><a href="#economy"></a></div>
       <div class="center-text"><a href="index.html">パンの</a></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#politics"></a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#science"></a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#education"></a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#geography"></a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#law"></a></div></div>
-      <div class="clip-path-shadow"><div class="box"><a href="#food"></a></div></div>
+      <div class="box"><a href="#politics"></a></div>
+      <div class="box"><a href="#science"></a></div>
+      <div class="box"><a href="#education"></a></div>
+      <div class="box"><a href="#geography"></a></div>
+      <div class="box"><a href="#law"></a></div>
+      <div class="box"><a href="#food"></a></div>
     </div>
 
     <!-- <script>
