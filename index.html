@@ -88,9 +88,12 @@
         border-radius: 5px;
         -webkit-backdrop-filter: blur(8px); /* ぼかしエフェクト */
         backdrop-filter: blur(4px);
-        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */
+/*         box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4); /* 薄い影 */ */
         font-weight: bold;
         transition: all 0.1s ease;  
+      }
+      .clip-path-shadow {
+        filter: drop-shadow(5px 5px 5px rgba(100, 100, 100, 0.4));
       }
 /*       .box::before {
         position: absolute;
@@ -160,21 +163,20 @@
     </style>
   </head>
   <body>
-    <div class="container" id="container">
-      <div class="box"><a href="saying.html">ことわざ</a></div>
-      <div class="box"><a href="short.html">小ネタ</a></div>
-      <div class="box"><a href="map.html">小麦の伝来</a></div>
-      <div class="box"><a href="history1.html">歴史1</a></div>
-      <div class="box"><a href="#culture"></a></div>
-      <div class="box"><a href="#economy"></a></div>
+    <div class="container" id="container">   
+      <div class="clip-path-shadow"><div class="box"><a href="saying.html">ことわざ</a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="short.html">小ネタ</a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="map.html">小麦の伝来</a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="history1.html">歴史1</a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#culture"></a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#economy"></a></div></div>
       <div class="center-text"><a href="index.html">パンの</a></div>
-      <!-- 中央のパン -->
-      <div class="box"><a href="#politics"></a></div>
-      <div class="box"><a href="#science"></a></div>
-      <div class="box"><a href="#education"></a></div>
-      <div class="box"><a href="#geography"></a></div>
-      <div class="box"><a href="#law"></a></div>
-      <div class="box"><a href="#food"></a></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#politics"></a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#science"></a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#education"></a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#geography"></a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#law"></a></div></div>
+      <div class="clip-path-shadow"><div class="box"><a href="#food"></a></div></div>
     </div>
 
     <!-- <script>
