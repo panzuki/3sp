@@ -15,7 +15,8 @@ img {
 :root {
   --easing: cubic-bezier(0.2, 1, 0.2, 1);
   --transition: 0.8s var(--easing);
-  --color-base: #f8f8f8;
+  --color-base: #f0f8ff;
+/*   f8f8f8 */
   --color-gray: #ddd;
   --color-theme: #f32618;
   --color-theme-darken: #f12617;
