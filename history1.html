@@ -147,7 +147,7 @@
   cursor: default;
 }
 
-   .timeline-container {
+    .timeline-container {
       position: relative;
       width: 100%;
       margin: 0 auto;
@@ -175,18 +175,19 @@
       text-align: left;
       padding-left: 10px;
     }
-    .event .popup {
-      opacity: 0;
-      transform: translateY(50px); /* スクロール前に隠す */
-      background: #fff;
-      border: 2px solid #000;
-      padding: 10px;
-      display: inline-block;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+    .event .title {
+      font-weight: bold;
+      margin-bottom: 5px;
     }
-    .event.right .popup.visible {
+    .event .popup-content {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.5s ease, max-height 0.5s ease;
+    }
+    .event.right .popup-content.visible {
       opacity: 1;
-      transform: translateY(0); /* 表示時に元の位置に戻す */
+      max-height: 200px; /* 必要に応じて調整 */
     }
     /* 固定表示のスタイル */
     .fixed-event {
@@ -225,7 +226,7 @@
           </ol>
         </nav>
 
-  <div class="timeline-container">
+   <div class="timeline-container">
     <!-- 左側：世界の歴史的出来事（見出しのみ） -->
     <div class="fixed-event">
       <div>紀元前3200年: 古代メソポタミアの文明</div>
@@ -238,13 +239,16 @@
 
     <!-- 右側：パンの歴史（スクロールで詳細表示） -->
     <div class="event right">
-      <div class="popup" id="bread1">紀元前30,000年: 最古のパンの痕跡</div>
+      <div class="title">紀元前30,000年: 最古のパンの痕跡</div>
+      <div class="popup-content" id="bread1">この時代のパンは粉を水で練って焼いたもので、非常に素朴なものだった。</div>
     </div>
     <div class="event right">
-      <div class="popup" id="bread2">紀元前3,000年: エジプトで発酵パンが発明される</div>
+      <div class="title">紀元前3,000年: エジプトで発酵パンが発明される</div>
+      <div class="popup-content" id="bread2">エジプトでは発酵技術が発明され、ふっくらとしたパンが作られるようになった。</div>
     </div>
     <div class="event right">
-      <div class="popup" id="bread3">18世紀: 工業化とパン製造の進化</div>
+      <div class="title">18世紀: 工業化とパン製造の進化</div>
+      <div class="popup-content" id="bread3">工業化によってパンの大量生産が可能となり、品質が向上した。</div>
     </div>
   </div>
 
@@ -268,6 +272,5 @@
       .addTo(controller);
     });
   </script>
-
   </body>
 </html>
