@@ -499,10 +499,10 @@ main {
 
 .to-be-continued {
      position: fixed;
-     bottom: 20px;
+     bottom: -100px;
      right: -400px; /* 初期状態では画面外に */
      width: 360px;
-     height: 360px;
+/*      height: 360px; */
       opacity: 0;
       transition: opacity 1s ease-in-out;
   z-index:100;
