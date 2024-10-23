@@ -93,20 +93,20 @@
         font-weight: bold;
         transition: all 0.1s ease;  
       }
-      .box::before {
+      
+    .box::before {
     width: 100%;
     height: 100%;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    filter: drop-shadow(4px 0 5px rgba(0, 0, 0, 0.3)) 
-            drop-shadow(4px 0 5px rgba(0, 0, 0, 0.1)); /* 右側の薄い影 */
-}
-
-.box::after {
-    width: 100%;
-    height: 100%;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5)); /* 下側の濃い影 */
-}
+    filter: drop-shadow(4px 0 5px rgba(37, 137, 208, 0.5)) 
+            drop-shadow(4px 0 5px rgba(37, 137, 208, 0.5)); /* 右側の薄い影 */
+    }
+      .box::after {
+        width: 100%;
+      height: 100%;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      filter: drop-shadow(0 4px 10px rgba(255, 247, 240, 0.2)); /* 下側の濃い影 */
+      }
 
 /*       .box::before {
         position: absolute;
@@ -125,11 +125,12 @@
       } */
       
       .box:hover {
-        border-right-color: rgba(208, 37, 37, 0.7);
+/*         border-right-color: rgba(208, 37, 37, 0.7); */
 /*         border-right: 27px solid #d02525; */
-        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.8);
+/*         box-shadow: 0 5px 10px rgba(100, 100, 100, 0.8); */
         font-size: 4.8em;
       }
+      
 /*       .box:hover::before,
       .box:hover::after {
         
