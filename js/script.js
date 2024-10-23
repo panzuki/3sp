@@ -78,6 +78,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
       if (currentSlide === totalSlides) { // 最後のスライドに達したか確認
         // 1秒後に画像をスライドインさせる
         setTimeout(function () {
+          toBeContinuedImg.classList.remove('slide-out');
           const toBeContinuedImg = document.getElementById('toBeContinuedImg');
           toBeContinuedImg.classList.add('slide-in');
         }, 3000); // 1秒の遅延
