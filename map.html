@@ -7,6 +7,147 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <style>
+
+        :root {
+    --easing: cubic-bezier(.2, 1, .2, 1);
+    --transition: .8s var(--easing);
+    --color-base: #f0f8ff;
+    --color-gray: #ddd;
+    --color-theme: #f5695f;
+    --color-theme-darken: #f12617;
+    --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
+    --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, .1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
+  }
+
+  html {
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+    font-size: 62.5%;
+    line-height: 1.8;
+    height: 100%;
+    word-break: break-word;
+    color: #333;
+    background-color: var(--color-base);
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-size: 1.6rem;
+    margin: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+  }
+
+  ::-moz-selection {
+    color: #fff;
+    background: var(--color-theme);
+  }
+
+  ::selection {
+    color: #fff;
+    background: var(--color-theme);
+  }
+      
+  img {
+    border: 0;
+    margin: 0;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: #333;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 1.6rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  main {
+    display: block;
+  }
+      
+.breadcrumb {
+  height: 4vh;
+  margin: 0;
+  padding: 0 20px;
+  list-style: none;
+}
+
+.breadcrumb li {
+  display: inline; /*横に並ぶように*/
+  list-style: none;
+  font-weight: bold; /*太字*/
+  text-align: center;
+  line-height: 4vh;
+}
+
+.breadcrumb li:after {
+  /* >を表示*/
+  content: ">";
+  text-align: center;
+  line-height: 4vh;
+  padding: 0 0.2em;
+  color: #555;
+  font-size: 1.5rem;
+}
+
+.breadcrumb li:last-child:after {
+  content: "";
+}
+
+.breadcrumb li a {
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #3f60f1; /*色*/
+}
+
+.breadcrumb li a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb li:last-child a {
+  color: #333;
+  font-size: 1.5rem;
+  text-decoration: none;
+  text-align: center;
+  cursor: default;
+}
+      
 #map {
     height: 90vh;
     width: 100%;
