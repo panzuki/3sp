@@ -463,8 +463,15 @@ main {
 }
 
 .flow01 .content-text .marker{
-  background-color: rgba(255, 255, 255, 0.8);
-  animation-delay: 0.6s;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.flow01 .content-button .marker{
+        background-color: none; /* 背景色 */
+        border: none; /* ボーダー */
+        -webkit-backdrop-filter: blur(7px); /* ぼかしエフェクト */
+        backdrop-filter: blur(4px);
+        box-shadow: none; /* 薄い影 */
 }
 
 .flow01 .marker::after {
