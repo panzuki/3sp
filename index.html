@@ -24,6 +24,7 @@
         -webkit-appearance: none;
         -webkit-tap-highlight-color: transparent;
       }
+      
       body {
             margin: 0;
             padding: 0;
@@ -73,7 +74,8 @@
 
       }
       .clip-path-shadow {
-        filter: drop-shadow(5px 5px 5px rgba(100, 100, 100, 0.4));
+        filter: blur(4px);
+        filter: drop-shadow(-2px 2px 0px rgba(37, 137, 208, 0.5)) drop-shadow(2px -2px 0px rgba(37, 137, 208, 0.5)) drop-shadow(-2px -2px 0 rgba(255, 247, 240, 0.2)) drop-shadow(2px 2px 0 rgba(255, 247, 240, 0.2)) drop-shadow(5px 5px 5px rgba(100, 100, 100, 0.4));
       }
       .box {
         position: relative;
