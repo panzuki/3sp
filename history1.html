@@ -271,15 +271,15 @@
     // 右側のパンの歴史のポップアップをスクロール時に表示する設定
     var breadEvents = ["#bread1", "#bread2", "#bread3"];
     
-    // breadEvents.forEach(function(breadId) {
-      // new ScrollMagic.Scene({
-      //   triggerElement: breadId, // ポップアップを表示する要素
-      //   triggerHook: 0.8, // スクロール時のトリガー位置
-      //   duration: '50%' // 表示時間の調整
-      // })
-      // .setClassToggle(breadId, "visible") // "visible" クラスで表示
-      // .addTo(controller);
-    // });
+    breadEvents.forEach(function(breadId) {
+      new ScrollMagic.Scene({
+        triggerElement: breadId, // ポップアップを表示する要素
+        triggerHook: 0.9, // スクロール時のトリガー位置
+        duration: '50%' // 表示時間の調整
+      })
+      .setClassToggle(breadId, "visible") // "visible" クラスで表示
+      .addTo(controller);
+    });
 
     // 現在表示されているイベントインデックス
     var currentIndex = 0;
