@@ -400,11 +400,12 @@ main {
 }
 .flow01 .content-text {
   font-size: clamp(10px, 1.5rem, calc(86vw / 22 /2));
-  margin: 1.5rem 0;
+  margin: clamp(0.5rem, 1.5rem, calc(86vw / 22 /3)) 0 ;
   color: #000;
 }
 .flow01 .content-button {
   font-size: 1rem;
+  font-size: clamp(8px, 1rem, calc(86vw / 22 /3));
   font-weight: bold;
   display: inline-block;
   color: var(--color-theme);
