@@ -293,6 +293,9 @@ const options = {
     },
     scales: {
       r: {
+	    ticks: {
+		display: false
+	    },
         pointLabels: {
           font: {
             size: 16,  // 基本のラベルサイズを大きく
@@ -358,6 +361,23 @@ const options = {
 
       if (animationProgress > 1) animationProgress = 1;  // 上限を1に
       if (animationProgress < 0) animationProgress = 0;  // 下限を0に
+    }
+  },
+  {
+    // レーダーチャートの中心にテキストを表示するプラグイン
+    afterDraw: (chart) => {
+      const ctx = chart.ctx;
+      const centerX = chart.chartArea.width / 2 + chart.chartArea.left;
+      const centerY = chart.chartArea.height / 2 + chart.chartArea.top;
+      
+      // 中央にテキストを描画
+      ctx.save();
+      ctx.font = 'bold 30px Arial';
+      ctx.fillStyle = 'blue';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('パンの', centerX, centerY);
+      ctx.restore();
     }
   }]
 };
