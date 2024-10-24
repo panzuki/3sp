@@ -215,10 +215,32 @@ const cursor = a => {
 }
 const $canvas = document.getElementById('myChart')
 
-const onHover = (e, item) => {
-  $canvas.style.cursor = cursor(item)
-}
+const onHover = (evt, item, chart) => {
+  // データセット内のホバー状態に基づくカーソル設定
+  if (item.length > 0) {
+    $canvas.style.cursor = 'pointer';
+    return;
+  }
 
+  const { x, y } = evt;
+  let hoveredLabel = false;
+  
+  for(let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
+    const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
+    
+    if(x >= left && x <= right && y >= top && y <= bottom) {
+      hoveredLabel = true;
+      break;
+    }
+  }
+ // ラベルにホバーしている場合もポインターを表示
+  if (hoveredLabel) {
+    $canvas.style.cursor = 'pointer';
+  } else {
+    $canvas.style.cursor = 'default';
+  }
+};
+	      
 const onLeave = () => {
   $canvas.style.cursor = 'default'
 }
@@ -251,12 +273,12 @@ const options = {
       }
     },
     responsive: true,
-    onHover,
+    onHover: (e, item, chart) => onHover(e, item, chart),
     plugins: {
       legend: {
-        onHover,
-        onLeave,
-      },
+        onHover: (e, item) => onHover(e, item, chart),
+        onLeave: onLeave
+      }
     },
       onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
