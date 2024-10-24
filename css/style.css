@@ -393,7 +393,7 @@ main {
   pointer-events: none;
 }
 .flow01 .content-title {
-  font-size: calc-size(auto, (size - 60px) / 18);
+  font-size: calc-size(fit-content, (size - 60px) / 18);
   line-height: 1.2;
   color: #000;
   -webkit-text-stroke:2px #FFF;
