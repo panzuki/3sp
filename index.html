@@ -182,7 +182,7 @@
     </style>
   </head>
   <body>
-    <div class="container" id="container">   
+<!--     <div class="container" id="container">   
       <div class="box"><a href="saying.html">ことわざ</a></div>
       <div class="box"><a href="short.html">小ネタ</a></div>
       <div class="box"><a href="map.html">小麦の伝来</a></div>
@@ -196,16 +196,66 @@
       <div class="box"><a href="#geography"></a></div>
       <div class="box"><a href="#law"></a></div>
       <div class="box"><a href="#food"></a></div>
-    </div>
+    </div> -->
+    
+    <canvas id="chartJSContainer" width="600" height="400"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.cjs"></script>
+      
+      <script>
+      const options = {
+  type: 'radar',
+  data: {
+    labels: ["ことわざ", "小ネタ", "小麦の伝来", "歴史1", "準備中", "準備中"],
+    datasets: [
+	    {
+	      label: '# of Votes',
+	      data: [12, 19, 3, 5, 2, 3],
+      	borderColor: 'orange'
+    	},	
+			{
+				label: '# of Points',
+				data: [7, 11, 5, 8, 3, 7],
+				borderColor: 'pink'
+			}
+		]
+  },
+  options: {
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: 'linear',
+        from: 1,
+        to: 0,
+        loop: true
+      },
+      onClick: (evt, activeEls, chart) => {
+      const { x, y } = evt;
+      let index = -1;
+      
+      for(let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
+      	const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
+        
+        if(x >= left && x<= right && y >= top && y <= bottom) {
+        	index = i;
+          break;
+        }
+      }
+      
+      if (index === -1) {
+      	return;
+      }
+      const linklist = ['saying.html', 'short.html', 'map.html', 'history.html', '#', '#'];
+      const clickedLabel = chart.scales.r._pointLabels[index];
+      const clickedLabeltrans = linklist[index];
+      
+      window.open(`https://panzuki.github.io/3sp/${clickedLabel}`);
+      console.log(clickedLabel)
+    }
+  }
+}
 
-    <!-- <script>
-      // 全てのボックスにクリックイベントを追加
-      document.querySelectorAll('.box').forEach(box => {
-          box.addEventListener('click', () => {
-              const container = document.getElementById('container');
-              container.classList.add('menu-layout'); // メニュー展開レイアウトに切り替え
-          });
-      });
-  </script> -->
+const ctx = document.getElementById('chartJSContainer').getContext('2d');
+new Chart(ctx, options);
+  </script>
   </body>
 </html>
