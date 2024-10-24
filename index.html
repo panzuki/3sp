@@ -284,8 +284,7 @@ const options = {
     plugins: {
       legend: {
         onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
-        onLeave: (e, chart) => onLeave(e, chart),  // chartを渡す
-	display:false
+        onLeave: (e, chart) => onLeave(e, chart)  // chartを渡す
       }
     },
     scales: {
@@ -321,16 +320,15 @@ const options = {
     }
   },
   plugins: [{
-
     // カスタムプラグインでホバー時にラベルをスムーズに拡大する
     afterDraw: (chart) => {
       const ctx = chart.ctx;
       const pointLabels = chart.scales.r._pointLabelItems;
 
       // 通常のラベル描画を抑制し、カスタム描画
-      chart.clear();  // キャンバスをクリア
+      chart.scales.r.draw();  // レーダーチャートはそのまま描画
 
-      // 通常のラベル描画を無効化し、カスタム描画
+      // カスタム描画
       for (let i = 0; i < pointLabels.length; i++) {
         const label = pointLabels[i];
         const fontSize = (i === hoveredLabelIndex) 
@@ -361,6 +359,7 @@ const options = {
 
 const ctx = document.getElementById('myChart').getContext('2d');
 new Chart(ctx, options);
+
 
       </script>
   </body>
