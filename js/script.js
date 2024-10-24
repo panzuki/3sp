@@ -1,7 +1,7 @@
 fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
   let tag = ['Start', '美味い', '耳', '愛', '歯', '道', '泣ド', '辛', '良', 'おまけ', 'OMAKE'];
   let first = 0;
-  const myDelay = 2000;
+  const myDelay = 3000;
   // const slideLength = document.querySelectorAll('.flow01 .swiper-slide').length;
   // const total = ('00' + slideLength).slice(-2);
 
@@ -81,7 +81,7 @@ fetch('./js/swiper-bundle.min.js').then(r => { return r.text() }).then(t => {
           // const toBeContinuedImg = document.getElementById('toBeContinuedImg');
           toBeContinuedImg.classList.remove('slide-out');
           toBeContinuedImg.classList.add('slide-in');
-        }, 3000); // 1秒の遅延
+        }, 3000);
       };
       },
       slideChangeTransitionStart: (swiper) => {
