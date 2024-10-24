@@ -234,19 +234,21 @@ const onHover = (evt, item, chart) => {
       break;
     }
   }
- // ラベルにホバーしている場合もポインターを表示
-  if (hoveredLabel) {
+  // ラベルにホバーしている場合にポインターを表示
+  if (hoveredLabelIndex !== -1) {
     $canvas.style.cursor = 'pointer';
   } else {
     $canvas.style.cursor = 'default';
   }
-	  // 再描画を強制して、ホバー時のラベル拡大を反映
-  chart.update('none');
+
+  // アニメーションを維持しつつ、再描画
+  chart.draw();
 };
 	      
-const onLeave = () => {
+const onLeave = (evt, chart) => {
   $canvas.style.cursor = 'default';
   hoveredLabelIndex = -1;
+  chart.draw();  // カーソルが外れた時にラベルを元に戻す
 };
 	      
 const options = {
@@ -317,11 +319,14 @@ scales: {
       location.href=`https://panzuki.github.io/3sp/${clickedLabeltrans}`;
     }
   },
-plugins: [{
+  plugins: [{
     // カスタムプラグインでホバー時にラベルを拡大する
     afterDraw: (chart) => {
       const ctx = chart.ctx;
       const pointLabels = chart.scales.r._pointLabelItems;
+
+      // 通常のラベルを描画する
+      chart.scales.r.draw();
 
       // ホバーしているラベルがある場合
       if (hoveredLabelIndex !== -1) {
