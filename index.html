@@ -107,7 +107,7 @@
   width: 100%;
 }
 
-        .container2 {
+       .container2 {
             display: flex;
             flex-wrap: wrap;
         }
@@ -117,63 +117,94 @@
             padding: 10px;
             width: 100px;
             position: relative;
+            font-size: 16px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* 左側にボーダーをつける */
+        /* ホバー時のエフェクト */
+        .box2:hover {
+            transform: translateY(-10px); /* 上に10px浮き上がる */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* 影をつける */
+        }
+
+        /* ボーダー設定 */
+        .box2::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 1em;
+        }
+   
+       /* 左右ちぐはぐに配置 */
         .box2:nth-child(odd) {
-            float: left;
-            border-left: 2px solid red;
+            align-self: flex-start; /* 奇数番目の要素を左に */
         }
 
         .box2:nth-child(even) {
-            float: right;
-            border-left: 2px solid blue;
-	}
-
-	        /* 異なるボーダー色 */
-        .box2:nth-child(3) {
-            border-left: 2px solid green;
+            align-self: flex-end; /* 偶数番目の要素を右に */
+        }
+      /* 各要素のボーダー色を個別に設定 */
+        .box2:nth-child(1)::before {
+            background-color: red;
         }
 
-        .box2:nth-child(4) {
-            border-left: 2px solid orange;
+        .box2:nth-child(2)::before {
+            background-color: blue;
         }
 
-        .box2:nth-child(5) {
-            border-left: 2px solid purple;
+        .box2:nth-child(3)::before {
+            background-color: green;
         }
 
-        .box2:nth-child(6) {
-            border-left: 2px solid pink;
+        .box2:nth-child(4)::before {
+            background-color: orange;
         }
 
-        .box2:nth-child(7) {
-            border-left: 2px solid yellow;
+        .box2:nth-child(5)::before {
+            background-color: purple;
         }
 
-        .box2:nth-child(8) {
-            border-left: 2px solid cyan;
-        }
-       .box2:nth-child(9) {
-            border-left: 2px solid magenta;
+        .box2:nth-child(6)::before {
+            background-color: pink;
         }
 
-        .box2:nth-child(10) {
-            border-left: 2px solid brown;
+ .box2:nth-child(7)::before {
+            background-color: yellow;
         }
 
-        .box2:nth-child(11) {
-            border-left: 2px solid lime;
+        .box2:nth-child(8)::before {
+            background-color: cyan;
         }
 
-        .box2:nth-child(12) {
-            border-left: 2px solid navy;
+        .box2:nth-child(9)::before {
+            background-color: magenta;
+        }
+
+        .box2:nth-child(10)::before {
+            background-color: brown;
+        }
+
+        .box2:nth-child(11)::before {
+            background-color: lime;
+        }
+
+        .box2:nth-child(12)::before {
+            background-color: navy;
+	}	    
+ .box2:nth-child(13)::before {
+            background-color: violet;
         }
 
         .box2 a {
             text-decoration: none;
             color: black;
 	}
+	    
 /*       .box::before {
         position: absolute;
         bottom: 2px;
