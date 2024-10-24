@@ -13,6 +13,7 @@ img {
 }
 
 :root {
+  interpolate-size: allow-keywords;
   --easing: cubic-bezier(0.2, 1, 0.2, 1);
   --transition: 0.8s var(--easing);
   --color-base: #f0f8ff;
@@ -392,7 +393,7 @@ main {
   pointer-events: none;
 }
 .flow01 .content-title {
-  font-size: 6rem;
+  font-size: calc-size(auto, (size - 60px) / 18);
   line-height: 1.2;
   color: #000;
   -webkit-text-stroke:2px #FFF;
