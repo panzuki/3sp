@@ -14,7 +14,6 @@
     "Hiragino Sans",
     Meiryo,
     sans-serif;
-        font-size: 62.5%;
         line-height: 1.8;
         height: 100%;
         word-break: break-word;
@@ -58,7 +57,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 12em; /* 文字をできるだけ大きく */
+        font-size: clamp(20px, 12rem, calc((100vw - 60px) / 2 / 3));
         font-weight: bold;
         color: #0f0700;
         -webkit-text-stroke:4px #fff7f0;
