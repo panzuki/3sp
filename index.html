@@ -214,6 +214,7 @@ const cursor = a => {
   return 'default'
 }
 const $canvas = document.getElementById('myChart')
+let hoveredLabelIndex = -1;  // ホバー中のラベルインデックスを保持
 
 const onHover = (evt, item, chart) => {
   // データセット内のホバー状態に基づくカーソル設定
@@ -316,7 +317,7 @@ scales: {
       location.href=`https://panzuki.github.io/3sp/${clickedLabeltrans}`;
     }
   },
-	 plugins: [{
+plugins: [{
     // カスタムプラグインでホバー時にラベルを拡大する
     afterDraw: (chart) => {
       const ctx = chart.ctx;
