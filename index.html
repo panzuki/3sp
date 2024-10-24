@@ -205,35 +205,32 @@
 	  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       
       <script>
-const isArray = a => a instanceof Array
-const isNull = a => a == null
+const isArray = a => a instanceof Array;
+const isNull = a => a == null;
 const cursor = a => {
-  if (isNull(a)) return 'default'
-  if (!isArray(a)) return 'pointer'
-  if (isArray(a) && a.length > 0) return 'pointer'
-  return 'default'
-}
-const $canvas = document.getElementById('myChart')
+  if (isNull(a)) return 'default';
+  if (!isArray(a)) return 'pointer';
+  if (isArray(a) && a.length > 0) return 'pointer';
+  return 'default';
+};
+const $canvas = document.getElementById('myChart');
+
 let hoveredLabelIndex = -1;  // ホバー中のラベルインデックスを保持
 
 const onHover = (evt, item, chart) => {
-  // データセット内のホバー状態に基づくカーソル設定
-  if (item.length > 0) {
-    $canvas.style.cursor = 'pointer';
-    return;
-  }
-
   const { x, y } = evt;
-  let hoveredLabel = false;
-  
-  for(let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
+  hoveredLabelIndex = -1;
+
+  // ラベルへのホバーを検出するロジック
+  for (let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
     const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
-    
-    if(x >= left && x <= right && y >= top && y <= bottom) {
-      hoveredLabel = true;
+
+    if (x >= left && x <= right && y >= top && y <= bottom) {
+      hoveredLabelIndex = i;
       break;
     }
   }
+
   // ラベルにホバーしている場合にポインターを表示
   if (hoveredLabelIndex !== -1) {
     $canvas.style.cursor = 'pointer';
@@ -244,29 +241,29 @@ const onHover = (evt, item, chart) => {
   // アニメーションを維持しつつ、再描画
   chart.draw();
 };
-	      
+
 const onLeave = (evt, chart) => {
   $canvas.style.cursor = 'default';
   hoveredLabelIndex = -1;
   chart.draw();  // カーソルが外れた時にラベルを元に戻す
 };
-	      
+
 const options = {
   type: 'radar',
   data: {
     labels: ["ことわざ", "小ネタ", "小麦の伝来", "歴史1", "準備中", "準備中"],
     datasets: [
-	    {
-	      label: '# of Votes',
-	      data: [12, 19, 3, 5, 2, 3],
-      	borderColor: 'orange'
-    	},	
-			{
-				label: '# of Points',
-				data: [7, 11, 5, 8, 3, 7],
-				borderColor: 'pink'
-			}
-		]
+      {
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderColor: 'orange'
+      },
+      {
+        label: '# of Points',
+        data: [7, 11, 5, 8, 3, 7],
+        borderColor: 'pink'
+      }
+    ]
   },
   options: {
     animations: {
@@ -286,7 +283,7 @@ const options = {
         onLeave: (e, chart) => onLeave(e, chart)  // chartを渡す
       }
     },
-scales: {
+    scales: {
       r: {
         pointLabels: {
           font: {
@@ -296,27 +293,26 @@ scales: {
         }
       }
     },
-      onClick: (evt, activeEls, chart) => {
+    onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
       let index = -1;
-      
-      for(let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
-      	const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
-        
-        if(x >= left && x<= right && y >= top && y <= bottom) {
-        	index = i;
+
+      for (let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
+        const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
+
+        if (x >= left && x <= right && y >= top && y <= bottom) {
+          index = i;
           break;
         }
       }
-      
+
       if (index === -1) {
-      	return;
+        return;
       }
       const linklist = ['saying.html', 'short.html', 'map.html', 'history.html', '#', '#'];
-      const clickedLabel = chart.scales.r._pointLabels[index];
       const clickedLabeltrans = linklist[index];
-      
-      location.href=`https://panzuki.github.io/3sp/${clickedLabeltrans}`;
+
+      location.href = `https://panzuki.github.io/3sp/${clickedLabeltrans}`;
     }
   },
   plugins: [{
