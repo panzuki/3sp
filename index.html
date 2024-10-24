@@ -285,7 +285,7 @@ const options = {
       legend: {
         onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
         onLeave: (e, chart) => onLeave(e, chart),  // chartを渡す
-	display: false
+	display:false
       }
     },
     scales: {
@@ -321,21 +321,16 @@ const options = {
     }
   },
   plugins: [{
+	  tooltip: {
+		  enabled: false,
+	  },
     // カスタムプラグインでホバー時にラベルをスムーズに拡大する
-    beforeDraw: (chart) => {
+    afterDraw: (chart) => {
       const ctx = chart.ctx;
       const pointLabels = chart.scales.r._pointLabelItems;
 
-      // ホバーしていない場合は元の描画をする
-      if (hoveredLabelIndex === -1) {
-        chart.scales.r.draw();  // 通常のラベル描画
-        return;
-      }
-
-      // アニメーション進行度を更新
-      if (animationProgress < 1) {
-        animationProgress += 0.05;  // 徐々に増加（スムーズに）
-      }
+      // 通常のラベル描画を抑制し、カスタム描画
+      chart.clear();  // キャンバスをクリア
 
       // 通常のラベル描画を無効化し、カスタム描画
       for (let i = 0; i < pointLabels.length; i++) {
@@ -352,6 +347,16 @@ const options = {
         ctx.fillText(chart.data.labels[i], label.left + (label.right - label.left) / 2, label.top + (label.bottom - label.top) / 2);
         ctx.restore();
       }
+
+      // アニメーション進行度を更新
+      if (hoveredLabelIndex !== -1 && animationProgress < 1) {
+        animationProgress += 0.15;  // アニメーションを高速化
+      } else if (hoveredLabelIndex === -1 && animationProgress > 0) {
+        animationProgress -= 0.15;  // 元に戻すアニメーションも高速化
+      }
+
+      if (animationProgress > 1) animationProgress = 1;  // 上限を1に
+      if (animationProgress < 0) animationProgress = 0;  // 下限を0に
     }
   }]
 };
