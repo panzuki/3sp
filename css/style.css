@@ -673,7 +673,7 @@ main {
     bottom: -5px;
   }
   .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
-    font-size: calc((100vw - 320px) / 140 + 16px) !important;;
+    font-size: calc((100vw - 320px) / 140 + 16px) !important;
     display: block;
     margin-bottom: 0.5em;
     text-indent: 0.5em;
