@@ -199,12 +199,30 @@
       <div class="box"><a href="#law"></a></div>
       <div class="box"><a href="#food"></a></div>
     </div> -->
-    <div>
-    <canvas id="myChart" width="600" height="400"></canvas>
-</div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	  <div>
+		  <canvas id="myChart" width="600" height="400"></canvas>
+	  </div>
+	  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       
       <script>
+const isArray = a => a instanceof Array
+const isNull = a => a == null
+const cursor = a => {
+  if (isNull(a)) return 'default'
+  if (!isArray(a)) return 'pointer'
+  if (isArray(a) && a.length > 0) return 'pointer'
+  return 'default'
+}
+const $canvas = document.getElementById('myChart')
+
+const onHover = (e, item) => {
+  $canvas.style.cursor = cursor(item)
+}
+
+const onLeave = () => {
+  $canvas.style.cursor = 'default'
+}
+
 const options = {
   type: 'radar',
   data: {
@@ -232,12 +250,14 @@ const options = {
         loop: true
       }
     },
-hover: {
-  onHover: function(e, el) {
-            if (! el || el.length === 0) return;
-            console.log('onHover : label ' + el[0]._model.label);
-    }
-  },
+    responsive: true,
+    onHover,
+    plugins: {
+      legend: {
+        onHover,
+        onLeave,
+      },
+    },
       onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
       let index = -1;
