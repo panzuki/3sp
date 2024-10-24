@@ -393,13 +393,13 @@ main {
   pointer-events: none;
 }
 .flow01 .content-title {
-  font-size: clamp(16px, 7rem, calc(88vw / 21));
+  font-size: clamp(16px, 7rem, calc(86vw / 22));
   line-height: 1.1;
   color: #000;
   -webkit-text-stroke:2px #FFF;
 }
 .flow01 .content-text {
-  font-size: clamp(10px, 1.5rem, calc(88vw / 21 /2));
+  font-size: clamp(10px, 1.5rem, calc(86vw / 22 /2));
   margin: 1.5rem 0;
   color: #000;
 }
