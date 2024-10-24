@@ -239,12 +239,15 @@ const onHover = (evt, item, chart) => {
   } else {
     $canvas.style.cursor = 'default';
   }
+	  // 再描画を強制して、ホバー時のラベル拡大を反映
+  chart.update('none');
 };
 	      
 const onLeave = () => {
-  $canvas.style.cursor = 'default'
-}
-
+  $canvas.style.cursor = 'default';
+  hoveredLabelIndex = -1;
+};
+	      
 const options = {
   type: 'radar',
   data: {
@@ -280,6 +283,16 @@ const options = {
         onLeave: onLeave
       }
     },
+scales: {
+      r: {
+        pointLabels: {
+          font: {
+            size: 16,  // 基本のラベルサイズを大きく
+            weight: 'bold'  // ラベルを太字に
+          }
+        }
+      }
+    },
       onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
       let index = -1;
@@ -302,8 +315,27 @@ const options = {
       
       location.href=`https://panzuki.github.io/3sp/${clickedLabeltrans}`;
     }
-  }
-}
+  },
+	 plugins: [{
+    // カスタムプラグインでホバー時にラベルを拡大する
+    afterDraw: (chart) => {
+      const ctx = chart.ctx;
+      const pointLabels = chart.scales.r._pointLabelItems;
+
+      // ホバーしているラベルがある場合
+      if (hoveredLabelIndex !== -1) {
+        const hoveredLabel = pointLabels[hoveredLabelIndex];
+        ctx.save();
+        ctx.font = 'bold 24px Arial';  // ホバー時にラベルをさらに大きく
+        ctx.fillStyle = 'red';  // ラベルを強調するための色変更
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(chart.data.labels[hoveredLabelIndex], hoveredLabel.left + (hoveredLabel.right - hoveredLabel.left) / 2, hoveredLabel.top + (hoveredLabel.bottom - hoveredLabel.top) / 2);
+        ctx.restore();
+      }
+    }
+  }]
+};
 
 const ctx = document.getElementById('myChart').getContext('2d');
 new Chart(ctx, options);
