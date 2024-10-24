@@ -232,18 +232,11 @@ const options = {
         loop: true
       }
     },
-legend: {
-      onHover: function(e) {
-         e.target.style.cursor = 'pointer';
+onHover: (eve, legendItems, chartElement) => {
+      if (_.get(eve, 'native.target.style')) {
+        eve.native.target.style.cursor = legendItems[0] ? 'pointer' : 'default';
       }
-   },
-   hover: {
-      onHover: function(e) {
-         var point = this.getElementAtEvent(e);
-         if (point.length) e.target.style.cursor = 'pointer';
-         else e.target.style.cursor = 'default';
-      }
-   },
+    },
       onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
       let index = -1;
