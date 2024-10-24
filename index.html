@@ -216,6 +216,7 @@ const cursor = a => {
 const $canvas = document.getElementById('myChart');
 
 let hoveredLabelIndex = -1;  // ホバー中のラベルインデックスを保持
+let animationProgress = 0;   // アニメーションの進行度（0から1）
 
 const onHover = (evt, item, chart) => {
   const { x, y } = evt;
@@ -231,21 +232,24 @@ const onHover = (evt, item, chart) => {
     }
   }
 
-  // ラベルにホバーしている場合にポインターを表示
+  // ホバーしている場合にポインターを表示
   if (hoveredLabelIndex !== -1) {
     $canvas.style.cursor = 'pointer';
+    animationProgress = 0;  // アニメーションの開始をトリガー
   } else {
     $canvas.style.cursor = 'default';
+    animationProgress = 1;  // リセットして元に戻す
   }
 
-  // アニメーションを維持しつつ、再描画
+  // アニメーション更新
   chart.draw();
 };
 
 const onLeave = (evt, chart) => {
   $canvas.style.cursor = 'default';
   hoveredLabelIndex = -1;
-  chart.draw();  // カーソルが外れた時にラベルを元に戻す
+  animationProgress = 1;  // 元に戻すアニメーション
+  chart.draw();
 };
 
 const options = {
@@ -317,23 +321,35 @@ const options = {
     }
   },
   plugins: [{
-    // カスタムプラグインでホバー時にラベルを拡大する
-    afterDraw: (chart) => {
+    // カスタムプラグインでホバー時にラベルをスムーズに拡大する
+    beforeDraw: (chart) => {
       const ctx = chart.ctx;
       const pointLabels = chart.scales.r._pointLabelItems;
 
-      // 通常のラベルを描画する
-      chart.scales.r.draw();
+      // ホバーしていない場合は元の描画をする
+      if (hoveredLabelIndex === -1) {
+        chart.scales.r.draw();  // 通常のラベル描画
+        return;
+      }
 
-      // ホバーしているラベルがある場合
-      if (hoveredLabelIndex !== -1) {
-        const hoveredLabel = pointLabels[hoveredLabelIndex];
+      // アニメーション進行度を更新
+      if (animationProgress < 1) {
+        animationProgress += 0.05;  // 徐々に増加（スムーズに）
+      }
+
+      // 通常のラベル描画を無効化し、カスタム描画
+      for (let i = 0; i < pointLabels.length; i++) {
+        const label = pointLabels[i];
+        const fontSize = (i === hoveredLabelIndex) 
+          ? 16 + 8 * animationProgress  // ホバー時にサイズを変える
+          : 16;  // 通常時のサイズ
+
         ctx.save();
-        ctx.font = 'bold 24px Arial';  // ホバー時にラベルをさらに大きく
-        ctx.fillStyle = 'red';  // ラベルを強調するための色変更
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.fillStyle = (i === hoveredLabelIndex) ? 'red' : 'black';  // ホバー時の色変更
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(chart.data.labels[hoveredLabelIndex], hoveredLabel.left + (hoveredLabel.right - hoveredLabel.left) / 2, hoveredLabel.top + (hoveredLabel.bottom - hoveredLabel.top) / 2);
+        ctx.fillText(chart.data.labels[i], label.left + (label.right - label.left) / 2, label.top + (label.bottom - label.top) / 2);
         ctx.restore();
       }
     }
@@ -342,7 +358,7 @@ const options = {
 
 const ctx = document.getElementById('myChart').getContext('2d');
 new Chart(ctx, options);
-	      
+
       </script>
   </body>
 </html>
