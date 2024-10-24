@@ -199,12 +199,16 @@
       <div class="box"><a href="#law"></a></div>
       <div class="box"><a href="#food"></a></div>
     </div> -->
-    
-    <canvas id="chartJSContainer" width="600" height="400"></canvas>
+    <div>
+    <canvas id="myChart" width="600" height="400"></canvas>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       
       <script>
-      const options = {
+const ctx = document.getElementById('chartJSContainer');
+new Chart(ctx, options);
+	      
+new Chart(ctx, {
   type: 'radar',
   data: {
     labels: ["ことわざ", "小ネタ", "小麦の伝来", "歴史1", "準備中", "準備中"],
@@ -254,9 +258,8 @@
       console.log(clickedLabel)
     }
   }
-}
-const ctx = document.getElementById('chartJSContainer').getContext('2d');
-new Chart(ctx, options);
+});
+
       </script>
   </body>
 </html>
