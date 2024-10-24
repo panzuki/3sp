@@ -234,7 +234,8 @@ const options = {
     },
 hover: {
   onHover: function(e, el) {
-      $("#myChart").css("cursor", el[0] ? "pointer" : "default");
+            if (! el || el.length === 0) return;
+            console.log('onHover : label ' + el[0]._model.label);
     }
   },
       onClick: (evt, activeEls, chart) => {
