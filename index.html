@@ -270,6 +270,9 @@ const options = {
     ]
   },
   options: {
+         tooltips {
+            enabled: false
+         },
     animations: {
       tension: {
         duration: 1000,
@@ -277,7 +280,7 @@ const options = {
         from: 1,
         to: 0,
         loop: true
-      }
+      },
     },
     responsive: true,
     onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
@@ -294,7 +297,8 @@ const options = {
           font: {
             size: 16,  // 基本のラベルサイズを大きく
             weight: 'bold'  // ラベルを太字に
-          }
+          },
+          color: 'rgba(0, 0, 0, 0)'  // デフォルトのラベルを透明に
         }
       }
     },
@@ -321,9 +325,6 @@ const options = {
     }
   },
   plugins: [{
-	  	  tooltip: {
-		  enabled: false,
-	  },
     // カスタムプラグインでホバー時にラベルをスムーズに拡大する
     afterDraw: (chart) => {
       const ctx = chart.ctx;
@@ -363,7 +364,6 @@ const options = {
 
 const ctx = document.getElementById('myChart').getContext('2d');
 new Chart(ctx, options);
-
 
       </script>
   </body>
