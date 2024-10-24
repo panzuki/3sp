@@ -33,15 +33,15 @@ html {
     "Hiragino Sans",
     Meiryo,
     sans-serif;
-  font-size: 62.5%;
-  height: 100vh;
-  word-break: break-word;
-  color: #333;
-  background-color: var(--color-base);
-  appearance: none;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-  overflow: hidden;
+/*     font-size: 62.5%; */
+    height: 100vh;
+    word-break: break-word;
+    color: #333;
+    background-color: var(--color-base);
+    appearance: none;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
 }
 
 body {
@@ -104,7 +104,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-size: 1.6rem;
+/*   font-size: 1.6rem; */
   margin: 0;
   padding: 0;
 }
@@ -150,7 +150,7 @@ main {
   line-height: 4vh;
   padding: 0 0.2em;
   color: #555;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .breadcrumb li:last-child:after {
@@ -158,7 +158,7 @@ main {
 }
 
 .breadcrumb li a {
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-decoration: none;
   color: #3f60f1; /*色*/
 }
@@ -169,7 +169,7 @@ main {
 
 .breadcrumb li:last-child a {
   color: #333;
-  font-size: 1.5rem;
+  font-size: 1rem;
   text-decoration: none;
   text-align: center;
   cursor: default;
@@ -211,7 +211,7 @@ main {
   display: flex;
 }
 .flow01 .swiper-pagination-main .swiper-pagination-bullet {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: bold;
   line-height: 1;
   position: relative;
@@ -255,7 +255,7 @@ main {
   display: none;
 }
 .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
-  font-size: 1.6rem;
+  font-size: 1rem;
 }
 .flow01 .swiper-pagination-main .swiper-pagination-bullet-active {
   color: var(--color-theme);
@@ -392,18 +392,18 @@ main {
   pointer-events: none;
 }
 .flow01 .content-title {
-  font-size: 8rem;
+  font-size: 6rem;
   line-height: 1.2;
   color: #000;
   -webkit-text-stroke:2px #FFF;
 }
 .flow01 .content-text {
-  font-size: 3rem;
-  margin: 3rem 0;
+  font-size: 1.5rem;
+  margin: 1.5rem 0;
   color: #000;
 }
 .flow01 .content-button {
-  font-size: 1.6rem;
+  font-size: 1rem;
   font-weight: bold;
   display: inline-block;
   color: var(--color-theme);
@@ -427,10 +427,10 @@ main {
   color: #fff;
 }
 .flow01 .fraction .current {
-  font-size: 3.2rem;
+  font-size: 2rem;
   display: inline-block;
   overflow: hidden;
-  width: 6rem;
+  width: 3rem;
 }
 .flow01 .fraction .current .num {
   display: inline-block;
@@ -660,7 +660,7 @@ main {
 
 @media only screen and (max-width: 599px) {
   html {
-    font-size: 50%;
+    font-size: calc((100vw - 320px) / 140 + 16px) !important;;
   }
   .pc-tab {
     display: none !important;
@@ -673,7 +673,7 @@ main {
     bottom: -5px;
   }
   .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
-    font-size: 1.4rem;
+    font-size: calc((100vw - 320px) / 140 + 16px) !important;;
     display: block;
     margin-bottom: 0.5em;
     text-indent: 0.5em;
