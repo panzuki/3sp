@@ -181,29 +181,26 @@
       }
 	    canvas { background-color : rgba(255, 247, 240, 0.1);
 		   }
-.big-circle {
-  width: 400px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: dashed 1px #777;
-  margin: 50px;
-  position: relative;
-}
-
-.small-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #777;
-  font-size: 32px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 80px;
-  text-align: center;
-  position: absolute;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
+ .circle {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: calc(var(--r) * 2px);
+   height: calc(var(--r) * 2px);
+   border: 20px solid #ddd;
+   border-radius: 50%;
+   box-sizing: border-box;
+   > div {
+     --a2: calc(var(--a) * 1deg - 90deg);
+     --x: calc(cos(var(--a2)) * var(--r) * 1px);
+     --y: calc(sin(var(--a2)) * var(--r) * 1px);
+     position: absolute;
+     color: #555;
+     font: 700 50px / 1 Impact;
+     translate: var(--x) var(--y);
++    rotate: calc(var(--a) * 1deg);
+   }
+ }
 
 	    
     </style>
@@ -229,30 +226,16 @@
 	  </div>
 
 
-<div class="big-circle">
-　　　<div class="small-circle"><a href="saying.html">ことわざ</a></div>
-      <div class="small-circle"><a href="short.html">小ネタ</a></div>
-      <div class="small-circle"><a href="map.html">小麦の伝来</a></div>
-      <div class="small-circle"><a href="history1.html">歴史1</a></div>
+<div class="circle" style="--r: 150">
+　　　<div style="--a: 30"><a href="saying.html">ことわざ</a></div>
+      <div style="--a: 30"><a href="short.html">小ネタ</a></div>
+      <div style="--a: 30"><a href="map.html">小麦の伝来</a></div>
+      <div style="--a: 30"><a href="history1.html">歴史1</a></div>
 </div>
 	  
 	  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       
-      <script>
-$(function () {
-  var item_num = $(".small-circle").length;
-  var deg = 360.0 / item_num;
-  var radians = (deg * Math.PI) / 180.0;
-  var radians90 = (90 * Math.PI) / 180.0;
-  var circle_r = $(".big-circle").width() / 2;
-  $(".small-circle").each(function (i, elem) {
-    var x = Math.cos(radians * i - radians90) * circle_r + circle_r;
-    var y = Math.sin(radians * i - radians90) * circle_r + circle_r;
-    $(elem).css("left", x);
-    $(elem).css("top", y);
-  });
-});
-	      
+      <script>	      
 const isArray = a => a instanceof Array;
 const isNull = a => a == null;
 const cursor = a => {
