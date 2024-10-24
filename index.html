@@ -130,7 +130,7 @@
 /*         border-right-color: rgba(208, 37, 37, 0.7); */
 /*         border-right: 27px solid #d02525; */
 /*         box-shadow: 0 5px 10px rgba(100, 100, 100, 0.8); */
-        font-size: 4.8em;
+         font-size: clamp(18px, 4.8rem, calc((100vw - 60px) / 4 / 5 * 1.2));
       }
       
 /*       .box:hover::before,
@@ -140,13 +140,13 @@
 
       a {
         color: inherit;
-        display:block;
+        display:flex;
         box-sizing: border-box;
         height: 100%;
         clip-path: polygon(65% 30%, 75% 0, 85% 30%, 100% 65%, 85% 100%, 15% 100%, 0 65%, 15% 30%, 25% 0, 35% 30%);
         text-decoration: none; /* 下線を消す */
-/*         justify-content: center; */
-/*         align-items: center; */
+        justify-content: center;
+        align-items: center;
         transition: all 0.1s ease;
       }
       .center-link{
