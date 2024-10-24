@@ -230,7 +230,8 @@ const options = {
         from: 1,
         to: 0,
         loop: true
-      },
+      }
+    },
       onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
       let index = -1;
@@ -256,6 +257,7 @@ const options = {
     }
   }
 }
+
 const ctx = document.getElementById('myChart').getContext('2d');
 new Chart(ctx, options);
 	      
