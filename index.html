@@ -277,11 +277,11 @@ const options = {
       }
     },
     responsive: true,
-    onHover: (e, item, chart) => onHover(e, item, chart),
+    onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
     plugins: {
       legend: {
-        onHover: (e, item) => onHover(e, item, chart),
-        onLeave: onLeave
+        onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
+        onLeave: (e, chart) => onLeave(e, chart)  // chartを渡す
       }
     },
 scales: {
