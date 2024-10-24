@@ -219,7 +219,10 @@ const options = {
 				label: '# of Points',
 				data: [7, 11, 5, 8, 3, 7],
 				borderColor: 'pink'
-			}
+			},
+	    tooltips: {
+   mode: 'dataset'
+}
 		]
   },
   options: {
@@ -232,6 +235,18 @@ const options = {
         loop: true
       }
     },
+legend: {
+      onHover: function(e) {
+         e.target.style.cursor = 'pointer';
+      }
+   },
+   hover: {
+      onHover: function(e) {
+         var point = this.getElementAtEvent(e);
+         if (point.length) e.target.style.cursor = 'pointer';
+         else e.target.style.cursor = 'default';
+      }
+   },
       onClick: (evt, activeEls, chart) => {
       const { x, y } = evt;
       let index = -1;
