@@ -107,9 +107,9 @@
   width: 100%;
 }
 
-        .container2 {
-            display: flex;
-            flex-wrap: wrap;
+       .container2 {
+            /* 縦に並べるためのスタイルを変更 */
+            width: 100%;
         }
 
         .box2 {
@@ -118,18 +118,28 @@
             width: 100px;
             position: relative;
             font-size: 16px;
-            background-color: #f0f0f0;
+            background-color: rgba(240, 240, 240, 0.8); /* 背景を透過させる */
             border-radius: 5px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            clear: both;
         }
 
-        /* ホバー時のエフェクト */
+        /* 左右ちぐはぐに配置 */
+        .box2:nth-child(odd) {
+            float: left; /* 奇数番目の要素を左に */
+        }
+
+        .box2:nth-child(even) {
+            float: right; /* 偶数番目の要素を右に */
+	}
+
+     /* ホバー時のエフェクト */
         .box2:hover {
             transform: translateY(-10px); /* 上に10px浮き上がる */
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* 影をつける */
         }
 
-        /* ボーダー設定 */
+        /* 左側に異なる色のボーダーを設定 */
         .box2::before {
             content: "";
             position: absolute;
@@ -137,7 +147,7 @@
             top: 50%;
             transform: translateY(-50%);
             width: 2px;
-            height: 1em;
+            height: 1em; /* フォントの高さに合わせる */
         }
 
      /* 各要素のボーダー色を個別に設定 */
