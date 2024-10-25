@@ -37,86 +37,17 @@
         width: 100vw;
       }
 
-      .container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(4, 1fr);
-        gap: 20px;
-        width: 90vw;
-        height: 90vh;
-        position: relative;
-        transition: all 0.2s ease; /* レイアウト変更時のアニメーション */
-      }
-
-      .center-text {
-        position: relative;
-        grid-column: 2 / 4;
-        grid-row: 2 / 4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: clamp(20px, 12rem, calc((90vw - 60px) / 2 / 4));
-        font-weight: bold;
-        color: #0f0700;
-        -webkit-text-stroke:4px #fff7f0;
-
-/*         background-color: rgba(255, 255, 255, 0.1); 
-        border: 1px solid rgba(255, 255, 255, 0.4); 
-        border-bottom-color: rgba(255, 255, 255, 0.2);
-        border-radius: 15px;
-        -webkit-backdrop-filter: blur(9px); 
-        backdrop-filter: blur(5px);
-        box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4);        */ 
-        text-shadow: 0 8px 12px rgba(0, 0, 0, 0.8); 
-
-      }
-
-      .box {
-        position: relative;
-        width:100%;
-        height:100%;
-        clip-path: polygon(65% 30%, 75% 0, 85% 30%, 100% 65%, 85% 100%, 15% 100%, 0 65%, 15% 30%, 25% 0, 35% 30%);
-        padding: 0em 0em 0em 0em;
-        font-size: clamp(16px, 4.5rem, calc((90vw - 60px) / 4 / 7));
-        text-align: center;
-        color: #0f0700;
-        background-color: rgba(255, 247, 240, 0.1); /* 背景色 */
-        border: 1px solid rgba(255, 247, 240, 0.5);
-/*         border-right: 28px solid; */
-/*         border-right-color: rgba(37, 137, 208, 0.5); */
-        border-bottom-color: rgba(255, 247, 240, 0.6);
-/*         border-radius: 5px; */
-        -webkit-backdrop-filter: blur(8px); /* ぼかしエフェクト */
-        backdrop-filter: blur(4px);
-/*         box-shadow: 0 5px 10px rgba(100, 100, 100, 0.4);  */
-        font-weight: bold;
-        transition: all 0.1s ease;
-      }
-.box {
-  filter: drop-shadow(0 5px 10px rgba(100, 100, 100, 0.8));
-  position: relative;
-}
-.box::before {
-  background-color: rgba(255, 247, 240, 0.1);
-  clip-path: polygon(65% 30%, 75% 0, 85% 30%, 100% 65%, 85% 100%, 15% 100%, 0 65%, 15% 30%, 25% 0, 35% 30%);
-  content: "";
-  display: block;
-  height: 100%;
-  position: absolute;
-  width: 100%;
-}
-
 	        @font-face {
             font-family: 'RalewayVariable';
             src: url('https://fonts.gstatic.com/s/raleway/v26/1Ptug8zYS_SKggPNyCAIT5lu.woff2') format('woff2-variations');
             font-weight: 100 900;
 		}
-
-
 	    
 .container2 {
     position: relative;
     padding: 20px; /* 周囲にパディングを追加 */
+	width:80vw;
+	margin: 0 auto;
 }
 	    
 .center-text2 {
@@ -131,7 +62,6 @@
 	text-align: center;
 	
 }
-
 	    
 .center-link2, .hover-text {
 	    flex: 1;
@@ -150,11 +80,10 @@
 		color: #0f0700;	
 	}
 	
-
                @keyframes fluffyMove {
             0% {
                 transform: translateY(0);
-                font-weight: 200;
+                font-wemaright: 200;
             }
             50% {
                 transform: translateY(-10px) scale(1.1);
@@ -234,7 +163,7 @@
             background-color: yellow;
 	}
 
-	        .box2:nth-child(8)::before {
+	.box2:nth-child(8)::before {
             background-color: cyan;
         }
 
@@ -270,26 +199,10 @@
             clear: both;
 	}
 
-	        .box2 a {
+	.box2 a {
             text-decoration: none;
             color: black;
-		}
-	    
-/*       .box::before {
-        position: absolute;
-        bottom: 2px;
-        right: -20px;
-        z-index: -1;
-        transform: rotate(5deg);
-        width: 100%;
-        height: 50%;
-        background-color: rgba(0, 0, 0, 0.9);
-        content: "";
-        filter: blur(4px);
-        z-index: -1;
-        -webkit-transition: all 0.3s ease-in-out;
-        transition: all 0.3s ease-in-out;
-      } */
+	}
       
       .box:hover {
 /*         border-right-color: rgba(208, 37, 37, 0.7); */
@@ -298,42 +211,18 @@
         background-color: rgba(210, 37, 37, 0.8);
         font-size: clamp(18px, 4.6rem, calc((90vw - 60px) / 4 / 7 * 1.1));
       }
-      
-/*       .box:hover::before,
-      .box:hover::after {
-        
-      } */
-
-      .box > a {
-        color: inherit;
-        display:flex;
-        box-sizing: border-box;
-        height: 100%;
-        padding-top: clamp(2px, 4.8rem, calc((90vh - 60px) / 4 * 0.3));
-        clip-path: polygon(65% 30%, 75% 0, 85% 30%, 100% 65%, 85% 100%, 15% 100%, 0 65%, 15% 30%, 25% 0, 35% 30%);
-        text-decoration: none; /* 下線を消す */
-        justify-content: center;
-        align-items: center;
-        transition: all 0.1s ease;
-      }
-      .center-link{
-        padding: none;
-        clip-path:none;
-      }
 	    
 .hover-text {
 /*     bottom: -30px; */
 /* 	right: clamp(20px * 3, 12rem * 3, calc(50vw + ((40vw - 60px) / 2 / 4) * 3); */
     transition: transform 0.3s ease, opacity 0.3s ease;
-    transform: translateY(20px); /* 初期位置を少し下に */
+    transform: translateY(0px); /* 初期位置を少し下に */
     opacity: 0; /* 初期は見えない */
 }
-
 
 .box2 {
     cursor: pointer;
 }
-
 
 /* ホバー時のスタイル */
 .box2:hover ~ .center-text2 .hover-text {
@@ -393,7 +282,7 @@ boxes.forEach(box => {
     box.addEventListener('mouseenter', () => {
         const linkText = box.querySelector('a').textContent; // a要素のテキストを取得
         hoverText.textContent = linkText; // hover-textに設定
-        hoverText.style.transform = 'translateY(20px)'; // 初期位置を上に設定
+        hoverText.style.transform = 'translateY(0px)'; // 初期位置を上に設定
         hoverText.style.opacity = '1'; // 表示する
     });
 
