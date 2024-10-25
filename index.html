@@ -156,7 +156,7 @@
             padding: 0px;
 		line-height:1;
             max-width: calc(90vw / 2);
-	font-size: clamp(16px, 4.5rem, calc((70vw - 60px) / 6 / 7));
+	font-size: clamp(16px, 4.5rem, calc((70vw - 60px) / 6 / 6));
             position: relative;
             background-color: rgba(255, 255, 255, 0.2); /* 背景を透過させる */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -307,10 +307,10 @@
 	    
 .hover-text {
     display: block;
-    position: absolute;
+    position: relative;
 	top:0;
 	left:100;
-/* 	max-width:100%; */
+ 	width:clamp(96px, 27rem, calc((70vw - 60px) / 6));;
 /*     bottom: -30px; */
 	
 /* 	right: clamp(20px * 3, 12rem * 3, calc(50vw + ((40vw - 60px) / 2 / 4) * 3); */
