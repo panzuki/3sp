@@ -133,7 +133,7 @@
 
         .center-text2 {
 /*             font-family: 'RalewayVariable', sans-serif; */
-            font-size: clamp(20px, 12rem, calc((50vw - 60px) / 2 / 4));
+            font-size: clamp(20px, 12rem, calc((40vw - 60px) / 2 / 4));
             font-weight: 200; /* Initial weight */
 /*             animation: fluffyMove 4s infinite alternate ease-in-out; */
 	}
@@ -161,11 +161,12 @@
 
 
         .box2 {
-            margin: 5px;
+            margin: 0px;
             padding: 0px;
+		line-height:1;
             max-width: calc(90vw / 2);
+	font-size: clamp(16px, 4.5rem, calc((60vw - 60px) / 6 / 7));
             position: relative;
-            font-size: clamp(16px, 4.5rem, calc((50vw - 60px) / 6 / 7));
             background-color: rgba(255, 255, 255, 0.2); /* 背景を透過させる */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             clear: both;
@@ -316,8 +317,9 @@
 .hover-text {
     display: inline-block;
     position: absolute;
-    bottom: -30px; /* 「パンの」の下に配置 */
-    left: 0;
+max-width: calc(90vw / 2);
+/*     bottom: -30px; */
+	right:clamp(20px, 12rem, calc(50vw + (40vw - 60px) / 2 / 4 * 3))
     transition: transform 0.3s ease, opacity 0.3s ease;
     transform: translateY(20px); /* 初期位置を少し下に */
     opacity: 0; /* 初期は見えない */
