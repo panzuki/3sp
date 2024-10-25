@@ -155,9 +155,8 @@
             padding: 10px;
             width: 100px;
             position: relative;
-            font-size: 16px;
-            background-color: rgba(240, 240, 240, 0.8); /* 背景を透過させる */
-            border-radius: 5px;
+            font-size: clamp(16px, 4.5rem, calc((90vw - 60px) / 4 / 7));
+            background-color: rgba(255, 255, 255, 0.0); /* 背景を透過させる */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             clear: both;
         }
@@ -184,7 +183,7 @@
             left: -7px;
             top: 50%;
             transform: translateY(-50%);
-            width: 2px;
+            width: 5px;
             height: 1em; /* フォントの高さに合わせる */
         }
 
