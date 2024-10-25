@@ -311,14 +311,11 @@
 .hover-text {
     display: inline-block;
     position: absolute;
-    bottom: -20px; /* 初期位置を下に設定 */
+    bottom: -30px; /* 「パンの」の下に配置 */
     left: 0;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(20px); /* 初期位置を少し下に */
     opacity: 0; /* 初期は見えない */
-}
-
-.box2 {
-    cursor: pointer;
 }
 
 /* ホバー時のスタイル */
@@ -329,13 +326,6 @@
 
 
 	    canvas { background-color : rgba(255, 247, 240, 0.1);}
-
-
-/* ホバー時のスタイル */
-.box2:hover ~ .center-text2 .hover-text {
-    transform: translateY(0); /* スライドイン */
-    opacity: 1; /* 見えるようにする */
-}
 	    
     </style>
   </head>
