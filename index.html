@@ -323,9 +323,7 @@
       }
 	    
 .hover-text {
- 	width:clamp(96px, 27rem, calc((70vw - 60px) / 6));;
 /*     bottom: -30px; */
-	
 /* 	right: clamp(20px * 3, 12rem * 3, calc(50vw + ((40vw - 60px) / 2 / 4) * 3); */
     transition: transform 0.3s ease, opacity 0.3s ease;
     transform: translateY(20px); /* 初期位置を少し下に */
@@ -401,7 +399,7 @@ boxes.forEach(box => {
     });
 
     box.addEventListener('mouseleave', () => {
-        hoverText.style.transform = 'translateY(0px)'; // 元の位置に戻す
+        hoverText.style.transform = 'translateY(-40px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
     });
 });
