@@ -111,8 +111,15 @@
             font-family: 'RalewayVariable';
             src: url('https://fonts.gstatic.com/s/raleway/v26/1Ptug8zYS_SKggPNyCAIT5lu.woff2') format('woff2-variations');
             font-weight: 100 900;
-        }
+		}
 
+.container2 {
+    position: relative;
+}
+
+.center-text2 {
+    position: relative;
+}
         .container2 {
             width: 100%;
             text-align: center;
@@ -121,16 +128,14 @@
 
         .center-text2 {
             font-family: 'RalewayVariable', sans-serif;
-            font-size: 40px;
+            font-size: clamp(20px, 12rem, calc((50vw - 60px) / 2 / 4));
             font-weight: 200; /* Initial weight */
             animation: fluffyMove 4s infinite alternate ease-in-out;
 	}
+	    
 	.center-link2 > a{
 	text-decoration: none;
-        font-size: clamp(20px, 12rem, calc((50vw - 60px) / 2 / 4));
-        font-weight: bold;
-        color: #0f0700;
-		
+        color: #0f0700;	
 	}
 	
 
@@ -302,42 +307,6 @@
         padding: none;
         clip-path:none;
       }
-
-      .menu-layout {
-        grid-template-columns: none;
-        grid-template-rows: repeat(13, 1fr); /* すべてのボックスが縦に並ぶ */
-        justify-content: flex-start; /* 左端に揃える */
-        gap: 3px; /* メニュー項目間のスペースを縮小 */
-        width: 15vw; /* メニュー全体の幅を15vwに */
-        height: 100vh; /* 画面全体の高さに拡大 */
-        position: fixed; /* 左端に固定 */
-        top: 0;
-        left: 0;
-      }
-
-      .menu-layout .box {
-        width: 100%; /* 幅を100%にして左側に配置 */
-        height: 6vh; /* 各ボックスの高さをvhで設定して縦に並べる */
-        font-size: 1vw;
-        padding: 0;
-      }
-
-      .menu-layout .center-text {
-        grid-column: 1 / 2;
-        grid-row: 1 / 2;
-        font-size: 2vw; /* メニューの一番上に小さめのパンを表示 */
-        align-self: center; /* 上に揃える */
-        margin: 5px;
-      }
-	    
-	    
-.container2 {
-    position: relative;
-}
-
-.center-text2 {
-    position: relative;
-}
 	    
 .hover-text {
     display: inline-block;
