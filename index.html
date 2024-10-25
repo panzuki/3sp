@@ -112,17 +112,27 @@
             font-weight: 100 900;
 		}
 
+
+	    
 .container2 {
     position: relative;
     padding: 20px; /* 周囲にパディングを追加 */
 }
-
+	    
 .center-text2 {
     display: flex;
-    position: relative;
-	right:50%;
-    margin-bottom: 20px; /* 下にスペースを作る */
+    justify-content: space-between;
+    align-items: center;
+    width: 300px; /* 要素間の距離を調整したい場合は適宜変更 */
+    margin: 0 auto; /* 中央寄せ */
+}
 
+.center-link2, .hover-text {
+    text-align: center;
+}
+
+.center-text2 {
+    margin-bottom: 20px; /* 下にスペースを作る */
             font-family: 'RalewayVariable', sans-serif;
             font-size: clamp(20px, 12rem, calc((40vw - 60px) / 2 / 4));
             font-weight: 200; /* Initial weight */
@@ -306,10 +316,6 @@
       }
 	    
 .hover-text {
-    display: block;
-    position: relative;
-	top:0;
-	left:100;
  	width:clamp(96px, 27rem, calc((70vw - 60px) / 6));;
 /*     bottom: -30px; */
 	
