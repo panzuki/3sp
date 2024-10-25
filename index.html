@@ -107,10 +107,41 @@
   width: 100%;
 }
 
-       .container2 {
-            /* 縦に並べるためのスタイルを変更 */
-            width: 100%;
+	        @font-face {
+            font-family: 'RalewayVariable';
+            src: url('https://fonts.gstatic.com/s/raleway/v26/1Ptug8zYS_SKggPNyCAIT5lu.woff2') format('woff2-variations');
+            font-weight: 100 900;
         }
+
+        .container2 {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .center-text2 {
+            font-family: 'RalewayVariable', sans-serif;
+            font-size: 40px;
+            font-weight: 200; /* Initial weight */
+            animation: fluffyMove 4s infinite alternate ease-in-out;
+	}
+	
+
+               @keyframes fluffyMove {
+            0% {
+                transform: translateY(0);
+                font-weight: 200;
+            }
+            50% {
+                transform: translateY(-10px) scale(1.1);
+                font-weight: 700; /* 文字を太くする */
+            }
+            100% {
+                transform: translateY(0);
+                font-weight: 400; /* 元の太さに戻す */
+            }
+        }
+
 
         .box2 {
             margin: 10px;
@@ -214,6 +245,11 @@
             display: block;
             clear: both;
 	}
+
+	        .box2 a {
+            text-decoration: none;
+            color: black;
+		}
 	    
 /*       .box::before {
         position: absolute;
