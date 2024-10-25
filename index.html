@@ -307,7 +307,7 @@
 	    
 .hover-text {
     display: block;
-    position: relative;
+    position: absolute;
 	top:0;
 	left:100;
 /* 	max-width:100%; */
@@ -315,20 +315,21 @@
 	
 /* 	right: clamp(20px * 3, 12rem * 3, calc(50vw + ((40vw - 60px) / 2 / 4) * 3); */
     transition: transform 0.3s ease, opacity 0.3s ease;
-    transform: translateX(-20px); /* 初期位置を少し下に */
+    transform: translateY(20px); /* 初期位置を少し下に */
     opacity: 0; /* 初期は見えない */
 }
+
 
 .box2 {
     cursor: pointer;
 }
 
+
 /* ホバー時のスタイル */
 .box2:hover ~ .center-text2 .hover-text {
-    transform: translateX(20px); /* スライドイン */
+    transform: translateY(-20px); /* スライドイン */
     opacity: 1; /* 見えるようにする */
 }
-
 
 /* 	    canvas { background-color : rgba(255, 247, 240, 0.1);} */
 	    
@@ -382,12 +383,12 @@ boxes.forEach(box => {
     box.addEventListener('mouseenter', () => {
         const linkText = box.querySelector('a').textContent; // a要素のテキストを取得
         hoverText.textContent = linkText; // hover-textに設定
-        hoverText.style.transform = 'translateX(20px)'; // 初期位置を上に設定
+        hoverText.style.transform = 'translateY(20px)'; // 初期位置を上に設定
         hoverText.style.opacity = '1'; // 表示する
     });
 
     box.addEventListener('mouseleave', () => {
-        hoverText.style.transform = 'translateX(-20px)'; // 元の位置に戻す
+        hoverText.style.transform = 'translateY(-20px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
     });
 });
