@@ -337,7 +337,7 @@
 
 /* ホバー時のスタイル */
 .box2:hover ~ .center-text2 .hover-text {
-    transform: translateY(-20px); /* スライドイン */
+    transform: translateY(0px); /* スライドイン */
     opacity: 1; /* 見えるようにする */
 }
 
@@ -398,7 +398,7 @@ boxes.forEach(box => {
     });
 
     box.addEventListener('mouseleave', () => {
-        hoverText.style.transform = 'translateY(-20px)'; // 元の位置に戻す
+        hoverText.style.transform = 'translateY(0px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
     });
 });
