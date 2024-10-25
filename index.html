@@ -51,21 +51,28 @@
 }
 	    
 .center-text2 {
-	position:absolute;
-	top:-30%;
-	left: 50%;
+    position: absolute;
+    left: 50%;
     transform: translateX(-50%);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    width: 50vw; /* 要素間の距離を調整したい場合は適宜変更 */
-	text-align: center;
-	
+    width: 100vw;
+    text-align: center;
 }
-	    
-.center-link2, .hover-text {
-	    flex: 1;
+
+.center-link2 {
+    margin-right: 10px; /* 中央から10px右側に配置 */
+    text-align: right;
     white-space: nowrap;
+    flex: 0;
+}
+
+.hover-text {
+    margin-left: 10px; /* 中央から10px左側に配置 */
+    text-align: left;
+    white-space: nowrap;
+    flex: 0;
 }
 
 .center-text2 {
