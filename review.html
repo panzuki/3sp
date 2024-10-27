@@ -15,7 +15,7 @@
   }
   .slider-container {
     position: relative;
-    width: 300px;
+    width: 500px;
     overflow: hidden;
   }
   .slider {
@@ -24,10 +24,15 @@
   }
   .slide {
     min-width: 100%;
+    height: 500px;
     position: relative;
   }
-  .slide img {
-    width: 100%;
+  /* 各スライドの色 */
+  #slide-1 {
+    background-color: #ffcc99;
+  }
+  #slide-2 {
+    background-color: #99ccff;
   }
   .annotation {
     position: absolute;
@@ -49,23 +54,22 @@
   .arrow.left {
     left: -30px;
   }
-  .arrow.right {
+    .arrow.right {
     right: -30px;
   }
 </style>
 </head>
 <body>
+
 <div class="slider-container">
   <div class="slider">
-    <!-- スライド1: パンの写真 -->
+    <!-- スライド1: 色付きの正方形 -->
     <div class="slide active" id="slide-1">
-      <img src="pan_photo.jpg" alt="パン">
       <div class="annotation" id="annotation-1" style="top: 20%; left: 80%;">ここが外側</div>
       <div class="annotation" id="annotation-2" style="top: 60%; left: 30%;">ここが内側</div>
     </div>
-    <!-- スライド2: 切り口の写真 -->
+    <!-- スライド2: 別の色付き正方形 -->
     <div class="slide" id="slide-2">
-      <img src="cut_photo.jpg" alt="パンの切り口">
       <div class="annotation" id="annotation-3" style="top: 30%; left: 70%;">ここが柔らかい部分</div>
       <div class="annotation" id="annotation-4" style="top: 70%; left: 20%;">ここが外皮</div>
     </div>
@@ -73,7 +77,6 @@
   <div class="arrow left" onclick="changeSlide(0)">&#10094;</div>
   <div class="arrow right" onclick="changeSlide(1)">&#10095;</div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/leader-line"></script>
 <script>
   let currentSlide = 0;
@@ -81,15 +84,30 @@
   let lines = [];
 
   function createLines() {
-    lines = [
-      new LeaderLine(document.getElementById('annotation-1'), {x: 230, y: 60}, {color: 'red', path: 'straight'}),
-      new LeaderLine(document.getElementById('annotation-2'), {x: 90, y: 180}, {color: 'red', path: 'straight'}),
-      new LeaderLine(document.getElementById('annotation-3'), {x: 210, y: 90}, {color: 'blue', path: 'straight'}),
-      new LeaderLine(document.getElementById('annotation-4'), {x: 70, y: 210}, {color: 'blue', path: 'straight'})
-    ];
+    // スライド1の注釈用の線
+    lines.push(new LeaderLine(
+      document.getElementById('annotation-1'), 
+      {x: 400, y: 100}, {color: 'red', path: 'straight'}
+    ));
+    lines.push(new LeaderLine(
+      document.getElementById('annotation-2'), 
+      {x: 150, y: 300}, {color: 'red', path: 'straight'}
+    ));
+
+    // スライド2の注釈用の線
+    lines.push(new LeaderLine(
+      document.getElementById('annotation-3'), 
+      {x: 350, y: 150}, {color: 'blue', path: 'straight'}
+    ));
+    lines.push(new LeaderLine(
+      document.getElementById('annotation-4'), 
+      {x: 100, y: 350}, {color: 'blue', path: 'straight'}
+    ));
+
+   // 初期設定でスライド1の線のみ表示
     lines.forEach((line, index) => {
-      if (index < 2) line.show(); // スライド1の注釈を表示
-      else line.hide(); // スライド2の注釈を非表示
+      if (index < 2) line.show();
+      else line.hide();
     });
   }
 
@@ -99,6 +117,7 @@
     slides[currentSlide].classList.add('active');
     document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
 
+    // スライドに応じて注釈の線を表示・非表示
     lines.forEach((line, i) => {
       if (i < 2) currentSlide === 0 ? line.show() : line.hide();
       else currentSlide === 1 ? line.show() : line.hide();
