@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>パンのレビュー</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  .slider-container {
+    position: relative;
+    width: 300px;
+    overflow: hidden;
+  }
+  .slider {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+  .slide {
+    min-width: 100%;
+    position: relative;
+  }
+  .slide img {
+    width: 100%;
+  }
+  .annotation {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    border: 1px solid #ddd;
+    font-size: 0.8em;
+    color: #333;
+  }
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2em;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+  }
+  .arrow.left {
+    left: -30px;
+  }
+  .arrow.right {
+    right: -30px;
+  }
+</style>
+</head>
+<body>
+<div class="slider-container">
+  <div class="slider">
+    <!-- スライド1: パンの写真 -->
+    <div class="slide active" id="slide-1">
+      <img src="pan_photo.jpg" alt="パン">
+      <div class="annotation" id="annotation-1" style="top: 20%; left: 80%;">ここが外側</div>
+      <div class="annotation" id="annotation-2" style="top: 60%; left: 30%;">ここが内側</div>
+    </div>
+    <!-- スライド2: 切り口の写真 -->
+    <div class="slide" id="slide-2">
+      <img src="cut_photo.jpg" alt="パンの切り口">
+      <div class="annotation" id="annotation-3" style="top: 30%; left: 70%;">ここが柔らかい部分</div>
+      <div class="annotation" id="annotation-4" style="top: 70%; left: 20%;">ここが外皮</div>
+    </div>
+  </div>
+  <div class="arrow left" onclick="changeSlide(0)">&#10094;</div>
+  <div class="arrow right" onclick="changeSlide(1)">&#10095;</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leader-line"></script>
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  let lines = [];
+
+  function createLines() {
+    lines = [
+      new LeaderLine(document.getElementById('annotation-1'), {x: 230, y: 60}, {color: 'red', path: 'straight'}),
+      new LeaderLine(document.getElementById('annotation-2'), {x: 90, y: 180}, {color: 'red', path: 'straight'}),
+      new LeaderLine(document.getElementById('annotation-3'), {x: 210, y: 90}, {color: 'blue', path: 'straight'}),
+      new LeaderLine(document.getElementById('annotation-4'), {x: 70, y: 210}, {color: 'blue', path: 'straight'})
+    ];
+    lines.forEach((line, index) => {
+      if (index < 2) line.show(); // スライド1の注釈を表示
+      else line.hide(); // スライド2の注釈を非表示
+    });
+  }
+
+  function changeSlide(index) {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = index;
+    slides[currentSlide].classList.add('active');
+    document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    lines.forEach((line, i) => {
+      if (i < 2) currentSlide === 0 ? line.show() : line.hide();
+      else currentSlide === 1 ? line.show() : line.hide();
+    });
+  }
+
+  window.onload = createLines;
+</script>
+
+</body>
+</html>
