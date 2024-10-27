@@ -43,12 +43,39 @@
             font-weight: 100 900;
 		}
 	    
-.container2 {
+.container22 {
     position: relative;
     padding: 20px; /* 周囲にパディングを追加 */
 	width:50vw;
 	margin: 0 auto;
 }
+	    
+.container2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* box2要素の共通スタイル */
+.box2 {
+    width: 45%;  /* 各要素を幅45%で配置 */
+    margin: 10px 0;
+    padding: 10px;
+    background-color: lightgray;
+    border: 1px solid #ccc;
+    text-align: left;  /* 各要素内のテキストを左揃えにする */
+}
+
+/* 奇数番目の要素を左側に配置 */
+.box2:nth-child(odd) {
+    align-self: flex-start;  /* コンテナ左側に配置 */
+}
+
+/* 偶数番目の要素を右側に配置 */
+.box2:nth-child(even) {
+    align-self: flex-end;  /* コンテナ右側に配置 */
+}
+	    
 	    
 .center-text2 {
     position: absolute;
@@ -104,23 +131,26 @@
 
 
         .box2 {
-            margin: 2px;
-            padding: 0px;
+  /*          margin: 2px;
+	            position: relative;
+		           clear: both;
+            padding: 0px;*/
+		
 		line-height:1;
             max-width: calc(90vw / 2);
 		font-size: clamp(20px, 4.5rem, calc((70vw - 60px) / 6 / 6));
-            position: relative;
+
             background-color: rgba(255, 255, 255, 0.5); /* 背景を透過させる */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            clear: both;
+ 
         }
 
         /* 左右ちぐはぐに配置 */
-        .box2:nth-child(odd) {
+        .box22:nth-child(odd) {
             float: left; /* 奇数番目の要素を左に */
         }
 
-        .box2:nth-child(even) {
+        .box22:nth-child(even) {
             float: right; /* 偶数番目の要素を右に */
 	}
 
@@ -134,7 +164,7 @@
         .box2::before {
             content: "";
             position: absolute;
-            left: -7px;
+            left: -5px;
             top: 50%;
             transform: translateY(-50%);
             width: 5px;
