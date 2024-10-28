@@ -44,21 +44,24 @@
     font-size: 0.8em;
     color: #333;
   }
-  .arrow {
+.arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     font-size: 2em;
-    color: #333;
+    color: #fff; /* 色を変更 */
     cursor: pointer;
-       user-select: none;
-  }
-  .arrow.left {
-    left: -30px;
-  }
-  .arrow.right {
-    right: -30px;
-  }
+    user-select: none;
+    background-color: rgba(0, 0, 0, 0.5); /* 背景色を追加 */
+    padding: 10px; /* クリックしやすいようにパディングを追加 */
+    border-radius: 5px; /* 角を丸くする */
+}
+.arrow.left {
+    left: 10px; /* 内部に移動 */
+}
+.arrow.right {
+    right: 10px; /* 内部に移動 */
+}
 </style>
 </head>
 <body>
