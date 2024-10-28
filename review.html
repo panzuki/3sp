@@ -118,7 +118,7 @@ function createLines() {
       lines.push(new LeaderLine(
         document.getElementById(item.point),
         document.getElementById(item.annotation),
-        { color: item.color, path: 'straight' }
+        { color: item.color, path: 'straight', startPlug: 'disc', endPlug: 'arrow2' }
       ));
     }
   });
