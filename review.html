@@ -18,15 +18,23 @@
     width: 500px;
     overflow: hidden;
   }
+  
   .slider {
     display: flex;
     transition: transform 0.5s ease;
   }
-  .slide {
-    min-width: 100%;
-    height: 500px;
-    position: relative;
-  }
+.slide {
+  min-width: 100%;
+  height: 500px;
+  position: relative;
+  overflow: hidden; /* スライドがはみ出さないように */
+}
+
+.slide-image {
+  width: 100%; /* 画像がスライド全体を占めるように */
+  height: 100%; /* 高さも同様に設定 */
+  object-fit: cover; /* 画像の比率を保ちながらスライドにフィット */
+}
   /* 各スライドの色 */
   #slide-1 {
     background-color: #ffcc99;
@@ -69,6 +77,7 @@
   <div class="slider">
     <!-- スライド1: 色付きの正方形 -->
     <div class="slide active" id="slide-1">
+      <img src="https://placehold.jp/500x500.png" alt="Slide 1" class="slide-image">
       <div class="point" id="point-1" style="top: 20%; left: 80%;"></div>
       <div class="annotation" id="annotation-1" style="top: 10%; left: 60%;">ここが外側</div>
       
@@ -77,6 +86,7 @@
     </div>
     <!-- スライド2: 別の色付き正方形 -->
     <div class="slide" id="slide-2">
+      <img src="https://placehold.jp/500x500.png" alt="Slide 2" class="slide-image">
       <div class="point" id="point-3" style="top: 30%; left: 70%;"></div>
       <div class="annotation" id="annotation-3" style="top: 20%; left: 50%;">ここが柔らかい部分</div>
       
