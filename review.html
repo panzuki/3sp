@@ -103,8 +103,8 @@ let lines = [];
 // ラインを作成する関数
 function createLines() {
   // 既存のラインをクリア
-  lines.forEach(line => line.remove());
-  lines = [];
+//  lines.forEach(line => line.remove());
+//  lines = [];
 
   const points = [
     { point: 'point-1', annotation: 'annotation-1', color: 'red' },
@@ -128,12 +128,12 @@ function createLines() {
 function changeSlide(index) {
   
   if (index !== currentSlide) {
-    lines.forEach(line => line.remove());
     slides[currentSlide].classList.remove('active');
     currentSlide = index;
     slides[currentSlide].classList.add('active');
     document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
-
+  lines.forEach(line => line.remove());
+  lines = [];
     // スライド移動後にラインを再生成
     setTimeout(createLines, 500); // アニメーションが終わった後に呼び出す
   }
