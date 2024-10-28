@@ -105,12 +105,12 @@ let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 let lines = [];
 
+// ラインを作成する関数
 function createLines() {
   // 既存のラインをクリア
   lines.forEach(line => line.remove());
   lines = [];
 
-  // 現在のスライドに基づいてラインを作成
   const points = [
     { point: 'point-1', annotation: 'annotation-1', color: 'red' },
     { point: 'point-2', annotation: 'annotation-2', color: 'red' },
@@ -129,6 +129,7 @@ function createLines() {
   });
 }
 
+// スライドを変更する関数
 function changeSlide(index) {
   slides[currentSlide].classList.remove('active');
   currentSlide = index;
