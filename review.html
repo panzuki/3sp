@@ -126,7 +126,9 @@ function createLines() {
 
 // スライドを変更する関数
 function changeSlide(index) {
+  
   if (index !== currentSlide) {
+    lines.forEach(line => line.remove());
     slides[currentSlide].classList.remove('active');
     currentSlide = index;
     slides[currentSlide].classList.add('active');
