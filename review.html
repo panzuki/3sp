@@ -132,8 +132,8 @@ function changeSlide(index) {
     slides[currentSlide].classList.add('active');
     document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
 
-    // ラインを再生成
-    createLines();
+    // スライド移動後にラインを再生成
+    setTimeout(createLines, 500); // アニメーションが終わった後に呼び出す
   }
 }
 
