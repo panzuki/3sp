@@ -137,18 +137,22 @@
     });
   }
 
-  function changeSlide(index) {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = index;
-    slides[currentSlide].classList.add('active');
-    document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
+function changeSlide(index) {
+  slides[currentSlide].classList.remove('active');
+  currentSlide = index;
+  slides[currentSlide].classList.add('active');
+  document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
 
-    // スライドに応じて注釈の線を表示・非表示
-    lines.forEach((line, i) => {
-      if (i < 2) currentSlide === 0 ? line.show() : line.hide();
-      else currentSlide === 1 ? line.show() : line.hide();
-    });
-  }
+  // スライドに応じて注釈の線を表示・非表示
+  lines.forEach((line, i) => {
+    if (i < 2) currentSlide === 0 ? line.show() : line.hide();
+    else currentSlide === 1 ? line.show() : line.hide();
+  });
+
+  // スライドが変更された際にラインを再描画
+  lines.forEach(line => line.hide()); // 一度全て非表示
+  createLines(); // 新たにラインを作成し直す
+}
 
   window.onload = createLines;
 </script>
