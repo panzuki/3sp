@@ -101,41 +101,33 @@
 <!-- LeaderLine ライブラリの読み込み -->
 <script src="https://cdn.jsdelivr.net/npm/leader-line"></script>
 <script>
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.slide');
-  let lines = [];
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+let lines = [];
 
-  function createLines() {
-    // スライド1の注釈用の線
-    lines.push(new LeaderLine(
-      document.getElementById('point-1'), 
-      document.getElementById('annotation-1'), 
-      {color: 'red', path: 'straight'}
-    ));
-    lines.push(new LeaderLine(
-      document.getElementById('point-2'), 
-      document.getElementById('annotation-2'), 
-      {color: 'red', path: 'straight'}
-    ));
+function createLines() {
+  // 既存のラインをクリア
+  lines.forEach(line => line.remove());
+  lines = [];
 
-    // スライド2の注釈用の線
-    lines.push(new LeaderLine(
-      document.getElementById('point-3'), 
-      document.getElementById('annotation-3'), 
-      {color: 'blue', path: 'straight'}
-    ));
-    lines.push(new LeaderLine(
-      document.getElementById('point-4'), 
-      document.getElementById('annotation-4'), 
-      {color: 'blue', path: 'straight'}
-    ));
+  // 現在のスライドに基づいてラインを作成
+  const points = [
+    { point: 'point-1', annotation: 'annotation-1', color: 'red' },
+    { point: 'point-2', annotation: 'annotation-2', color: 'red' },
+    { point: 'point-3', annotation: 'annotation-3', color: 'blue' },
+    { point: 'point-4', annotation: 'annotation-4', color: 'blue' },
+  ];
 
-    // 初期設定でスライド1の線のみ表示
-    lines.forEach((line, index) => {
-      if (index < 2) line.show();
-      else line.hide();
-    });
-  }
+  points.forEach((item, index) => {
+    if ((currentSlide === 0 && index < 2) || (currentSlide === 1 && index >= 2)) {
+      lines.push(new LeaderLine(
+        document.getElementById(item.point),
+        document.getElementById(item.annotation),
+        { color: item.color, path: 'straight' }
+      ));
+    }
+  });
+}
 
 function changeSlide(index) {
   slides[currentSlide].classList.remove('active');
@@ -143,18 +135,11 @@ function changeSlide(index) {
   slides[currentSlide].classList.add('active');
   document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
 
-  // スライドに応じて注釈の線を表示・非表示
-  lines.forEach((line, i) => {
-    if (i < 2) currentSlide === 0 ? line.show() : line.hide();
-    else currentSlide === 1 ? line.show() : line.hide();
-  });
-
-  // スライドが変更された際にラインを再描画
-  lines.forEach(line => line.hide()); // 一度全て非表示
-  createLines(); // 新たにラインを作成し直す
+  // ラインを再生成
+  createLines();
 }
 
-  window.onload = createLines;
+window.onload = createLines;
 </script>
 
 </body>
