@@ -214,12 +214,17 @@ $('.grid-item').on('click', function() {
             break;
         case 'その他':
             contentText = panData['その他'];
-            contentSelected = selectedBreadName + "その他"
+            contentSelected = selectedBreadName + "のその他"
             $('#selected-bread-name').text(contentSelected);
             break;
         case 'レシピ':
             contentText = panData['レシピ'];
             contentSelected = selectedBreadName + "のレシピ"
+            $('#selected-bread-name').text(contentSelected);
+            break;
+        case '特徴':
+            contentText = panData['特徴'];
+            contentSelected = selectedBreadName + "の特徴"
             $('#selected-bread-name').text(contentSelected);
             break;
     }
