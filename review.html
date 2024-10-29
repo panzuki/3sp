@@ -107,7 +107,6 @@
 
         // マーカーの表示
         function loadMarkers(markers) {
-            marker.set({ selectable: true });
             markers.forEach((marker) => {
                 const circle = new fabric.Circle({
                     radius: 5, fill: 'red', left: marker.x, top: marker.y, selectable: false
@@ -115,6 +114,7 @@
                 const text = new fabric.Text(marker.label, {
                     fontSize: 14, left: marker.x + 10, top: marker.y - 10, selectable: false
                 });
+                marker.set({ selectable: true });
 
                 // クリックでツールチップ表示
                 circle.on('mousedown', () => showTooltip(marker));
