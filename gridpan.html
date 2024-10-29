@@ -26,12 +26,15 @@
     justify-content: center;
 }
 
+.thumbnail {
+    pointer-events: auto; /* クリックを有効にする */
+}
+
 .thumbnail img {
     width: 100%; /* サムネイルの画像を調整 */
     height: 100%; /* 正方形にするため */
     object-fit: cover; /* 画像が正方形に収まるように */
 }
-
 
 .grid-container {
     display: grid;
@@ -112,6 +115,7 @@
 <script>
 $(document).ready(function() {
     // CSVを読み込む
+    $('.content').show();
     Papa.parse('csv/pandata.csv', {
         download: true,
         header: true,
@@ -130,12 +134,14 @@ $(document).ready(function() {
             adaptiveHeight: true,
         });
 
-        // Slickスライダー初期化後にサムネイルにイベントを追加
+        // サムネイルのクリックイベントを追加
         $('.slider').on('click', '.thumbnail', function() {
             const panId = $(this).data('pan');
+            console.log(`サムネイル ${panId} がクリックされました`); // デバッグ用
             $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
         });
 
+        // その他のイベントリスナー
         $('.grid-item').on('click', function() {
             const contentType = $(this).data('content');
             const panId = $('.thumbnail.active').data('pan'); // アクティブなパンのIDを取得
@@ -143,40 +149,21 @@ $(document).ready(function() {
 
             let contentText;
             switch (contentType) {
-                case '発祥':
-                    contentText = panData['発祥'];
-                    break;
-                case '食べ方':
-                    contentText = panData['食べ方'];
-                    break;
-                case 'おすすめスプレッド':
-                    contentText = panData['おすすめスプレッド'];
-                    break;
-                case '栄養':
-                    contentText = panData['栄養'];
-                    break;
-                case '保存':
-                    contentText = panData['保存'];
-                    break;
-                case '歴史':
-                    contentText = panData['歴史'];
-                    break;
-                case 'その他':
-                    contentText = panData['その他'];
-                    break;
+                // ここにコンテンツの処理を書く...
             }
 
             $('.detail-content').text(contentText);
-            $('.grid-container').hide();  // 9マスを隠す
-            $('.detail-view').show();      // 詳細を表示
+            $('.grid-container').hide();
+            $('.detail-view').show();
         });
 
         $('.back-button').on('click', function() {
-            $('.detail-view').hide();       // 詳細を隠す
-            $('.grid-container').show();     // 9マスを表示
+            $('.detail-view').hide();
+            $('.grid-container').show();
         });
     }
 });
+
 </script>
 </body>
 </html>
