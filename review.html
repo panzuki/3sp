@@ -5,12 +5,13 @@
     <title>Interactive Bread Markers with Fabric.js</title>
     <style>
         #canvas-container {
-            width: 702px;
-            height: 562px;
+            width: 90vw;  /* 画面の幅の90%を使用 */
+            height: 80vh; /* 画面の高さの80%を使用 */
             margin: 0 auto;
             position: relative;
+            border: 1px solid #ccc;
         }
-        .tooltip {
+        #tooltip {
             display: none;
             position: absolute;
             background-color: #333;
@@ -18,91 +19,132 @@
             padding: 5px;
             border-radius: 5px;
         }
+        .slider-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .slider-button {
+            background-color: #333;
+            color: #fff;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
     <div id="canvas-container">
         <canvas id="breadCanvas"></canvas>
         <div id="tooltip" class="tooltip"></div>
+        <!-- スライドボタン -->
+        <div class="slider-buttons">
+            <button id="prevSlide" class="slider-button">&lt;</button>
+            <button id="nextSlide" class="slider-button">&gt;</button>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
     <script>
         const canvas = new fabric.Canvas('breadCanvas');
+        const container = document.getElementById('canvas-container');
+        const tooltip = document.getElementById('tooltip');
+
+        // スライドのデータ
         const images = [
             {
-                src: 'images/pan1-1.jpg', // 1枚目の画像パス
+                src: 'images/pan1-1.jpg',
                 markers: [
-                    { label: 'クラスト', x: 150, y: 50, description: 'パンの外側でカリッとした部分' },
-                  { label: 'クラム', x: 250, y: 200, description: 'パンの内側の柔らかい部分' }
+                    { label: 'クラスト', x: 100, y: 50, description: 'パンの外側でカリッとした部分' },
+                    { label: 'クラム', x: 200, y: 200, description: 'パンの内側の柔らかい部分' }
                 ]
             },
             {
-                src: 'images/pan1-2.jpg', // 2枚目の画像パス
+                src: 'images/pan2-1.jpg',
                 markers: [
-                    { label: 'クラスト', x: 100, y: 50, description: '別のパンのクラスト' },
-                    { label: 'クラム', x: 200, y: 180, description: '別のパンのクラム' }
+                    { label: 'クラスト', x: 120, y: 70, description: '別のパンのクラスト' },
+                    { label: 'クラム', x: 220, y: 220, description: '別のパンのクラム' }
                 ]
             }
         ];
         let currentSlide = 0;
-        let activeMarker = null;
 
-        const tooltip = document.getElementById('tooltip');
+        // キャンバスのサイズを動的に調整
+        function resizeCanvas() {
+            canvas.setWidth(container.clientWidth);
+            canvas.setHeight(container.clientHeight);
+            loadImage(currentSlide);
+        }
 
+        // 画像とマーカーを読み込み、表示する関数
         function loadImage(slideIndex) {
             canvas.clear();
             const image = images[slideIndex];
             fabric.Image.fromURL(image.src, function(img) {
-                img.set({ selectable: false });
-                img.scaleToWidth(canvas.width);
-                img.scaleToHeight(canvas.height);
+                img.set({
+                    selectable: false,
+                    originX: 'center',
+                    originY: 'center',
+                    left: canvas.width / 2,
+                    top: canvas.height / 2,
+                });
+                // 画像をキャンバスにフィットさせる
+                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                img.scale(scale);
                 canvas.add(img);
+
+                // マーカーの読み込み
                 loadMarkers(image.markers);
             });
         }
 
+        // マーカーの表示
         function loadMarkers(markers) {
-            markers.forEach((marker, index) => {
-                 const circle = new fabric.Circle({
+            markers.forEach((marker) => {
+                const circle = new fabric.Circle({
                     radius: 5, fill: 'red', left: marker.x, top: marker.y, selectable: false
                 });
                 const text = new fabric.Text(marker.label, {
                     fontSize: 14, left: marker.x + 10, top: marker.y - 10, selectable: false
                 });
 
-                circle.markerIndex = index;
+                // クリックでツールチップ表示
                 circle.on('mousedown', () => showTooltip(marker));
                 canvas.add(circle, text);
             });
         }
 
+         // ツールチップを表示
         function showTooltip(marker) {
             tooltip.style.display = 'block';
             tooltip.style.left = `${marker.x + 20}px`;
             tooltip.style.top = `${marker.y + 20}px`;
             tooltip.innerText = marker.description;
-            activeMarker = marker;
         }
 
+        // ツールチップを隠す
         function hideTooltip() {
             tooltip.style.display = 'none';
-            activeMarker = null;
         }
 
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowLeft') {
-                currentSlide = (currentSlide - 1 + images.length) % images.length;
-                loadImage(currentSlide);
-            }
-        });
+        // スライドを切り替える
+        function changeSlide(direction) {
+            hideTooltip();
+            currentSlide = (currentSlide + direction + images.length) % images.length;
+            loadImage(currentSlide);
+        }
 
-        canvas.on('mouse:down', (event) => {
-            if (!event.target) hideTooltip();
-        });
+        // イベントリスナー
+        document.getElementById('prevSlide').onclick = () => changeSlide(-1);
+        document.getElementById('nextSlide').onclick = () => changeSlide(1);
 
-        // 初回のスライド読み込み
-        loadImage(currentSlide);
+        // 初期化
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();  // ページロード時のサイズ調整
     </script>
-</body>
+    </body>
 </html>
