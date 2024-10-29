@@ -114,7 +114,6 @@
                 const text = new fabric.Text(marker.label, {
                     fontSize: 14, left: marker.x + 10, top: marker.y - 10, selectable: false
                 });
-                marker.set({ selectable: true });
 
                 // クリックでツールチップ表示
                 circle.on('mousedown', () => showTooltip(marker));
