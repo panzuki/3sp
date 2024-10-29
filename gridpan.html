@@ -163,6 +163,9 @@ $('.slider').on('click', '.thumbnail', function() {
     $(this).addClass('active'); // クリックしたサムネイルにactiveクラスを追加
     $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
     $('.detail-view').css('background-image', `url('https://placehold.jp/500x500.png')`);
+    $('.detail-view').hide();
+    $('.grid-container').show();
+    $('#selected-bread-name').text(selectedBreadName);
 });
 
         // その他のイベントリスナー
