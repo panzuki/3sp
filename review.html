@@ -96,6 +96,8 @@
                 // 画像をキャンバスにフィットさせる
                 const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
                 img.scale(scale);
+                canvas.setWidth(img.width);
+                canvas.setHeight(img.height);
                 canvas.add(img);
 
                 // マーカーの読み込み
