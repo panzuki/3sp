@@ -116,13 +116,23 @@ function loadImage(slideIndex) {
                 const circle = new fabric.Circle({
                     radius: 10, fill: 'red', left: marker.x, top: marker.y, selectable: false
                 });
-                const text = new fabric.Text(marker.label, {
-                    fontSize: 20, left: marker.x + 10, top: marker.y - 10, selectable: false
-                });
-
+                
+              //  const text = new fabric.Text(marker.label, {
+               //     fontSize: 20, left: marker.x + 10, top: marker.y - 10, selectable: false
+              //   });
+                
+        const label = new fabric.Text(marker.label, {
+            left: marker.x + 15, // マーカーの横に表示
+            top: marker.y,
+            fontSize: 24, // フォントサイズを大きく設定
+            fill: 'black'
+        });
+        
+                
                 // クリックでツールチップ表示
                 circle.on('mousedown', () => showTooltip(marker));
-                canvas.add(circle, text);
+                canvas.add(circle);
+                canvas.add(label);
             });
         }
 
