@@ -33,6 +33,8 @@
     align-items: center;
     justify-content: center;
     border: 1px solid #ccc;
+    font-size: 2em; /* 文字サイズを調整 */
+    background-color: #f9f9f9; /* 背景色を追加 */
     cursor: pointer;
 }
 
@@ -89,7 +91,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script>
 let breadData = [];
-
+$('.content').show();
 $(document).ready(function() {
     // CSVを読み込む
     Papa.parse('csv/pandata.csv', {
