@@ -105,6 +105,7 @@
 
         // マーカーの表示
         function loadMarkers(markers) {
+            marker.set({ selectable: true });
             markers.forEach((marker) => {
                 const circle = new fabric.Circle({
                     radius: 5, fill: 'red', left: marker.x, top: marker.y, selectable: false
