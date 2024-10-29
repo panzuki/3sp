@@ -117,6 +117,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script>
 let breadData = [];
+let selectedBreadName = ''; // 選択したパン名を格納する変数
 $('.content').show();
 $(document).ready(function() {
     // CSVを読み込む
@@ -142,6 +143,7 @@ $(document).ready(function() {
 $('.slider').on('click', '.thumbnail', function() {
     const panId = $(this).data('pan');
     const breadName = `パン${panId}`; // パンの名前を生成
+    selectedBreadName = breadName;
     $('#selected-bread-name').text(breadName);
 
     // アクティブなサムネイルのデータを設定
@@ -153,7 +155,6 @@ $('.slider').on('click', '.thumbnail', function() {
         // その他のイベントリスナー
 $('.grid-item').on('click', function() {
     const contentType = $(this).data('content');
-    var selectedBreadName= $('#selected-bread-name').text();
     // クリックされたサムネイルのIDを取得
     const panId = $('.thumbnail.active').data('pan'); // activeクラスを持つサムネイルのIDを取得
     const panData = breadData[panId - 1]; // ここでインデックスを調整
@@ -214,9 +215,9 @@ $('.grid-item').on('click', function() {
 });
 
         $('.back-button').on('click', function() {
-            $('#selected-bread-name').text(selectedBreadName);
             $('.detail-view').hide();
             $('.grid-container').show();
+            $('#selected-bread-name').text(selectedBreadName);
         });
     }
 });
