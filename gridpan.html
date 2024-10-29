@@ -19,6 +19,21 @@
     width: 100%;
 }
 
+.thumbnail {
+    width: 8vh; /* 高さと幅を同じにする */
+    height: 8vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail img {
+    width: 100%; /* サムネイルの画像を調整 */
+    height: 100%; /* 正方形にするため */
+    object-fit: cover; /* 画像が正方形に収まるように */
+}
+
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -61,10 +76,16 @@
 </head>
 <body>
 
-<div class="slider">
-    <div class="thumbnail" data-pan="1">パン1</div>
-    <div class="thumbnail" data-pan="2">パン2</div>
-    <div class="thumbnail" data-pan="3">パン3</div>
+<div class="slider" style="height: 8vh;">
+    <div class="thumbnail" data-pan="1">
+        <img src="https://placehold.jp/500x500.png" alt="パン1" />
+    </div>
+    <div class="thumbnail" data-pan="2">
+        <img src="https://placehold.jp/500x500.png" alt="パン2" />
+    </div>
+    <div class="thumbnail" data-pan="3">
+        <img src="https://placehold.jp/500x500.png" alt="パン3" />
+    </div>
     <!-- 他のパンのサムネイル -->
 </div>
 
@@ -109,6 +130,7 @@ $(document).ready(function() {
             slidesToScroll: 1,
             infinite: false,
             dots: true,
+            adaptiveHeight: true,
         });
 
         $('.thumbnail').on('click', function() {
