@@ -110,8 +110,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script>
-let breadData = [];
-$('.content').show();
 $(document).ready(function() {
     // CSVを読み込む
     Papa.parse('csv/pandata.csv', {
@@ -132,10 +130,9 @@ $(document).ready(function() {
             adaptiveHeight: true,
         });
 
-        $('.thumbnail').on('click', function() {
+        // Slickスライダー初期化後にサムネイルにイベントを追加
+        $('.slider').on('click', '.thumbnail', function() {
             const panId = $(this).data('pan');
-            // $('.content').show();
-            // $('.grid-container').css('background-image', `url('path/to/pan${panId}.jpg')`);
             $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
         });
 
