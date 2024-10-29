@@ -153,7 +153,7 @@ $('.slider').on('click', '.thumbnail', function() {
         // その他のイベントリスナー
 $('.grid-item').on('click', function() {
     const contentType = $(this).data('content');
-    
+    const selectedBreadName= $('#selected-bread-name').text();
     // クリックされたサムネイルのIDを取得
     const panId = $('.thumbnail.active').data('pan'); // activeクラスを持つサムネイルのIDを取得
     const panData = breadData[panId - 1]; // ここでインデックスを調整
@@ -168,42 +168,42 @@ $('.grid-item').on('click', function() {
     switch (contentType) {
         case '発祥':
             contentText = panData['発祥'];
-            contentSelected = $('#selected-bread-name').text() + "の発祥"
+            contentSelected = selectedBreadName + "の発祥"
             $('#selected-bread-name').text(contentSelected);
             break;
         case '食べ方':
             contentText = panData['食べ方'];
-            contentSelected = $('#selected-bread-name').text() + "の食べ方"
+            contentSelected = selectedBreadName + "の食べ方"
             $('#selected-bread-name').text(contentSelected);
             break;
         case 'おすすめスプレッド':
             contentText = panData['おすすめスプレッド'];
-            contentSelected = $('#selected-bread-name').text() + "のおすすめスプレッド"
+            contentSelected = selectedBreadName + "のおすすめスプレッド"
             $('#selected-bread-name').text(contentSelected);
             break;
         case '栄養':
             contentText = panData['栄養'];
-            contentSelected = $('#selected-bread-name').text() + "の栄養"
+            contentSelected = selectedBreadName + "の栄養"
             $('#selected-bread-name').text(contentSelected);
             break;
         case '保存':
             contentText = panData['保存'];
-            contentSelected = $('#selected-bread-name').text() + "の保存"
+            contentSelected = selectedBreadName + "の保存"
             $('#selected-bread-name').text(contentSelected);
             break;
         case '歴史':
             contentText = panData['歴史'];
-            contentSelected = $('#selected-bread-name').text() + "の歴史"
+            contentSelected = selectedBreadName + "の歴史"
             $('#selected-bread-name').text(contentSelected);
             break;
         case 'その他':
             contentText = panData['その他'];
-            contentSelected = $('#selected-bread-name').text() + "その他"
+            contentSelected = selectedBreadName + "その他"
             $('#selected-bread-name').text(contentSelected);
             break;
         case 'レシピ':
             contentText = panData['レシピ'];
-            contentSelected = $('#selected-bread-name').text() + "のレシピ"
+            contentSelected = selectedBreadName + "のレシピ"
             $('#selected-bread-name').text(contentSelected);
             break;
     }
