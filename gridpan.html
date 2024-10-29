@@ -41,7 +41,20 @@
     top: 20px;
     left: 20px;
 }
+.detail-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9); /* 背景の半透明白 */
+}
 
+.detail-content {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.5em;
+}
   </style>
 </head>
 <body>
@@ -65,13 +78,16 @@
         <div class="grid-item" data-content="歴史">歴史</div>
         <div class="grid-item" data-content="特徴">特徴</div>
     </div>
-    <button class="back-button">戻る</button>
+    <div class="detail-view" style="display: none;">
+        <div class="detail-content"></div>
+        <button class="back-button">戻る</button>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script>
-  $(document).ready(function() {
+$(document).ready(function() {
     $('.slider').slick({
         slidesToShow: 3,
         slidesToScroll: 1,
@@ -82,18 +98,52 @@
     $('.thumbnail').on('click', function() {
         const panId = $(this).data('pan');
         $('.content').show();
-      $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
-        // $('.grid-container').css('background-image', `url('path/to/pan${panId}.jpg')`);
+        $('.grid-container').css('background-image', `url('path/to/pan${panId}.jpg')`);
     });
 
     $('.grid-item').on('click', function() {
         const contentType = $(this).data('content');
-        // ここでコンテンツを取得して表示する処理を追加
-        alert(`${contentType}の内容を表示`);
+        // ここで内容を表示する処理を追加
+        let contentText;
+
+        switch (contentType) {
+            case '発祥':
+                contentText = 'このパンは〇〇年に発祥しました。';
+                break;
+            case '食べ方':
+                contentText = 'このパンは〇〇と一緒に食べるのがおすすめです。';
+                break;
+            case 'おすすめスプレッド':
+                contentText = '〇〇のスプレッドがおすすめです。';
+                break;
+            case '栄養':
+                contentText = 'このパンの栄養は〇〇です。';
+                break;
+            case '保存':
+                contentText = 'このパンは〇〇の方法で保存できます。';
+                break;
+            case 'その他':
+                contentText = 'その他の情報です。';
+                break;
+            case 'レシピ':
+                contentText = 'このパンのレシピは〇〇です。';
+                break;
+            case '歴史':
+                contentText = 'このパンの歴史については〇〇です。';
+                break;
+            case '特徴':
+                contentText = 'このパンの特徴は〇〇です。';
+                break;
+        }
+
+        $('.detail-content').text(contentText);
+        $('.grid-container').hide();  // 9マスを隠す
+        $('.detail-view').show();      // 詳細を表示
     });
 
     $('.back-button').on('click', function() {
-        $('.content').hide();
+        $('.detail-view').hide();       // 詳細を隠す
+        $('.grid-container').show();     // 9マスを表示
     });
 });
 </script>
