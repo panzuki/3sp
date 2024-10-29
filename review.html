@@ -81,29 +81,34 @@
             loadImage(currentSlide);
         }
 
-        // 画像とマーカーを読み込み、表示する関数
-        function loadImage(slideIndex) {
-            canvas.clear();
-            const image = images[slideIndex];
-            fabric.Image.fromURL(image.src, function(img) {
-                img.set({
-                    selectable: false,
-                    originX: 'center',
-                    originY: 'center',
-                    left: canvas.width / 2,
-                    top: canvas.height / 2,
-                });
-                // 画像をキャンバスにフィットさせる
-                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                img.scale(scale);
-                canvas.setWidth(img.width);
-                canvas.setHeight(img.height);
-                canvas.add(img);
+function loadImage(slideIndex) {
+    canvas.clear();
+    const image = images[slideIndex];
+    
+    fabric.Image.fromURL(image.src, function(img) {
+        // Canvasのサイズを設定
+        canvas.setWidth(702); // ここに画像の幅を設定
+        canvas.setHeight(562); // ここに画像の高さを設定
 
-                // マーカーの読み込み
-                loadMarkers(image.markers);
-            });
-        }
+        // 画像をCanvasの中心に配置し、フィットするようスケール
+        const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+        img.set({
+            selectable: false,
+            originX: 'center',
+            originY: 'center',
+            left: canvas.width / 2,
+            top: canvas.height / 2,
+            scaleX: scale,
+            scaleY: scale
+        });
+        
+        canvas.add(img);
+
+        // マーカーの読み込み
+        loadMarkers(image.markers);
+    });
+}
+
 
         // マーカーの表示
         function loadMarkers(markers) {
