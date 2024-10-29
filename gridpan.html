@@ -28,11 +28,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.3s, box-shadow 0.3s; /* トランジションを追加 */
+    pointer-events: auto; /* クリックを有効にする */
+    cursor: pointer; /* カーソルをポインターに変更 */
 }
 
-.thumbnail {
-    pointer-events: auto; /* クリックを有効にする */
+.thumbnail img {
+    width: 100%; /* サムネイルの画像を調整 */
+    height: 100%; /* 正方形にするため */
+    object-fit: cover; /* 画像が正方形に収まるように */
 }
+
+.thumbnail:hover {
+    transform: scale(1.1); /* ホバー時に少し拡大 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* ホバー時に影を追加 */
+}
+
 
 .thumbnail img {
     width: 100%; /* サムネイルの画像を調整 */
