@@ -153,7 +153,7 @@ $('.slider').on('click', '.thumbnail', function() {
         // その他のイベントリスナー
 $('.grid-item').on('click', function() {
     const contentType = $(this).data('content');
-    const selectedBreadName= $('#selected-bread-name').text();
+    var selectedBreadName= $('#selected-bread-name').text();
     // クリックされたサムネイルのIDを取得
     const panId = $('.thumbnail.active').data('pan'); // activeクラスを持つサムネイルのIDを取得
     const panData = breadData[panId - 1]; // ここでインデックスを調整
@@ -214,6 +214,7 @@ $('.grid-item').on('click', function() {
 });
 
         $('.back-button').on('click', function() {
+            $('#selected-bread-name').text(selectedBreadName);
             $('.detail-view').hide();
             $('.grid-container').show();
         });
