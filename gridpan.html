@@ -86,65 +86,76 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script>
+let breadData = [];
+
 $(document).ready(function() {
-    $('.slider').slick({
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        infinite: false,
-        dots: true,
-    });
-
-    $('.thumbnail').on('click', function() {
-        const panId = $(this).data('pan');
-        $('.content').show();
-        $('.grid-container').css('background-image', `url('path/to/pan${panId}.jpg')`);
-    });
-
-    $('.grid-item').on('click', function() {
-        const contentType = $(this).data('content');
-        // ここで内容を表示する処理を追加
-        let contentText;
-
-        switch (contentType) {
-            case '発祥':
-                contentText = 'このパンは〇〇年に発祥しました。';
-                break;
-            case '食べ方':
-                contentText = 'このパンは〇〇と一緒に食べるのがおすすめです。';
-                break;
-            case 'おすすめスプレッド':
-                contentText = '〇〇のスプレッドがおすすめです。';
-                break;
-            case '栄養':
-                contentText = 'このパンの栄養は〇〇です。';
-                break;
-            case '保存':
-                contentText = 'このパンは〇〇の方法で保存できます。';
-                break;
-            case 'その他':
-                contentText = 'その他の情報です。';
-                break;
-            case 'レシピ':
-                contentText = 'このパンのレシピは〇〇です。';
-                break;
-            case '歴史':
-                contentText = 'このパンの歴史については〇〇です。';
-                break;
-            case '特徴':
-                contentText = 'このパンの特徴は〇〇です。';
-                break;
+    // CSVを読み込む
+    Papa.parse('csv/pandata.csv', {
+        download: true,
+        header: true,
+        complete: function(results) {
+            breadData = results.data; // パースしたデータを格納
+            initializeSlider();
         }
-
-        $('.detail-content').text(contentText);
-        $('.grid-container').hide();  // 9マスを隠す
-        $('.detail-view').show();      // 詳細を表示
     });
 
-    $('.back-button').on('click', function() {
-        $('.detail-view').hide();       // 詳細を隠す
-        $('.grid-container').show();     // 9マスを表示
-    });
+    function initializeSlider() {
+        $('.slider').slick({
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            infinite: false,
+            dots: true,
+        });
+
+        $('.thumbnail').on('click', function() {
+            const panId = $(this).data('pan');
+            $('.content').show();
+            // $('.grid-container').css('background-image', `url('path/to/pan${panId}.jpg')`);
+            $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
+        });
+
+        $('.grid-item').on('click', function() {
+            const contentType = $(this).data('content');
+            const panId = $('.thumbnail.active').data('pan'); // アクティブなパンのIDを取得
+            const panData = breadData[panId - 1]; // IDからデータを取得
+
+            let contentText;
+            switch (contentType) {
+                case '発祥':
+                    contentText = panData['発祥'];
+                    break;
+                case '食べ方':
+                    contentText = panData['食べ方'];
+                    break;
+                case 'おすすめスプレッド':
+                    contentText = panData['おすすめスプレッド'];
+                    break;
+                case '栄養':
+                    contentText = panData['栄養'];
+                    break;
+                case '保存':
+                    contentText = panData['保存'];
+                    break;
+                case '歴史':
+                    contentText = panData['歴史'];
+                    break;
+                case 'その他':
+                    contentText = panData['その他'];
+                    break;
+            }
+
+            $('.detail-content').text(contentText);
+            $('.grid-container').hide();  // 9マスを隠す
+            $('.detail-view').show();      // 詳細を表示
+        });
+
+        $('.back-button').on('click', function() {
+            $('.detail-view').hide();       // 詳細を隠す
+            $('.grid-container').show();     // 9マスを表示
+        });
+    }
 });
 </script>
 </body>
