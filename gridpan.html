@@ -77,7 +77,7 @@
   </style>
 </head>
 <body>
-
+<div id="selected-bread-name" style="font-size: 1.5em; text-align: center; margin-bottom: 10px;"></div>
 <div class="slider" style="height: 8vh;">
     <div class="thumbnail" data-pan="1">
         <img src="https://placehold.jp/500x500.png" alt="パン1" />
@@ -113,14 +113,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script>
+let breadData = [];
+$('.content').show();
 $(document).ready(function() {
     // CSVを読み込む
-    $('.content').show();
     Papa.parse('csv/pandata.csv', {
         download: true,
         header: true,
         complete: function(results) {
             breadData = results.data; // パースしたデータを格納
+        console.log(breadData); // デバッグ用
             initializeSlider();
         }
     });
@@ -135,54 +137,62 @@ $(document).ready(function() {
         });
 
         // サムネイルのクリックイベントを追加
-        $('.slider').on('click', '.thumbnail', function() {
-            const panId = $(this).data('pan');
-            console.log(`サムネイル ${panId} がクリックされました`); // デバッグ用
-            $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
-        });
+$('.slider').on('click', '.thumbnail', function() {
+    const panId = $(this).data('pan');
+    const breadName = `パン${panId}`; // パンの名前を生成
+    $('#selected-bread-name').text(breadName);
+
+    // アクティブなサムネイルのデータを設定
+    $('.thumbnail').removeClass('active'); // 他のサムネイルのactiveクラスを削除
+    $(this).addClass('active'); // クリックしたサムネイルにactiveクラスを追加
+    $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
+});
 
         // その他のイベントリスナー
-        $('.grid-item').on('click', function() {
-            const contentType = $(this).data('content');
-            const panId = $('.thumbnail.active').data('pan'); // アクティブなパンのIDを取得
-            const panData = breadData[panId - 1]; // IDからデータを取得
+$('.grid-item').on('click', function() {
+    const contentType = $(this).data('content');
+    
+    // クリックされたサムネイルのIDを取得
+    const panId = $('.thumbnail.active').data('pan'); // activeクラスを持つサムネイルのIDを取得
+    const panData = breadData[panId - 1]; // ここでインデックスを調整
 
-            let contentText;
-            switch (contentType) {
-                                case '発祥':
-                    contentText = panData['発祥'];
-                    break;
-                case '食べ方':
-                    contentText = panData['食べ方'];
-                    break;
-                case 'おすすめスプレッド':
-                    contentText = panData['おすすめスプレッド'];
-                    break;
-                case '栄養':
-                    contentText = panData['栄養'];
-                    break;
-                case '保存':
-                    contentText = panData['保存'];
-                    break;
-                case 'その他':
-                    contentText = panData['その他'];
-                    break;
-                case 'レシピ':
-                    contentText = panData['レシピ'];
-                    break;
-                case '歴史':
-                    contentText = panData['歴史'];
-                    break;
-                case '特徴':
-                    contentText = panData['特徴'];
-                    break;
+    if (!panData) {
+        console.error(`パンデータが見つかりません: panId = ${panId}`);
+        return; // パンデータがない場合は処理を中断
+    }
 
-            }
+    let contentText;
+    switch (contentType) {
+        case '発祥':
+            contentText = panData['発祥'];
+            break;
+        case '食べ方':
+            contentText = panData['食べ方'];
+            break;
+        case 'おすすめスプレッド':
+            contentText = panData['おすすめスプレッド'];
+            break;
+        case '栄養':
+            contentText = panData['栄養'];
+            break;
+        case '保存':
+            contentText = panData['保存'];
+            break;
+        case '歴史':
+            contentText = panData['歴史'];
+            break;
+        case 'その他':
+            contentText = panData['その他'];
+            break;
+        case 'レシピ':
+            contentText = panData['レシピ'];
+            break;
+    }
 
-            $('.detail-content').text(contentText);
-            $('.grid-container').hide();
-            $('.detail-view').show();
-        });
+    $('.detail-content').text(contentText);
+    $('.grid-container').hide(); // 9マスを隠す
+    $('.detail-view').show(); // 詳細を表示
+});
 
         $('.back-button').on('click', function() {
             $('.detail-view').hide();
