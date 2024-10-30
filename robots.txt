@@ -1,2 +1,2 @@
 User-agent: *
-Disallow: https://panzuk.github.io/3sp
+Disallow: /
