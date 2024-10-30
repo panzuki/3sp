@@ -1,26 +1,104 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <title>パンのグリッド</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
-    <title>パン情報</title>
   <style>
+        :root {
+    --easing: cubic-bezier(.2, 1, .2, 1);
+    --transition: .8s var(--easing);
+    --color-base: #f0f8ff;
+    --color-gray: #ddd;
+    --color-theme: #f5695f;
+    --color-theme-darken: #f12617;
+    --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
+    --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, .1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
+  }
+
+  html {
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+    font-size: 62.5%;
+    line-height: 1.8;
+    height: 100%;
+    word-break: break-word;
+    background-color: var(--color-base);
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+      
     body {
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
+      .breadcrumb {
+  height: 4vh;
+  margin: 0;
+  padding: 0 20px;
+  list-style: none;
+}
+
+.breadcrumb li {
+  display: inline; /*横に並ぶように*/
+  list-style: none;
+  font-weight: bold; /*太字*/
+  text-align: center;
+  line-height: 4vh;
+}
+
+.breadcrumb li:after {
+  /* >を表示*/
+  content: ">";
+  text-align: center;
+  line-height: 4vh;
+  padding: 0 0.2em;
+  color: #555;
+  font-size: 1.5rem;
+}
+
+.breadcrumb li:last-child:after {
+  content: "";
+}
+
+.breadcrumb li a {
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #3f60f1; /*色*/
+}
+
+.breadcrumb li a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb li:last-child a {
+  color: #333;
+  font-size: 1.5rem;
+  text-decoration: none;
+  text-align: center;
+  cursor: default;
+}
+      
 .slider {
 /*     position: absolute; */
 /*     bottom: 10vh; */
     height:10vh;
-    width: 100%;
+    width: 80%;
 }
+      
 .selected{
     width:100%;
-    height:10vh;
+    height:6vh;
 }
 .thumbnail {
     width: 8vh; /* 高さと幅を同じにする */
@@ -93,6 +171,31 @@
   </style>
 </head>
 <body>
+            <nav class="breadcrumb">
+              <ol itemscope itemtype="http://schema.org/BreadcrumbList">
+                <li
+                  itemprop="itemListElement"
+                  itemscope
+                  itemtype="http://schema.org/ListItem"
+                >
+                  <a itemprop="item" href="https://panzuki.github.io/3sp/"
+                    ><span itemprop="name">ホーム</span></a
+                  >
+                  <meta itemprop="position" content="1" />
+                </li>
+                <li
+                  class="page"
+                  itemprop="itemListElement"
+                  itemscope
+                  itemtype="http://schema.org/ListItem"
+                >
+                  <a itemprop="item" href="" tabindex="-1"
+                    ><span itemprop="name">パンのグリッド</span></a
+                  >
+                  <meta itemprop="position" content="2" />
+                </li>
+              </ol>
+            </nav>
 <div class="content" style="display: none;">
     <div class="grid-container">
         <div class="grid-item" data-content="発祥">発祥</div>
@@ -147,7 +250,7 @@ $(document).ready(function() {
             slidesToShow: 3,
             slidesToScroll: 1,
             infinite: false,
-            dots: true,
+            dots: false,
             adaptiveHeight: true,
         });
 
