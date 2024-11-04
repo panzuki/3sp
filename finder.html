@@ -295,9 +295,14 @@
         this.selectedCardIndex = null; // 画像のみモード解除時に選択解除
         this.cards.forEach(card => card.showDetails = false);
         const cardElement = document.querySelector(`.card:nth-child(${this.cards.indexOf(card) + 1})`);
+    this.cards.forEach((card, idx) => {
+      card.showDetails = false;
+      // すべてのカードの拡大クラスを削除
+      const cardElement = document.querySelector(`.card:nth-child(${idx + 1})`);
       if (cardElement) {
         cardElement.classList.remove('expanded');
       }
+    });
       }
     }
   });
