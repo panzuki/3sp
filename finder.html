@@ -155,7 +155,8 @@
           imageOnly: false, // 画像のみ表示の状態を管理
           uniqueBakeries: [], // 重複のないパン屋名を格納
           uniqueBreadTypes: [], // 重複のないパンの種類を格納
-          uniqueAllergies: [] // 重複のないアレルギー情報を格納
+          uniqueAllergies: [], // 重複のないアレルギー情報を格納
+          selectedCardIndex: null // クリックされたカードのインデックス
         },
         created() {
           Papa.parse("data/breaddata.csv", {
@@ -210,12 +211,17 @@
         this.uniqueAllergies = [...new Set(this.cards.flatMap(card => card.allergy))];
       },
       toggleBakeryDetails(index) {
-        // 特定のパン屋情報の詳細表示をトグル
-        this.cards[index].showDetails = !this.cards[index].showDetails;
+        if (this.imageOnly) {
+          this.selectedCardIndex = this.selectedCardIndex === index ? null : index;
+          this.cards.forEach((card, idx) => card.showDetails = idx === this.selectedCardIndex);
+        } else {
+          this.cards[index].showDetails = !this.cards[index].showDetails;
+        }
       },
       toggleImageOnly() {
-        // 画像のみ表示のトグル
         this.imageOnly = !this.imageOnly;
+        this.selectedCardIndex = null; // 画像のみモード解除時に選択解除
+        this.cards.forEach(card => card.showDetails = false);
       }
     }
   });
