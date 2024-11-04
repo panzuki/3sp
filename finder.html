@@ -7,12 +7,13 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <style>
-     .filter-section {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 10px;
-      }
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
+      align-items: center;
+    }
 
     .cards-container {
       display: flex;
@@ -45,6 +46,14 @@
     .card:hover {
       transform: scale(1.05);
     }
+    @media (max-width: 768px) {
+        .filter-section {
+          flex-direction: column;
+        }
+        .cards-container {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+      }
   </style>
 </head>
 <body>
