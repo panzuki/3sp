@@ -63,8 +63,11 @@
   margin: 10px;
   overflow: hidden;
   box-sizing: border-box;
+  transition: transform 0.3s ease;
 }
-
+.card.expanded {
+  transform: scale(1.1); /* クリック時に拡大 */
+}
 /* 詳細情報のスタイル */
 .bakery-details {
         max-height: 0;
@@ -266,7 +269,6 @@
         },
         methods: {
       extractUniqueValues() {
-        // 重複のない値を抽出して設定
         this.uniqueBakeries = [...new Set(this.cards.map(card => card.bakery))];
         this.uniqueBreadTypes = [...new Set(this.cards.map(card => card.breadType))];
         this.uniqueAllergies = [...new Set(this.cards.flatMap(card => card.allergy))];
@@ -275,6 +277,14 @@
         if (this.imageOnly) {
           this.selectedCardIndex = this.selectedCardIndex === index ? null : index;
           this.cards.forEach((card, idx) => card.showDetails = idx === this.selectedCardIndex);
+          const cardElement = document.querySelector(`.card:nth-child(${idx + 1})`);
+          if (cardElement) {
+            if (idx === this.selectedCardIndex) {
+              cardElement.classList.add('expanded');
+            } else {
+              cardElement.classList.remove('expanded');
+            }
+          }
         }        
       },
       toggleBakeryDetails(index) {
@@ -284,6 +294,10 @@
         this.imageOnly = !this.imageOnly;
         this.selectedCardIndex = null; // 画像のみモード解除時に選択解除
         this.cards.forEach(card => card.showDetails = false);
+        const cardElement = document.querySelector(`.card:nth-child(${this.cards.indexOf(card) + 1})`);
+      if (cardElement) {
+        cardElement.classList.remove('expanded');
+      }
       }
     }
   });
