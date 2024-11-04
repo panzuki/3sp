@@ -185,7 +185,7 @@
           v-for="(card, index) in filteredCards" 
           :key="card.id" 
           class="card"
-          @click="toggleBakeryDetails(index)"
+          @click="showBreadDetails(index)"
           :class="{ expanded: card.showDetails }"
         >
           <img :src="card.breadImage" alt="パンの画像">
@@ -271,13 +271,14 @@
         this.uniqueBreadTypes = [...new Set(this.cards.map(card => card.breadType))];
         this.uniqueAllergies = [...new Set(this.cards.flatMap(card => card.allergy))];
       },
-      toggleBakeryDetails(index) {
+      showBreadDetails(index){
         if (this.imageOnly) {
           this.selectedCardIndex = this.selectedCardIndex === index ? null : index;
           this.cards.forEach((card, idx) => card.showDetails = idx === this.selectedCardIndex);
-        } else {
-          // this.cards[index].showDetails = !this.cards[index].showDetails;
-        }
+        }        
+      },
+      toggleBakeryDetails(index) {
+          this.cards[index].showDetails = !this.cards[index].showDetails;          
       },
       toggleImageOnly() {
         this.imageOnly = !this.imageOnly;
