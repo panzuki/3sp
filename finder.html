@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>パンのファインダー</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  </head>
-  <body>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <style>
-      .filter-section {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 10px;
-      }
-
+<head>
+  <meta charset="UTF-8">
+  <title>パンのファインダー</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <style>
     .cards-container {
       display: flex;
       flex-wrap: wrap;
@@ -39,192 +29,129 @@
     }
     .bakery-details {
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: max-height 0.3s ease;
+      max-height: 0; /* 初期状態は非表示 */
     }
     .card.expanded .bakery-details {
-      overflow: visible;
+      max-height: 200px; /* 展開時の高さ上限 */
     }
-      
-      
-/*       .cards-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        padding: 10px;
-      }
-  
-.card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 200px;
-  height: 500px;
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-.bakery-details {
-  max-height: 100px;
-  overflow-y: auto; 
-  transition: max-height 0.3s ease;
-}
-*/
-
-      .card:hover {
-        transform: scale(1.05);
-      }
-  
-      @media (max-width: 768px) {
-        .filter-section {
-          flex-direction: column;
-        }
-        .cards-container {
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- <nav class="breadcrumb">
-      <ol itemscope itemtype="http://schema.org/BreadcrumbList">
-        <li
-          itemprop="itemListElement"
-          itemscope
-          itemtype="http://schema.org/ListItem"
-        >
-          <a itemprop="item" href="https://panzuki.github.io/3sp/"
-            ><span itemprop="name">ホーム</span></a
-          >
-          <meta itemprop="position" content="1" />
-        </li>
-        <li
-          class="page"
-          itemprop="itemListElement"
-          itemscope
-          itemtype="http://schema.org/ListItem"
-        >
-          <a itemprop="item" href="" tabindex="-1"
-            ><span itemprop="name">パンのファインダー</span></a
-          >
-          <meta itemprop="position" content="2" />
-        </li>
-      </ol>
-    </nav>   -->
-    <div id="app">
-      <div class="filter-section">
-        <label>パン屋名:</label>
-        <select v-model="filters.bakeryName">
-          <option value="">すべて</option>
-          <option v-for="bakery in uniqueBakeries" :key="bakery" :value="bakery">{{ bakery }}</option>
-        </select>
-        
-        <label>パンの種類:</label>
-        <select v-model="filters.breadType">
-          <option value="">すべて</option>
-          <option v-for="type in uniqueBreadTypes" :key="type" :value="type">{{ type }}</option>
-        </select>
-        
-        <label>アレルギー:</label>
-        <div v-for="allergy in uniqueAllergies" :key="allergy">
-          <input 
-            type="checkbox" 
-            :value="allergy" 
-            v-model="selectedAllergies"
-          > {{ allergy }}
-        </div>
-        
-        <button @click="toggleImageOnly">画像のみ表示切り替え</button>
-      </div>
+    .card:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="filter-section">
+    <label>パン屋名:</label>
+    <select v-model="filters.bakeryName">
+      <option value="">すべて</option>
+      <option v-for="bakery in uniqueBakeries" :key="bakery" :value="bakery">{{ bakery }}</option>
+    </select>
     
-      <div class="cards-container">
-        <div 
-          v-for="(card, index) in filteredCards" 
-          :key="card.id" 
-          class="card"
-          :class="{ expanded: card.showDetails }"
-        >
-          <img :src="card.breadImage" alt="パンの画像">
-          <p v-if="!imageOnly">{{ card.breadName }}</p>
-          <p v-if="!imageOnly"><strong>イベント:</strong> {{ card.events }}</p>
-          <p v-if="!imageOnly"><strong>アレルギー表示:</strong> {{ card.allergy }}</p>
-          <p v-if="!imageOnly"><strong>使用粉の種類:</strong> {{ card.flourType }}</p>
-          <p v-if="!imageOnly"><strong>香り:</strong> {{ card.aroma }}</p>
-          <p v-if="!imageOnly"><strong>味:</strong> {{ card.taste }}</p>
-        <div v-if="!imageOnly">
-          <h3 @click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
-            <div v-if="card.showDetails" class="bakery-details">
-            <p><strong>特徴:</strong> {{ card.bakeryFeature }}</p>
-            <p><strong>住所:</strong> {{ card.address }}</p>
-          </div>
-        </div>
+    <label>パンの種類:</label>
+    <select v-model="filters.breadType">
+      <option value="">すべて</option>
+      <option v-for="type in uniqueBreadTypes" :key="type" :value="type">{{ type }}</option>
+    </select>
+    
+    <label>アレルギー:</label>
+    <div v-for="allergy in uniqueAllergies" :key="allergy">
+      <input 
+        type="checkbox" 
+        :value="allergy" 
+        v-model="selectedAllergies"
+      > {{ allergy }}
+    </div>
+    
+    <button @click="toggleImageOnly">画像のみ表示切り替え</button>
+  </div>
+
+  <div class="cards-container">
+    <div 
+      v-for="(card, index) in filteredCards" 
+      :key="card.id" 
+      class="card"
+      :class="{ expanded: card.showDetails }"
+    >
+      <img :src="card.breadImage" alt="パンの画像">
+      <p v-if="!imageOnly">{{ card.breadName }}</p>
+      <p v-if="!imageOnly"><strong>イベント:</strong> {{ card.events }}</p>
+      <p v-if="!imageOnly"><strong>アレルギー表示:</strong> {{ card.allergy }}</p>
+      <p v-if="!imageOnly"><strong>使用粉の種類:</strong> {{ card.flourType }}</p>
+      <p v-if="!imageOnly"><strong>香り:</strong> {{ card.aroma }}</p>
+      <p v-if="!imageOnly"><strong>味:</strong> {{ card.taste }}</p>
+      <div v-if="imageOnly || !imageOnly">
+        <h3 @click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
+        <div v-if="card.showDetails" class="bakery-details">
+          <p><strong>特徴:</strong> {{ card.bakeryFeature }}</p>
+          <p><strong>住所:</strong> {{ card.address }}</p>
         </div>
       </div>
     </div>
-    <script>
-      new Vue({
-        el: '#app',
-        data: {
-          filters: {
-            bakeryName: '',
-            breadType: ''
-          },
-          selectedAllergies: [], // 選択されたアレルギーを格納
-          cards: [],
-          imageOnly: false, // 画像のみ表示の状態を管理
-          uniqueBakeries: [], // 重複のないパン屋名を格納
-          uniqueBreadTypes: [], // 重複のないパンの種類を格納
-          uniqueAllergies: [], // 重複のないアレルギー情報を格納
-          selectedCardIndex: null // クリックされたカードのインデックス
-        },
-        created() {
-          Papa.parse("data/breaddata.csv", {
-            download: true,
-            header: true,
-            complete: (results) => {
-              this.cards = results.data.map((item, index) => ({
-                id: index + 1,
-                bakery: item["パン屋名"],
-                bakeryImage: item["パン屋画像名"],
-                bakeryFeature: item["パン屋の特徴"],
-                address: item["パン屋の住所"],
-                eventCount: item["イベント参加回数"],
-                events: item["取り扱いイベント"],
-                breadName: item["パン名"],
-                breadImage: item["パンの画像"],
-                flourType: item["パン生地に使った粉の種類"],
-                breadType: item["パンの種類"],
-                aroma: item["パンの香り"],
-                taste: item["パンの味"],
-                breadFeature: item["パンの特徴"],
-                allergy: item["アレルギー表示"] ? item["アレルギー表示"].split(',').map(allergy => allergy.trim()) : [], // アレルギーを配列に分割
-                yeast: item["酵母"], // 新しいフィールド
-                method: item["製法"], // 新しいフィールド
-                hydration: item["加水"], // 新しいフィールド
-                showDetails: false // 初期状態では非表示
-              }));
-              this.extractUniqueValues(); // 一意の値を抽出
-            }
-          });
-        },
-        computed: {
+  </div>
+</div>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      filters: {
+        bakeryName: '',
+        breadType: ''
+      },
+      selectedAllergies: [], // 選択されたアレルギーを格納
+      cards: [],
+      imageOnly: false, // 画像のみ表示の状態を管理
+      uniqueBakeries: [], // 重複のないパン屋名を格納
+      uniqueBreadTypes: [], // 重複のないパンの種類を格納
+      uniqueAllergies: [], // 重複のないアレルギー情報を格納
+      selectedCardIndex: null // クリックされたカードのインデックス
+    },
+    created() {
+      Papa.parse("data/breaddata.csv", {
+        download: true,
+        header: true,
+        complete: (results) => {
+          this.cards = results.data.map((item, index) => ({
+            id: index + 1,
+            bakery: item["パン屋名"],
+            bakeryImage: item["パン屋画像名"],
+            bakeryFeature: item["パン屋の特徴"],
+            address: item["パン屋の住所"],
+            eventCount: item["イベント参加回数"],
+            events: item["取り扱いイベント"],
+            breadName: item["パン名"],
+            breadImage: item["パンの画像"],
+            flourType: item["パン生地に使った粉の種類"],
+            breadType: item["パンの種類"],
+            aroma: item["パンの香り"],
+            taste: item["パンの味"],
+            breadFeature: item["パンの特徴"],
+            allergy: item["アレルギー表示"] ? item["アレルギー表示"].split(',').map(allergy => allergy.trim()) : [],
+            yeast: item["酵母"],
+            method: item["製法"],
+            hydration: item["加水"],
+            showDetails: false // 初期状態では非表示
+          }));
+          this.extractUniqueValues();
+        }
+      });
+    },
+    computed: {
       filteredCards() {
         return this.cards.filter(card => {
           const matchesBakery = card.bakery && card.bakery.includes(this.filters.bakeryName);
           const matchesBreadType = card.breadType && card.breadType.includes(this.filters.breadType);
-          
-          // 選択されたアレルギーに含まれるものがパンのアレルギーに部分一致する場合は除外
           const allergyExclusion = !this.selectedAllergies.some(selectedAllergy =>
             card.allergy.some(cardAllergy => cardAllergy.includes(selectedAllergy))
           );
-          
           return matchesBakery && matchesBreadType && allergyExclusion;
         });
-          }
-        },
-        methods: {
-          extractUniqueValues() {
-        // 重複のない値を抽出して設定
+      }
+    },
+    methods: {
+      extractUniqueValues() {
         this.uniqueBakeries = [...new Set(this.cards.map(card => card.bakery))];
         this.uniqueBreadTypes = [...new Set(this.cards.map(card => card.breadType))];
         this.uniqueAllergies = [...new Set(this.cards.flatMap(card => card.allergy))];
@@ -239,11 +166,11 @@
       },
       toggleImageOnly() {
         this.imageOnly = !this.imageOnly;
-        this.selectedCardIndex = null; // 画像のみモード解除時に選択解除
+        this.selectedCardIndex = null;
         this.cards.forEach(card => card.showDetails = false);
       }
     }
   });
-    </script>
-  </body>
+</script>
+</body>
 </html>
