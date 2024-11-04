@@ -185,7 +185,6 @@
           v-for="(card, index) in filteredCards" 
           :key="card.id" 
           class="card"
-          @click="toggleBakeryDetails(index)"
           :class="{ expanded: card.showDetails }"
         >
           <img :src="card.breadImage" alt="パンの画像">
@@ -195,7 +194,7 @@
           <p v-if="!imageOnly || card.showDetails"><strong>使用粉の種類:</strong> {{ card.flourType }}</p>
           <p v-if="!imageOnly || card.showDetails"><strong>香り:</strong> {{ card.aroma }}</p>
           <p v-if="!imageOnly || card.showDetails"><strong>味:</strong> {{ card.taste }}</p>
-          <h3 v-if="!imageOnly"　@click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
+          <h3 v-if="!imageOnly || card.showDetails"　@click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
             <div class="bakery-details">
             <p><strong>特徴:</strong> {{ card.bakeryFeature }}</p>
             <p><strong>住所:</strong> {{ card.address }}</p>
@@ -265,7 +264,7 @@
           }
         },
         methods: {
-          extractUniqueValues() {
+      extractUniqueValues() {
         // 重複のない値を抽出して設定
         this.uniqueBakeries = [...new Set(this.cards.map(card => card.bakery))];
         this.uniqueBreadTypes = [...new Set(this.cards.map(card => card.breadType))];
