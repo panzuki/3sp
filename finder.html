@@ -16,8 +16,37 @@
         gap: 10px;
         padding: 10px;
       }
-  
-      .cards-container {
+
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 200px;
+      display: inline-block;
+      vertical-align: top;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+    }
+    .bakery-details {
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .card.expanded .bakery-details {
+      overflow: visible;
+    }
+      
+      
+/*       .cards-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
@@ -28,33 +57,22 @@
   border: 1px solid #ccc;
   padding: 10px;
   width: 200px;
-  height: 500px; /* 固定の高さを指定 */
+  height: 500px;
   display: inline-block;
   vertical-align: top;
   margin: 10px;
   overflow: hidden;
   box-sizing: border-box;
 }
-
-/* 詳細情報のスタイル */
 .bakery-details {
-  max-height: 100px; /* スクロール可能な固定の高さを設定 */
-  overflow-y: auto; /* 縦スクロールを有効にする */
+  max-height: 100px;
+  overflow-y: auto; 
   transition: max-height 0.3s ease;
 }
+*/
+
       .card:hover {
         transform: scale(1.05);
-      }
-      .card img {
-        width: 100%;
-        height: auto;
-        border-radius: 4px;
-      }
-  
-      .bakery-details {
-        padding: 10px;
-        background-color: #f9f9f9;
-        border-top: 1px solid #ccc;
       }
   
       @media (max-width: 768px) {
@@ -124,6 +142,7 @@
           v-for="(card, index) in filteredCards" 
           :key="card.id" 
           class="card"
+          :class="{ expanded: card.showDetails }"
         >
           <img :src="card.breadImage" alt="パンの画像">
           <p v-if="!imageOnly">{{ card.breadName }}</p>
