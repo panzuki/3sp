@@ -10,35 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        :root {
-    --easing: cubic-bezier(.2, 1, .2, 1);
-    --transition: .8s var(--easing);
-    --color-base: #f0f8ff;
-    --color-gray: #ddd;
-    --color-theme: #f5695f;
-    --color-theme-darken: #f12617;
-    --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
-    --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
-    --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
-    --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, .1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
-  }
-
-  html {
-  font-family: "Helvetica Neue",
-    Arial,
-    "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans",
-    Meiryo,
-    sans-serif;
-    font-size: 62.5%;
-    line-height: 1.8;
-    height: 100%;
-    word-break: break-word;
-    background-color: var(--color-base);
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-      
       .filter-section {
         display: flex;
         flex-wrap: wrap;
@@ -52,40 +23,23 @@
       gap: 10px;
       justify-content: center;
     }
-      
-.card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 200px;
-/*   height: 300px;  */
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  overflow: hidden;
-  box-sizing: border-box;
-  transition: transform 0.3s ease;
-}
-.card.expanded {
-  transform: scale(1.1); /* クリック時に拡大 */
-}
-/* 詳細情報のスタイル */
-.bakery-details {
-        max-height: 0;
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 200px;
+      display: inline-block;
+      vertical-align: top;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
       overflow: hidden;
-      transition: max-height 0.3s ease;
-  
-/*   max-height: 100px; 
-  overflow-y: auto;  */
-}
-
-          .card:hover {
-              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      }
-
-
+    }
     .card img {
       width: 100%;
       height: auto;
+    }
+    .bakery-details {
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
     .card.expanded .bakery-details {
       overflow: visible;
@@ -121,14 +75,14 @@
         transform: scale(1.05);
       }
   
-/*       @media (max-width: 768px) {
+      @media (max-width: 768px) {
         .filter-section {
           flex-direction: column;
         }
         .cards-container {
           grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         }
-      } */
+      }
     </style>
   </head>
   <body>
@@ -188,20 +142,21 @@
           v-for="(card, index) in filteredCards" 
           :key="card.id" 
           class="card"
-          @click="showBreadDetails(index)"
           :class="{ expanded: card.showDetails }"
         >
           <img :src="card.breadImage" alt="パンの画像">
-          <p v-if="!imageOnly || card.showDetails">{{ card.breadName }}</p>
-          <p v-if="!imageOnly || card.showDetails"><strong>イベント:</strong> {{ card.events }}</p>
-          <p v-if="!imageOnly || card.showDetails"><strong>アレルギー表示:</strong> {{ card.allergy }}</p>
-          <p v-if="!imageOnly || card.showDetails"><strong>使用粉の種類:</strong> {{ card.flourType }}</p>
-          <p v-if="!imageOnly || card.showDetails"><strong>香り:</strong> {{ card.aroma }}</p>
-          <p v-if="!imageOnly || card.showDetails"><strong>味:</strong> {{ card.taste }}</p>
-          <h3 v-if="!imageOnly || card.showDetails"　@click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
-            <div class="bakery-details">
+          <p v-if="!imageOnly">{{ card.breadName }}</p>
+          <p v-if="!imageOnly"><strong>イベント:</strong> {{ card.events }}</p>
+          <p v-if="!imageOnly"><strong>アレルギー表示:</strong> {{ card.allergy }}</p>
+          <p v-if="!imageOnly"><strong>使用粉の種類:</strong> {{ card.flourType }}</p>
+          <p v-if="!imageOnly"><strong>香り:</strong> {{ card.aroma }}</p>
+          <p v-if="!imageOnly"><strong>味:</strong> {{ card.taste }}</p>
+        <div v-if="!imageOnly">
+          <h3 @click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
+            <div v-if="card.showDetails" class="bakery-details">
             <p><strong>特徴:</strong> {{ card.bakeryFeature }}</p>
             <p><strong>住所:</strong> {{ card.address }}</p>
+          </div>
         </div>
         </div>
       </div>
@@ -268,42 +223,24 @@
           }
         },
         methods: {
-      extractUniqueValues() {
+          extractUniqueValues() {
+        // 重複のない値を抽出して設定
         this.uniqueBakeries = [...new Set(this.cards.map(card => card.bakery))];
         this.uniqueBreadTypes = [...new Set(this.cards.map(card => card.breadType))];
         this.uniqueAllergies = [...new Set(this.cards.flatMap(card => card.allergy))];
       },
-      showBreadDetails(index){
+      toggleBakeryDetails(index) {
         if (this.imageOnly) {
           this.selectedCardIndex = this.selectedCardIndex === index ? null : index;
-      this.cards.forEach((card, idx) => {
-        card.showDetails = idx === this.selectedCardIndex;
-
-        // クリックしたカードに拡大クラスを付与
-        const cardElement = document.querySelectorAll('.card')[idx];
-        if (cardElement) {
-          if (idx === this.selectedCardIndex) {
-            cardElement.classList.add('expanded');
-          } else {
-            cardElement.classList.remove('expanded');
-          }
+          this.cards.forEach((card, idx) => card.showDetails = idx === this.selectedCardIndex);
+        } else {
+          this.cards[index].showDetails = !this.cards[index].showDetails;
         }
-      });
-        }        
       },
-      toggleBakeryDetails(index) {
-          this.cards[index].showDetails = !this.cards[index].showDetails;          
-      },
-  toggleImageOnly() {
-    this.imageOnly = !this.imageOnly;
-    this.selectedCardIndex = null; // 画像のみモード解除時に選択解除
-    this.cards.forEach((_, idx) => {
-      // すべてのカードの拡大クラスを削除
-      const cardElement = document.querySelector(`.card:nth-child(${idx + 1})`);
-      if (cardElement) {
-        cardElement.classList.remove('expanded');
-      }
-    });
+      toggleImageOnly() {
+        this.imageOnly = !this.imageOnly;
+        this.selectedCardIndex = null; // 画像のみモード解除時に選択解除
+        this.cards.forEach(card => card.showDetails = false);
       }
     }
   });
