@@ -195,12 +195,10 @@
           <p v-if="!imageOnly || card.showDetails"><strong>使用粉の種類:</strong> {{ card.flourType }}</p>
           <p v-if="!imageOnly || card.showDetails"><strong>香り:</strong> {{ card.aroma }}</p>
           <p v-if="!imageOnly || card.showDetails"><strong>味:</strong> {{ card.taste }}</p>
-        <div v-if="!imageOnly || card.showDetails">
-          <h3 @click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
+          <h3 v-if="!imageOnly || card.showDetails"　@click="toggleBakeryDetails(index)" style="cursor: pointer;">{{ card.bakery }}</h3>
             <div v-if="card.showDetails" class="bakery-details">
             <p><strong>特徴:</strong> {{ card.bakeryFeature }}</p>
             <p><strong>住所:</strong> {{ card.address }}</p>
-          </div>
         </div>
         </div>
       </div>
