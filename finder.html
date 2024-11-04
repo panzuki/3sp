@@ -276,15 +276,19 @@
       showBreadDetails(index){
         if (this.imageOnly) {
           this.selectedCardIndex = this.selectedCardIndex === index ? null : index;
-          this.cards.forEach((card, idx) => card.showDetails = idx === this.selectedCardIndex);
-          const cardElement = document.querySelector(`.card:nth-child(${idx + 1})`);
-          if (cardElement) {
-            if (idx === this.selectedCardIndex) {
-              cardElement.classList.add('expanded');
-            } else {
-              cardElement.classList.remove('expanded');
-            }
+      this.cards.forEach((card, idx) => {
+        card.showDetails = idx === this.selectedCardIndex;
+
+        // クリックしたカードに拡大クラスを付与
+        const cardElement = document.querySelectorAll('.card')[idx];
+        if (cardElement) {
+          if (idx === this.selectedCardIndex) {
+            cardElement.classList.add('expanded');
+          } else {
+            cardElement.classList.remove('expanded');
           }
+        }
+      });
         }        
       },
       toggleBakeryDetails(index) {
