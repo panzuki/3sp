@@ -3,24 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaflet Map</title>
+    <title>Leaflet Map with Popup</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #map { width: 90vw; height: 80vh; }
-        .popup-content { text-align: center; }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .popup-content img {
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
     <select id="countrySelect">
-        <!-- Add country options here -->
         <option value="51.505,-0.09">United Kingdom</option>
         <option value="35.6762,139.6503">Japan</option>
-        <!-- More countries can be added -->
     </select>
 
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <h2>パンの情報</h2>
+            <img src="path/to/bread-image.jpg" alt="Bread Image">
+            <p>ここにパンの詳細情報を表示します。</p>
+            <button onclick="closePopup()">閉じる</button>
+        </div>
+    </div>
+     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([0, 0], 2);
 
@@ -29,15 +55,14 @@
         }).addTo(map);
 
         var breadIcon = L.icon({
-            iconUrl: 'path/to/bread-icon.png', // Replace with actual icon path
+            iconUrl: 'path/to/bread-icon.png',
             iconSize: [32, 32]
         });
 
         var marker;
-
         document.getElementById('countrySelect').addEventListener('change', function() {
             var coords = this.value.split(',');
-            map.setView(coords, 5); // Adjust zoom level as needed
+            map.setView(coords, 5);
 
             if (marker) {
                 map.removeLayer(marker);
@@ -45,9 +70,13 @@
 
             marker = L.marker(coords, { icon: breadIcon }).addTo(map);
             marker.on('click', function() {
-                alert('パンの情報'); // Replace with actual popup content
+                document.getElementById('popupOverlay').style.display = 'flex';
             });
         });
+
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
     </script>
 </body>
 </html>
