@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { width: 90vw; height: 80vh; }
+        .popup-content { text-align: center; }
+    </style>
+</head>
+<body>
+    <select id="countrySelect">
+        <!-- Add country options here -->
+        <option value="51.505,-0.09">United Kingdom</option>
+        <option value="35.6762,139.6503">Japan</option>
+        <!-- More countries can be added -->
+    </select>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([0, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var breadIcon = L.icon({
+            iconUrl: 'path/to/bread-icon.png', // Replace with actual icon path
+            iconSize: [32, 32]
+        });
+
+        var marker;
+
+        document.getElementById('countrySelect').addEventListener('change', function() {
+            var coords = this.value.split(',');
+            map.setView(coords, 5); // Adjust zoom level as needed
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker(coords, { icon: breadIcon }).addTo(map);
+            marker.on('click', function() {
+                alert('パンの情報'); // Replace with actual popup content
+            });
+        });
+    </script>
+</body>
+</html>
