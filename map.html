@@ -241,8 +241,12 @@ var markers = [];
 var slidePopups = {};
 locations.forEach(function(location,index) {
 //    var marker = L.marker(location.latlng).addTo(map).bindPopup(location.popup);
-    var marker = L.marker(location.latlng).addTo(map);
-
+   // var marker = L.marker(location.latlng).addTo(map);
+  var marker = L.marker(location.latlng).addTo(map);
+            marker.bindPopup(location.popup, { autoClose: false });
+            markers.push(marker);
+        });
+      
     // Show popup on hover
     marker.on('mouseover', function() {
         if(!slidePopups[index]){
@@ -307,11 +311,11 @@ function showPopup(marker, content, index) {
         .setContent(content)
         .openOn(map);
 
-    slidePopups[index] = popup;
+    //slidePopups[index] = popup;
     // Add the popup to active popups list (this prevents it from being closed when another popup opens)
     activePopups.push(popup);
 }
-
+      
 function closeAllPopups() {
     activePopups.forEach(function(popup) {
         map.closePopup(popup);
