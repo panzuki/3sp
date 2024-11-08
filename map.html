@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,10 @@
             width: 0;
             height: 0;
             border-style: solid;
+            border-width: 5px;
+            border-color: transparent transparent white transparent;
+            top: 100%;
+            left: 10px;
         }
     </style>
 </head>
@@ -42,7 +46,9 @@
     ];
 
     let currentIndex = 0;
+    const historyStack = [];
     const drawnLines = [];
+    const popups = [];
 
     const width = document.getElementById('map').offsetWidth;
     const height = document.getElementById('map').offsetHeight;
@@ -88,14 +94,15 @@
             .on("click", (event, d) => showPopup(d));
 
         // Show initial popup
-        const popup = d3.select("body").append("div").attr("class", "popup").style("display", "none");
         showPopup(locations[currentIndex]);
 
         function showPopup(location) {
-            popup.style("display", "block")
+            const [x, y] = projection(location.latlng);
+            const popup = d3.select("body").append("div").attr("class", "popup")
                 .html(location.popup)
-                .style("left", `${projection(location.latlng)[0] + 10}px`)
-                .style("top", `${projection(location.latlng)[1] - 10}px`);
+                .style("left", `${x + 10}px`)
+                .style("top", `${y - 10}px`);
+            popups.push(popup);
         }
 
         function drawConnections(index) {
@@ -125,27 +132,32 @@
         function updateMapToFit(locations) {
             const coordinates = locations.map(d => projection(d.latlng));
             const [[x0, y0], [x1, y1]] = d3.extent(coordinates, d => [d[0], d[1]]);
-            svg.transition().duration(750).attr("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+            const padding = 20;
+            svg.transition().duration(750).attr("viewBox", `${x0 - padding} ${y0 - padding} ${x1 - x0 + 2 * padding} ${y1 - y0 + 2 * padding}`);
         }
 
         window.nextMarker = function() {
             if (currentIndex < locations.length - 1) {
+                historyStack.push(currentIndex);
+                clearPopups();
                 currentIndex++;
-                drawnLines.forEach(line => line.remove());
-                drawnLines.length = 0;
                 drawConnections(currentIndex);
                 updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
             }
         }
 
         window.prevMarker = function() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                drawnLines.forEach(line => line.remove());
-                drawnLines.length = 0;
+            if (historyStack.length > 0) {
+                clearPopups();
+                currentIndex = historyStack.pop();
                 drawConnections(currentIndex);
                 updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
             }
+        }
+
+        function clearPopups() {
+            popups.forEach(popup => popup.remove());
+            popups.length = 0;
         }
     });
 </script>
