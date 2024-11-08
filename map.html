@@ -150,30 +150,37 @@
         }
     }
 
-    window.prevMarker = function() {
-        if (historyStack.length > 0) {
-            clearPopups();
 
-            // 現在のインデックスから描かれた矢印を削除
-            const linesToRemove = drawnLines.splice(historyStack.length);
-            linesToRemove.forEach(line => line.remove());
+window.prevMarker = function() {
+    if (historyStack.length > 0) {
+        clearPopups();
 
-            currentIndex = historyStack.pop();
-            drawConnections(currentIndex);
-            updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
-        } else {
-            // 初期状態に戻す
-            clearPopups();
-            
-            // 全ての矢印を削除
-            drawnLines.forEach(line => line.remove());
-            drawnLines.length = 0;
-            
-            currentIndex = 0;
-            showPopup(locations[currentIndex]);
-        }
+        // 現在のインデックスから描かれた矢印を削除
+        const linesToRemove = drawnLines.splice(historyStack.length);
+        linesToRemove.forEach(line => line.remove());
+
+        currentIndex = historyStack.pop();
+        drawConnections(currentIndex);
+
+        // Ensure valid indices for updateMapToFit
+        const validNextLocations = locations[currentIndex].nextp
+            .filter(i => i !== "none" && i < locations.length)
+            .map(i => locations[i]);
+
+        updateMapToFit([locations[currentIndex], ...validNextLocations]);
+    } else {
+        // 初期状態に戻す
+        clearPopups();
+        
+        // 全ての矢印を削除
+        drawnLines.forEach(line => line.remove());
+        drawnLines.length = 0;
+        
+        currentIndex = 0;
+        showPopup(locations[currentIndex]);
     }
-
+}
+        
     function clearPopups() {
         popups.forEach(popup => popup.remove());
         popups.length = 0;
