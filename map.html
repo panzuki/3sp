@@ -140,9 +140,9 @@
             if (currentIndex < locations.length - 1) {
                 historyStack.push(currentIndex);
                 clearPopups();
-                currentIndex++;
                 drawConnections(currentIndex);
                 updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
+                currentIndex++;
             }
         }
 
