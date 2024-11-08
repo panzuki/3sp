@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>パンの</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  </head>
+  <body>
+    <style>
+
+:root {
+    --color-base: #232931;
+    --color-gray: #ddd;
+    --color-theme: #f5695f;
+    --color-theme-darken: #f12617;
+    --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
+    --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
+    --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, .1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
+    --gold:linear-gradient(90deg, #b39855 0%, #fff9e6 50%, #b39855 100%);
+    --gold2:linear-gradient(
+        to right,
+        #462523 0,
+              #cb9b51 22%, 
+        #f6e27a 45%,
+        #f6f2c0 50%,
+        #f6e27a 55%,
+        #cb9b51 78%,
+        #462523 100%
+        );
+    --silver:linear-gradient(90deg, #BDC3C9 0%, #ffffff 50%, #BDC3C9 100%);
+    --green:linear-gradient(90deg, #5f836d 0%, #9ad69a 50%, #5f836d 100%);
+  }
+
+html {
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+    /* font-size: 62.5%; */
+    line-height: 1;
+    height: 100%;
+    word-break: break-word;
+    background-color: var(--color-base);
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-size: 1.6rem;
+    margin: 0;
+  }
+      
+  img {
+    border: 0;
+    margin: 0;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: #333;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 1.6rem;
+    margin: 0;
+    padding: 0;
+  }
+      
+  .breadcrumb {
+  height: 4vh;
+  margin: 0;
+  padding: 0 20px;
+  list-style: none;
+}
+
+.breadcrumb li {
+  display: inline; /*横に並ぶように*/
+  list-style: none;
+  font-weight: bold; /*太字*/
+  text-align: center;
+  line-height: 4vh;
+}
+
+.breadcrumb li:after {
+  /* >を表示*/
+  content: ">";
+  text-align: center;
+  line-height: 4vh;
+  padding: 0 0.2em;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.breadcrumb li:last-child:after {
+  content: "";
+}
+
+.breadcrumb li a {
+  font-size: 1rem;
+  text-decoration: none;
+  color: #3f60f1; /*色*/
+}
+
+.breadcrumb li a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb li:last-child a {
+  color: #fff;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  cursor: default;
+}
+
+main{
+  padding:20px;
+  font-family: 'Times New Roman',serif;
+
+}
+
+h1{
+  font-size: 3rem;
+  font-family: 'Times New Roman',serif;
+        font-weight: bold;
+        background-image: var(--gold);
+        color:transparent;
+        -webkit-background-clip:text;
+        z-index: 1000;
+}
+.parent {
+display: grid;
+margin: 10px;
+grid-template-columns: min-content 1fr ;
+grid-template-rows: auto repeat(6, 1fr);
+grid-column-gap: 10px;
+grid-row-gap: 0;
+}
+.div1 { grid-area: 1 / 1 / 4 / 2; }
+.div2 { grid-area: 4 / 1 / 7 / 2; }
+.div3 { grid-area: 1 / 2 / 2 / 3; }
+.div4 { grid-area: 2 / 2 / 3 / 3; }
+.div5 { grid-area: 3 / 2 / 4 / 3; }
+.div6 { grid-area: 4 / 2 / 5 / 3; }
+.div7 { grid-area: 5 / 2 / 6 / 3; }
+.div8 { grid-area: 6 / 2 / 7 / 3; }
+
+.leftbox {
+        width: 100%;
+        height: 100%;
+        background: var(--gold2);
+        font-family: 'Times New Roman',serif;
+        font-weight: bold;
+        border: 2px ;
+      }
+      
+.container {
+  background: #232931;
+  max-width: 90%;
+  height: 100%;
+  margin: 0 auto 0 0;
+  position: relative;
+  /* border-left:6px solid;
+  border-image: var(--gold) 1; */
+}
+
+      
+    .histnav{
+        list-style: none;
+        padding: 35px;
+        color: #232931;
+        font-size: 1.1em;
+        display: block;
+        transition: all 0.5s ease-in-out;
+        position: -webkit-sticky; /* ←必要なもの */
+        position: sticky; /* ←必要なもの */
+        top: 0;
+        right: 0;
+      }
+      .rightbox {
+        height: 100%;
+      }
+      
+      .rb-container {
+        width: 100%;
+        margin: auto;
+        display: block;
+        position: relative;
+      }
+      
+      .rb-container ul.rb {
+        margin: 0.5em 0 0 0;
+        padding: 0;
+        display: inline-block;
+      }
+      
+      .rb-container ul.rb li {
+        list-style: none;
+        margin: auto;
+        margin-left: 2rem;
+        height:100%;
+        border-left: 2px dashed ;
+        border-image: var(--gold) 1;
+        padding: 0 0 5px 30px;
+        position: relative;
+      }
+            
+      .rb-container ul.rb li::before {
+        position: absolute;
+        left: -18px;
+        top: -5px;
+        content: " ";
+        border: 8px solid;
+        border-color: #232931;
+        border-radius: 500%;
+        /* background: #50d890; */
+        background-image: var(--green);
+        height: 20px;
+        width: 20px;
+        transition: all 500ms ease-in-out;
+      }
+      
+      .rb-container ul.rb li:hover::before {
+        border: 8px solid rgba(255, 255, 255, 1);       
+        transition: all 500ms ease-in-out;
+      }
+
+      .titlecontent{
+        display: flex;
+        align-items: center;
+      }
+            
+      ul.rb li .timestamp {
+        /* color: #50d890; */        
+        position: relative;
+        width: 100px;
+        font-size: 1.3rem;
+
+        font-family: 'Times New Roman',serif;
+        font-weight: bold;
+        background-image: var(--green);
+        color:transparent;
+        -webkit-background-clip:text;
+        z-index: 1000;
+
+      }
+      
+      .item-title {
+        font-size: 2rem;
+        /* position: absolute; */
+        /* transform: translate(-50%,-50%); */
+        /* top: 50%; */
+        /* left: 50%; */
+        /* font-size: 2rem; */
+        /* letter-spacing: 5px; */
+        font-family: 'Times New Roman',serif;
+        font-weight: bold;
+        background-image: var(--gold);
+        color:transparent;
+        -webkit-background-clip:text;
+        z-index: 1000;
+      }
+
+      .popup-content {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.5s ease, max-height 0.5s ease;
+        height: 0;
+      }
+
+      .popup-content p {
+        font-family: 'Times New Roman',serif;
+        color: #fff;
+      }
+
+      .popup-content.visible {
+        opacity: 1;
+        max-height: none; /* 必要に応じて調整 */
+        height: auto;
+      }
+
+      .rb-container ul.rb li.visible::before {
+        border: 8px solid rgba(255, 255, 255, 1);
+        transition: all 500ms ease-in-out;
+      }
+
+    </style>
+    <body>
+      <nav class="breadcrumb">
+        <ol itemscope itemtype="http://schema.org/BreadcrumbList">
+          <li
+            itemprop="itemListElement"
+            itemscope
+            itemtype="http://schema.org/ListItem">
+            <a itemprop="item" href="https://panzuki.github.io/3sp/"><span
+                itemprop="name">ホーム</span></a>
+            <meta itemprop="position" content="1" />
+          </li>
+          <li
+            class="page"
+            itemprop="itemListElement"
+            itemscope
+            itemtype="http://schema.org/ListItem">
+            <a itemprop="item" href tabindex="-1"><span
+                itemprop="name">パンの歴史</span></a>
+            <meta itemprop="position" content="2" />
+          </li>
+        </ol>
+      </nav>
+
+      <main>
+        <h1>パンの歴史</h1>
+        <div class="parent">
+          <div class="div1">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>石器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div2">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>新石器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div3">
+            <div class="container">
+              <div class="rightbox">
+                <div class="rb-container">
+                  <ul class="rb">
+                    <li class="rb-item" ng-repeat="itembx">
+                      <div class="titlecontent">
+                        <div class="timestamp">
+                          3rd May 2020<br> 7:00 PM
+                        </div>
+                        <div class="item-title">パンの始まり</div>
+                      </div>
+                      <div class="popup-content">
+                        <p>この時代のパンは粉を水で練って焼いたもので、<br>非常に素朴なものだった。</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="div4">
+            <div class="container">
+              <div class="rightbox">
+                <div class="rb-container">
+                  <ul class="rb">
+                    <li class="rb-item" ng-repeat="itembx">
+                      <div class="titlecontent">
+                        <div class="timestamp">
+                          3rd May 2020<br> 7:00 PM
+                        </div>
+                        <div class="item-title">Chris Serrano posted a photo on
+                          your
+                          wall.</div>
+                      </div>
+                      <div class="popup-content">
+                        <p>ここに内容</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="div5">
+            <div class="container">
+              <div class="rightbox">
+                <div class="rb-container">
+                  <ul class="rb">
+                    <li class="rb-item" ng-repeat="itembx">
+                      <div class="titlecontent">
+                        <div class="timestamp">
+                          3rd May 2020<br> 7:00 PM
+                        </div>
+                        <div class="item-title">Chris Serrano posted a photo on
+                          your
+                          wall.</div>
+                      </div>
+                      <div class="popup-content">
+                        <p>ここに内容</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="div6">
+            <div class="container">
+              <div class="rightbox">
+                <div class="rb-container">
+                  <ul class="rb">
+                    <li class="rb-item" ng-repeat="itembx">
+                      <div class="titlecontent">
+                        <div class="timestamp">
+                          3rd May 2020<br> 7:00 PM
+                        </div>
+                        <div class="item-title">Chris Serrano posted a photo on
+                          your
+                          wall.</div>
+                      </div>
+                      <div class="popup-content">
+                        <p>ここに内容</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="div7">
+            <div class="container">
+              <div class="rightbox">
+                <div class="rb-container">
+                  <ul class="rb">
+                    <li class="rb-item" ng-repeat="itembx">
+                      <div class="titlecontent">
+                        <div class="timestamp">
+                          3rd May 2020<br> 7:00 PM
+                        </div>
+                        <div class="item-title">Chris Serrano posted a photo on
+                          your
+                          wall.</div>
+                      </div>
+                      <div class="popup-content">
+                        <p>ここに内容</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="div8">
+            <div class="container">
+              <div class="rightbox">
+                <div class="rb-container">
+                  <ul class="rb">
+                    <li class="rb-item" ng-repeat="itembx">
+                      <div class="titlecontent">
+                        <div class="timestamp">
+                          3rd May 2020<br> 7:00 PM
+                        </div>
+                        <div class="item-title">Chris Serrano posted a photo on
+                          your
+                          wall.</div>
+                      </div>
+                      <div class="popup-content">
+                        <p>ここに内容</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+      <script>
+        // .popup-content を取得
+        const popups = document.querySelectorAll('.popup-content');
+        const items = document.querySelectorAll('.rb-item');
+        let currentIndex = 0;
+
+     // 最初の .popup-content を表示
+     popups[currentIndex].classList.add('visible');
+     items[currentIndex].classList.add('visible');
+
+// 他の要素をすべて非表示にする関数
+function closeAllPopups() {
+    popups.forEach(popup => popup.classList.remove('visible'));
+    items.forEach(item => item.classList.remove('visible'));
+}
+
+// 次の .popup-content を表示する関数
+function openNextPopup() {
+    if (currentIndex < popups.length - 1) {
+        currentIndex++;
+    } else {
+        currentIndex = 0; // 一番下まで行ったら最初に戻る
+    }
+    closeAllPopups();
+    popups[currentIndex].classList.add('visible');
+    items[currentIndex].classList.add('visible');
+}
+
+// 前の .popup-content を表示する関数
+function openPreviousPopup() {
+    if (currentIndex > 0) {
+        currentIndex--;
+    } else {
+        currentIndex = popups.length - 1; // 一番上まで行ったら最後に戻る
+    }
+    closeAllPopups();
+    popups[currentIndex].classList.add('visible');
+    items[currentIndex].classList.add('visible');
+}
+
+// キー操作とスクロールを検知して次の .popup-content を開く
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') {
+        openNextPopup();
+    } else if (event.key === 'ArrowUp') {
+        openPreviousPopup();
+    }
+});
+
+// スクロールイベントの検知
+let scrollTimeout;
+window.addEventListener('wheel', (event) => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        if (event.deltaY > 0) {
+            openNextPopup();
+        } else {
+            openPreviousPopup();
+        }
+    }, 150);
+});
+
+let startX = 0;
+let startY = 0;
+
+window.addEventListener('touchstart', (event) => {
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+});
+
+window.addEventListener('touchend', (event) => {
+    const endX = event.changedTouches[0].clientX;
+    const endY = event.changedTouches[0].clientY;
+
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+
+    // 縦方向のスワイプが多い場合のみ判定
+    if (Math.abs(diffY) > Math.abs(diffX)) {
+        if (diffY < 0) {
+            openNextPopup(); // 下方向スワイプ
+        } else {
+            openPreviousPopup(); // 上方向スワイプ
+        }
+    }
+});
+
+</script>
+    </body>
+  </html>
