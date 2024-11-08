@@ -136,33 +136,35 @@
             svg.transition().duration(750).attr("viewBox", `${x0 - padding} ${y0 - padding} ${x1 - x0 + 2 * padding} ${y1 - y0 + 2 * padding}`);
         }
 
-    window.nextMarker = function() {
-        if (currentIndex < locations.length - 1) {
-            historyStack.push(currentIndex);
-            clearPopups();
-            drawConnections(currentIndex);
-            //updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
-            const validNextLocations = locations[currentIndex].nextp
+window.nextMarker = function() {
+    if (currentIndex < locations.length - 1) {
+        historyStack.push(currentIndex);
+        clearPopups();
+        drawConnections(currentIndex);
+
+        const validNextLocations = locations[currentIndex].nextp
             .filter(i => i !== "none" && i < locations.length)
             .map(i => locations[i]);
-            updateMapToFit([locations[currentIndex], ...validNextLocations]);       
-            currentIndex++;
-        }
-    }
 
+        updateMapToFit([locations[currentIndex], ...validNextLocations]);
+
+        currentIndex++;
+    }
+}
 
 window.prevMarker = function() {
     if (historyStack.length > 0) {
         clearPopups();
 
-        // 現在のインデックスから描かれた矢印を削除
-        const linesToRemove = drawnLines.splice(historyStack.length);
+        // Remove arrows drawn from the current index
+        const linesToRemove = drawnLines.splice(drawnLines.length - locations[currentIndex].nextp.length);
         linesToRemove.forEach(line => line.remove());
 
         currentIndex = historyStack.pop();
+
+        // Redraw connections for the new current index
         drawConnections(currentIndex);
 
-        // Ensure valid indices for updateMapToFit
         const validNextLocations = locations[currentIndex].nextp
             .filter(i => i !== "none" && i < locations.length)
             .map(i => locations[i]);
@@ -171,11 +173,11 @@ window.prevMarker = function() {
     } else {
         // 初期状態に戻す
         clearPopups();
-        
+
         // 全ての矢印を削除
         drawnLines.forEach(line => line.remove());
         drawnLines.length = 0;
-        
+
         currentIndex = 0;
         showPopup(locations[currentIndex]);
     }
