@@ -247,7 +247,6 @@ locations.forEach(function(location,index) {
   var marker = L.marker(location.latlng).addTo(map);
             marker.bindPopup(location.popup, { autoClose: false });
             markers.push(marker);
-        });
     // Show popup on hover
     marker.on('mouseover', function() {
         if(!slidePopups[index]){
@@ -266,6 +265,8 @@ locations.forEach(function(location,index) {
         }
     });
       });
+
+      
 
     markers.push(marker);
 
