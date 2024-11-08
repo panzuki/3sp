@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +13,13 @@
         .marker { fill: red; cursor: pointer; }
         .line { stroke: #888; stroke-width: 2px; fill: none; marker-end: url(#arrow); }
         .popup { background: white; padding: 5px; border-radius: 5px; position: absolute; pointer-events: none; font-size: 12px; }
+        .popup::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
     </style>
 </head>
 <body>
@@ -35,6 +42,7 @@
     ];
 
     let currentIndex = 0;
+    const drawnLines = [];
 
     const width = document.getElementById('map').offsetWidth;
     const height = document.getElementById('map').offsetHeight;
@@ -95,7 +103,6 @@
             currentLocation.nextp.forEach(nextIndex => {
                 if (nextIndex !== "none") {
                     const destination = locations[nextIndex];
-
                     const line = svg.append("path")
                         .attr("class", "line")
                         .attr("d", generateCurvePath(
@@ -104,27 +111,40 @@
                         ));
 
                     showPopup(destination);
+                    drawnLines.push(line);
                 }
             });
         }
 
         function generateCurvePath(start, end) {
             const controlX = (start[0] + end[0]) / 2;
-            const controlY = Math.min(start[1], end[1]) - 30;  // Curve control point
+            const controlY = start[1] < end[1] ? start[1] - 30 : end[1] - 30;
             return `M${start[0]},${start[1]} Q${controlX},${controlY} ${end[0]},${end[1]}`;
+        }
+
+        function updateMapToFit(locations) {
+            const coordinates = locations.map(d => projection(d.latlng));
+            const [[x0, y0], [x1, y1]] = d3.extent(coordinates, d => [d[0], d[1]]);
+            svg.transition().duration(750).attr("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
         }
 
         window.nextMarker = function() {
             if (currentIndex < locations.length - 1) {
                 currentIndex++;
+                drawnLines.forEach(line => line.remove());
+                drawnLines.length = 0;
                 drawConnections(currentIndex);
+                updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
             }
         }
 
         window.prevMarker = function() {
             if (currentIndex > 0) {
                 currentIndex--;
+                drawnLines.forEach(line => line.remove());
+                drawnLines.length = 0;
                 drawConnections(currentIndex);
+                updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
             }
         }
     });
