@@ -194,7 +194,8 @@
   
     <div id="map"></div>
     <input type="range" id="slider" min="0" max="4" value="0" step="1" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.curve/0.3.0/leaflet.curve.min.js"></script>
     <script>
       // Initialize the map and set its view
 var map = L.map('map').setView([33.5, 44.4], 3); // Starting at Fertile Crescent (Iraq)
@@ -241,6 +242,43 @@ locations.forEach(function(location,index) {
     markers.push(marker);
 });
 
+      
+L.Control.Buttons = L.Control.extend({
+    onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+
+        var backButton = L.DomUtil.create('a', '', container);
+        backButton.innerHTML = '◀';
+        backButton.style.cursor = 'pointer';
+        backButton.style.marginRight = '5px';
+        backButton.onclick = function() {
+            if (slider.value > 0) {
+                slider.value = parseInt(slider.value) - 1;
+                moveToMarker(parseInt(slider.value));
+            }
+        };
+
+        var forwardButton = L.DomUtil.create('a', '', container);
+        forwardButton.innerHTML = '▶';
+        forwardButton.style.cursor = 'pointer';
+        forwardButton.onclick = function() {
+            if (slider.value < locations.length - 1) {
+                slider.value = parseInt(slider.value) + 1;
+                moveToMarker(parseInt(slider.value));
+            }
+        };
+
+        return container;
+    }
+});
+
+L.control.buttons = function(opts) {
+    return new L.Control.Buttons(opts);
+}
+
+L.control.buttons({ position: 'topright' }).addTo(map);
+      
+      
 var activePopups = [];
 
 function showPopup(marker, content, index) {
@@ -266,28 +304,20 @@ var polylines = [];
 var layers = {};
 
 // Function to draw an arrow (polyline) between markers and save it to the array
-function drawArrow(startLatLng, endLatLng,startndex,endIndex,group) {
-    var startLat = startLatLng[0];
-    var startLng = startLatLng[1];
-    var endLat = endLatLng[0];
-    var endLng = endLatLng[1];
+function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
+    var controlPointLatLng = [
+        (startLatLng[0] + endLatLng[0]) / 2,
+        (startLatLng[1] + endLatLng[1]) / 2 + 10 // Adjust the control point for curve
+    ];
 
-    // Coordinates for the right-angle path:
-    // Step 1: Move horizontally first
-    var midLatLng1 = [startLat, endLng]; // Move horizontally to the same longitude as the end point
-    // Step 2: Move vertically
-    var midLatLng2 = [endLat, endLng]; // Move vertically to the end point
+    var path = [
+        'M', startLatLng,
+        'Q', controlPointLatLng, endLatLng
+    ];
 
-    // Create the polyline path
-    var path = [startLatLng, midLatLng1, midLatLng2]; // Path combining the two steps
-
-    // Draw the polyline on the map
-    var polyline = L.polyline(path, { color: 'blue', weight: 2 }).addTo(map);
-    //var polyline = L.polyline([start, end], {color: 'orange'}).addTo(map);
-    //polylines.push(polyline);
-    layers[group].addLayer(polyline);
+    var curve = L.curve(path, { color: 'blue', weight: 2 }).addTo(map);
+    layers[group].addLayer(curve);
 }
-
 // Current marker index to track user's position
 var currentIndex = 0;
 
