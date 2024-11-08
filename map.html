@@ -56,8 +56,8 @@
         .attr("d", "M0,-5L10,0L0,5")
         .attr("fill", "#888");
 
-    // Load and draw world map
-    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2.0.0/world/110m.json").then(worldData => {
+    // Load and draw world map from a reliable source
+    d3.json("https://unpkg.com/world-atlas@1.1.4/world/110m.json").then(worldData => {
         const countries = topojson.feature(worldData, worldData.objects.countries);
         svg.append("g")
             .selectAll("path")
