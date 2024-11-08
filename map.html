@@ -141,7 +141,11 @@
             historyStack.push(currentIndex);
             clearPopups();
             drawConnections(currentIndex);
-            updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
+            //updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
+            const validNextLocations = locations[currentIndex].nextp
+            .filter(i => i !== "none" && i < locations.length)
+            .map(i => locations[i]);
+            updateMapToFit([locations[currentIndex], ...validNextLocations]);       
             currentIndex++;
         }
     }
