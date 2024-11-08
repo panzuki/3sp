@@ -258,13 +258,13 @@ locations.forEach(function(location,index) {
         }
         marker.openPopup();
     });
+      
     marker.on('mouseout', function() {
         if(!slidePopups[index]){ 
             map.closePopup();
         }
     });
     markers.push(marker);
-});
 
       
 L.Control.Buttons = L.Control.extend({
