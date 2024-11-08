@@ -248,7 +248,6 @@ locations.forEach(function(location,index) {
             marker.bindPopup(location.popup, { autoClose: false });
             markers.push(marker);
         });
-      
     // Show popup on hover
     marker.on('mouseover', function() {
         if(!slidePopups[index]){
@@ -266,6 +265,7 @@ locations.forEach(function(location,index) {
             map.closePopup();
         }
     });
+      });
 
     markers.push(marker);
 
