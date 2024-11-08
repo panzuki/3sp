@@ -149,15 +149,19 @@
     window.prevMarker = function() {
         if (historyStack.length > 0) {
             clearPopups();
-            drawnLines.forEach(line => line.remove());
-            drawnLines.length = 0;
-            
+
+            // 現在のインデックスから描かれた矢印を削除
+            const linesToRemove = drawnLines.splice(historyStack.length);
+            linesToRemove.forEach(line => line.remove());
+
             currentIndex = historyStack.pop();
             drawConnections(currentIndex);
             updateMapToFit([locations[currentIndex], ...locations[currentIndex].nextp.map(i => locations[i])]);
         } else {
             // 初期状態に戻す
             clearPopups();
+            
+            // 全ての矢印を削除
             drawnLines.forEach(line => line.remove());
             drawnLines.length = 0;
             
