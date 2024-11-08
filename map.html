@@ -195,44 +195,8 @@
     <div id="map"></div>
     <input type="range" id="slider" min="0" max="4" value="0" step="1" />
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.curve/0.3.0/leaflet.curve.min.js"></script>
     <script>
-      
-L.Curve = L.Path.extend({
-    options: {},
-    initialize: function(path, options) {
-        L.setOptions(this, options);
-        this._setPath(path);
-    },
-    getPath: function() {
-        return this._path;
-    },
-    _setPath: function(path) {
-        this._path = path;
-        this._bounds = this._computeBounds();
-    },
-    _computeBounds: function() {
-        var bounds = new L.LatLngBounds();
-        var path = this._path;
-        for (var i = 0; i < path.length; i++) {
-            bounds.extend(path[i]);
-        }
-        return bounds;
-    },
-    _project: function() {
-        var path = this._path;
-        this._rings = [];
-        for (var i = 0; i < path.length; i++) {
-            this._rings.push(this._map.latLngToLayerPoint(path[i]));
-        }
-    },
-    _update: function() {
-        if (!this._map) { return; }
-        this._updatePath();
-    },
-    _updatePath: function() {
-        this._renderer._updateCurve(this);
-    }
-});
 
 L.curve = function(path, options) {
     return new L.Curve(path, options);
