@@ -182,11 +182,12 @@ window.prevMarker = function() {
         showPopup(locations[currentIndex]);
     }
 }
+
+function clearPopups() {
+    popups.forEach(popup => popup.remove());
+    popups.length = 0;
+}
         
-    function clearPopups() {
-        popups.forEach(popup => popup.remove());
-        popups.length = 0;
-    }
 });
 </script>
 </body>
