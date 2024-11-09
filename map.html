@@ -309,12 +309,15 @@ L.control.buttons({ position: 'topright' }).addTo(map);
 var activePopups = [];
 
 function showPopup(marker, content, index) {
-    var popup = L.popup()
+    var popup = L.popup({
+      autoClose:false,
+      closeOnClick:false
+    })
         .setLatLng(marker.getLatLng())
         .setContent(content)
         .openOn(map);
 
-    slidePopups[index] = popup;
+    // slidePopups[index] = popup;
     // Add the popup to active popups list (this prevents it from being closed when another popup opens)
     activePopups.push(popup);
 }
@@ -349,56 +352,71 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
 var currentIndex = 0;
 
 // Function to move to the specific marker, draw an arrow, and manage popups
-function moveToMarker(index) {
+  function moveToMarker(index) {
     if (index > currentIndex) {
-        // Draw arrows and open popups for all points between currentIndex and the new index
-        var start = locations[currentIndex].latlng;
-        layers[currentIndex] = L.layerGroup();
-        // console.log('Length'+locations[currentIndex].nextp.length);
-        locations[currentIndex].nextp.forEach(nextpv =>{
-            if (nextpv === "none") {
-                
-            }else{
-                // console.log(locations[currentIndex].nextp[j]);
+        // 新しいポップアップを表示
+        locations[currentIndex].nextp.forEach(nextpv => {
+            if (nextpv !== "none") {
                 var next = nextpv;
-                drawArrow(start, locations[next].latlng, currentIndex, next, currentIndex);
-                showPopup(markers[next],locations[next].popup,next)
-                //markers[next].openPopup();
+                drawArrow(locations[currentIndex].latlng, locations[next].latlng, currentIndex, next, currentIndex);
+                showPopup(markers[next], locations[next].popup, next);
             }
         });
-        map.addLayer(layers[currentIndex]);
     } else if (index < currentIndex) {
-        // Remove arrows and close popups when moving backwards
-        //for (var i = polylines.length - 1; i >= index; i--) {
-         //   map.removeLayer(polylines[i]);
-          //  polylines.pop();
-        //}
-        // Close popups after the new index
-        map.removeLayer(layers[index]);
-        closeAllPopups();
-        if(index==0){
-            showPopup(markers[0],locations[0].popup,0);
-        }else{
-            locations[index-1].nextp.forEach(backpv =>{
-                // if (backpv === "none") {
-                    // showPopup(markers[back],locations[back].popup,back)
-                // }else{
-                    // console.log(locations[currentIndex].nextp[j]);
-                    var back = backpv;
-                    showPopup(markers[back],locations[back].popup,back)
-                    //markers[next].openPopup();
-                // }
+        // 不要なポップアップを閉じる
+        closePopupsAfterIndex(index);
+        
+        // 新しい位置のポップアップを表示
+        if (index == 0) {
+            showPopup(markers[0], locations[0].popup, 0);
+        } else {
+            locations[index-1].nextp.forEach(backpv => {
+                var back = backpv;
+                showPopup(markers[back], locations[back].popup, back);
             });
         }
-        
-//        for (var i = currentIndex; i > index; i--) {
-//            markers[i].closePopup();
-//       }
-        // Open the appropriate popup for the new index
-//        markers[index].openPopup();
     }
     currentIndex = index;
 }
+
+      function closePopupsAfterIndex(index) {
+    activePopups = activePopups.filter((popup, i) => {
+        if (i > index) {
+            map.closePopup(popup);
+            return false;
+        }
+        return true;
+    });
+}
+      
+// function moveToMarker(index) {
+//     if (index > currentIndex) {
+//         var start = locations[currentIndex].latlng;
+//         layers[currentIndex] = L.layerGroup();
+//         locations[currentIndex].nextp.forEach(nextpv =>{
+//             if (nextpv === "none") {
+                
+//             }else{
+//                 var next = nextpv;
+//                 drawArrow(start, locations[next].latlng, currentIndex, next, currentIndex);
+//                 showPopup(markers[next],locations[next].popup,next)
+//             }
+//         });
+//         map.addLayer(layers[currentIndex]);
+//     } else if (index < currentIndex) {
+//         map.removeLayer(layers[index]);
+//         closeAllPopups();
+//         if(index==0){
+//             showPopup(markers[0],locations[0].popup,0);
+//         }else{
+//             locations[index-1].nextp.forEach(backpv =>{
+//                     var back = backpv;
+//                     showPopup(markers[back],locations[back].popup,back)
+//             });
+//         }
+//     }
+//     currentIndex = index;
+// }
 
 // Add slider control
 var slider = document.getElementById('slider');
