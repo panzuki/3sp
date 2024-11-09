@@ -331,19 +331,23 @@ function closeAllPopups() {
 var polylines = [];
 var layers = {};
 function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
-    // 中間点の計算
-    var midLat = (startLatLng[0] + endLatLng[0]) / 2;
-    var midLng = (startLatLng[1] + endLatLng[1]) / 2;
+    // 90度の曲がり角の中間点を計算
+    var midLat = startLatLng[0];
+    var midLng = endLatLng[1];
 
-    // 丸い角を作るための制御点
-    var controlPoint1 = [midLat, startLatLng[1]];
-    var controlPoint2 = [endLatLng[0], midLng];
+    // 角を丸くするための半径を定義
+    var cornerRadius = 0.01; // この値を調整して丸みを変更
 
-    // 丸い角のためのパス設定
+    // 丸い角のための制御点を計算
+    var controlPoint1 = [midLat + cornerRadius, startLatLng[1]];
+    var controlPoint2 = [midLat, midLng - cornerRadius];
+
+    // 直線と丸い角を含むパスを定義
     var path = [
         'M', startLatLng,
-        'Q', controlPoint1, [midLat, midLng],
-        'Q', controlPoint2, endLatLng
+        'L', controlPoint1,
+        'Q', [midLat, midLng], controlPoint2,
+        'L', endLatLng
     ];
 
     var curve = L.curve(path, { 
@@ -358,14 +362,14 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     }
     layers[group].addLayer(curve);
 
-    // 矢印の先端を追加
+    // 終点に矢印の先端を追加
     var arrowHead = L.polyline([[endLatLng[0], endLatLng[1]], [endLatLng[0], endLatLng[1]]], {
         color: 'blue',
         weight: 2,
         opacity: 0.8,
     });
 
-    var arrowAngle = Math.atan2(endLatLng[0] - controlPoint2[0], endLatLng[1] - controlPoint2[1]);
+    var arrowAngle = Math.atan2(endLatLng[0] - midLat, endLatLng[1] - midLng);
     var arrowLength = 0.6;
 
     var arrowPoint1 = [
@@ -379,7 +383,7 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
 
     arrowHead.setLatLngs([arrowPoint1, endLatLng, arrowPoint2]);
     layers[group].addLayer(arrowHead);
-              }
+}
 // function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
 //     var controlPointLatLng = [
 //         (startLatLng[0] + endLatLng[0]) / 2,
