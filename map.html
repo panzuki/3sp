@@ -344,7 +344,7 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     var curve = L.curve(path, { color: 'blue', weight: 2 });
     
     if (!layers[group]) {
-        layers[group] = L.layerGroup();
+        layers[group] = L.layerGroup(curve);
         map.addLayer(layers[group]);
     }
     layers[group].addLayer(curve);
