@@ -340,12 +340,12 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     
     // 緩やかなアールをつけるための制御点の計算
     var controlPoint1 = [
-        startLatLng[0] + latDiff * 0.25,
+        startLatLng[0] + latDiff * 0.1,
         startLatLng[1]
     ];
     var controlPoint2 = [
         endLatLng[0],
-        startLatLng[1] + lngDiff * 0.25
+        startLatLng[1] + lngDiff * 0.1
     ];
 
     var path = [
