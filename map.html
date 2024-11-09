@@ -382,7 +382,7 @@ function moveToMarker(index) {
 
     // 矢印を削除
     for (var i in layers) {
-        if (layers.hasOwnProperty(i) && parseInt(i) > index) {
+        if (layers.hasOwnProperty(i) && parseInt(i) >= Math.min(index, currentIndex)) {
             map.removeLayer(layers[i]);
             delete layers[i];
         }
@@ -390,33 +390,34 @@ function moveToMarker(index) {
 
     if (index > currentIndex) {
         // 前進処理
-        var start = locations[currentIndex].latlng;
-        
-        if (!layers[currentIndex]) {
-            layers[currentIndex] = L.layerGroup();
-            map.addLayer(layers[currentIndex]);
-        }
-        
-        locations[currentIndex].nextp.forEach(nextpv => {
-            if (nextpv !== "none") {
-                var next = nextpv;
-                drawArrow(start, locations[next].latlng, currentIndex, next, currentIndex);
-                showPopup(markers[next], locations[next].popup, next);
+        for (let i = currentIndex; i < index; i++) {
+            var start = locations[i].latlng;
+            
+            if (!layers[i]) {
+                layers[i] = L.layerGroup();
+                map.addLayer(layers[i]);
             }
-        });
-    } else {
-        // 後退処理（index <= currentIndex）
-        // 新しい位置のポップアップを表示
-        if (index == 0) {
-            showPopup(markers[0], locations[0].popup, 0);
-        } else {
-            locations[index].nextp.forEach(nextpv => {
+            
+            locations[i].nextp.forEach(nextpv => {
                 if (nextpv !== "none") {
-                    showPopup(markers[nextpv], locations[nextpv].popup, nextpv);
+                    var next = nextpv;
+                    drawArrow(start, locations[next].latlng, i, next, i);
                 }
             });
         }
     }
+
+    // 新しい位置のポップアップを表示
+    if (index == 0) {
+        showPopup(markers[0], locations[0].popup, 0);
+    } else {
+        locations[index].nextp.forEach(nextpv => {
+            if (nextpv !== "none") {
+                showPopup(markers[nextpv], locations[nextpv].popup, nextpv);
+            }
+        });
+    }
+
     currentIndex = index;
 }
 // function moveToMarker(index) {
@@ -533,12 +534,12 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
         if (currentIndex < locations.length - 1) {
             moveToMarker(currentIndex + 1);
-            slider.value = currentIndex;
+            slider.value = currentIndex + 1;
         }
     } else if (event.key === 'ArrowLeft') {
         if (currentIndex > 0) {
             moveToMarker(currentIndex - 1);
-            slider.value = currentIndex;
+            slider.value = currentIndex - 1;
         }
     }
 });
