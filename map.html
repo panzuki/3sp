@@ -337,14 +337,20 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     // 制御点の調整
     var latDiff = endLatLng[0] - startLatLng[0];
     var lngDiff = endLatLng[1] - startLatLng[1];
-    var curveFactor = 0.5; // カーブの強さを調整
-
-    var controlPointLat = midLat + lngDiff * curveFactor;
-    var controlPointLng = midLng - latDiff * curveFactor;
+    
+    // 緩やかなアールをつけるための制御点の計算
+    var controlPoint1 = [
+        startLatLng[0] + latDiff * 0.25,
+        startLatLng[1]
+    ];
+    var controlPoint2 = [
+        endLatLng[0],
+        startLatLng[1] + lngDiff * 0.25
+    ];
 
     var path = [
         'M', startLatLng,
-        'Q', [controlPointLat, controlPointLng], endLatLng
+        'C', controlPoint1, controlPoint2, endLatLng
     ];
 
     var curve = L.curve(path, { 
@@ -366,7 +372,8 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
         opacity: 0.8,
     });
 
-    var arrowAngle = Math.atan2(endLatLng[0] - controlPointLat, endLatLng[1] - controlPointLng);
+    // 矢印の角度計算はそのまま使用
+    var arrowAngle = Math.atan2(endLatLng[0] - controlPoint2[0], endLatLng[1] - controlPoint2[1]);
     var arrowLength = 0.6; // 矢印の長さを調整
 
     var arrowPoint1 = [
