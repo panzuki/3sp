@@ -534,12 +534,12 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowRight') {
         if (currentIndex < locations.length - 1) {
             moveToMarker(currentIndex + 1);
-            slider.value = currentIndex + 1;
+            slider.value = currentIndex ;
         }
     } else if (event.key === 'ArrowLeft') {
         if (currentIndex > 0) {
             moveToMarker(currentIndex - 1);
-            slider.value = currentIndex - 1;
+            slider.value = currentIndex ;
         }
     }
 });
