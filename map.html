@@ -326,7 +326,7 @@ function closeAllPopups() {
     activePopups.forEach(function(popup) {
         map.closePopup(popup);
     });
-    activePopups = [];  // Clear the list
+    activePopups = [];  // リストをクリア
 }
 
 // Array to keep track of all drawn arrows (polylines)
@@ -360,11 +360,13 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
 var currentIndex = 0;
 
 function moveToMarker(index) {
+    // 全てのポップアップを一旦閉じる
+    closeAllPopups();
+
     if (index > currentIndex) {
-        // Draw arrows and open popups for all points between currentIndex and the new index
+        // 前進処理
         var start = locations[currentIndex].latlng;
         
-        // レイヤーグループが存在しない場合のみ新しく作成
         if (!layers[currentIndex]) {
             layers[currentIndex] = L.layerGroup();
             map.addLayer(layers[currentIndex]);
@@ -378,7 +380,24 @@ function moveToMarker(index) {
             }
         });
     } else if (index < currentIndex) {
-        // 以下の処理は変更なし
+        // 後退処理
+        // 矢印を削除
+        for (var i = index + 1; i <= currentIndex; i++) {
+            if (layers[i]) {
+                map.removeLayer(layers[i]);
+            }
+        }
+        
+        // 新しい位置のポップアップを表示
+        if (index == 0) {
+            showPopup(markers[0], locations[0].popup, 0);
+        } else {
+            locations[index].nextp.forEach(nextpv => {
+                if (nextpv !== "none") {
+                    showPopup(markers[nextpv], locations[nextpv].popup, nextpv);
+                }
+            });
+        }
     }
     currentIndex = index;
 }
