@@ -331,24 +331,75 @@ function closeAllPopups() {
 var polylines = [];
 var layers = {};
 function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
-    var controlPointLatLng = [
-        (startLatLng[0] + endLatLng[0]) / 2,
-        (startLatLng[1] + endLatLng[1]) / 2 + 0.01 // 曲線の制御点を調整
-    ];
+    var midLat = (startLatLng[0] + endLatLng[0]) / 2;
+    var midLng = (startLatLng[1] + endLatLng[1]) / 2;
+    
+    // 制御点の調整
+    var latDiff = endLatLng[0] - startLatLng[0];
+    var lngDiff = endLatLng[1] - startLatLng[1];
+    var curveFactor = 0.2; // カーブの強さを調整
+
+    var controlPointLat = midLat + lngDiff * curveFactor;
+    var controlPointLng = midLng - latDiff * curveFactor;
 
     var path = [
         'M', startLatLng,
-        'Q', controlPointLatLng, endLatLng
+        'Q', [controlPointLat, controlPointLng], endLatLng
     ];
 
-    var curve = L.curve(path, { color: 'blue', weight: 2 });
+    var curve = L.curve(path, { 
+        color: 'blue', 
+        weight: 2,
+        fill: false,
+        dashArray: '5, 5' // 点線にする
+    });
     
     if (!layers[group]) {
-        layers[group] = L.layerGroup(curve);
-        map.addLayer(layers[group]);
+        layers[group] = L.layerGroup().addTo(map);
     }
     layers[group].addLayer(curve);
+
+    // 矢印の先端を追加
+    var arrowHead = L.polyline([[endLatLng[0], endLatLng[1]], [endLatLng[0], endLatLng[1]]], {
+        color: 'blue',
+        weight: 2,
+        opacity: 0.8,
+    });
+
+    var arrowAngle = Math.atan2(endLatLng[0] - controlPointLat, endLatLng[1] - controlPointLng);
+    var arrowLength = 0.2; // 矢印の長さを調整
+
+    var arrowPoint1 = [
+        endLatLng[0] - arrowLength * Math.sin(arrowAngle - Math.PI/6),
+        endLatLng[1] - arrowLength * Math.cos(arrowAngle - Math.PI/6)
+    ];
+    var arrowPoint2 = [
+        endLatLng[0] - arrowLength * Math.sin(arrowAngle + Math.PI/6),
+        endLatLng[1] - arrowLength * Math.cos(arrowAngle + Math.PI/6)
+    ];
+
+    arrowHead.setLatLngs([arrowPoint1, endLatLng, arrowPoint2]);
+    layers[group].addLayer(arrowHead);
 }
+// function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
+//     var controlPointLatLng = [
+//         (startLatLng[0] + endLatLng[0]) / 2,
+//         (startLatLng[1] + endLatLng[1]) / 2 + 0.01 // 曲線の制御点を調整
+//     ];
+
+//     var path = [
+//         'M', startLatLng,
+//         'Q', controlPointLatLng, endLatLng
+//     ];
+
+//     var curve = L.curve(path, { color: 'blue', weight: 2 });
+    
+//     if (!layers[group]) {
+//         layers[group] = L.layerGroup(curve);
+//         map.addLayer(layers[group]);
+//     }
+//     layers[group].addLayer(curve);
+// }
 // Function to draw an arrow (polyline) between markers and save it to the array
 // function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
 //     var controlPointLatLng = [
