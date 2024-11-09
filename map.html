@@ -367,7 +367,7 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     });
 
     var arrowAngle = Math.atan2(endLatLng[0] - controlPointLat, endLatLng[1] - controlPointLng);
-    var arrowLength = 0.4; // 矢印の長さを調整
+    var arrowLength = 0.6; // 矢印の長さを調整
 
     var arrowPoint1 = [
         endLatLng[0] - arrowLength * Math.sin(arrowAngle - Math.PI/6),
