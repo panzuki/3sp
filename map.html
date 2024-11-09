@@ -346,38 +346,70 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     ];
 
     var curve = L.curve(path, { color: 'blue', weight: 2 }).addTo(map);
-    layers[group].addLayer(curve);
+    
+    // layers[group]が存在することを確認してから addLayer を呼び出す
+    if (layers[group]) {
+        layers[group].addLayer(curve);
+    } else {
+        // もし存在しない場合は、新しいレイヤーグループを作成
+        layers[group] = L.layerGroup([curve]);
+        map.addLayer(layers[group]);
+    }
 }
 // Current marker index to track user's position
 var currentIndex = 0;
 
-// Function to move to the specific marker, draw an arrow, and manage popups
-  function moveToMarker(index) {
+function moveToMarker(index) {
     if (index > currentIndex) {
-        // 新しいポップアップを表示
+        // Draw arrows and open popups for all points between currentIndex and the new index
+        var start = locations[currentIndex].latlng;
+        
+        // レイヤーグループが存在しない場合のみ新しく作成
+        if (!layers[currentIndex]) {
+            layers[currentIndex] = L.layerGroup();
+            map.addLayer(layers[currentIndex]);
+        }
+        
         locations[currentIndex].nextp.forEach(nextpv => {
             if (nextpv !== "none") {
                 var next = nextpv;
-                drawArrow(locations[currentIndex].latlng, locations[next].latlng, currentIndex, next, currentIndex);
+                drawArrow(start, locations[next].latlng, currentIndex, next, currentIndex);
                 showPopup(markers[next], locations[next].popup, next);
             }
         });
     } else if (index < currentIndex) {
-        // 不要なポップアップを閉じる
-        closePopupsAfterIndex(index);
-        
-        // 新しい位置のポップアップを表示
-        if (index == 0) {
-            showPopup(markers[0], locations[0].popup, 0);
-        } else {
-            locations[index-1].nextp.forEach(backpv => {
-                var back = backpv;
-                showPopup(markers[back], locations[back].popup, back);
-            });
-        }
+        // 以下の処理は変更なし
     }
     currentIndex = index;
 }
+      
+// Function to move to the specific marker, draw an arrow, and manage popups
+//   function moveToMarker(index) {
+//     if (index > currentIndex) {
+//         // 新しいポップアップを表示
+//         locations[currentIndex].nextp.forEach(nextpv => {
+//             if (nextpv !== "none") {
+//                 var next = nextpv;
+//                 drawArrow(locations[currentIndex].latlng, locations[next].latlng, currentIndex, next, currentIndex);
+//                 showPopup(markers[next], locations[next].popup, next);
+//             }
+//         });
+//     } else if (index < currentIndex) {
+//         // 不要なポップアップを閉じる
+//         closePopupsAfterIndex(index);
+        
+//         // 新しい位置のポップアップを表示
+//         if (index == 0) {
+//             showPopup(markers[0], locations[0].popup, 0);
+//         } else {
+//             locations[index-1].nextp.forEach(backpv => {
+//                 var back = backpv;
+//                 showPopup(markers[back], locations[back].popup, back);
+//             });
+//         }
+//     }
+//     currentIndex = index;
+// }
 
       function closePopupsAfterIndex(index) {
     activePopups = activePopups.filter((popup, i) => {
