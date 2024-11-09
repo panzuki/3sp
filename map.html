@@ -310,15 +310,13 @@ var activePopups = [];
 
 function showPopup(marker, content, index) {
     var popup = L.popup({
-      autoClose:false,
-      closeOnClick:false
+        autoClose: false,
+        closeOnClick: false
     })
-        .setLatLng(marker.getLatLng())
-        .setContent(content)
-        .openOn(map);
+    .setLatLng(marker.getLatLng())
+    .setContent(content)
+    .openOn(map);
 
-    // slidePopups[index] = popup;
-    // Add the popup to active popups list (this prevents it from being closed when another popup opens)
     activePopups.push(popup);
 }
       
@@ -400,7 +398,7 @@ function moveToMarker(index) {
             
             locations[i].nextp.forEach(nextpv => {
                 if (nextpv !== "none") {
-                    var next = nextpv;
+                    var next = parseInt(nextpv);
                     drawArrow(start, locations[next].latlng, i, next, i);
                 }
             });
@@ -411,15 +409,17 @@ function moveToMarker(index) {
     if (index == 0) {
         showPopup(markers[0], locations[0].popup, 0);
     } else {
-        locations[index].nextp.forEach(nextpv => {
+        locations[index - 1].nextp.forEach(nextpv => {
             if (nextpv !== "none") {
-                showPopup(markers[nextpv], locations[nextpv].popup, nextpv);
+                var next = parseInt(nextpv);
+                showPopup(markers[next], locations[next].popup, next);
             }
         });
     }
 
     currentIndex = index;
 }
+
 // function moveToMarker(index) {
 //     // 全てのポップアップを一旦閉じる
 //     closeAllPopups();
