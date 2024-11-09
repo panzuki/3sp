@@ -332,12 +332,10 @@ function closeAllPopups() {
 // Array to keep track of all drawn arrows (polylines)
 var polylines = [];
 var layers = {};
-
-// Function to draw an arrow (polyline) between markers and save it to the array
 function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
     var controlPointLatLng = [
         (startLatLng[0] + endLatLng[0]) / 2,
-        (startLatLng[1] + endLatLng[1]) / 2 + 10 // Adjust the control point for curve
+        (startLatLng[1] + endLatLng[1]) / 2 + 0.01 // 曲線の制御点を調整
     ];
 
     var path = [
@@ -345,23 +343,50 @@ function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
         'Q', controlPointLatLng, endLatLng
     ];
 
-    var curve = L.curve(path, { color: 'blue', weight: 2 }).addTo(map);
+    var curve = L.curve(path, { color: 'blue', weight: 2 });
     
-    // layers[group]が存在することを確認してから addLayer を呼び出す
-    if (layers[group]) {
-        layers[group].addLayer(curve);
-    } else {
-        // もし存在しない場合は、新しいレイヤーグループを作成
-        layers[group] = L.layerGroup([curve]);
+    if (!layers[group]) {
+        layers[group] = L.layerGroup();
         map.addLayer(layers[group]);
     }
+    layers[group].addLayer(curve);
 }
+// Function to draw an arrow (polyline) between markers and save it to the array
+// function drawArrow(startLatLng, endLatLng, startIndex, endIndex, group) {
+//     var controlPointLatLng = [
+//         (startLatLng[0] + endLatLng[0]) / 2,
+//         (startLatLng[1] + endLatLng[1]) / 2 + 0.01 // Adjust the control point for curve
+//     ];
+
+//     var path = [
+//         'M', startLatLng,
+//         'Q', controlPointLatLng, endLatLng
+//     ];
+
+//     var curve = L.curve(path, { color: 'blue', weight: 2 }).addTo(map);
+    
+//     // layers[group]が存在することを確認してから addLayer を呼び出す
+//     if (layers[group]) {
+//         layers[group].addLayer(curve);
+//     } else {
+//         // もし存在しない場合は、新しいレイヤーグループを作成
+//         layers[group] = L.layerGroup([curve]);
+//         map.addLayer(layers[group]);
+//     }
+// }
 // Current marker index to track user's position
 var currentIndex = 0;
-
 function moveToMarker(index) {
     // 全てのポップアップを一旦閉じる
     closeAllPopups();
+
+    // 矢印を削除
+    for (var i in layers) {
+        if (layers.hasOwnProperty(i) && parseInt(i) > index) {
+            map.removeLayer(layers[i]);
+            delete layers[i];
+        }
+    }
 
     if (index > currentIndex) {
         // 前進処理
@@ -379,15 +404,8 @@ function moveToMarker(index) {
                 showPopup(markers[next], locations[next].popup, next);
             }
         });
-    } else if (index < currentIndex) {
-        // 後退処理
-        // 矢印を削除
-        for (var i = index + 1; i <= currentIndex; i++) {
-            if (layers[i]) {
-                map.removeLayer(layers[i]);
-            }
-        }
-        
+    } else {
+        // 後退処理（index <= currentIndex）
         // 新しい位置のポップアップを表示
         if (index == 0) {
             showPopup(markers[0], locations[0].popup, 0);
@@ -401,6 +419,48 @@ function moveToMarker(index) {
     }
     currentIndex = index;
 }
+// function moveToMarker(index) {
+//     // 全てのポップアップを一旦閉じる
+//     closeAllPopups();
+
+//     if (index > currentIndex) {
+//         // 前進処理
+//         var start = locations[currentIndex].latlng;
+        
+//         if (!layers[currentIndex]) {
+//             layers[currentIndex] = L.layerGroup();
+//             map.addLayer(layers[currentIndex]);
+//         }
+        
+//         locations[currentIndex].nextp.forEach(nextpv => {
+//             if (nextpv !== "none") {
+//                 var next = nextpv;
+//                 drawArrow(start, locations[next].latlng, currentIndex, next, currentIndex);
+//                 showPopup(markers[next], locations[next].popup, next);
+//             }
+//         });
+//     } else if (index < currentIndex) {
+//         // 後退処理
+//         // 矢印を削除
+//         for (var i = index + 1; i <= currentIndex; i++) {
+//             if (layers[i]) {
+//                 map.removeLayer(layers[i]);
+//             }
+//         }
+        
+//         // 新しい位置のポップアップを表示
+//         if (index == 0) {
+//             showPopup(markers[0], locations[0].popup, 0);
+//         } else {
+//             locations[index].nextp.forEach(nextpv => {
+//                 if (nextpv !== "none") {
+//                     showPopup(markers[nextpv], locations[nextpv].popup, nextpv);
+//                 }
+//             });
+//         }
+//     }
+//     currentIndex = index;
+// }
       
 // Function to move to the specific marker, draw an arrow, and manage popups
 //   function moveToMarker(index) {
@@ -469,32 +529,51 @@ function moveToMarker(index) {
 //     currentIndex = index;
 // }
 
-// Add slider control
-var slider = document.getElementById('slider');
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowRight') {
+        if (currentIndex < locations.length - 1) {
+            moveToMarker(currentIndex + 1);
+            slider.value = currentIndex;
+        }
+    } else if (event.key === 'ArrowLeft') {
+        if (currentIndex > 0) {
+            moveToMarker(currentIndex - 1);
+            slider.value = currentIndex;
+        }
+    }
+});
+
 slider.addEventListener('input', function() {
     var index = parseInt(slider.value);
     moveToMarker(index);
 });
+      
+// Add slider control
+// var slider = document.getElementById('slider');
+// slider.addEventListener('input', function() {
+//     var index = parseInt(slider.value);
+//     moveToMarker(index);
+// });
 
-// Start by drawing multiple arrows from the first marker
-//markers[0].openPopup();
-showPopup(markers[0],locations[0].popup,0);
+// // Start by drawing multiple arrows from the first marker
+// //markers[0].openPopup();
+// showPopup(markers[0],locations[0].popup,0);
 
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'ArrowRight') {
-        // Increase slider value (move forward)
-        if (slider.value < locations.length - 1) {
-            slider.value = parseInt(slider.value) + 1;
-            moveToMarker(parseInt(slider.value));
-        }
-    } else if (event.key === 'ArrowLeft') {
-        // Decrease slider value (move backward)
-        if (slider.value > 0) {
-            slider.value = parseInt(slider.value) - 1;
-            moveToMarker(parseInt(slider.value));
-        }
-    }
-});
+// document.addEventListener('keydown', function(event) {
+//     if (event.key === 'ArrowRight') {
+//         // Increase slider value (move forward)
+//         if (slider.value < locations.length - 1) {
+//             slider.value = parseInt(slider.value) + 1;
+//             moveToMarker(parseInt(slider.value));
+//         }
+//     } else if (event.key === 'ArrowLeft') {
+//         // Decrease slider value (move backward)
+//         if (slider.value > 0) {
+//             slider.value = parseInt(slider.value) - 1;
+//             moveToMarker(parseInt(slider.value));
+//         }
+//     }
+// });
     </script>
 </body>
 </html>
