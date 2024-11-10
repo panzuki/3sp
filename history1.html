@@ -159,7 +159,7 @@ margin: 10px;
 grid-template-columns: min-content 1fr ;
 grid-template-rows: auto repeat(6, 1fr);
 grid-column-gap: 10px;
-grid-row-gap: 0;
+grid-row-gap: 1px;
 }
 .div1 { grid-area: 1 / 1 / 4 / 2; }
 .div2 { grid-area: 4 / 1 / 7 / 2; }
@@ -192,11 +192,10 @@ grid-row-gap: 0;
       
     .histnav{
         list-style: none;
-        padding: 35px;
+        margine:10px;
         color: #232931;
         font-size: 1.1em;
         display: block;
-      border:2px solid;
         transition: all 0.5s ease-in-out;
         position: -webkit-sticky; /* ←必要なもの */
         position: sticky; /* ←必要なもの */
