@@ -196,6 +196,7 @@ grid-row-gap: 0;
         color: #232931;
         font-size: 1.1em;
         display: block;
+      border:2px solid;
         transition: all 0.5s ease-in-out;
         position: -webkit-sticky; /* ←必要なもの */
         position: sticky; /* ←必要なもの */
@@ -308,6 +309,10 @@ grid-row-gap: 0;
       .rb-container ul.rb li.visible::before {
         border: 8px solid rgba(255, 255, 255, 1);
         transition: all 500ms ease-in-out;
+      }
+
+      .rb-container ul.rb li .visible{
+        border: 2px dashed ;
       }
 
     </style>
