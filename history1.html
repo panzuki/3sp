@@ -505,7 +505,7 @@ grid-row-gap: 1px;
       </main>
       <script>
         
- const observerOptions = {
+const observerOptions = {
     root: null, // ビューポートを基準にする
     rootMargin: '-100% 0px 0px 0px', // 要素が画面上部に来たときにトリガー
     threshold: 0 // 要素が少しでも表示されたときにトリガー
@@ -513,9 +513,20 @@ grid-row-gap: 1px;
 
 const observerCallback = (entries) => {
     entries.forEach(entry => {
+        const rbItems = entry.target.querySelectorAll('.rb-item');
+        const popupContents = entry.target.querySelectorAll('.popup-content');
+
         if (entry.isIntersecting) {
-            console.log(`${entry.target.className} is at the top of the screen`);
-            // Add your event logic here
+            // 交差している要素の子要素に'visible'クラスを追加
+            rbItems.forEach(item => item.classList.add('visible'));
+            popupContents.forEach(content => content.classList.add('visible'));
+
+            // 他のすべての要素から'visible'クラスを削除
+            document.querySelectorAll('.rb-item.visible, .popup-content.visible').forEach(element => {
+                if (!entry.target.contains(element)) {
+                    element.classList.remove('visible');
+                }
+            });
         }
     });
 };
