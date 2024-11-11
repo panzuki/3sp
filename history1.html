@@ -504,6 +504,34 @@ grid-row-gap: 1px;
         </div>
       </main>
       <script>
+        const observerOptions = {
+    root: null, // ビューポートを基準にする
+    rootMargin: '0px',
+    threshold: 0 // 要素が完全に表示されたときにトリガー
+};
+
+const observerCallback = (entries) => {
+    entries.forEach(entry => {
+        const rbItems = entry.target.querySelectorAll('.rb-item');
+        const popupContents = entry.target.querySelectorAll('.popup-content');
+
+        if (entry.isIntersecting) {
+            rbItems.forEach(item => item.classList.add('visible'));
+            popupContents.forEach(content => content.classList.add('visible'));
+        } else {
+            rbItems.forEach(item => item.classList.remove('visible'));
+            popupContents.forEach(content => content.classList.remove('visible'));
+        }
+    });
+};
+
+const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+document.querySelectorAll('.div3, .div4, .div5, .div6, .div7, .div8').forEach(div => {
+    observer.observe(div);
+});
+        
+        /×
         // .popup-content を取得
         const popups = document.querySelectorAll('.popup-content');
         const items = document.querySelectorAll('.rb-item');
@@ -589,7 +617,8 @@ window.addEventListener('touchend', (event) => {
         }
     }
 });
-
+×/
+  
 </script>
     </body>
   </html>
