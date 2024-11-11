@@ -505,23 +505,17 @@ grid-row-gap: 1px;
       </main>
       <script>
         
-      const observerOptions = {
+ const observerOptions = {
     root: null, // ビューポートを基準にする
-    rootMargin: '0px',
-    threshold: 0.1 // 要素が10%表示されたときにトリガー
+    rootMargin: '-100% 0px 0px 0px', // 要素が画面上部に来たときにトリガー
+    threshold: 0 // 要素が少しでも表示されたときにトリガー
 };
 
 const observerCallback = (entries) => {
     entries.forEach(entry => {
-        const rbItems = entry.target.querySelectorAll('.rb-item');
-        const popupContents = entry.target.querySelectorAll('.popup-content');
-
         if (entry.isIntersecting) {
-            rbItems.forEach(item => item.classList.add('visible'));
-            popupContents.forEach(content => content.classList.add('visible'));
-        } else {
-            rbItems.forEach(item => item.classList.remove('visible'));
-            popupContents.forEach(content => content.classList.remove('visible'));
+            console.log(`${entry.target.className} is at the top of the screen`);
+            // Add your event logic here
         }
     });
 };
@@ -530,7 +524,7 @@ const observer = new IntersectionObserver(observerCallback, observerOptions);
 
 document.querySelectorAll('.div3, .div4, .div5, .div6, .div7, .div8').forEach(div => {
     observer.observe(div);
-});  
+});
       /*
         // .popup-content を取
        const popups = document.querySelectorAll('.popup-content');
