@@ -504,10 +504,11 @@ grid-row-gap: 1px;
         </div>
       </main>
       <script>
-        const observerOptions = {
+        
+      const observerOptions = {
     root: null, // ビューポートを基準にする
     rootMargin: '0px',
-    threshold: 0 // 要素が完全に表示されたときにトリガー
+    threshold: 0.1 // 要素が10%表示されたときにトリガー
 };
 
 const observerCallback = (entries) => {
@@ -529,8 +530,7 @@ const observer = new IntersectionObserver(observerCallback, observerOptions);
 
 document.querySelectorAll('.div3, .div4, .div5, .div6, .div7, .div8').forEach(div => {
     observer.observe(div);
-});
-        
+});  
       /*
         // .popup-content を取
        const popups = document.querySelectorAll('.popup-content');
