@@ -250,27 +250,18 @@ position:relative;
     opacity: 1; /* 見えるようにする */
 }
 
-.silhouette {
-    position: absolute;
-    top: 25vh;
-    left: 0;
-    width: 25vw;  /* シルエットの幅 */
-    height: 50vh; /* シルエットの高さ */
-    background: url('https://panzuki.github.io/3sp/images/galaxy1.jpg') center center / cover no-repeat; /* 銀河の画像を背景に設定 */
-    clip-path: ellipse(50% 35% at 50% 50%); /* パンの形状にクリップパスでシルエットを作成 */
-    transition: background 0.3s ease; /* ホバー時の画像変更をスムーズにする */
-}
+ /* 元のスタイルはそのまま */
+        .silhouette {
+            position: absolute;
+            top: 25vh;
+            left: 0;
+            width: 25vw;
+            height: 50vh;
+            background: url('https://panzuki.github.io/3sp/images/galaxy1.jpg') center center / cover no-repeat;
+            clip-path: ellipse(50% 35% at 50% 50%);
+            transition: background 0.3s ease;
+	}
 
-/* 各リンクのホバー時にシルエットの画像を変更する */
-.box2:nth-child(1):hover ~ .silhouette {
-    background: url('https://panzuki.github.io/3sp/images/history.jpg') center center / cover no-repeat;
-}
-.box2:nth-child(2):hover ~ .silhouette {
-    background: url('https://panzuki.github.io/3sp/images/shorts.jpg') center center / cover no-repeat;
-}
-.box2:nth-child(3):hover ~ .silhouette {
-    background: url('https://panzuki.github.io/3sp/images/wheat.jpg') center center / cover no-repeat;
-}
 /* 	    canvas { background-color : rgba(255, 247, 240, 0.1);} */
 /* アニメーションの種類 */
 @keyframes slideInFromBottom {
@@ -327,9 +318,9 @@ position:relative;
 </div>
       
 <div class="container2" id="container2">
-　　　<div class="box2"><a href="history1.html">歴史1</a></div>
-      <div class="box2"><a href="short.html">小ネタ</a></div>
-      <div class="box2"><a href="map.html">小麦の伝来</a></div>
+　　　　　<div class="box2" data-image="https://panzuki.github.io/3sp/images/history.jpg"><a href="history1.html">歴史1</a></div>
+        <div class="box2" data-image="https://panzuki.github.io/3sp/images/shorts.jpg"><a href="short.html">小ネタ</a></div>
+        <div class="box2" data-image="https://panzuki.github.io/3sp/images/wheat.jpg"><a href="map.html">小麦の伝来</a></div>
     <div class="box2"><a href="saying.html">ことわざ</a></div>
     <div class="box2"><a href="#culture">文化</a></div>
     <div class="box2"><a href="review.html">レビュー</a></div>
@@ -348,7 +339,7 @@ position:relative;
       -->
 	  
 <script>
-
+const silhouette = document.getElementById('silhouette');
 const boxes = document.querySelectorAll('.box2');
 const hoverText = document.querySelector('.hover-text');
 
@@ -358,35 +349,18 @@ boxes.forEach(box => {
         hoverText.textContent = linkText; // hover-textに設定
         hoverText.style.transform = 'translateY(0px)'; // 初期位置を上に設定
         hoverText.style.opacity = '1'; // 表示する
+	const newImage = box.getAttribute('data-image');
+        silhouette.style.backgroundImage = `url('${newImage}')`;
     });
 
     box.addEventListener('mouseleave', () => {
         hoverText.style.transform = 'translateY(-40px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
+	silhouette.style.backgroundImage = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
     });
 });
 
-boxes.forEach((box, index) => {
-    box.addEventListener('mouseenter', () => {
-        const linkText = box.querySelector('a').textContent;
-        hoverText.textContent = linkText;
-        hoverText.style.transform = 'translateY(0px)';
-        hoverText.style.opacity = '1';
 
-        // リンクのアニメーション適用
-        const link = box.querySelector('a');
-        link.style.animationPlayState = 'running';
-    });
-
-    box.addEventListener('mouseleave', () => {
-        hoverText.style.transform = 'translateY(-40px)';
-        hoverText.style.opacity = '0';
-
-        // アニメーションをリセット
-        const link = box.querySelector('a');
-        link.style.animationPlayState = 'paused';
-    });
-});
 
 // const isArray = a => a instanceof Array;
 // const isNull = a => a == null;
