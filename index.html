@@ -259,7 +259,13 @@ position:relative;
             height: 50vh;
             background: url('https://panzuki.github.io/3sp/images/galaxy1.jpg') center center / cover no-repeat;
             clip-path: ellipse(50% 35% at 50% 50%);
-            transition: background 0.3s ease;
+            transition: opacity 0.5s ease, background 0.5s ease;
+            opacity: 1;
+        }
+
+        /* フェードアウト時に利用するクラス */
+        .fade-out {
+            opacity: 0;
 	}
 
 /* 	    canvas { background-color : rgba(255, 247, 240, 0.1);} */
@@ -295,16 +301,7 @@ position:relative;
     }
 }
 
-/* 各リンクに対するアニメーション */
-.box2:nth-child(1) a { /* スライドイン */
-    animation: slideInFromBottom 0.6s ease forwards;
-}
-.box2:nth-child(2) a { /* フェードイン */
-    animation: fadeIn 0.6s ease forwards;
-}
-.box2:nth-child(3) a { /* ズームイン */
-    animation: zoomIn 0.6s ease forwards;
-}
+
 
 /* その他のリンクも順番に追加していく */
 	    
@@ -350,13 +347,27 @@ boxes.forEach(box => {
         hoverText.style.transform = 'translateY(0px)'; // 初期位置を上に設定
         hoverText.style.opacity = '1'; // 表示する
 	const newImage = box.getAttribute('data-image');
-        silhouette.style.backgroundImage = `url('${newImage}')`;
+                        // フェードアウト
+                silhouette.classList.add('fade-out');
+
+                // 少し遅延して背景画像を変更し、フェードイン
+                setTimeout(() => {
+                    silhouette.style.backgroundImage = `url('${newImage}')`;
+                    silhouette.classList.remove('fade-out');
+                }, 300);
     });
 
     box.addEventListener('mouseleave', () => {
         hoverText.style.transform = 'translateY(-40px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
-	silhouette.style.backgroundImage = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
+	// フェードアウト
+                silhouette.classList.add('fade-out');
+
+                // 元の画像に戻す
+                setTimeout(() => {
+                    silhouette.style.backgroundImage = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
+                    silhouette.classList.remove('fade-out');
+                }, 300);
     });
 });
 
