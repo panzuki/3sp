@@ -250,11 +250,33 @@ position:relative;
     opacity: 1; /* 見えるようにする */
 }
 
+.silhouette {
+    position: absolute;
+    top: 25vh;
+    left: 0;
+    width: 25vw;  /* シルエットの幅 */
+    height: 50vh; /* シルエットの高さ */
+    background: url('銀河の画像のURL') center center / cover no-repeat; /* 銀河の画像を背景に設定 */
+    clip-path: ellipse(50% 35% at 50% 50%); /* パンの形状にクリップパスでシルエットを作成 */
+    transition: background 0.3s ease; /* ホバー時の画像変更をスムーズにする */
+}
+
+/* 各リンクのホバー時にシルエットの画像を変更する */
+.box2:nth-child(1):hover ~ .silhouette {
+    background: url('ことわざの画像のURL') center center / cover no-repeat;
+}
+.box2:nth-child(2):hover ~ .silhouette {
+    background: url('小ネタの画像のURL') center center / cover no-repeat;
+}
+.box2:nth-child(3):hover ~ .silhouette {
+    background: url('小麦の伝来の画像のURL') center center / cover no-repeat;
+}
 /* 	    canvas { background-color : rgba(255, 247, 240, 0.1);} */
 	    
     </style>
   </head>
   <body>
+	  <div class="silhouette"></div>
 <div class="center-text2">
 	<a class="center-link2" href="index.html">パンの</a>
 	<span class="hover-text">　　　　　</span>
