@@ -272,6 +272,50 @@ position:relative;
     background: url('https://panzuki.github.io/3sp/images/wheat.jpg') center center / cover no-repeat;
 }
 /* 	    canvas { background-color : rgba(255, 247, 240, 0.1);} */
+/* アニメーションの種類 */
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 各リンクに対するアニメーション */
+.box2:nth-child(1) a { /* スライドイン */
+    animation: slideInFromBottom 0.6s ease forwards;
+}
+.box2:nth-child(2) a { /* フェードイン */
+    animation: fadeIn 0.6s ease forwards;
+}
+.box2:nth-child(3) a { /* ズームイン */
+    animation: zoomIn 0.6s ease forwards;
+}
+
+/* その他のリンクも順番に追加していく */
 	    
     </style>
   </head>
@@ -321,8 +365,29 @@ boxes.forEach(box => {
         hoverText.style.opacity = '0'; // 見えなくする
     });
 });
-	
-	
+
+boxes.forEach((box, index) => {
+    box.addEventListener('mouseenter', () => {
+        const linkText = box.querySelector('a').textContent;
+        hoverText.textContent = linkText;
+        hoverText.style.transform = 'translateY(0px)';
+        hoverText.style.opacity = '1';
+
+        // リンクのアニメーション適用
+        const link = box.querySelector('a');
+        link.style.animationPlayState = 'running';
+    });
+
+    box.addEventListener('mouseleave', () => {
+        hoverText.style.transform = 'translateY(-40px)';
+        hoverText.style.opacity = '0';
+
+        // アニメーションをリセット
+        const link = box.querySelector('a');
+        link.style.animationPlayState = 'paused';
+    });
+});
+
 // const isArray = a => a instanceof Array;
 // const isNull = a => a == null;
 // const cursor = a => {
