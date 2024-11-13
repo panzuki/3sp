@@ -31,10 +31,13 @@
 /*             align-items: center; */
             height: 100vh;
             overflow: hidden;
-/*        background-image: url("https://panzuki.github.io/3sp/images/bg2.jpg");*/
+        background-image: url("https://panzuki.github.io/3sp/images/bg2.jpg");
         background-size: cover;
         background-position: 40% 60%;
         width: 100vw;
+
+	transition: opacity 0.5s ease, background 0.5s ease;
+            opacity: 1;
       }
 
 	        @font-face {
@@ -260,7 +263,7 @@ position:relative;
             aspect-ratio: 1 / 1;
             background: url('https://panzuki.github.io/3sp/images/galaxy1.jpg') center center / cover no-repeat;
        /*     clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 81% 50%, 49% 45%, 20% 50%, 0% 70%, 0% 35%, 20% 10%);　*/
-	    clip-path: path('M10 50 Q30 10, 70 10 Q110 10, 130 50 Q110 90, 70 90 Q30 90, 10 50 Z');
+	   clip-path: path('M10 50 Q30 10, 70 10 Q110 10, 130 50 Q110 90, 70 90 Q30 90, 10 50 Z');
             transition: opacity 0.5s ease, background 0.5s ease;
             opacity: 1;
         }
@@ -310,7 +313,7 @@ position:relative;
     </style>
   </head>
   <body>
-	  <div class="silhouette" id="silhouette"></div>
+	 <!--  <div class="silhouette" id="silhouette"></div>　-->
 	  <div class="center-text2">
 	<a class="center-link2" href="index.html">パンの</a>
 	<span class="hover-text">　　　　　</span>
@@ -341,7 +344,8 @@ position:relative;
 const silhouette = document.getElementById('silhouette');
 const boxes = document.querySelectorAll('.box2');
 const hoverText = document.querySelector('.hover-text');
-
+const body_element = document.getElementsByTagName('body');
+	
 boxes.forEach(box => {
     box.addEventListener('mouseenter', () => {
         const linkText = box.querySelector('a').textContent; // a要素のテキストを取得
@@ -350,12 +354,12 @@ boxes.forEach(box => {
         hoverText.style.opacity = '1'; // 表示する
 	const newImage = box.getAttribute('data-image');
                         // フェードアウト
-                silhouette.classList.add('fade-out');
+                body_element.classList.add('fade-out');
 
                 // 少し遅延して背景画像を変更し、フェードイン
                 setTimeout(() => {
-                    silhouette.style.backgroundImage = `url('${newImage}')`;
-                    silhouette.classList.remove('fade-out');
+                    body_element.style.backgroundImage = `url('${newImage}')`;
+                    body_element.classList.remove('fade-out');
                 }, 300);
     });
 
@@ -363,12 +367,12 @@ boxes.forEach(box => {
         hoverText.style.transform = 'translateY(-40px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
 	// フェードアウト
-                silhouette.classList.add('fade-out');
+                body_element.classList.add('fade-out');
 
                 // 元の画像に戻す
                 setTimeout(() => {
-                    silhouette.style.backgroundImage = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
-                    silhouette.classList.remove('fade-out');
+                    body_element = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
+                    body_element.classList.remove('fade-out');
                 }, 300);
     });
 });
