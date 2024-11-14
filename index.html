@@ -312,7 +312,7 @@ position:relative;
 	    
     </style>
   </head>
-  <body>
+  <body id="bodyimage">
 	 <!--  <div class="silhouette" id="silhouette"></div>　-->
 	  <div class="center-text2">
 	<a class="center-link2" href="index.html">パンの</a>
@@ -344,7 +344,7 @@ position:relative;
 const silhouette = document.getElementById('silhouette');
 const boxes = document.querySelectorAll('.box2');
 const hoverText = document.querySelector('.hover-text');
-const body_element = document.getElementsByTagName('body');
+const body_element = document.getElementById('bodyimage');
 	
 boxes.forEach(box => {
     box.addEventListener('mouseenter', () => {
