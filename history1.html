@@ -551,43 +551,45 @@ grid-row-gap: 1px;
           </div>
       
       <script>
-            const containers = document.querySelectorAll('.container');
-      const overlay = document.querySelector('.overlay');
-      const overlayText = document.getElementById('overlay-text');
-      const closeButton = document.querySelector('.close-btn');
-      const prevButton = document.querySelector('.prev-btn');
-      const nextButton = document.querySelector('.next-btn');
-      let currentIndex = 0;
+// クリックイベントの修正とコンテナをループで取得
+const containers = document.querySelectorAll('.container');
+const overlay = document.querySelector('.overlay');
+const overlayText = document.getElementById('overlay-text');
+const closeButton = document.querySelector('.close-btn');
+const prevButton = document.querySelector('.prev-btn');
+const nextButton = document.querySelector('.next-btn');
+let currentIndex = 0;
 
-      // コンテナクリックで内容表示
-      containers.forEach((container, index) => {
-          container.addEventListener('click', () => {
-              currentIndex = index;
-              showOverlay(container);
-          });
-      });
+// コンテナクリックでオーバーレイを表示
+containers.forEach((container, index) => {
+    container.addEventListener('click', () => {
+        currentIndex = index;
+        showOverlay(container);
+    });
+});
 
-      function showOverlay(container) {
-          const content = container.querySelector('.popup-content').innerHTML;
-          overlayText.innerHTML = content;
-          overlay.style.display = 'flex';
-          container.scrollIntoView({ behavior: 'smooth' });
-      }
+// オーバーレイ表示関数
+function showOverlay(container) {
+    const content = container.querySelector('.popup-content').innerHTML;
+    overlayText.innerHTML = content;
+    overlay.style.display = 'flex';
+}
 
-      // 閉じるボタン
-      closeButton.addEventListener('click', () => {
-          overlay.style.display = 'none';
-      });
+// 閉じるボタン
+closeButton.addEventListener('click', () => {
+    overlay.style.display = 'none';
+});
 
-          // 前のコンテナ
-      prevButton.addEventListener('click', () => {
-          currentIndex = (currentIndex - 1 + containers.length) % containers.length;
-          showOverlay(containers[currentIndex]);
-      });
+// 前のコンテナ表示
+prevButton.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + containers.length) % containers.length;
+    showOverlay(containers[currentIndex]);
+});
 
-      // 次のコンテナ
-      nextButton.addEventListener('click', () => {
-          currentIndex = (currentIndex + 1) % containers.length;
-          showOverlay(containers[currentIndex]);
-      }); 
+// 次のコンテナ表示
+nextButton.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % containers.length;
+    showOverlay(containers[currentIndex]);
+});
+
       </script>
