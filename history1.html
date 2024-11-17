@@ -320,7 +320,44 @@ grid-row-gap: 1px;
         padding: 0 0 5px 30px;
         position: relative;
       }
+      .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.8);
+          display: none;
+          justify-content: center;
+          align-items: center;
+          z-index: 999;
+      }
 
+      .overlay-content {
+          background-color: #fff;
+          padding: 20px;
+          width: 80%;
+          max-width: 600px;
+          position: relative;
+      }
+
+      .overlay-content p {
+          color: #232931;
+      }
+
+            .close-btn, .prev-btn, .next-btn {
+          position: absolute;
+          top: 10px;
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: #fff;
+      }
+
+      .close-btn { right: 10px; }
+      .prev-btn { left: 10px; }
+      .next-btn { right: 50px; }
     </style>
     <body>
       <nav class="breadcrumb">
@@ -503,126 +540,54 @@ grid-row-gap: 1px;
           </div>
         </div>
       </main>
-      <script>
-        
-const observerOptions = {
-    root: null, // ビューポートを基準にする
-    rootMargin: '0px 0px -100% 0px', // 要素が画面上部に来たときにトリガー
-    threshold: 0 // 要素が少しでも表示されたときにトリガー
-};
-
-const observerCallback = (entries) => {
-    entries.forEach(entry => {
-        const rbItems = entry.target.querySelectorAll('.rb-item');
-        const popupContents = entry.target.querySelectorAll('.popup-content');
-
-        if (entry.isIntersecting) {
-            // 交差している要素の子要素に'visible'クラスを追加
-            rbItems.forEach(item => item.classList.add('visible'));
-            popupContents.forEach(content => content.classList.add('visible'));
-
-            // 他のすべての要素から'visible'クラスを削除
-            document.querySelectorAll('.rb-item.visible, .popup-content.visible').forEach(element => {
-                if (!entry.target.contains(element)) {
-                    element.classList.remove('visible');
-                }
-            });
-        }
-    });
-};
-
-const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-document.querySelectorAll('.div3, .div4, .div5, .div6, .div7, .div8').forEach(div => {
-    observer.observe(div);
-});
-      /*
-        // .popup-content を取
-       const popups = document.querySelectorAll('.popup-content');
-        const items = document.querySelectorAll('.rb-item');
-        let currentIndex = 0;
       
-     // 最初の .popup-content を表示
-     popups[currentIndex].classList.add('visible');
-     items[currentIndex].classList.add('visible');
+          <div class="overlay">
+        <div class="overlay-content">
+            <button class="close-btn">×</button>
+            <button class="prev-btn"><</button>
+            <button class="next-btn">></button>
+            <div id="overlay-text"></div>
+        </div>
+          </div>
+      
+      <script>
+            const containers = document.querySelectorAll('.container');
+      const overlay = document.querySelector('.overlay');
+      const overlayText = document.getElementById('overlay-text');
+      const closeButton = document.querySelector('.close-btn');
+      const prevButton = document.querySelector('.prev-btn');
+      const nextButton = document.querySelector('.next-btn');
+      let currentIndex = 0;
 
-// 他の要素をすべて非表示にする関数
-function closeAllPopups() {
-    popups.forEach(popup => popup.classList.remove('visible'));
-    items.forEach(item => item.classList.remove('visible'));
-}
+      // コンテナクリックで内容表示
+      containers.forEach((container, index) => {
+          container.addEventListener('click', () => {
+              currentIndex = index;
+              showOverlay(container);
+          });
+      });
 
-// 次の .popup-content を表示する関数
-function openNextPopup() {
-    if (currentIndex < popups.length - 1) {
-        currentIndex++;
-    } else {
-        currentIndex = 0; // 一番下まで行ったら最初に戻る
-    }
-    closeAllPopups();
-    popups[currentIndex].classList.add('visible');
-    items[currentIndex].classList.add('visible');
-}
+      function showOverlay(container) {
+          const content = container.querySelector('.popup-content').innerHTML;
+          overlayText.innerHTML = content;
+          overlay.style.display = 'flex';
+          container.scrollIntoView({ behavior: 'smooth' });
+      }
 
-// 前の .popup-content を表示する関数
-function openPreviousPopup() {
-    if (currentIndex > 0) {
-        currentIndex--;
-    } else {
-        currentIndex = popups.length - 1; // 一番上まで行ったら最後に戻る
-    }
-    closeAllPopups();
-    popups[currentIndex].classList.add('visible');
-    items[currentIndex].classList.add('visible');
-}
+      // 閉じるボタン
+      closeButton.addEventListener('click', () => {
+          overlay.style.display = 'none';
+      });
 
-// キー操作とスクロールを検知して次の .popup-content を開く
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowDown') {
-        openNextPopup();
-    } else if (event.key === 'ArrowUp') {
-        openPreviousPopup();
-    }
-});
+          // 前のコンテナ
+      prevButton.addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + containers.length) % containers.length;
+          showOverlay(containers[currentIndex]);
+      });
 
-// スクロールイベントの検知
-let scrollTimeout;
-window.addEventListener('wheel', (event) => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-        if (event.deltaY > 0) {
-            openNextPopup();
-        } else {
-            openPreviousPopup();
-        }
-    }, 150);
-});
-
-let startX = 0;
-let startY = 0;
-
-window.addEventListener('touchstart', (event) => {
-    startX = event.touches[0].clientX;
-    startY = event.touches[0].clientY;
-});
-
-window.addEventListener('touchend', (event) => {
-    const endX = event.changedTouches[0].clientX;
-    const endY = event.changedTouches[0].clientY;
-
-    const diffX = endX - startX;
-    const diffY = endY - startY;
-
-    // 縦方向のスワイプが多い場合のみ判定
-    if (Math.abs(diffY) > Math.abs(diffX)) {
-        if (diffY < 0) {
-            openNextPopup(); // 下方向スワイプ
-        } else {
-            openPreviousPopup(); // 上方向スワイプ
-        }
-    }
-});
-  */
-</script>
-    </body>
-  </html>
+      // 次のコンテナ
+      nextButton.addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % containers.length;
+          showOverlay(containers[currentIndex]);
+      }); 
+      </script>
