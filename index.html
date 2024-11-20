@@ -344,7 +344,7 @@ position:relative;
 const silhouette = document.getElementById('silhouette');
 const boxes = document.querySelectorAll('.box2');
 const hoverText = document.querySelector('.hover-text');
-const body_element = document.getElementById('bodyimage');
+// const body_element = document.getElementById('bodyimage');
 	
 boxes.forEach(box => {
     box.addEventListener('mouseenter', () => {
@@ -352,28 +352,28 @@ boxes.forEach(box => {
         hoverText.textContent = linkText; // hover-textに設定
         hoverText.style.transform = 'translateY(0px)'; // 初期位置を上に設定
         hoverText.style.opacity = '1'; // 表示する
-	const newImage = box.getAttribute('data-image');
+	// const newImage = box.getAttribute('data-image');
                         // フェードアウト
-                body_element.classList.add('fade-out');
+                // body_element.classList.add('fade-out');
 
                 // 少し遅延して背景画像を変更し、フェードイン
-                setTimeout(() => {
-                    body_element.style.backgroundImage = `url('${newImage}')`;
-                    body_element.classList.remove('fade-out');
-                }, 300);
+                // setTimeout(() => {
+                //     body_element.style.backgroundImage = `url('${newImage}')`;
+                //     body_element.classList.remove('fade-out');
+                // }, 300);
     });
 
     box.addEventListener('mouseleave', () => {
         hoverText.style.transform = 'translateY(-40px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
 	// フェードアウト
-                body_element.classList.add('fade-out');
+                // body_element.classList.add('fade-out');
 
                 // 元の画像に戻す
-                setTimeout(() => {
-                    body_element = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
-                    body_element.classList.remove('fade-out');
-                }, 300);
+                // setTimeout(() => {
+                //     body_element = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
+                //     body_element.classList.remove('fade-out');
+                // }, 300);
     });
 });
 
