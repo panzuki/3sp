@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>パンの</title>
+    <title>パンの歴史1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <script src></script>
@@ -48,6 +48,7 @@ html {
     /* background-color: var(--color-base); */
     background-color: var(--color-base);
     -webkit-appearance: none;
+    appearance: none;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -153,24 +154,92 @@ h1{
         background-image: var(--gold);
         color:transparent;
         -webkit-background-clip:text;
+        background-clip:text;
         z-index: 1000;
 }
 .parent {
 display: grid;
 margin: 10px;
 grid-template-columns: min-content 1fr ;
-grid-template-rows: auto repeat(6, 1fr);
+/* grid-template-rows: 80px repeat(6, 1fr); */
+grid-template-rows: auto;
 grid-column-gap: 10px;
-grid-row-gap: 0;
+grid-row-gap: 1px;
 }
-.div1 { grid-area: 1 / 1 / 4 / 2; }
-.div2 { grid-area: 4 / 1 / 7 / 2; }
-.div3 { grid-area: 1 / 2 / 2 / 3; }
-.div4 { grid-area: 2 / 2 / 3 / 3; }
-.div5 { grid-area: 3 / 2 / 4 / 3; }
-.div6 { grid-area: 4 / 2 / 5 / 3; }
-.div7 { grid-area: 5 / 2 / 6 / 3; }
-.div8 { grid-area: 6 / 2 / 7 / 3; }
+
+.div1 { grid-area: 1 / 1 / 7 / 2; }
+.div2 { grid-area: 7 / 1 / 9 / 2; }
+.div3 { grid-area: 9 / 1 / 10 / 2; }
+.div4 { grid-area: 10 / 1 / 14 / 2; }
+.div5 { grid-area: 14 / 1 / 15 / 2; }
+.div6 { grid-area: 15 / 1 / 17 / 2; }
+.div7 { grid-area: 17 / 1 / 22 / 2; }
+.div8 { grid-area: 22 / 1 / 36 / 2; }
+.div9 { grid-area: 36 / 1 / 37 / 2; }
+.div10 { grid-area: 1 / 2 / 2 / 3; }
+.div11 { grid-area: 2 / 2 / 3 / 3; }
+.div12 { grid-area: 3 / 2 / 4 / 3; }
+.div13 { grid-area: 4 / 2 / 5 / 3; }
+.div14 { grid-area: 5 / 2 / 6 / 3; }
+.div15 { grid-area: 6 / 2 / 7 / 3; }
+.div16 { grid-area: 7 / 2 / 8 / 3; }
+.div17 { grid-area: 8 / 2 / 9 / 3; }
+.div18 { grid-area: 9 / 2 / 10 / 3; }
+.div19 { grid-area: 10 / 2 / 11 / 3; }
+.div20 { grid-area: 11 / 2 / 12 / 3; }
+.div21 { grid-area: 12 / 2 / 13 / 3; }
+.div22 { grid-area: 13 / 2 / 14 / 3; }
+.div23 { grid-area: 14 / 2 / 15 / 3; }
+.div24 { grid-area: 15 / 2 / 16 / 3; }
+.div25 { grid-area: 16 / 2 / 17 / 3; }
+.div26 { grid-area: 17 / 2 / 18 / 3; }
+.div27 { grid-area: 18 / 2 / 19 / 3; }
+.div28 { grid-area: 19 / 2 / 20 / 3; }
+.div29 { grid-area: 20 / 2 / 21 / 3; }
+.div30 { grid-area: 21 / 2 / 22 / 3; }
+.div31 { grid-area: 22 / 2 / 23 / 3; }
+.div32 { grid-area: 23 / 2 / 24 / 3; }
+.div33 { grid-area: 24 / 2 / 25 / 3; }
+.div34 { grid-area: 25 / 2 / 26 / 3; }
+.div35 { grid-area: 26 / 2 / 27 / 3; }
+.div36 { grid-area: 27 / 2 / 28 / 3; }
+.div37 { grid-area: 28 / 2 / 29 / 3; }
+.div38 { grid-area: 29 / 2 / 30 / 3; }
+.div39 { grid-area: 30 / 2 / 31 / 3; }
+.div40 { grid-area: 31 / 2 / 32 / 3; }
+.div41 { grid-area: 32 / 2 / 33 / 3; }
+.div42 { grid-area: 33 / 2 / 34 / 3; }
+.div43 { grid-area: 34 / 2 / 35 / 3; }
+.div44 { grid-area: 35 / 2 / 36 / 3; }
+.div45 { grid-area: 36 / 2 / 37 / 3; }
+
+/* .div1 {display: grid; grid-area: 1 / 1 / 4 / 2;}
+.div2 {display: grid; grid-area: 4 / 1 / 7 / 2;}
+.div3 {display: grid; grid-area: 1 / 2 / 2 / 3;}
+.div4 {display: grid; grid-area: 2 / 2 / 3 / 3;}
+.div5 {display: grid; grid-area: 3 / 2 / 4 / 3;}
+.div6 {display: grid; grid-area: 4 / 2 / 5 / 3;}
+.div7 {display: grid; grid-area: 5 / 2 / 6 / 3;}
+.div8 {display: grid; grid-area: 6 / 2 / 7 / 3;} */
+
+.details {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; /* アニメーション */
+    }
+
+    .details.show {
+      display: block;
+      max-height: 500px; /* 高さを調整して、アニメーションさせる */
+      padding: 10px;
+    }
+
+    .item-title {
+      cursor: pointer;
+    }
 
 .leftbox {
         width: 100%;
@@ -181,16 +250,6 @@ grid-row-gap: 0;
         border: 2px ;
       }
       
-.container {
-  background: #232931;
-  max-width: 90%;
-  height: 100%;
-  margin: 0 auto 0 0;
-  position: relative;
-  /* border-left:6px solid;
-  border-image: var(--gold) 1; */
-}
-
       
     .histnav{
         list-style: none;
@@ -204,9 +263,6 @@ grid-row-gap: 0;
         top: 0;
         right: 0;
       }
-      .rightbox {
-        height: 100%;
-      }
       
       .rb-container {
         width: 100%;
@@ -218,6 +274,7 @@ grid-row-gap: 0;
 ul.rb {
         margin: 0.5em 0 0 0;
         padding: 0;
+        height: 100%;
         display: inline-block;
       }
       
@@ -231,7 +288,7 @@ ul.rb li {
         padding: 0 0 5px 30px;
         position: relative;
       }
-            
+
 ul.rb li::before {
         position: absolute;
         left: -18px;
@@ -241,15 +298,20 @@ ul.rb li::before {
         border-color: #232931;
         border-radius: 500%;
         /* background: #50d890; */
-        background-image: var(--green);
+        background-image: var(--silver);
         height: 20px;
         width: 20px;
-        transition: all 500ms ease-in-out;
+        transition: all 300ms ease-in-out;
       }
       
       ul.rb li:hover::before {
         border: 8px solid rgba(255, 255, 255, 1);       
-        transition: all 500ms ease-in-out;
+        transition: all 300ms ease-in-out;
+      }
+
+      ul.rb li.select::before {
+        border: 8px solid rgba(255, 255, 255, 1);       
+        transition: all 300ms ease-in-out;
       }
 
       .titlecontent{
@@ -260,19 +322,19 @@ ul.rb li::before {
       ul.rb li .timestamp {
         /* color: #50d890; */        
         position: relative;
-        width: 100px;
+        width: 200px;
         font-size: 1.3rem;
-
         font-family: 'Times New Roman',serif;
         font-weight: bold;
-        background-image: var(--green);
+        background-image: var(--silver);
         color:transparent;
         -webkit-background-clip:text;
+        background-clip:text;
         z-index: 1000;
 
       }
       
-      .item-title {
+      ul.rb li .item-title {
         font-size: 2rem;
         /* position: absolute; */
         /* transform: translate(-50%,-50%); */
@@ -285,33 +347,23 @@ ul.rb li::before {
         background-image: var(--gold);
         color:transparent;
         -webkit-background-clip:text;
+        background-clip:text;
         z-index: 1000;
       }
 
+      div.nonbread ul.rb li::before {
+        background-image: var(--green);
+      }
 
-      /* モーダル */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
-}
+      div.nonbread ul.rb li .timestamp {
+        background-image: var(--green);
+      }
 
-.modal-content {
-    background: #fff;
-    padding: 20px;
-    width: 80vw;
-    height: 80vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+      div.nonbread ul.rb li .item-title {
+        background-image: var(--silver);
+      }
+
+
 
 .close-btn {
     position: rerative;
@@ -320,23 +372,6 @@ ul.rb li::before {
     font-size: 20px;
     cursor: pointer;
 }
-
-.details {
-      display: none;
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #f0f0f0;
-      border-radius: 5px;
-    }
-
-    .details.show {
-      display: block;
-    }
-
-    .item-title {
-      cursor: pointer;
-    }
-
 
     </style>
     <body>
@@ -364,192 +399,479 @@ ul.rb li::before {
 
       <main>
         <h1>パンの歴史</h1>
+        <p><small>出典：Wikipedia(https://ja.wikipedia.org/)</small></p>
+        <p><small> パンシェルジュ検定公式テキスト</small></p>
+        <p><small> パンのとりせつ(著:池田浩明 山本ゆりこ)</small></p>
+        <p><small> TRANSIT No65 世界のパンをめぐる冒険 創世記</small></p>
+        <p><small> 発酵種(サワードゥ)とパン～科学から応用まで～</small></p>
         <div class="parent">
           <div class="div1">
             <div class="leftbox">
               <div class="histnav">
-                <p>石器時代</p>
+                <p>前期旧石器時代</p>
               </div>
             </div>
           </div>
           <div class="div2">
             <div class="leftbox">
               <div class="histnav">
+                <p>中期旧石器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div3">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>後期旧石器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div4">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>中石器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div5">
+            <div class="leftbox">
+              <div class="histnav">
                 <p>新石器時代</p>
               </div>
             </div>
           </div>
-
-          <div class="div3 event" onclick="toggleDetails(0)">
-            <ul class="rb">
-              <li class="rb-item">
-                <div class="titlecontent">
-                  <div class="timestamp">3rd May 2020<br> 7:00 PM</div>
-                  <div class="item-title">パンの始まり</div>
-                </div>
-              </li>
-            </ul>
-            <div class="details" id="details-0">
-              <button class="close-btn" onclick="closeDetails(0)">×</button>
-              <p><strong>詳細:</strong> 初期の人類が誕生しました。</p>
-              <div class="pagination">
-                <button onclick="prevEvent()">前へ</button>
-                <button onclick="nextEvent()">次へ</button>
+          <div class="div6">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>銅石器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div7">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>青銅器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div8">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>鉄器時代</p>
+              </div>
+            </div>
+          </div>
+          <div class="div9">
+            <div class="leftbox">
+              <div class="histnav">
+                <p>中世</p>
               </div>
             </div>
           </div>
 
-          <div class="div4 event" onclick="toggleDetails(1)">
+          <div class="div10 event nonbread">
             <ul class="rb">
-              <li class="rb-item">
+              <li class="rb-item" onclick="toggleDetails(0)">
                 <div class="titlecontent">
-                  <div class="timestamp">3rd May 2020<br> 7:00 PM</div>
-                  <div class="item-title">パンの始まり</div>
+                  <div class="timestamp">約700万年前</div>
+                  <div class="item-title">サヘラントロプスの出現</div>
+                </div>
+                <div class="details" id="details-0">
+                  <!-- <button class="close-btn" onclick="closeDetails(0)">×</button> -->
+                  <p>最古の初期猿人の出現<br>二足歩行で生活する猿人の始祖とされている</p>
+                  <div class="pagination">
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
                 </div>
               </li>
             </ul>
-            <div class="details" id="details-1">
-              <button class="close-btn" onclick="closeDetails(1)">×</button>
-              <p><strong>詳細:</strong> 初期の人類が誕生しました。</p>
-              <div class="pagination">
-                <button onclick="prevEvent()">前へ</button>
-                <button onclick="nextEvent()">次へ</button>
-              </div>
-            </div>
+
           </div>
 
-          <div class="div5 event" onclick="toggleDetails(2)">
+          <div class="div11 event nonbread">
             <ul class="rb">
-              <li class="rb-item">
+              <li class="rb-item" onclick="toggleDetails(1)">
                 <div class="titlecontent">
-                  <div class="timestamp">3rd May 2020<br> 7:00 PM</div>
-                  <div class="item-title">パンの始まり</div>
+                  <div class="timestamp">約440万年前</div>
+                  <div class="item-title">アルディピテクス・ラミダスの出現</div>
+                </div>
+                <div class="details" id="details-1">
+                  <!-- <button class="close-btn" onclick="closeDetails(1)">×</button> -->
+                  <p>森林生活を始める</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
                 </div>
               </li>
             </ul>
-            <div class="details" id="details-2">
-              <button class="close-btn" onclick="closeDetails(2)">×</button>
-              <p><strong>詳細:</strong> 初期の人類が誕生しました。</p>
-              <div class="pagination">
-                <button onclick="prevEvent()">前へ</button>
-                <button onclick="nextEvent()">次へ</button>
-              </div>
-            </div>
+
           </div>
 
-          <div class="div6 event" onclick="toggleDetails(3)">
+          <div class="div12 event nonbread">
             <ul class="rb">
-              <li class="rb-item">
+              <li class="rb-item" onclick="toggleDetails(2)">
                 <div class="titlecontent">
-                  <div class="timestamp">3rd May 2020<br> 7:00 PM</div>
-                  <div class="item-title">パンの始まり</div>
+                  <div class="timestamp">約250万年前</div>
+                  <div class="item-title">アウストラロピテクスの出現</div>
+                </div>
+                <div class="details" id="details-2">
+                  <!-- <button class="close-btn" onclick="closeDetails(2)">×</button> -->
+                  <p>確実な二足歩行</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
                 </div>
               </li>
             </ul>
-            <div class="details" id="details-3">
-              <button class="close-btn" onclick="closeDetails(3)">×</button>
-              <p><strong>詳細:</strong> 初期の人類が誕生しました。</p>
-              <div class="pagination">
-                <button onclick="prevEvent()">前へ</button>
-                <button onclick="nextEvent()">次へ</button>
-              </div>
-            </div>
           </div>
 
-          <div class="div7 event" onclick="toggleDetails(4)">
+          <div class="div13 event nonbread">
             <ul class="rb">
-              <li class="rb-item">
+              <li class="rb-item" onclick="toggleDetails(3)">
                 <div class="titlecontent">
-                  <div class="timestamp">3rd May 2020<br> 7:00 PM</div>
-                  <div class="item-title">パンの始まり</div>
+                  <div class="timestamp">約240万年前</div>
+                  <div class="item-title">ホモ・ハビリスの出現</div>
+                </div>
+                <div class="details" id="details-3">
+                  <!-- <button class="close-btn" onclick="closeDetails(3)">×</button> -->
+                  <p><strong>石器の使用</strong>を始めたとされる種</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
                 </div>
               </li>
             </ul>
-            <div class="details" id="details-4">
-              <button class="close-btn" onclick="closeDetails(4)">×</button>
-              <p><strong>詳細:</strong> 初期の人類が誕生しました。</p>
-              <div class="pagination">
-                <button onclick="prevEvent()">前へ</button>
-                <button onclick="nextEvent()">次へ</button>
-              </div>
-            </div>
           </div>
 
-          <div class="div8 event" onclick="toggleDetails(5)">
+          <div class="div14 event nonbread">
             <ul class="rb">
-              <li class="rb-item">
+              <li class="rb-item" onclick="toggleDetails(4)">
                 <div class="titlecontent">
-                  <div class="timestamp">3rd May 2020<br> 7:00 PM</div>
-                  <div class="item-title">パンの始まり</div>
+                  <div class="timestamp">約190万年前</div>
+                  <div class="item-title">ホモ・エレクトスの出現</div>
+                </div>
+                <div class="details" id="details-4">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>アフリカを出た種とされており<br>
+                    各地でジャワ原人や北京原人として<br>独自に進化したとされている。<br>
+                    <strong>火の使用・狩猟・採集</strong>の開始したことにより<br>
+                    動植物を求めて世界に拡散していった。<br>
+                    終期には最初の<strong>調理</strong>を始めたとされている</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
                 </div>
               </li>
             </ul>
-            <div class="details" id="details-5">
-              <button class="close-btn" onclick="closeDetails(5)">×</button>
-              <p><strong>詳細:</strong> 初期の人類が誕生しました。</p>
-              <div class="pagination">
-                <button onclick="prevEvent()">前へ</button>
-                <button onclick="nextEvent()">次へ</button>
-              </div>
-            </div>
           </div>
+
+          <div class="div15 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(5)">
+                <div class="titlecontent">
+                  <div class="timestamp">約40万年前</div>
+                  <div class="item-title">ホモ・ネアンデルターレンシスの出現</div>
+                </div>
+                <div class="details" id="details-5">
+                  <!-- <button class="close-btn" onclick="closeDetails(5)">×</button> -->
+                  <p><strong>先進的な石器の製作</strong>、埋葬の習慣、最初の被服</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div16 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(6)">
+                <div class="titlecontent">
+                  <div class="timestamp">約18万5000年前</div>
+                  <div class="item-title">ホモ・サピエンスの出現</div>
+                </div>
+                <div class="details" id="details-6">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>言語の発展、文化的な行動の増加</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div17 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(7)">
+                <div class="titlecontent">
+                  <div class="timestamp">約7万年前</div>
+                  <div class="item-title">認知革命</div>
+                </div>
+                <div class="details" id="details-7">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>複雑な言語、宗教や芸術の発展</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+          <div class="div18 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(8)">
+                <div class="titlecontent">
+                  <div class="timestamp">約4万年前</div>
+                  <div class="item-title">クロマニョン人の出現</div>
+                </div>
+                <div class="details" id="details-8">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>洞窟壁画、骨や象牙の彫刻</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+
+          <div class="div19 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(9)">
+                <div class="titlecontent">
+                  <div class="timestamp">約1万年前～<br>約8000年前</div>
+                  <div class="item-title">狩猟採集から農耕への移行</div>
+                </div>
+                <div class="details" id="details-9">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>細石器の使用、初期の農業の実験</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div20 event">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(10)">
+                <div class="titlecontent">
+                  <div class="timestamp">約14400年前</div>
+                  <div class="item-title">世界最古のパン</div>
+                </div>
+                <div class="details" id="details-10">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>2018年ヨルダン北東部でパンの遺跡が発見される。<br>
+                    原材料は自生するヒトツブコムギを脱穀して挽いて粉にし<br>
+                    草の茎をすりこんだ生地を作って平らに焼いたもの。<br>
+                    現在確認されている最古の無発酵パン(フラットブレッド)。<br>
+                    焚き火で熱くなった石の上で焼いたと思われる。</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div21 event">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(11)">
+                <div class="titlecontent">
+                  <div class="timestamp">約10000年前</div>
+                  <div class="item-title">小麦栽培と常食</div>
+                </div>
+                <div class="details" id="details-11">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>肥沃な三日月地帯(チグリス・ユーフラテス川から<br>
+                    シリアを経てパレスチナ、エジプトへと至る地帯)で<br>
+                    大麦やヒトツブコムギ、エンマー小麦などの栽培が始まる。<br>
+                    初めは小麦を石でつぶしたものに水を加えて煮炊きし<br>
+                    お粥のようにして食べるのが主流だったとされている。</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+          <div class="div22 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(12)">
+                <div class="titlecontent">
+                  <div class="timestamp">約9000年前</div>
+                  <div class="item-title">発酵飲料の出現</div>
+                </div>
+                <div class="details" id="details-12">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>現在のイランのザグロス山脈近辺から<br>
+                    9000年前に作られたとされる発酵飲料の痕跡が発見されている。<br>
+                    この飲料は大麦やエンマーコムギ、蜂蜜を原料にしたもの。<br>
+                    穀物を水に浸して保存した際に自然発酵が起こったと考えられている。</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div23 event">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(13)">
+                <div class="titlecontent">
+                  <div class="timestamp">約8000年前～</div>
+                  <div class="item-title">農業革命、パン小麦の栽培が始まる</div>
+                </div>
+                <div class="details" id="details-13">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>ヒトツブコムギ(アイコーン小麦)とエンマー小麦が<br>
+                    自然交配して生まれたパン小麦の栽培が始まる。<br>
+                    無発酵パンが主流とされている。<br>
+                    また、この時代はシュメール人が現在のイラク南部で<br>
+                    磨製石器の使用と共に農耕の効率化と定住生活を開始している。</p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
+          <div class="div24 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(14)">
+                <div class="titlecontent">
+                  <div class="timestamp">約6500年前～</div>
+                  <div class="item-title">初期都市文明の発展</div>
+                </div>
+                <div class="details" id="details-14">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>銅器の使用、複雑な社会組織の形成<br>
+                    またビールに関して「粉にした麦芽で作ったパンを砕いて<br>
+                    お湯で溶き、自然発酵させたもの」との記録が発見されている。
+                  </p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div25 event">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(15)">
+                <div class="titlecontent">
+                  <div class="timestamp">約5700年前</div>
+                  <div class="item-title">発酵したパンの出現</div>
+                </div>
+                <div class="details" id="details-15">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>2002年、スイスの湖畔で生活をしていた人々の遺跡から<br>
+                    最古の発酵したパンの化石が発見されている
+                  </p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="div26 event nonbread">
+            <ul class="rb">
+              <li class="rb-item" onclick="toggleDetails(16)">
+                <div class="titlecontent">
+                  <div class="timestamp">紀元前3000年頃〜</div>
+                  <div class="item-title">メソポタミア文明の発展</div>
+                </div>
+                <div class="details" id="details-16">
+                  <!-- <button class="close-btn" onclick="closeDetails(4)">×</button> -->
+                  <p>文字の発明（楔形文字）、都市国家の形成
+                  </p>
+                  <div class="pagination">
+                    <button onclick="prevEvent()">前へ</button>
+                    <button onclick="nextEvent()">次へ</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+
         </div>
-
-        <!-- モーダルウィンドウ -->
-        <!-- <div id="modal" class="modal">
-        <div class="modal-content">
-          <button class="close-btn" onclick="closeModal()">×</button>
-          <p id="modal-year" class="modal-year"></p>
-          <p id="modal-title" class="modal-title"></p>
-          <img id="modal-image" src alt="画像" class="modal-image">
-          <p id="modal-summary" class="modal-summary"></p>
-          <div class="pagination">
-            <button onclick="prevEvent()">前へ</button>
-            <button onclick="nextEvent()">次へ</button>
-          </div>
-        </div>
-      </div> -->
-
       </main>
+
       <script>
-
-
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
-
 // ページが読み込まれたときに、全てのイベントを表示する
-document.addEventListener("DOMContentLoaded", function() {
-    const eventDetails = document.querySelectorAll('.details');
-    eventDetails.forEach(detail => {
-        detail.style.display = 'none'; // 最初に全て非表示にする
-    });
-    // updateEventDetails(); // 初期表示を更新
-});
+// document.addEventListener("DOMContentLoaded", function() {
+//     const eventDetails = document.querySelectorAll('.details');
+//     eventDetails.forEach(detail => {
+//         detail.style.display = 'none'; // 最初に全て非表示にする
+//     });
+// });
 
 // 詳細をトグルする関数
 function toggleDetails(eventIndex) {
     const details = document.getElementById(`details-${eventIndex}`);
-    if (details.style.display === 'none' || details.style.display === '') {
-        details.style.display = 'block'; // 詳細を表示
-        currentEventIndex = eventIndex;
-        updateEventDetails();
-    } else {
-        details.style.display = 'none'; // 詳細を非表示
-    }
-}
+    const allDetails = document.querySelectorAll('.details');
+    const allLists = document.querySelectorAll('.rb-item');
 
-// 現在のイベントの詳細を更新する関数
-function updateEventDetails() {
-    const events = document.querySelectorAll('.event');
-    const eventDetails = document.querySelectorAll('.details');
-
-    eventDetails.forEach((detail, index) => {
-        if (index === currentEventIndex) {
-          detail.style.display = 'block'; // 現在のイベントを表示
-        } else {
-          detail.style.display = 'none'; // 他のイベントを非表示
+    // 他のすべてのイベント詳細を閉じる
+    allDetails.forEach((detail, index) => {
+        if (index !== eventIndex) {
+            detail.classList.remove('show');
         }
     });
+
+    allLists.forEach((list, index) => {
+        if (index !== eventIndex) {
+            list.classList.remove('select');
+        }
+    });
+    
+    // // クリックしたイベントのみトグルする
+    // if (details.style.display === 'none' || details.style.display === '') {
+    //     details.style.display = 'block'; // 詳細を表示
+    //     currentEventIndex = eventIndex;
+    // } else {
+    //     details.style.display = 'none'; // 詳細を非表示
+    // }
+  if (details.classList.contains('show')) {
+    details.classList.remove('show');
+    allLists[eventIndex].classList.remove('select');
+  } else {
+    details.classList.add('show');
+    allLists[eventIndex].classList.add('select');
+  }
+
 }
 
 // 「次へ」ボタンの処理
@@ -560,7 +882,14 @@ function nextEvent() {
     } else {
         currentEventIndex = 0; // 最後のイベントから最初に戻る
     }
-    updateEventDetails(); // 次のイベントを表示
+    toggleDetails(currentEventIndex);
+    const selectedEvent = events[currentEventIndex];
+    const targetDOMRect = selectedEvent.getBoundingClientRect();
+    const targetTop = targetDOMRect.top + window.pageYOffset - 50;
+    window.scrollTo({
+      top: targetTop,
+      behavior: 'smooth'
+    });
 }
 
 // 「前へ」ボタンの処理
@@ -571,15 +900,29 @@ function prevEvent() {
     } else {
         currentEventIndex = events.length - 1; // 最初のイベントから最後に戻る
     }
-    updateEventDetails(); // 前のイベントを表示
+    toggleDetails(currentEventIndex);
+    const selectedEvent = events[currentEventIndex];
+    const targetDOMRect = selectedEvent.getBoundingClientRect();
+    const targetTop = targetDOMRect.top + window.pageYOffset - 50;
+    window.scrollTo({
+      top: targetTop,
+      behavior: 'smooth'
+    });
 }
 
-// 閉じるボタンの処理
+//閉じるボタンの処理
 function closeDetails(eventIndex) {
     const details = document.getElementById(`details-${eventIndex}`);
     details.style.display = 'none'; // 詳細を非表示
 }
 
+document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight") {
+        nextEvent(); // 右矢印キーで次のイベントへ
+    } else if (event.key === "ArrowLeft") {
+        prevEvent(); // 左矢印キーで前のイベントへ
+    }
+});
 
 </script>
     </body>
