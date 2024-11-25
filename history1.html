@@ -853,27 +853,33 @@ function toggleDetails(eventIndex) {
         if (index !== eventIndex) {
           //  detail.style.display = 'none'; 
           detail.classList.remove('open');
-        }
+          allLists[index].classList.remove('select');
+        }else｛
+             detail.classList.add('open');
+       allLists[eventIndex].classList.add('select');
+    currentEventIndex = eventIndex;
+          ｝
     });
 
-    allLists.forEach((list, index) => {
-        if (index !== eventIndex) {
-            list.classList.remove('select');
-        }
-    });
-    
+  //  allLists.forEach((list, index) => {
+ //       if (index !== eventIndex) {
+    //        list.classList.remove('select');
+   //     }
+  //  }); 
      // クリックしたイベントのみトグルする
      //if (details.style.display === 'none' || details.style.display === '') {
          //details.style.display = 'block'; // 詳細を表示
-  if (!details.classList.contains('open')) {
-       details.classList.add('open');
-       allLists[eventIndex].classList.add('select');
-    currentEventIndex = eventIndex;
-     } else {
-       details.classList.remove('open');
+
+  //if (!details.classList.contains('open')) {
+   //    details.classList.add('open');
+   //    allLists[eventIndex].classList.add('select');
+  //  currentEventIndex = eventIndex;
+    
+   //  } else {
+   //    details.classList.remove('open');
          //details.style.display = 'none'; // 詳細を非表示
-       allLists[eventIndex].classList.remove('select');
-     }
+   //    allLists[eventIndex].classList.remove('select');
+   //  }
   
  // if (details.classList.contains('show')) {
 //    details.classList.remove('show');
