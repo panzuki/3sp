@@ -223,13 +223,20 @@ grid-row-gap: 1px;
 .div8 {display: grid; grid-area: 6 / 2 / 7 / 3;} */
 
 .details {
-      display: none;
+   /*   display: none;　*/
       margin-top: 10px;
       padding: 10px;
       background-color: #f0f0f0;
       border-radius: 5px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
     }
-
+      
+.details.open {
+  max-height: 500px; /* Adjust this value based on your content */
+}
+      
     .item-title {
       cursor: pointer;
     }
@@ -840,7 +847,7 @@ function toggleDetails(eventIndex) {
     // 他のすべてのイベント詳細を閉じる
     allDetails.forEach((detail, index) => {
         if (index !== eventIndex) {
-            detail.classList.remove('show');
+            detail.style.display = 'none'; 
         }
     });
 
@@ -852,12 +859,14 @@ function toggleDetails(eventIndex) {
     
      // クリックしたイベントのみトグルする
      if (details.style.display === 'none' || details.style.display === '') {
-         details.style.display = 'block'; // 詳細を表示
+         //details.style.display = 'block'; // 詳細を表示
+       details.classList.add('open');
          currentEventIndex = eventIndex;
-  allLists[eventIndex].classList.add('select');
+       allLists[eventIndex].classList.add('select');
      } else {
-         details.style.display = 'none'; // 詳細を非表示
-  allLists[eventIndex].classList.remove('select');
+       details.classList.remove('open');
+         //details.style.display = 'none'; // 詳細を非表示
+       allLists[eventIndex].classList.remove('select');
      }
   
  // if (details.classList.contains('show')) {
