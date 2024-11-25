@@ -832,14 +832,14 @@ ul.rb li::before {
       <script>
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
-
+let events;
 // ページが読み込まれたときに、全てのイベントを表示する
  document.addEventListener("DOMContentLoaded", function() {
 //     const eventDetails = document.querySelectorAll('.details');
 //     eventDetails.forEach(detail => {
 //         detail.style.display = 'none'; // 最初に全て非表示にする
 //     });
-   const events = document.querySelectorAll('.event');
+   events = document.querySelectorAll('.event');
  });
 
 // 詳細をトグルする関数
