@@ -847,7 +847,8 @@ function toggleDetails(eventIndex) {
     // 他のすべてのイベント詳細を閉じる
     allDetails.forEach((detail, index) => {
         if (index !== eventIndex) {
-            detail.style.display = 'none'; 
+          //  detail.style.display = 'none'; 
+          detail.classList.remove('open');
         }
     });
 
