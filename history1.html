@@ -224,7 +224,8 @@ grid-row-gap: 1px;
 
 .details {
    /*   display: none;　*/
-      padding: 10px;
+  margin-top: 0px;
+      padding: 0px;
       background-color: #f0f0f0;
       border-radius: 5px;
   max-height: 0;
@@ -234,6 +235,7 @@ grid-row-gap: 1px;
       
 .details.open {
   margin-top: 10px;
+  padding: 10px;
   max-height: 500px; /* Adjust this value based on your content */
 }
       
@@ -862,7 +864,7 @@ function toggleDetails(eventIndex) {
      if (details.style.display === 'none' || details.style.display === '') {
          //details.style.display = 'block'; // 詳細を表示
        details.classList.add('open');
-         currentEventIndex = eventIndex;
+         //currentEventIndex = eventIndex;
        allLists[eventIndex].classList.add('select');
      } else {
        details.classList.remove('open');
