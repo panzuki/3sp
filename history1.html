@@ -228,13 +228,6 @@ grid-row-gap: 1px;
       padding: 10px;
       background-color: #f0f0f0;
       border-radius: 5px;
-      transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; /* アニメーション */
-    }
-
-    .show {
-      display: block;
-      max-height: 500px; /* 高さを調整して、アニメーションさせる */
-      padding: 10px;
     }
 
     .item-title {
@@ -857,20 +850,23 @@ function toggleDetails(eventIndex) {
         }
     });
     
-    // // クリックしたイベントのみトグルする
-    // if (details.style.display === 'none' || details.style.display === '') {
-    //     details.style.display = 'block'; // 詳細を表示
-    //     currentEventIndex = eventIndex;
-    // } else {
-    //     details.style.display = 'none'; // 詳細を非表示
-    // }
-  if (details.classList.contains('show')) {
-    details.classList.remove('show');
-    allLists[eventIndex].classList.remove('select');
-  } else {
-    details.classList.add('show');
-    allLists[eventIndex].classList.add('select');
-  }
+     // クリックしたイベントのみトグルする
+     if (details.style.display === 'none' || details.style.display === '') {
+         details.style.display = 'block'; // 詳細を表示
+         currentEventIndex = eventIndex;
+  allLists[eventIndex].classList.add('select');
+     } else {
+         details.style.display = 'none'; // 詳細を非表示
+  allLists[eventIndex].classList.remove('select');
+     }
+  
+ // if (details.classList.contains('show')) {
+//    details.classList.remove('show');
+ //   allLists[eventIndex].classList.remove('select');
+ // } else {
+ //   details.classList.add('show');
+  //  allLists[eventIndex].classList.add('select');
+//  }
 
 }
 
