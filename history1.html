@@ -861,11 +861,12 @@ function toggleDetails(eventIndex) {
     });
     
      // クリックしたイベントのみトグルする
-     if (details.style.display === 'none' || details.style.display === '') {
+     //if (details.style.display === 'none' || details.style.display === '') {
          //details.style.display = 'block'; // 詳細を表示
+  if (!details.classList.contains('open')) {
        details.classList.add('open');
-         //currentEventIndex = eventIndex;
        allLists[eventIndex].classList.add('select');
+    currentEventIndex = eventIndex;
      } else {
        details.classList.remove('open');
          //details.style.display = 'none'; // 詳細を非表示
