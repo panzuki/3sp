@@ -832,13 +832,15 @@ ul.rb li::before {
       <script>
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
+
 // ページが読み込まれたときに、全てのイベントを表示する
-// document.addEventListener("DOMContentLoaded", function() {
+ document.addEventListener("DOMContentLoaded", function() {
 //     const eventDetails = document.querySelectorAll('.details');
 //     eventDetails.forEach(detail => {
 //         detail.style.display = 'none'; // 最初に全て非表示にする
 //     });
-// });
+   const events = document.querySelectorAll('.event');
+ });
 
 // 詳細をトグルする関数
 function toggleDetails(eventIndex) {
@@ -885,7 +887,7 @@ function toggleDetails(eventIndex) {
 
 // 「次へ」ボタンの処理
 function nextEvent() {
-    const events = document.querySelectorAll('.event');
+    //const events = document.querySelectorAll('.event');
     if (currentEventIndex < events.length - 1) {
         currentEventIndex++;
     } else {
@@ -903,7 +905,7 @@ function nextEvent() {
 
 // 「前へ」ボタンの処理
 function prevEvent() {
-    const events = document.querySelectorAll('.event');
+    //const events = document.querySelectorAll('.event');
     if (currentEventIndex > 0) {
         currentEventIndex--;
     } else {
