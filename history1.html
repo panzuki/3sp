@@ -846,10 +846,9 @@ document.addEventListener("DOMContentLoaded", function() {
 // 詳細をトグルする関数
 function toggleDetails(eventIndex) {
     const details = document.getElementById(`details-${eventIndex}`);
-  if (currentEventIndex === eventIndex || first) {
+  if (currentEventIndex === eventIndex) {
      details.classList.toggle('open');
      allLists[eventIndex].classList.toggle('select');
-    first = false;
   }else{
     // 一度だけトグルを行う
     // if (currentEventIndex !== eventIndex) {
@@ -877,6 +876,10 @@ function nextEvent() {
 // 「前へ」ボタンの処理
 function prevEvent() {
   let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
+  if(first){
+    prevEventIndex = 0 ;
+    first = false;
+  }
   scrollToEvent(prevEventIndex);
   toggleDetails(prevEventIndex);
 }
