@@ -869,6 +869,10 @@ function toggleDetails(eventIndex) {
 // 「次へ」ボタンの処理
 function nextEvent() {
   let nextEventIndex = currentEventIndex < events.length - 1 ? currentEventIndex + 1 : 0;
+    if(first){
+    prevEventIndex = 0 ;
+    first = false;
+  }
   scrollToEvent(nextEventIndex);
   toggleDetails(nextEventIndex);
 }
@@ -876,10 +880,6 @@ function nextEvent() {
 // 「前へ」ボタンの処理
 function prevEvent() {
   let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
-  if(first){
-    prevEventIndex = 0 ;
-    first = false;
-  }
   scrollToEvent(prevEventIndex);
   toggleDetails(prevEventIndex);
 }
