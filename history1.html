@@ -833,10 +833,10 @@ ul.rb li::before {
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
 let events = [];
-// ページが読み込まれたときに、全てのイベントを表示する
- document.addEventListener("DOMContentLoaded", function() {
+
+document.addEventListener("DOMContentLoaded", function() {
    events = document.querySelectorAll('.event');
- });
+});
 
 // 詳細をトグルする関数
 function toggleDetails(eventIndex) {
@@ -844,54 +844,34 @@ function toggleDetails(eventIndex) {
     const allDetails = document.querySelectorAll('.details');
     const allLists = document.querySelectorAll('.rb-item');
 
-  alert("現在開いている" + currentEventIndex);
-  if (currentEventIndex === eventIndex) {
-    alert("同じ" + eventIndex);
-     details.classList.toggle('open');
-     allLists[eventIndex].classList.toggle('select');
-  }else{
-    // 他のすべてのイベント詳細を閉じる
-    alert("違う" + eventIndex);
-    allDetails.forEach((detail, index) => {
-       if (index !== eventIndex) {
-          detail.classList.remove('open');
-          allLists[index].classList.remove('select');         
-       }else{
-         detail.classList.add('open');
-         allLists[eventIndex].classList.add('select');
-       }
-    });
-  }
-  currentEventIndex = eventIndex;
+    // 一度だけトグルを行う
+    if (currentEventIndex !== eventIndex) {
+        allDetails.forEach((detail, index) => {
+            if (index !== eventIndex) {
+                detail.classList.remove('open');
+                allLists[index].classList.remove('select');
+            } else {
+                detail.classList.add('open');
+                allLists[eventIndex].classList.add('select');
+            }
+        });
+    }
+
+    currentEventIndex = eventIndex;
 }
 
 // 「次へ」ボタンの処理
 function nextEvent() {
-  let nextEventIndex = 0;
-    //const events = document.querySelectorAll('.event');
-    if (currentEventIndex < events.length - 1) {
-        nextEventIndex = currentEventIndex + 1;
-    } else {
-        nextEventIndex = 0; // 最後のイベントから最初に戻る
-    }
-  alert("次へ" + nextEventIndex);
-    toggleDetails(nextEventIndex);
+  let nextEventIndex = currentEventIndex < events.length - 1 ? currentEventIndex + 1 : 0;
+  toggleDetails(nextEventIndex);
   scrollToEvent(nextEventIndex);
 }
 
 // 「前へ」ボタンの処理
 function prevEvent() {
-  let prepEventIndex = 0;
-    //const events = document.querySelectorAll('.event');
-    if (currentEventIndex > 0) {
-        prepEventIndex = currentEventIndex - 1;
-    } else {
-        prepEventIndex = events.length - 1; // 最初のイベントから最後に戻る
-    }
-    alert("戻る" + prepEventIndex);
-
-    toggleDetails(prepEventIndex);
-  scrollToEvent(prepEventIndex);
+  let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
+  toggleDetails(prevEventIndex);
+  scrollToEvent(prevEventIndex);
 }
 
 function scrollToEvent(eventIndex) {
@@ -911,6 +891,87 @@ document.addEventListener("keydown", (event) => {
         prevEvent(); // 左矢印キーで前のイベントへ
     }
 });
+// // 初期化: 最初のイベントインデックスを0に設定
+// let currentEventIndex = 0;
+// let events = [];
+// // ページが読み込まれたときに、全てのイベントを表示する
+//  document.addEventListener("DOMContentLoaded", function() {
+//    events = document.querySelectorAll('.event');
+//  });
+
+// // 詳細をトグルする関数
+// function toggleDetails(eventIndex) {
+//     const details = document.getElementById(`details-${eventIndex}`);
+//     const allDetails = document.querySelectorAll('.details');
+//     const allLists = document.querySelectorAll('.rb-item');
+
+//   alert("現在開いている" + currentEventIndex);
+//   if (currentEventIndex === eventIndex) {
+//     alert("同じ" + eventIndex);
+//      details.classList.toggle('open');
+//      allLists[eventIndex].classList.toggle('select');
+//   }else{
+//     // 他のすべてのイベント詳細を閉じる
+//     alert("違う" + eventIndex);
+//     allDetails.forEach((detail, index) => {
+//        if (index !== eventIndex) {
+//           detail.classList.remove('open');
+//           allLists[index].classList.remove('select');         
+//        }else{
+//          detail.classList.add('open');
+//          allLists[eventIndex].classList.add('select');
+//        }
+//     });
+//   }
+//   currentEventIndex = eventIndex;
+// }
+
+// // 「次へ」ボタンの処理
+// function nextEvent() {
+//   let nextEventIndex = 0;
+//     //const events = document.querySelectorAll('.event');
+//     if (currentEventIndex < events.length - 1) {
+//         nextEventIndex = currentEventIndex + 1;
+//     } else {
+//         nextEventIndex = 0; // 最後のイベントから最初に戻る
+//     }
+//   alert("次へ" + nextEventIndex);
+//     toggleDetails(nextEventIndex);
+//   scrollToEvent(nextEventIndex);
+// }
+
+// // 「前へ」ボタンの処理
+// function prevEvent() {
+//   let prepEventIndex = 0;
+//     //const events = document.querySelectorAll('.event');
+//     if (currentEventIndex > 0) {
+//         prepEventIndex = currentEventIndex - 1;
+//     } else {
+//         prepEventIndex = events.length - 1; // 最初のイベントから最後に戻る
+//     }
+//     alert("戻る" + prepEventIndex);
+
+//     toggleDetails(prepEventIndex);
+//   scrollToEvent(prepEventIndex);
+// }
+
+// function scrollToEvent(eventIndex) {
+//     const selectedEvent = events[eventIndex];
+//     const targetDOMRect = selectedEvent.getBoundingClientRect();
+//     const targetTop = targetDOMRect.top + window.pageYOffset - 50;
+//     window.scrollTo({
+//         top: targetTop,
+//         behavior: 'smooth'
+//     });
+// }
+
+// document.addEventListener("keydown", (event) => {
+//     if (event.key === "ArrowRight") {
+//         nextEvent(); // 右矢印キーで次のイベントへ
+//     } else if (event.key === "ArrowLeft") {
+//         prevEvent(); // 左矢印キーで前のイベントへ
+//     }
+// });
 
 </script>
     </body>
