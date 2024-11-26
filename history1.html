@@ -50,6 +50,7 @@ html {
     -webkit-appearance: none;
     appearance: none;
     -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
   }
 
   body {
@@ -230,7 +231,7 @@ grid-row-gap: 1px;
       border-radius: 5px;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height 0.5s ease-out, padding 0.5s ease-out;
     }
       
 .details.open {
@@ -889,7 +890,7 @@ function prevEvent(event) {
 function scrollToEvent(eventIndex) {
     const selectedEvent = events[eventIndex];
     const targetDOMRect = selectedEvent.getBoundingClientRect();
-    const targetTop = targetDOMRect.top + window.pageYOffset - 50;
+    const targetTop = targetDOMRect.top + window.pageYOffset - 80;
     window.scrollTo({
         top: targetTop,
         behavior: 'smooth'
