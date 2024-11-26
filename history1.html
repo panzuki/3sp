@@ -850,14 +850,14 @@ function toggleDetails(eventIndex) {
     const allLists = document.querySelectorAll('.rb-item');
 
 
-  
+  alert('現在開いている' & currentEventIndex);
   if (currentEventIndex === eventIndex) {
-    alert(currentEventIndex,eventIndex);
+    alert('同じ' & eventIndex);
      details.classList.toggle('open');
      allLists[eventIndex].classList.toggle('select');
   }else{
     // 他のすべてのイベント詳細を閉じる
-        alert(currentEventIndex,eventIndex);
+    alert('違う' & eventIndex);
     allDetails.forEach((detail, index) => {
        if (index !== eventIndex) {
           detail.classList.remove('open');
