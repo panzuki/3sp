@@ -846,16 +846,12 @@ document.addEventListener("DOMContentLoaded", function() {
 // 詳細をトグルする関数
 function toggleDetails(eventIndex) {
     const details = document.getElementById(`details-${eventIndex}`);
-
-    alert("現在開いている" + currentEventIndex);
   if (currentEventIndex === eventIndex || first) {
-    alert("同じ" + eventIndex);
      details.classList.toggle('open');
      allLists[eventIndex].classList.toggle('select');
     first = false;
   }else{
     // 一度だけトグルを行う
-    alert("違う" + eventIndex);
     // if (currentEventIndex !== eventIndex) {
         allDetails.forEach((detail, index) => {
             if (index !== eventIndex) {
