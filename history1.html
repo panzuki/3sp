@@ -850,16 +850,20 @@ function toggleDetails(eventIndex) {
 
     // 他のすべてのイベント詳細を閉じる
     allDetails.forEach((detail, index) => {
-        if (index !== eventIndex) {
-          //  detail.style.display = 'none'; 
-          detail.classList.remove('open');
-          allLists[index].classList.remove('select');
-        }else{
-          alert(currentEventIndex);
-             detail.classList.add('open');
-       allLists[eventIndex].classList.add('select');
-        }
+        detail.classList.remove('open');
+        allLists[index].classList.remove('select');
+       //  if (index !== eventIndex) {
+       //    //  detail.style.display = 'none'; 
+       //    detail.classList.remove('open');
+       //    allLists[index].classList.remove('select');
+       //  }else{
+       //    alert(currentEventIndex);
+       //       detail.classList.add('open');
+       // allLists[eventIndex].classList.add('select');
+       //  }
     });
+          details.classList.toggle('open');
+        allLists[eventIndex].classList.toggle('select');
   currentEventIndex = eventIndex;
 
   //  allLists.forEach((list, index) => {
