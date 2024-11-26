@@ -832,6 +832,7 @@ ul.rb li::before {
       <script>
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
+let firsttime = true;
 let events = [];
 // ページが読み込まれたときに、全てのイベントを表示する
  document.addEventListener("DOMContentLoaded", function() {
@@ -863,9 +864,10 @@ function toggleDetails(eventIndex) {
        //  }
     });
   
-  if (currentEventIndex !== eventIndex) {
+  if (currentEventIndex !== eventIndex || firsttime) {
     details.classList.toggle('open');
     allLists[eventIndex].classList.toggle('select');
+    firsttime = false;
   }
   
   currentEventIndex = eventIndex;
