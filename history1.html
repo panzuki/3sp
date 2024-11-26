@@ -872,15 +872,15 @@ function toggleDetails(eventIndex) {
 // 「次へ」ボタンの処理
 function nextEvent() {
   let nextEventIndex = currentEventIndex < events.length - 1 ? currentEventIndex + 1 : 0;
-  toggleDetails(nextEventIndex);
   scrollToEvent(nextEventIndex);
+  toggleDetails(nextEventIndex);
 }
 
 // 「前へ」ボタンの処理
 function prevEvent() {
   let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
-  toggleDetails(prevEventIndex);
   scrollToEvent(prevEventIndex);
+  toggleDetails(prevEventIndex);
 }
 
 function scrollToEvent(eventIndex) {
