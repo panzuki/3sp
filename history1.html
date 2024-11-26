@@ -539,9 +539,9 @@ ul.rb li::before {
   <img src="https://panzuki.github.io/3sp/images/image2.jpg" alt="Image 2" onclick="openModal(event,this.src)" />
 </div>
 
-<div id="modal" class="modal">
-  <span class="close-modal" onclick="closeModal()">×</span>
-  <div class="modal-content">
+<div id="modal" class="modal" onclick="closeModal(event)">
+  <span class="close-modal" onclick="closeModal(event)">×</span>
+  <div class="modal-content" onclick="event.stopPropagation()">
     <img id="modal-image" src="" alt="Modal Image" />
   </div>
 </div>
@@ -981,17 +981,21 @@ function openModal(event, imageSrc) {
   document.getElementById('modal-image').src = imageSrc;
 }
 
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
+function closeModal(event) {
+  event.stopPropagation(); // モーダルの外側クリック時の伝搬を防止
+  const modal = document.getElementById('modal');
+  if (event.target === modal || event.target.classList.contains('close-modal')) {
+    modal.style.display = 'none';
+  }
 }
 
-window.onclick = function (event) {
+// モーダルが表示されているときはイベントを伝搬しない
+window.onclick = function(event) {
   const modal = document.getElementById('modal');
   if (event.target === modal) {
-    closeModal();
+    closeModal(event);
   }
 };
-
         
 // // 初期化: 最初のイベントインデックスを0に設定
 // let currentEventIndex = 0;
