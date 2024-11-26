@@ -833,17 +833,18 @@ ul.rb li::before {
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
 let events = [];
-
+let allDetails = [];
+let allLists = [];
+        
 document.addEventListener("DOMContentLoaded", function() {
    events = document.querySelectorAll('.event');
+  allDetails = document.querySelectorAll('.details');
+  allLists = document.querySelectorAll('.rb-item');
 });
 
 // 詳細をトグルする関数
 function toggleDetails(eventIndex) {
     const details = document.getElementById(`details-${eventIndex}`);
-    const allDetails = document.querySelectorAll('.details');
-    const allLists = document.querySelectorAll('.rb-item');
-
 
     alert("現在開いている" + currentEventIndex);
   if (currentEventIndex === eventIndex) {
