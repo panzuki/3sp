@@ -844,8 +844,16 @@ function toggleDetails(eventIndex) {
     const allDetails = document.querySelectorAll('.details');
     const allLists = document.querySelectorAll('.rb-item');
 
+
+    alert("現在開いている" + currentEventIndex);
+  if (currentEventIndex === eventIndex) {
+    alert("同じ" + eventIndex);
+     details.classList.toggle('open');
+     allLists[eventIndex].classList.toggle('select');
+  }else{
     // 一度だけトグルを行う
-    if (currentEventIndex !== eventIndex) {
+    alert("違う" + eventIndex);
+    // if (currentEventIndex !== eventIndex) {
         allDetails.forEach((detail, index) => {
             if (index !== eventIndex) {
                 detail.classList.remove('open');
@@ -855,8 +863,8 @@ function toggleDetails(eventIndex) {
                 allLists[eventIndex].classList.add('select');
             }
         });
-    }
-
+    // }
+  }
     currentEventIndex = eventIndex;
 }
 
