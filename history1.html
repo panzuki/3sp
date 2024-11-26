@@ -890,7 +890,12 @@ function prevEvent(event) {
 function scrollToEvent(eventIndex) {
     const selectedEvent = events[eventIndex];
     const targetDOMRect = selectedEvent.getBoundingClientRect();
-    const targetTop = targetDOMRect.top + window.pageYOffset - 80;
+      const windowHeight = window.innerHeight;
+    
+    // 画面の中央よりやや上に配置するためのオフセット
+    const offset = windowHeight * 0.6; // 画面の30%上に配置
+  const targetTop = targetDOMRect.top + window.pageYOffset - offset;
+    // const targetTop = targetDOMRect.top + window.pageYOffset - 80;
     window.scrollTo({
         top: targetTop,
         behavior: 'smooth'
