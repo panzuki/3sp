@@ -862,8 +862,12 @@ function toggleDetails(eventIndex) {
        // allLists[eventIndex].classList.add('select');
        //  }
     });
-          details.classList.toggle('open');
-        allLists[eventIndex].classList.toggle('select');
+  
+  if (currentEventIndex !== eventIndex) {
+    details.classList.toggle('open');
+    allLists[eventIndex].classList.toggle('select');
+  }
+  
   currentEventIndex = eventIndex;
 
   //  allLists.forEach((list, index) => {
@@ -898,26 +902,28 @@ function toggleDetails(eventIndex) {
 
 // 「次へ」ボタンの処理
 function nextEvent() {
+  const nextEventIndex = 0;
     //const events = document.querySelectorAll('.event');
     if (currentEventIndex < events.length - 1) {
-        currentEventIndex++;
+        nextEventIndex = currentEventIndex + 1;
     } else {
-        currentEventIndex = 0; // 最後のイベントから最初に戻る
+        nextEventIndex = 0; // 最後のイベントから最初に戻る
     }
-    toggleDetails(currentEventIndex);
-  scrollToEvent(currentEventIndex);
+    toggleDetails(nextEventIndex);
+  scrollToEvent(nextEventIndex);
 }
 
 // 「前へ」ボタンの処理
 function prevEvent() {
+  const prepEventIndex = 0;
     //const events = document.querySelectorAll('.event');
     if (currentEventIndex > 0) {
-        currentEventIndex--;
+        prepEventIndex = currentEventIndex - 1;
     } else {
-        currentEventIndex = events.length - 1; // 最初のイベントから最後に戻る
+        prepEventIndex = events.length - 1; // 最初のイベントから最後に戻る
     }
-    toggleDetails(currentEventIndex);
-  scrollToEvent(currentEventIndex);
+    toggleDetails(prepEventIndex);
+  scrollToEvent(prepEventIndex);
 }
 
 function scrollToEvent(eventIndex) {
