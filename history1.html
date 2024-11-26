@@ -832,14 +832,9 @@ ul.rb li::before {
       <script>
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
-let firsttime = true;
 let events = [];
 // ページが読み込まれたときに、全てのイベントを表示する
  document.addEventListener("DOMContentLoaded", function() {
-//     const eventDetails = document.querySelectorAll('.details');
-//     eventDetails.forEach(detail => {
-//         detail.style.display = 'none'; // 最初に全て非表示にする
-//     });
    events = document.querySelectorAll('.event');
  });
 
@@ -848,7 +843,6 @@ function toggleDetails(eventIndex) {
     const details = document.getElementById(`details-${eventIndex}`);
     const allDetails = document.querySelectorAll('.details');
     const allLists = document.querySelectorAll('.rb-item');
-
 
   alert("現在開いている" + currentEventIndex);
   if (currentEventIndex === eventIndex) {
@@ -866,50 +860,9 @@ function toggleDetails(eventIndex) {
          detail.classList.add('open');
          allLists[eventIndex].classList.add('select');
        }
-
-        // detail.classList.remove('open');
-        // allLists[index].classList.remove('select');
-
-          //  detail.style.display = 'none'; 
     });
   }
-
-  // if (currentEventIndex !== eventIndex || firsttime) {
-  //   details.classList.toggle('open');
-  //   allLists[eventIndex].classList.toggle('select');
-  //   firsttime = false;
-  // }
-  
   currentEventIndex = eventIndex;
-
-  //  allLists.forEach((list, index) => {
- //       if (index !== eventIndex) {
-    //        list.classList.remove('select');
-   //     }
-  //  }); 
-     // クリックしたイベントのみトグルする
-     //if (details.style.display === 'none' || details.style.display === '') {
-         //details.style.display = 'block'; // 詳細を表示
-
-  //if (!details.classList.contains('open')) {
-   //    details.classList.add('open');
-   //    allLists[eventIndex].classList.add('select');
-  //  currentEventIndex = eventIndex;
-    
-   //  } else {
-   //    details.classList.remove('open');
-         //details.style.display = 'none'; // 詳細を非表示
-   //    allLists[eventIndex].classList.remove('select');
-   //  }
-  
- // if (details.classList.contains('show')) {
-//    details.classList.remove('show');
- //   allLists[eventIndex].classList.remove('select');
- // } else {
- //   details.classList.add('show');
-  //  allLists[eventIndex].classList.add('select');
-//  }
-
 }
 
 // 「次へ」ボタンの処理
