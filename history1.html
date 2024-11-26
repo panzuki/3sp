@@ -832,7 +832,7 @@ ul.rb li::before {
       <script>
 // 初期化: 最初のイベントインデックスを0に設定
 let currentEventIndex = 0;
-let events;
+let events = [];
 // ページが読み込まれたときに、全てのイベントを表示する
  document.addEventListener("DOMContentLoaded", function() {
 //     const eventDetails = document.querySelectorAll('.details');
@@ -858,9 +858,9 @@ function toggleDetails(eventIndex) {
           alert(currentEventIndex);
              detail.classList.add('open');
        allLists[eventIndex].classList.add('select');
-    currentEventIndex = eventIndex;
         }
     });
+  currentEventIndex = eventIndex;
 
   //  allLists.forEach((list, index) => {
  //       if (index !== eventIndex) {
@@ -901,13 +901,7 @@ function nextEvent() {
         currentEventIndex = 0; // 最後のイベントから最初に戻る
     }
     toggleDetails(currentEventIndex);
-    const selectedEvent = events[currentEventIndex];
-    const targetDOMRect = selectedEvent.getBoundingClientRect();
-    const targetTop = targetDOMRect.top + window.pageYOffset - 50;
-    window.scrollTo({
-      top: targetTop,
-      behavior: 'smooth'
-    });
+  scrollToEvent(currentEventIndex);
 }
 
 // 「前へ」ボタンの処理
@@ -919,19 +913,17 @@ function prevEvent() {
         currentEventIndex = events.length - 1; // 最初のイベントから最後に戻る
     }
     toggleDetails(currentEventIndex);
-    const selectedEvent = events[currentEventIndex];
+  scrollToEvent(currentEventIndex);
+}
+
+function scrollToEvent(eventIndex) {
+    const selectedEvent = events[eventIndex];
     const targetDOMRect = selectedEvent.getBoundingClientRect();
     const targetTop = targetDOMRect.top + window.pageYOffset - 50;
     window.scrollTo({
-      top: targetTop,
-      behavior: 'smooth'
+        top: targetTop,
+        behavior: 'smooth'
     });
-}
-
-//閉じるボタンの処理
-function closeDetails(eventIndex) {
-    const details = document.getElementById(`details-${eventIndex}`);
-    details.style.display = 'none'; // 詳細を非表示
 }
 
 document.addEventListener("keydown", (event) => {
