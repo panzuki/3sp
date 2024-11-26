@@ -921,6 +921,7 @@ function nextEvent() {
     } else {
         nextEventIndex = 0; // 最後のイベントから最初に戻る
     }
+  alert("次へ" + nextEventIndex);
     toggleDetails(nextEventIndex);
   scrollToEvent(nextEventIndex);
 }
@@ -934,6 +935,8 @@ function prevEvent() {
     } else {
         prepEventIndex = events.length - 1; // 最初のイベントから最後に戻る
     }
+    alert("戻る" + prepEventIndex);
+
     toggleDetails(prepEventIndex);
   scrollToEvent(prepEventIndex);
 }
