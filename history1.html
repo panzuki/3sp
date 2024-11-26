@@ -535,8 +535,8 @@ ul.rb li::before {
                   <p>最古の初期猿人の出現<br>二足歩行で生活する猿人の始祖とされている</p>
 
 <div class="image-gallery">
-  <img src="https://panzuki.github.io/3sp/images/image1.jpg" alt="Image 1" onclick="openModal('image1.jpg')" />
-  <img src="https://panzuki.github.io/3sp/images/image2.jpg" alt="Image 2" onclick="openModal('image2.jpg')" />
+  <img src="https://panzuki.github.io/3sp/images/image1.jpg" alt="Image 1" onclick="openModal(event)" />
+  <img src="https://panzuki.github.io/3sp/images/image2.jpg" alt="Image 2" onclick="openModal(event)" />
 </div>
 
 <div id="modal" class="modal">
@@ -975,7 +975,8 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-function openModal(imageSrc) {
+function openModal(event) {
+  event.stopPropagation();
   document.getElementById('modal').style.display = 'flex';
   document.getElementById('modal-image').src = imageSrc;
 }
