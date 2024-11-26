@@ -849,26 +849,27 @@ function toggleDetails(eventIndex) {
     const allDetails = document.querySelectorAll('.details');
     const allLists = document.querySelectorAll('.rb-item');
 
+
+  
+  if (currentEventIndex === eventIndex) {
+     details.classList.toggle('open');
+     allLists[eventIndex].classList.toggle('select');
+  }else{
     // 他のすべてのイベント詳細を閉じる
     allDetails.forEach((detail, index) => {
+       if (index !== eventIndex) {
+          detail.classList.remove('open');
+          allLists[index].classList.remove('select');         
+       }else{
+         detail.classList.add('open');
+         allLists[eventIndex].classList.add('select');
+       }
+
         // detail.classList.remove('open');
         // allLists[index].classList.remove('select');
 
           //  detail.style.display = 'none'; 
-          detail.classList.remove('open');
-          allLists[index].classList.remove('select');
-       //  }else{
-       //       detail.classList.add('open');
-       // allLists[eventIndex].classList.add('select');
-       //  }
     });
-  
-  if (currentEventIndex === eventIndex && details.classList.contains('open')) {
-     details.classList.remove('open');
-     allLists[eventIndex].classList.remove('select');
-  }else{
-     details.classList.add('open');
-     allLists[eventIndex].classList.add('select');
   }
 
   // if (currentEventIndex !== eventIndex || firsttime) {
