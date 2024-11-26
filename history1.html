@@ -851,24 +851,31 @@ function toggleDetails(eventIndex) {
 
     // 他のすべてのイベント詳細を閉じる
     allDetails.forEach((detail, index) => {
-        detail.classList.remove('open');
-        allLists[index].classList.remove('select');
-       //  if (index !== eventIndex) {
-       //    //  detail.style.display = 'none'; 
-       //    detail.classList.remove('open');
-       //    allLists[index].classList.remove('select');
+        // detail.classList.remove('open');
+        // allLists[index].classList.remove('select');
+
+          //  detail.style.display = 'none'; 
+          detail.classList.remove('open');
+          allLists[index].classList.remove('select');
        //  }else{
-       //    alert(currentEventIndex);
        //       detail.classList.add('open');
        // allLists[eventIndex].classList.add('select');
        //  }
     });
   
-  if (currentEventIndex !== eventIndex || firsttime) {
-    details.classList.toggle('open');
-    allLists[eventIndex].classList.toggle('select');
-    firsttime = false;
+  if (currentEventIndex === eventIndex && !details.classList.contains('open')) {
+     details.classList.add('open');
+     allLists[eventIndex].classList.add('select');
+  }else if (currentEventIndex !== eventIndex) {
+     details.classList.add('open');
+     allLists[eventIndex].classList.add('select');
   }
+
+  // if (currentEventIndex !== eventIndex || firsttime) {
+  //   details.classList.toggle('open');
+  //   allLists[eventIndex].classList.toggle('select');
+  //   firsttime = false;
+  // }
   
   currentEventIndex = eventIndex;
 
