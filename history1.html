@@ -863,9 +863,9 @@ function toggleDetails(eventIndex) {
        //  }
     });
   
-  if (currentEventIndex === eventIndex && !details.classList.contains('open')) {
-     details.classList.add('open');
-     allLists[eventIndex].classList.add('select');
+  if (currentEventIndex === eventIndex && details.classList.contains('open')) {
+     details.classList.remove('open');
+     allLists[eventIndex].classList.remove('select');
   }else if (currentEventIndex !== eventIndex) {
      details.classList.add('open');
      allLists[eventIndex].classList.add('select');
