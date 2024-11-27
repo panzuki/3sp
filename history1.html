@@ -981,110 +981,65 @@ function scrollToEvent(eventIndex) {
     });
 }
 
+let currentImageIndex = -1; // 現在の画像インデックス
+let images = []; // ギャラリー内の画像リスト
+
 document.addEventListener("keydown", (event) => {
+  const modal = document.getElementById("modal");
+  if (modal.style.display === "flex") {
+    // モーダルが開いている場合
     if (event.key === "ArrowRight") {
-        nextEvent(event); // 右矢印キーで次のイベントへ
+      showNextImage();
     } else if (event.key === "ArrowLeft") {
-        prevEvent(event); // 左矢印キーで前のイベントへ
+      showPreviousImage();
     }
+    event.preventDefault(); // 他のイベントを防止
+  } else {
+    // モーダル以外の場合
+    if (event.key === "ArrowRight") {
+      nextEvent(event); // 右矢印キーで次のイベントへ
+    } else if (event.key === "ArrowLeft") {
+      prevEvent(event); // 左矢印キーで前のイベントへ
+    }
+  }
 });
 
 function openModal(event, imageSrc) {
   event.stopPropagation();
-  document.getElementById('modal').style.display = 'flex';
-  document.getElementById('modal-image').src = imageSrc;
+  const modal = document.getElementById('modal');
+  const modalImage = document.getElementById('modal-image');
+
+  // ギャラリー画像の取得と現在のインデックスの設定
+  images = Array.from(document.querySelectorAll('.image-gallery img')).map(img => img.src);
+  currentImageIndex = images.indexOf(imageSrc);
+
+  modal.style.display = 'flex';
+  modalImage.src = imageSrc;
 }
 
 function closeModal(event) {
-  event.stopPropagation(); // モーダルの外側クリック時の伝搬を防止
+  event.stopPropagation();
   const modal = document.getElementById('modal');
   if (event.target === modal || event.target.classList.contains('close-modal')) {
     modal.style.display = 'none';
+    currentImageIndex = -1; // インデックスをリセット
   }
 }
 
-// モーダルが表示されているときはイベントを伝搬しない
-window.onclick = function(event) {
-  const modal = document.getElementById('modal');
-  if (event.target === modal) {
-    closeModal(event);
+function showNextImage() {
+  if (currentImageIndex < images.length - 1) {
+    currentImageIndex++;
+    document.getElementById('modal-image').src = images[currentImageIndex];
   }
-};
+}
+
+function showPreviousImage() {
+  if (currentImageIndex > 0) {
+    currentImageIndex--;
+    document.getElementById('modal-image').src = images[currentImageIndex];
+  }
+}
         
-// // 初期化: 最初のイベントインデックスを0に設定
-// let currentEventIndex = 0;
-// let events = [];
-// // ページが読み込まれたときに、全てのイベントを表示する
-//  document.addEventListener("DOMContentLoaded", function() {
-//    events = document.querySelectorAll('.event');
-//  });
-
-// // 詳細をトグルする関数
-// function toggleDetails(eventIndex) {
-//     const details = document.getElementById(`details-${eventIndex}`);
-//     const allDetails = document.querySelectorAll('.details');
-//     const allLists = document.querySelectorAll('.rb-item');
-
-//   alert("現在開いている" + currentEventIndex);
-//   if (currentEventIndex === eventIndex) {
-//     alert("同じ" + eventIndex);
-//      details.classList.toggle('open');
-//      allLists[eventIndex].classList.toggle('select');
-//   }else{
-//     // 他のすべてのイベント詳細を閉じる
-//     alert("違う" + eventIndex);
-//     allDetails.forEach((detail, index) => {
-//        if (index !== eventIndex) {
-//           detail.classList.remove('open');
-//           allLists[index].classList.remove('select');         
-//        }else{
-//          detail.classList.add('open');
-//          allLists[eventIndex].classList.add('select');
-//        }
-//     });
-//   }
-//   currentEventIndex = eventIndex;
-// }
-
-// // 「次へ」ボタンの処理
-// function nextEvent(event) {
-//   let nextEventIndex = 0;
-//     //const events = document.querySelectorAll('.event');
-//     if (currentEventIndex < events.length - 1) {
-//         nextEventIndex = currentEventIndex + 1;
-//     } else {
-//         nextEventIndex = 0; // 最後のイベントから最初に戻る
-//     }
-//   alert("次へ" + nextEventIndex);
-//     toggleDetails(nextEventIndex);
-//   scrollToEvent(nextEventIndex);
-// }
-
-// // 「前へ」ボタンの処理
-// function prevEvent(event) {
-//   let prepEventIndex = 0;
-//     //const events = document.querySelectorAll('.event');
-//     if (currentEventIndex > 0) {
-//         prepEventIndex = currentEventIndex - 1;
-//     } else {
-//         prepEventIndex = events.length - 1; // 最初のイベントから最後に戻る
-//     }
-//     alert("戻る" + prepEventIndex);
-
-//     toggleDetails(prepEventIndex);
-//   scrollToEvent(prepEventIndex);
-// }
-
-// function scrollToEvent(eventIndex) {
-//     const selectedEvent = events[eventIndex];
-//     const targetDOMRect = selectedEvent.getBoundingClientRect();
-//     const targetTop = targetDOMRect.top + window.pageYOffset - 50;
-//     window.scrollTo({
-//         top: targetTop,
-//         behavior: 'smooth'
-//     });
-// }
-
 // document.addEventListener("keydown", (event) => {
 //     if (event.key === "ArrowRight") {
 //         nextEvent(event); // 右矢印キーで次のイベントへ
@@ -1092,6 +1047,29 @@ window.onclick = function(event) {
 //         prevEvent(event); // 左矢印キーで前のイベントへ
 //     }
 // });
+
+// function openModal(event, imageSrc) {
+//   event.stopPropagation();
+//   document.getElementById('modal').style.display = 'flex';
+//   document.getElementById('modal-image').src = imageSrc;
+// }
+
+// function closeModal(event) {
+//   event.stopPropagation(); // モーダルの外側クリック時の伝搬を防止
+//   const modal = document.getElementById('modal');
+//   if (event.target === modal || event.target.classList.contains('close-modal')) {
+//     modal.style.display = 'none';
+//   }
+// }
+
+// // モーダルが表示されているときはイベントを伝搬しない
+// window.onclick = function(event) {
+//   const modal = document.getElementById('modal');
+//   if (event.target === modal) {
+//     closeModal(event);
+//   }
+// };
+        
 
 </script>
     </body>
