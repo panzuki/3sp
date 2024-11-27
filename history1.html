@@ -966,7 +966,7 @@ function toggleDetails(eventIndex) {
 function nextEvent(event) {
   event.stopPropagation();
   let nextEventIndex = currentEventIndex < events.length - 1 ? currentEventIndex + 1 : 0;
-    if(first){
+    if(first &&　currentEventIndex　===　0){
     nextEventIndex = 0 ;
     first = false;
   }
