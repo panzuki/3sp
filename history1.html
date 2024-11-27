@@ -791,6 +791,17 @@ ul.rb li::before {
                     大麦やヒトツブコムギ、エンマー小麦などの栽培が始まる。<br>
                     初めは小麦を石でつぶしたものに水を加えて煮炊きし<br>
                     お粥のようにして食べるのが主流だったとされている。</p>
+
+                  <div class="image-gallery">
+  <img src="https://panzuki.github.io/3sp/images/delta.jpg" alt="Image 1" onclick="openModal(event,this.src)" />
+</div>
+
+<div id="modal" class="modal" onclick="closeModal(event)">
+  <span class="close-modal" onclick="closeModal(event)">×</span>
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <img id="modal-image" src="" alt="Modal Image" />
+  </div>
+</div>
                   <div class="pagination">
                     <button onclick="prevEvent(event)">前へ</button>
                     <button onclick="nextEvent(event)">次へ</button>
