@@ -963,7 +963,7 @@ function nextEvent(event) {
 
     setTimeout(() => {
     scrollToEvent(nextEventIndex);  // toggleDetailsが終わるのを待ってから実行
-  }, 500);  // 例えば500ms遅延させる
+  }, 600);  // 例えば500ms遅延させる
 }
 
 // 「前へ」ボタンの処理
@@ -973,7 +973,7 @@ function prevEvent(event) {
   toggleDetails(prevEventIndex);
   setTimeout(() => {
     scrollToEvent(prevEventIndex);  // toggleDetailsが終わるのを待ってから実行
-  }, 500);  // 例えば500ms遅延させる
+  }, 600);  // 例えば500ms遅延させる
 }
 
 function scrollToEvent(eventIndex) {
