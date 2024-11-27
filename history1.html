@@ -421,7 +421,7 @@ ul.rb li::before {
 }
 
 .modal-content img {
-  max-width: 200px;
+  width: 100%;
   height: auto;
 }
 
@@ -955,7 +955,7 @@ function nextEvent(event) {
     nextEventIndex = 0 ;
     first = false;
   }
-  toggleDetails(nextEventIndex);
+  await toggleDetails(nextEventIndex);
   scrollToEvent(nextEventIndex);
 }
 
@@ -963,7 +963,7 @@ function nextEvent(event) {
 function prevEvent(event) {
   event.stopPropagation();
   let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
-  toggleDetails(prevEventIndex);
+  await toggleDetails(prevEventIndex);
   scrollToEvent(prevEventIndex);
 }
 
