@@ -948,7 +948,7 @@ function toggleDetails(eventIndex) {
 }
 
 // 「次へ」ボタンの処理
-function nextEvent(event) {
+async function nextEvent(event) {
   event.stopPropagation();
   let nextEventIndex = currentEventIndex < events.length - 1 ? currentEventIndex + 1 : 0;
     if(first){
@@ -960,7 +960,7 @@ function nextEvent(event) {
 }
 
 // 「前へ」ボタンの処理
-function prevEvent(event) {
+async function prevEvent(event) {
   event.stopPropagation();
   let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
   await toggleDetails(prevEventIndex);
