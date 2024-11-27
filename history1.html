@@ -149,7 +149,9 @@ main{
 }
 
 h1{
-  font-size: 3rem;
+/*   font-size: 3rem; */
+    font-size: clamp(16px, 3rem, calc(86vw / 44));
+  line-height: 1.1;
   font-family: 'Times New Roman',serif;
         font-weight: bold;
         background-image: var(--gold);
@@ -250,6 +252,7 @@ grid-row-gap: 1px;
         background: var(--gold2);
         font-family: 'Times New Roman',serif;
         font-weight: bold;
+        font-size: clamp(10px, 3rem, calc(70vw / 55));
         border: 2px ;
       }
       
@@ -326,7 +329,8 @@ ul.rb li::before {
         /* color: #50d890; */        
         position: relative;
         width: 200px;
-        font-size: 1.3rem;
+/*         font-size: 1.3rem; */
+        font-size: clamp(10px, 2rem, calc(20vw / 55));
         font-family: 'Times New Roman',serif;
         font-weight: bold;
         background-image: var(--silver);
@@ -338,7 +342,8 @@ ul.rb li::before {
       }
       
       ul.rb li .item-title {
-        font-size: 2rem;
+/*         font-size: 2rem; */
+                font-size: clamp(12px, 3rem, calc(70vw / 55));
         /* position: absolute; */
         /* transform: translate(-50%,-50%); */
         /* top: 50%; */
