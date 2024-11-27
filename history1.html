@@ -948,23 +948,28 @@ function toggleDetails(eventIndex) {
 }
 
 // 「次へ」ボタンの処理
-async function nextEvent(event) {
+function nextEvent(event) {
   event.stopPropagation();
   let nextEventIndex = currentEventIndex < events.length - 1 ? currentEventIndex + 1 : 0;
     if(first){
     nextEventIndex = 0 ;
     first = false;
   }
-  await toggleDetails(nextEventIndex);
-  scrollToEvent(nextEventIndex);
+  toggleDetails(nextEventIndex);
+
+    setTimeout(() => {
+    scrollToEvent(nextEventIndex);  // toggleDetailsが終わるのを待ってから実行
+  }, 500);  // 例えば500ms遅延させる
 }
 
 // 「前へ」ボタンの処理
-async function prevEvent(event) {
+function prevEvent(event) {
   event.stopPropagation();
   let prevEventIndex = currentEventIndex > 0 ? currentEventIndex - 1 : events.length - 1;
-  await toggleDetails(prevEventIndex);
-  scrollToEvent(prevEventIndex);
+  toggleDetails(prevEventIndex);
+  setTimeout(() => {
+    scrollToEvent(prevEventIndex);  // toggleDetailsが終わるのを待ってから実行
+  }, 500);  // 例えば500ms遅延させる
 }
 
 function scrollToEvent(eventIndex) {
