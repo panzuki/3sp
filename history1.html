@@ -960,6 +960,7 @@ function toggleDetails(eventIndex) {
     // }
   }
     currentEventIndex = eventIndex;
+  first = false;
 }
 
 // 「次へ」ボタンの処理
@@ -970,7 +971,6 @@ function nextEvent(event) {
     nextEventIndex = 0 ;
     first = false;
   }
-  first = false;
   toggleDetails(nextEventIndex);
 
     setTimeout(() => {
