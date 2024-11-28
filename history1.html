@@ -1054,15 +1054,15 @@ function openModal(event, imageSrc) {
   modalImage.src = imageSrc || currentGallery[0];
 }
 
-function closeModal(event) {
+function closeModal() {
   event?.stopPropagation();
   const modal = document.getElementById('modal');
-  if (event?.target === modal || event?.target?.classList?.contains('close-modal') || !event) {
+  // if (event?.target === modal || event?.target?.classList?.contains('close-modal') || !event) {
     modal.style.display = 'none';
     currentImageIndex = -1; // インデックスをリセット
     currentGallery = null; // ギャラリーをリセット
     currentGalleryElement = null; // ギャラリー要素をリセット
-  }
+  // }
 }
 
 function showNextImage() {
