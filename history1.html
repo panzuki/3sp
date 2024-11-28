@@ -1025,6 +1025,11 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "1") {
       openFirstImageInGallery(); // 1キーで最初の画像を表示
     }
+    if (event.key === "ArrowRight") {
+      nextEvent(event); // 右矢印キーで次のイベントへ
+    } else if (event.key === "ArrowLeft") {
+      prevEvent(event); // 左矢印キーで前のイベントへ
+    }
   }
 });
 
