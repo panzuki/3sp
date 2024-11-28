@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>歴史地図</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 600px;
+    }
+    .label {
+      font-size: 12px;
+      color: black;
+      background: white;
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid gray;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border: 1px solid gray;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .controls button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .controls #year-display {
+      font-weight: bold;
+      margin: 0 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="controls">
+    <button id="prev-btn">← 前の年代</button>
+    <span id="year-display">紀元前3000年</span>
+    <button id="next-btn">次の年代 →</button>
+  </div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-curve"></script>
+  <script>
+    // 地図の初期化
+const map = L.map('map').setView([30, 30], 4);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// GeoJSON形式で各文明のデータ
+const historyData = {
+  '-3000': [
+    {
+      name: '古代エジプト',
+      geojson: {
+        type: 'Polygon',
+        coordinates: [[[31, 30], [33, 30], [33, 28], [31, 28], [31, 30]]]
+      },
+      color: 'blue',
+      label: [29, 32]
+    },
+    {
+      name: 'メソポタミア',
+      geojson: {
+        type: 'Polygon',
+        coordinates: [[[40, 35], [42, 35], [42, 33], [40, 33], [40, 35]]]
+      },
+      color: 'red',
+      label: [34, 41]
+    }
+  ],
+  '-1200': [
+    {
+      name: '古代ギリシャ',
+      geojson: {
+        type: 'Polygon',
+        coordinates: [[[20, 38], [22, 38], [22, 36], [20, 36], [20, 38]]]
+      },
+      color: 'green',
+      label: [37, 21]
+    }
+  ]
+};
+
+let currentYear = -3000;
+const layers = [];
+
+// DOM要素の取得
+const yearDisplay = document.getElementById('year-display');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+// 地図を更新する関数
+const updateMap = (year) => {
+  // 年代表示を更新
+  yearDisplay.textContent = `紀元前${Math.abs(year)}年`;
+
+  // 既存のレイヤーを削除
+  layers.forEach(layer => map.removeLayer(layer));
+  layers.length = 0;
+
+  // 年代に対応するデータを取得
+  const data = historyData[year];
+  if (data) {
+    data.forEach(item => {
+      // GeoJSONでエリアを追加
+      const layer = L.geoJSON(item.geojson, {
+        style: {
+          color: item.color,
+          weight: 2,
+          fillOpacity: 0.3
+        }
+      }).addTo(map);
+      layers.push(layer);
+
+      // ラベルを追加
+      const label = L.marker(item.label, {
+        icon: L.divIcon({
+          className: 'label',
+          html: `<b>${item.name}</b>`,
+          iconSize: [0, 0]
+        })
+      }).addTo(map);
+      layers.push(label);
+    });
+  }
+};
+
+// 初期表示
+updateMap(currentYear);
+
+// 年代変更用の関数
+const changeYear = (direction) => {
+  if (direction === 'next' && currentYear === -3000) {
+    currentYear = -1200; // 紀元前1200年
+  } else if (direction === 'prev' && currentYear === -1200) {
+    currentYear = -3000; // 紀元前3000年
+  }
+  updateMap(currentYear);
+};
+
+// ボタンのクリックイベント
+prevBtn.addEventListener('click', () => changeYear('prev'));
+nextBtn.addEventListener('click', () => changeYear('next'));
+
+// キーボード操作で年代を変更
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') {
+    changeYear('next');
+  } else if (e.key === 'ArrowLeft') {
+    changeYear('prev');
+  }
+});
+
+  </script>
+</body>
+</html>
