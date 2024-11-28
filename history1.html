@@ -1004,93 +1004,157 @@ function scrollToEvent(eventIndex) {
 }
 
 let currentImageIndex = -1; // 現在の画像インデックス
-let images = []; // ギャラリー内の画像リスト
+let currentGallery = null; // 現在操作中のギャラリー内画像リスト
+let currentGalleryElement = null; // 現在操作中のギャラリーDOM要素
 
 document.addEventListener("keydown", (event) => {
   const modal = document.getElementById("modal");
+
   if (modal.style.display === "flex") {
     // モーダルが開いている場合
     if (event.key === "ArrowRight") {
       showNextImage();
     } else if (event.key === "ArrowLeft") {
       showPreviousImage();
+    } else if (event.key === "3") {
+      closeModal(event); // 3キーでモーダルを閉じる
     }
     event.preventDefault(); // 他のイベントを防止
   } else {
-    // モーダル以外の場合
-    if (event.key === "ArrowRight") {
-      nextEvent(event); // 右矢印キーで次のイベントへ
-    } else if (event.key === "ArrowLeft") {
-      prevEvent(event); // 左矢印キーで前のイベントへ
+    // モーダルが閉じている場合
+    if (event.key === "1") {
+      openFirstImageInGallery(); // 1キーで最初の画像を表示
     }
   }
 });
 
 function openModal(event, imageSrc) {
-  event.stopPropagation();
+  event?.stopPropagation();
   const modal = document.getElementById('modal');
   const modalImage = document.getElementById('modal-image');
 
-  // ギャラリー画像の取得と現在のインデックスの設定
-  images = Array.from(document.querySelectorAll('.image-gallery img')).map(img => img.src);
-  currentImageIndex = images.indexOf(imageSrc);
+  // 現在のギャラリーを取得
+  currentGalleryElement = event
+    ? event.target.closest('.image-gallery')
+    : currentGalleryElement;
+  currentGallery = Array.from(currentGalleryElement.querySelectorAll('img')).map(
+    img => img.src
+  );
 
+  // 現在のインデックスを設定
+  currentImageIndex = currentGallery.indexOf(imageSrc);
+
+  // モーダルを表示
   modal.style.display = 'flex';
-  modalImage.src = imageSrc;
+  modalImage.src = imageSrc || currentGallery[0];
 }
 
 function closeModal(event) {
-  event.stopPropagation();
+  event?.stopPropagation();
   const modal = document.getElementById('modal');
-  if (event.target === modal || event.target.classList.contains('close-modal')) {
+  if (event?.target === modal || event?.target?.classList?.contains('close-modal') || !event) {
     modal.style.display = 'none';
     currentImageIndex = -1; // インデックスをリセット
+    currentGallery = null; // ギャラリーをリセット
+    currentGalleryElement = null; // ギャラリー要素をリセット
   }
 }
 
 function showNextImage() {
-  if (currentImageIndex < images.length - 1) {
-    currentImageIndex++;
-    document.getElementById('modal-image').src = images[currentImageIndex];
+  if (currentGallery && currentImageIndex !== -1) {
+    // インデックスを次へ移動（ループ処理）
+    currentImageIndex = (currentImageIndex + 1) % currentGallery.length;
+    document.getElementById('modal-image').src = currentGallery[currentImageIndex];
   }
 }
 
 function showPreviousImage() {
-  if (currentImageIndex > 0) {
-    currentImageIndex--;
-    document.getElementById('modal-image').src = images[currentImageIndex];
+  if (currentGallery && currentImageIndex !== -1) {
+    // インデックスを前へ移動（ループ処理）
+    currentImageIndex =
+      (currentImageIndex - 1 + currentGallery.length) % currentGallery.length;
+    document.getElementById('modal-image').src = currentGallery[currentImageIndex];
   }
 }
-        
+
+function openFirstImageInGallery() {
+  // 現在のギャラリー要素を取得
+  const galleries = document.querySelectorAll('.image-gallery');
+
+  // ギャラリーの最初を対象とする（複数ギャラリーがある場合は最初のものを使用）
+  if (galleries.length > 0) {
+    currentGalleryElement = galleries[0];
+    currentGallery = Array.from(currentGalleryElement.querySelectorAll('img')).map(
+      img => img.src
+    );
+
+    // 最初の画像をモーダルで表示
+    currentImageIndex = 0;
+    const modal = document.getElementById('modal');
+    modal.style.display = 'flex';
+    document.getElementById('modal-image').src = currentGallery[currentImageIndex];
+  }
+}
+
+
+// let currentImageIndex = -1; // 現在の画像インデックス
+// let images = []; // ギャラリー内の画像リスト
+
 // document.addEventListener("keydown", (event) => {
+//   const modal = document.getElementById("modal");
+//   if (modal.style.display === "flex") {
+//     // モーダルが開いている場合
 //     if (event.key === "ArrowRight") {
-//         nextEvent(event); // 右矢印キーで次のイベントへ
+//       showNextImage();
 //     } else if (event.key === "ArrowLeft") {
-//         prevEvent(event); // 左矢印キーで前のイベントへ
+//       showPreviousImage();
 //     }
+//     event.preventDefault(); // 他のイベントを防止
+//   } else {
+//     // モーダル以外の場合
+//     if (event.key === "ArrowRight") {
+//       nextEvent(event); // 右矢印キーで次のイベントへ
+//     } else if (event.key === "ArrowLeft") {
+//       prevEvent(event); // 左矢印キーで前のイベントへ
+//     }
+//   }
 // });
 
 // function openModal(event, imageSrc) {
 //   event.stopPropagation();
-//   document.getElementById('modal').style.display = 'flex';
-//   document.getElementById('modal-image').src = imageSrc;
+//   const modal = document.getElementById('modal');
+//   const modalImage = document.getElementById('modal-image');
+
+//   // ギャラリー画像の取得と現在のインデックスの設定
+//   images = Array.from(document.querySelectorAll('.image-gallery img')).map(img => img.src);
+//   currentImageIndex = images.indexOf(imageSrc);
+
+//   modal.style.display = 'flex';
+//   modalImage.src = imageSrc;
 // }
 
 // function closeModal(event) {
-//   event.stopPropagation(); // モーダルの外側クリック時の伝搬を防止
+//   event.stopPropagation();
 //   const modal = document.getElementById('modal');
 //   if (event.target === modal || event.target.classList.contains('close-modal')) {
 //     modal.style.display = 'none';
+//     currentImageIndex = -1; // インデックスをリセット
 //   }
 // }
 
-// // モーダルが表示されているときはイベントを伝搬しない
-// window.onclick = function(event) {
-//   const modal = document.getElementById('modal');
-//   if (event.target === modal) {
-//     closeModal(event);
+// function showNextImage() {
+//   if (currentImageIndex < images.length - 1) {
+//     currentImageIndex++;
+//     document.getElementById('modal-image').src = images[currentImageIndex];
 //   }
-// };
+// }
+
+// function showPreviousImage() {
+//   if (currentImageIndex > 0) {
+//     currentImageIndex--;
+//     document.getElementById('modal-image').src = images[currentImageIndex];
+//   }
+// }
         
 
 </script>
