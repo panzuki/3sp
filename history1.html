@@ -1006,7 +1006,9 @@ function scrollToEvent(eventIndex) {
 let currentImageIndex = -1; // 現在の画像インデックス
 let currentGallery = null; // 現在操作中のギャラリー内画像リスト
 let currentGalleryElement = null; // 現在操作中のギャラリーDOM要素
+// let currentOpenSetId = null; // 現在開いているセットのID
 
+        
 document.addEventListener("keydown", (event) => {
   const modal = document.getElementById("modal");
 
@@ -1023,7 +1025,8 @@ document.addEventListener("keydown", (event) => {
   } else {
     // モーダルが閉じている場合
     if (event.key === "1") {
-      openFirstImageInGallery(); // 1キーで最初の画像を表示
+      // openFirstImageInGallery(); // 1キーで最初の画像を表示
+      openFirstImageInCurrentSet();
     }
     if (event.key === "ArrowRight") {
       nextEvent(event); // 右矢印キーで次のイベントへ
@@ -1082,24 +1085,45 @@ function showPreviousImage() {
   }
 }
 
-function openFirstImageInGallery() {
-  // 現在のギャラリー要素を取得
-  const galleries = document.querySelectorAll('.image-gallery');
+function openFirstImageInCurrentSet() {
+  // 現在開いているセットを確認
+  if (currentEventIndex !== null) {
+    const openDetails = document.getElementById(`details-${currentEventIndex}`);
+    const gallery = openDetails.querySelector('.image-gallery');
 
-  // ギャラリーの最初を対象とする（複数ギャラリーがある場合は最初のものを使用）
-  if (galleries.length > 0) {
-    currentGalleryElement = galleries[0];
-    currentGallery = Array.from(currentGalleryElement.querySelectorAll('img')).map(
-      img => img.src
-    );
+    if (gallery) {
+      currentGalleryElement = gallery;
+      currentGallery = Array.from(gallery.querySelectorAll('img')).map(
+        img => img.src
+      );
 
-    // 最初の画像をモーダルで表示
-    currentImageIndex = 0;
-    const modal = document.getElementById('modal');
-    modal.style.display = 'flex';
-    document.getElementById('modal-image').src = currentGallery[currentImageIndex];
+      // 最初の画像をモーダルで表示
+      currentImageIndex = 0;
+      const modal = document.getElementById('modal');
+      modal.style.display = 'flex';
+      document.getElementById('modal-image').src = currentGallery[currentImageIndex];
+    }
   }
 }
+        
+// function openFirstImageInGallery() {
+//   // 現在のギャラリー要素を取得
+//   const galleries = document.querySelectorAll('.image-gallery');
+
+//   // ギャラリーの最初を対象とする（複数ギャラリーがある場合は最初のものを使用）
+//   if (galleries.length > 0) {
+//     currentGalleryElement = galleries[0];
+//     currentGallery = Array.from(currentGalleryElement.querySelectorAll('img')).map(
+//       img => img.src
+//     );
+
+//     // 最初の画像をモーダルで表示
+//     currentImageIndex = 0;
+//     const modal = document.getElementById('modal');
+//     modal.style.display = 'flex';
+//     document.getElementById('modal-image').src = currentGallery[currentImageIndex];
+//   }
+// }
 
 
 // let currentImageIndex = -1; // 現在の画像インデックス
