@@ -132,17 +132,20 @@ const updateMap = (year) => {
   const data = historyData[year];
   if (data) {
     // 楕円を描画するために L.ellipse を使用
-    data.forEach(item => {
-      const radiusX = 100000; // 横方向の半径
-      const radiusY = 50000;  // 縦方向の半径
+data.forEach(item => {
+  const radiusX = 100000; // 横方向の半径
+  const radiusY = 50000;  // 縦方向の半径
+  
+  // 楕円のように見える円を描画
+  const ellipse = L.circle([item.label[0], item.label[1]], {
+    radius: radiusX, // 半径は横方向に設定
+    color: item.color,
+    weight: 2,
+    fillOpacity: 0.3,
+    // さらに調整が必要
+  }).addTo(map);
+  layers.push(ellipse);
 
-      // 楕円を描画
-      const ellipse = L.ellipse([item.label[0], item.label[1]], [radiusX, radiusY], {
-        color: item.color,
-        weight: 2,
-        fillOpacity: 0.3
-      }).addTo(map);
-      layers.push(ellipse);
 
       // 楕円の中心にラベルを配置
       const label = L.marker([item.label[0], item.label[1]], {
