@@ -192,34 +192,33 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const cursor = document.createElement('div');
-    cursor.id = 'custom-cursor';
-    document.body.appendChild(cursor);
+     document.addEventListener('DOMContentLoaded', () => {
+        const cursor = document.createElement('div');
+        cursor.id = 'custom-cursor';
+        document.body.appendChild(cursor);
 
-    let size = 20; // 初期サイズ
-    const sizeStep = 5; // 拡大縮小のステップ
+        let size = 20; // 初期サイズ
+        const sizeStep = 5; // 拡大縮小のステップ
 
-    // マウス移動に応じてカスタムカーソルを移動
-   map.on('mousemove', (e) => {
-        // 地図上のマウス位置を取得
-        const latLng = e.latlng;
+        // マウス移動に応じてカスタムカーソルを更新
+        document.addEventListener('mousemove', (e) => {
+          const point = map.latLngToContainerPoint(map.mouseEventToLatLng(e)); // ピクセル座標に変換
+          cursor.style.left = `${point.x}px`; // X座標を設定
+          cursor.style.top = `${point.y}px`;  // Y座標を設定
+        });
 
-        // カスタムカーソルを地図上の位置に合わせる
-        const point = map.latLngToContainerPoint(latLng); // ピクセル座標に変換
-        cursor.style.left = `${point.x}px`; // X座標を設定
-        cursor.style.top = `${point.y}px`;  // Y座標を設定
-    });
-
-    // マウスホイールでサイズ変更
-document.addEventListener('wheel', (e) => {
-    e.preventDefault(); // スクロールのデフォルト動作をキャンセル
-    size += e.deltaY > 0 ? -sizeStep : sizeStep; // ホイールの方向でサイズ変更
-    size = Math.max(10, Math.min(size, 200)); // サイズの最小・最大を制限
-    cursor.style.width = `${size}px`;
-    cursor.style.height = `${size}px`;
-}, { passive: false }); // passive: false を追加
-});
+        // マウスホイールでサイズ変更
+        document.addEventListener('wheel', (e) => {
+          if (e.deltaY > 0) {
+            size -= sizeStep; // 縮小
+          } else {
+            size += sizeStep; // 拡大
+          }
+          size = Math.max(10, Math.min(size, 50)); // サイズの制限
+          cursor.style.width = `${size}px`;
+          cursor.style.height = `${size}px`;
+        });
+      });
 
   </script>
 </body>
