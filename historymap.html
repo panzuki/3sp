@@ -27,7 +27,7 @@
     transition: width 0.1s, height 0.1s; /* スムーズな変化 */
 }
     #map {
-      height: 600px;
+      height: 100%; /* 地図の高さを画面いっぱいに */
     }
     .label {
       font-size: 20px;
@@ -195,15 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const sizeStep = 5; // 拡大縮小のステップ
 
     // マウス移動に応じてカスタムカーソルを移動
-map.on('mousemove', (e) => {
-    // 地図上のマウス位置を取得
-    const latLng = e.latlng;
+   map.on('mousemove', (e) => {
+        // 地図上のマウス位置を取得
+        const latLng = e.latlng;
 
-    // カスタムカーソルを地図上の位置に合わせる
-    const point = map.latLngToContainerPoint(latLng);
-    cursor.style.left = `${point.x}px`;
-    cursor.style.top = `${point.y}px`;
-});
+        // カスタムカーソルを地図上の位置に合わせる
+        const point = map.latLngToContainerPoint(latLng); // ピクセル座標に変換
+        cursor.style.left = `${point.x}px`; // X座標を設定
+        cursor.style.top = `${point.y}px`;  // Y座標を設定
+    });
 
     // マウスホイールでサイズ変更
 document.addEventListener('wheel', (e) => {
