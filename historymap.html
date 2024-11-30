@@ -193,7 +193,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-     document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => {
         const cursor = document.createElement('div');
         cursor.id = 'custom-cursor';
         document.body.appendChild(cursor);
@@ -204,22 +204,24 @@ document.addEventListener('keydown', (e) => {
         // マウス移動に応じてカスタムカーソルを更新
         document.addEventListener('mousemove', (e) => {
           const point = map.latLngToContainerPoint(map.mouseEventToLatLng(e)); // ピクセル座標に変換
-          cursor.style.left = `${point.x}px`; // X座標を設定
-          cursor.style.top = `${point.y}px`;  // Y座標を設定
+          cursor.style.left = `${point.x}px`;
+          cursor.style.top = `${point.y}px`;
         });
 
-        // マウスホイールでサイズ変更
+        // カスタムカーソルサイズ変更用のホイール操作
         document.addEventListener('wheel', (e) => {
-          if (e.deltaY > 0) {
-            size -= sizeStep; // 縮小
-          } else {
-            size += sizeStep; // 拡大
-          }
+          map.scrollWheelZoom.disable();
+          e.preventDefault(); // デフォルト動作（ズーム）を無効化
+          size += e.deltaY > 0 ? -sizeStep : sizeStep; // ホイール方向に応じてサイズ変更
           size = Math.max(10, Math.min(size, 50)); // サイズの制限
           cursor.style.width = `${size}px`;
           cursor.style.height = `${size}px`;
-        });
+                    map.scrollWheelZoom.enable();
+        }, { passive: false }); // passive: false を追加してホイール操作を捕捉
       });
+
+      // 地図のホイールズームを無効化
+
 
   </script>
 </body>
