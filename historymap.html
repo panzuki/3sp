@@ -131,14 +131,19 @@ const updateMap = (year) => {
   // 年代に対応するデータを取得
   const data = historyData[year];
   if (data) {
+// 楕円を描画するために L.ellipse を使用
 data.forEach(item => {
-  const ellipse = L.circle([item.label[0], item.label[1]], {
-    radius: [100000, 50000], // 横方向と縦方向の半径 (適宜変更)
+  const radiusX = 100000; // 横方向の半径
+  const radiusY = 50000;  // 縦方向の半径
+  
+  // 楕円を描画
+  const ellipse = L.ellipse([item.label[0], item.label[1]], [radiusX, radiusY], {
     color: item.color,
     weight: 2,
     fillOpacity: 0.3
   }).addTo(map);
   layers.push(ellipse);
+});
 
   // 楕円の中心にラベルを配置
   const label = L.marker([item.label[0], item.label[1]], {
