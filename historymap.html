@@ -27,10 +27,11 @@
     height: 20px; /* 初期サイズ */
     transform: translate(-50%, -50%);
     transition: width 0.1s, height 0.1s; /* スムーズな変化 */
+  z-index: 1000; /* カスタムカーソルが他の要素の上に表示されるように */
 }
     #map {
       height: 100%; /* 地図の高さを画面いっぱいに */
-      cursor: none;
+      cursor: none;　!important;
     }
     .label {
       font-size: 20px;
