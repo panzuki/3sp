@@ -131,32 +131,32 @@ const updateMap = (year) => {
   // 年代に対応するデータを取得
   const data = historyData[year];
   if (data) {
-// 楕円を描画するために L.ellipse を使用
-data.forEach(item => {
-  const radiusX = 100000; // 横方向の半径
-  const radiusY = 50000;  // 縦方向の半径
-  
-  // 楕円を描画
-  const ellipse = L.ellipse([item.label[0], item.label[1]], [radiusX, radiusY], {
-    color: item.color,
-    weight: 2,
-    fillOpacity: 0.3
-  }).addTo(map);
-  layers.push(ellipse);
-});
+    // 楕円を描画するために L.ellipse を使用
+    data.forEach(item => {
+      const radiusX = 100000; // 横方向の半径
+      const radiusY = 50000;  // 縦方向の半径
 
-  // 楕円の中心にラベルを配置
-  const label = L.marker([item.label[0], item.label[1]], {
-    icon: L.divIcon({
-      className: 'label',
-      html: `<b>${item.name}</b>`,
-      iconSize: [150, 50],  // 楕円内にラベルを表示するためのサイズ調整
-    })
-  }).addTo(map);
-  layers.push(label);
-});
+      // 楕円を描画
+      const ellipse = L.ellipse([item.label[0], item.label[1]], [radiusX, radiusY], {
+        color: item.color,
+        weight: 2,
+        fillOpacity: 0.3
+      }).addTo(map);
+      layers.push(ellipse);
+
+      // 楕円の中心にラベルを配置
+      const label = L.marker([item.label[0], item.label[1]], {
+        icon: L.divIcon({
+          className: 'label',
+          html: `<b>${item.name}</b>`,
+          iconSize: [150, 50],  // 楕円内にラベルを表示するためのサイズ調整
+        })
+      }).addTo(map);
+      layers.push(label);
+    });
   }
 };
+
 
 // 初期表示
 updateMap(currentYear);
