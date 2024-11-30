@@ -131,27 +131,25 @@ const updateMap = (year) => {
   // 年代に対応するデータを取得
   const data = historyData[year];
   if (data) {
-    data.forEach(item => {
-      // GeoJSONでエリアを追加
-      const layer = L.geoJSON(item.geojson, {
-        style: {
-          color: item.color,
-          weight: 2,
-          fillOpacity: 0.3
-        }
-      }).addTo(map);
-      layers.push(layer);
+data.forEach(item => {
+  const ellipse = L.circle([item.label[0], item.label[1]], {
+    radius: [100000, 50000], // 横方向と縦方向の半径 (適宜変更)
+    color: item.color,
+    weight: 2,
+    fillOpacity: 0.3
+  }).addTo(map);
+  layers.push(ellipse);
 
-      // ラベルを追加
-      const label = L.marker(item.label, {
-        icon: L.divIcon({
-          className: 'label',
-          html: `<b>${item.name}</b>`,
-          iconSize: [0, 0]
-        })
-      }).addTo(map);
-      layers.push(label);
-    });
+  // 楕円の中心にラベルを配置
+  const label = L.marker([item.label[0], item.label[1]], {
+    icon: L.divIcon({
+      className: 'label',
+      html: `<b>${item.name}</b>`,
+      iconSize: [150, 50],  // 楕円内にラベルを表示するためのサイズ調整
+    })
+  }).addTo(map);
+  layers.push(label);
+});
   }
 };
 
@@ -190,19 +188,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const sizeStep = 5; // 拡大縮小のステップ
 
     // マウス移動に応じてカスタムカーソルを移動
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = `${e.pageX}px`;
-        cursor.style.top = `${e.pageY}px`;
-    });
+map.on('mousemove', (e) => {
+    // 地図上のマウス位置を取得
+    const latLng = e.latlng;
+
+    // カスタムカーソルを地図上の位置に合わせる
+    const point = map.latLngToContainerPoint(latLng);
+    cursor.style.left = `${point.x}px`;
+    cursor.style.top = `${point.y}px`;
+});
 
     // マウスホイールでサイズ変更
-    document.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        size += e.deltaY > 0 ? -sizeStep : sizeStep; // ホイールの方向でサイズ変更
-        size = Math.max(10, Math.min(size, 200)); // サイズの最小・最大を制限
-        cursor.style.width = `${size}px`;
-        cursor.style.height = `${size}px`;
-    });
+document.addEventListener('wheel', (e) => {
+    e.preventDefault(); // スクロールのデフォルト動作をキャンセル
+    size += e.deltaY > 0 ? -sizeStep : sizeStep; // ホイールの方向でサイズ変更
+    size = Math.max(10, Math.min(size, 200)); // サイズの最小・最大を制限
+    cursor.style.width = `${size}px`;
+    cursor.style.height = `${size}px`;
+}, { passive: false }); // passive: false を追加
 });
 
   </script>
