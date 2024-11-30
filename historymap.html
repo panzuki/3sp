@@ -210,17 +210,16 @@ document.addEventListener('keydown', (e) => {
 
         // カスタムカーソルサイズ変更用のホイール操作
         document.addEventListener('wheel', (e) => {
-          map.scrollWheelZoom.disable();
           e.preventDefault(); // デフォルト動作（ズーム）を無効化
           size += e.deltaY > 0 ? -sizeStep : sizeStep; // ホイール方向に応じてサイズ変更
           size = Math.max(10, Math.min(size, 50)); // サイズの制限
           cursor.style.width = `${size}px`;
           cursor.style.height = `${size}px`;
-                    map.scrollWheelZoom.enable();
         }, { passive: false }); // passive: false を追加してホイール操作を捕捉
       });
 
       // 地図のホイールズームを無効化
+          map.scrollWheelZoom.disable();
 
 
   </script>
