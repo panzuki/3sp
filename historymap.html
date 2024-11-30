@@ -6,6 +6,23 @@
   <title>歴史地図</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
+    body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    cursor: none; /* デフォルトのマウスポインターを隠す */
+}
+
+#custom-cursor {
+    position: absolute;
+    border: 2px solid red; /* 赤枠 */
+    border-radius: 50%; /* 丸形 */
+    pointer-events: none; /* 要素がクリック可能にならないようにする */
+    width: 20px; /* 初期サイズ */
+    height: 20px; /* 初期サイズ */
+    transform: translate(-50%, -50%);
+    transition: width 0.1s, height 0.1s; /* スムーズな変化 */
+}
     #map {
       height: 600px;
     }
@@ -159,6 +176,30 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'ArrowLeft') {
     changeYear('prev');
   }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cursor = document.createElement('div');
+    cursor.id = 'custom-cursor';
+    document.body.appendChild(cursor);
+
+    let size = 20; // 初期サイズ
+    const sizeStep = 5; // 拡大縮小のステップ
+
+    // マウス移動に応じてカスタムカーソルを移動
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = `${e.pageX}px`;
+        cursor.style.top = `${e.pageY}px`;
+    });
+
+    // マウスホイールでサイズ変更
+    document.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        size += e.deltaY > 0 ? -sizeStep : sizeStep; // ホイールの方向でサイズ変更
+        size = Math.max(10, Math.min(size, 200)); // サイズの最小・最大を制限
+        cursor.style.width = `${size}px`;
+        cursor.style.height = `${size}px`;
+    });
 });
 
   </script>
