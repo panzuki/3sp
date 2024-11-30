@@ -7,9 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-ellipse"></script>
-  <script src="https://unpkg.com/leaflet-curve"></script>
+
 
     
   <style>
@@ -73,6 +71,11 @@
     <span id="year-display">紀元前3000年</span>
     <button id="next-btn">次の年代 →</button>
   </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!--   <script src="https://unpkg.com/leaflet-ellipse"></script> -->
+  <script src="https://unpkg.com/leaflet-curve"></script>
+  
   <script>
     // 地図の初期化
 const map = L.map('map').setView([30, 30], 4);
@@ -139,11 +142,11 @@ data.forEach(item => {
   const radiusY = 50000;  // 縦方向の半径
   
   // 楕円のように見える円を描画
- const ellipse = L.ellipse([item.label[0], item.label[1]], radiusX, radiusY, {
+  const ellipse = L.circle([item.label[0], item.label[1]], {
+    radius: Math.max(radiusX, radiusY), // 最小値を取らないように調整
     color: item.color,
     weight: 2,
     fillOpacity: 0.3,
-    // さらに調整が必要
   }).addTo(map);
   layers.push(ellipse);
 
