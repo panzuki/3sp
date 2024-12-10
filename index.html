@@ -253,27 +253,12 @@ position:relative;
     opacity: 1; /* 見えるようにする */
 }
 
- /* 元のスタイルはそのまま */
-        .silhouette {
-            position: absolute;
-            top: 25vh;
-            left: 50%;
-
-            width: 30vw;
-            aspect-ratio: 1 / 1;
-            background: url('https://panzuki.github.io/3sp/images/galaxy1.jpg') center center / cover no-repeat;
-       /*     clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 81% 50%, 49% 45%, 20% 50%, 0% 70%, 0% 35%, 20% 10%);　*/
-	   clip-path: path('M10 50 Q30 10, 70 10 Q110 10, 130 50 Q110 90, 70 90 Q30 90, 10 50 Z');
-            transition: opacity 0.5s ease, background 0.5s ease;
-            opacity: 1;
-        }
 
         /* フェードアウト時に利用するクラス */
         .fade-out {
             opacity: 0;
 	}
 
-/* 	    canvas { background-color : rgba(255, 247, 240, 0.1);} */
 /* アニメーションの種類 */
 @keyframes slideInFromBottom {
     from {
@@ -326,25 +311,18 @@ position:relative;
     <div class="box2"><a href="saying.html">ことわざ</a></div>
     <div class="box2"><a href="history2.html">歴史2</a></div>
     <div class="box2"><a href="review.html">レビュー</a></div>
-    <div class="box2"><a href="#politics">政治</a></div>
+    <div class="box2"><a href="./react-app/index.html">歴史地図</a></div>
     <div class="box2"><a href="#science">科学</a></div>
     <div class="box2"><a href="finder.html">ファインダ</a></div>
     <div class="box2"><a href="historymap.html">世界史マップ</a></div>
     <div class="box2"><a href="#law">法律</a></div>
     <div class="box2"><a href="gridpan.html">グリッド</a></div>
 </div>
-	  <!--
-	  <div>
-		  <canvas id="myChart" width="600" height="400"></canvas>
-	  </div>	  
-	  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      -->
 	  
 <script>
 const silhouette = document.getElementById('silhouette');
 const boxes = document.querySelectorAll('.box2');
 const hoverText = document.querySelector('.hover-text');
-// const body_element = document.getElementById('bodyimage');
 	
 boxes.forEach(box => {
     box.addEventListener('mouseenter', () => {
@@ -352,213 +330,14 @@ boxes.forEach(box => {
         hoverText.textContent = linkText; // hover-textに設定
         hoverText.style.transform = 'translateY(0px)'; // 初期位置を上に設定
         hoverText.style.opacity = '1'; // 表示する
-	// const newImage = box.getAttribute('data-image');
-                        // フェードアウト
-                // body_element.classList.add('fade-out');
-
-                // 少し遅延して背景画像を変更し、フェードイン
-                // setTimeout(() => {
-                //     body_element.style.backgroundImage = `url('${newImage}')`;
-                //     body_element.classList.remove('fade-out');
-                // }, 300);
     });
 
     box.addEventListener('mouseleave', () => {
         hoverText.style.transform = 'translateY(-40px)'; // 元の位置に戻す
         hoverText.style.opacity = '0'; // 見えなくする
-	// フェードアウト
-                // body_element.classList.add('fade-out');
 
-                // 元の画像に戻す
-                // setTimeout(() => {
-                //     body_element = `url('https://panzuki.github.io/3sp/images/galaxy1.jpg')`;
-                //     body_element.classList.remove('fade-out');
-                // }, 300);
     });
 });
-
-
-
-// const isArray = a => a instanceof Array;
-// const isNull = a => a == null;
-// const cursor = a => {
-//   if (isNull(a)) return 'default';
-//   if (!isArray(a)) return 'pointer';
-//   if (isArray(a) && a.length > 0) return 'pointer';
-//   return 'default';
-// };
-// const $canvas = document.getElementById('myChart');
-
-// let hoveredLabelIndex = -1;  // ホバー中のラベルインデックスを保持
-// let animationProgress = 0;   // アニメーションの進行度（0から1）
-
-// const onHover = (evt, item, chart) => {
-//   const { x, y } = evt;
-//   hoveredLabelIndex = -1;
-
-//   // ラベルへのホバーを検出するロジック
-//   for (let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
-//     const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
-
-//     if (x >= left && x <= right && y >= top && y <= bottom) {
-//       hoveredLabelIndex = i;
-//       break;
-//     }
-//   }
-
-//   // ホバーしている場合にポインターを表示
-//   if (hoveredLabelIndex !== -1) {
-//     $canvas.style.cursor = 'pointer';
-//     animationProgress = 0;  // アニメーションの開始をトリガー
-//   } else {
-//     $canvas.style.cursor = 'default';
-//     animationProgress = 1;  // リセットして元に戻す
-//   }
-
-//   // アニメーション更新
-//   chart.draw();
-// };
-
-// const onLeave = (evt, chart) => {
-//   $canvas.style.cursor = 'default';
-//   hoveredLabelIndex = -1;
-//   animationProgress = 1;  // 元に戻すアニメーション
-//   chart.draw();
-// };
-
-// const options = {
-//   type: 'radar',
-//   data: {
-//     labels: ["ことわざ", "小ネタ", "小麦の伝来", "歴史1", "準備中", "準備中"],
-//     datasets: [
-//       {
-//         label: '# of Votes',
-//         data: [12, 19, 3, 5, 2, 3],
-//         borderColor: 'orange'
-//       },
-//       {
-//         label: '# of Points',
-//         data: [7, 11, 5, 8, 3, 7],
-//         borderColor: 'pink'
-//       }
-//     ]
-//   },
-// 	options: {
-// 		tooltips: {
-// 			enabled: false
-// 		},
-//     animations: {
-//       tension: {
-//         duration: 1000,
-//         easing: 'linear',
-//         from: 1,
-//         to: 0,
-//         loop: true
-//       },
-//     },
-//     responsive: true,
-//     onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
-//     plugins: {
-//       legend: {
-//         onHover: (e, item, chart) => onHover(e, item, chart),  // chartを渡す
-//         onLeave: (e, chart) => onLeave(e, chart),  // chartを渡す
-// 	display:false
-//       }
-//     },
-//     scales: {
-//       r: {
-// 	    ticks: {
-// 		display: false
-// 	    },
-//         pointLabels: {
-//           font: {
-//             size: 16,  // 基本のラベルサイズを大きく
-//             weight: 'bold'  // ラベルを太字に
-//           },
-//           color: 'rgba(0, 0, 0, 0)'  // デフォルトのラベルを透明に
-//         }
-//       }
-//     },
-//     onClick: (evt, activeEls, chart) => {
-//       const { x, y } = evt;
-//       let index = -1;
-
-//       for (let i = 0; i < chart.scales.r._pointLabelItems.length; i++) {
-//         const { bottom, top, left, right } = chart.scales.r._pointLabelItems[i];
-
-//         if (x >= left && x <= right && y >= top && y <= bottom) {
-//           index = i;
-//           break;
-//         }
-//       }
-
-//       if (index === -1) {
-//         return;
-//       }
-//       const linklist = ['saying.html', 'short.html', 'map.html', 'history.html', '#', '#'];
-//       const clickedLabeltrans = linklist[index];
-
-//       location.href = `https://panzuki.github.io/3sp/${clickedLabeltrans}`;
-//     }
-//   },
-//   plugins: [{
-//     // カスタムプラグインでホバー時にラベルをスムーズに拡大する
-//     afterDraw: (chart) => {
-//       const ctx = chart.ctx;
-//       const pointLabels = chart.scales.r._pointLabelItems;
-
-//       // 通常のラベル描画を抑制し、カスタム描画
-//       chart.scales.r.draw();  // レーダーチャートはそのまま描画
-
-//       // カスタム描画
-//       for (let i = 0; i < pointLabels.length; i++) {
-//         const label = pointLabels[i];
-//         const fontSize = (i === hoveredLabelIndex) 
-//           ? 16 + 8 * animationProgress  // ホバー時にサイズを変える
-//           : 16;  // 通常時のサイズ
-
-//         ctx.save();
-//         ctx.font = `bold ${fontSize}px Arial`;
-//         ctx.fillStyle = (i === hoveredLabelIndex) ? 'red' : 'black';  // ホバー時の色変更
-//         ctx.textAlign = 'center';
-//         ctx.textBaseline = 'middle';
-//         ctx.fillText(chart.data.labels[i], label.left + (label.right - label.left) / 2, label.top + (label.bottom - label.top) / 2);
-//         ctx.restore();
-//       }
-
-//       // アニメーション進行度を更新
-//       if (hoveredLabelIndex !== -1 && animationProgress < 1) {
-//         animationProgress += 0.15;  // アニメーションを高速化
-//       } else if (hoveredLabelIndex === -1 && animationProgress > 0) {
-//         animationProgress -= 0.15;  // 元に戻すアニメーションも高速化
-//       }
-
-//       if (animationProgress > 1) animationProgress = 1;  // 上限を1に
-//       if (animationProgress < 0) animationProgress = 0;  // 下限を0に
-//     }
-//   },
-//   {
-//     // レーダーチャートの中心にテキストを表示するプラグイン
-//     afterDraw: (chart) => {
-//       const ctx = chart.ctx;
-//       const centerX = chart.chartArea.width / 2 + chart.chartArea.left;
-//       const centerY = chart.chartArea.height / 2 + chart.chartArea.top;
-      
-//       // 中央にテキストを描画
-//       ctx.save();
-//       ctx.font = 'bold 30px Arial';
-//       ctx.fillStyle = 'blue';
-//       ctx.textAlign = 'center';
-//       ctx.textBaseline = 'middle';
-//       ctx.fillText('パンの', centerX, centerY);
-//       ctx.restore();
-//     }
-//   }]
-// };
-
-// const ctx = document.getElementById('myChart').getContext('2d');
-// new Chart(ctx, options);
-
       </script>
   </body>
 </html>
