@@ -52,65 +52,84 @@
     // CSVを読み込んでJSONに変換する
     function loadCSV() {
       // Timeline.csvの読み込み
-      Papa.parse("csv/Timeline.csv", {
-        download: true,
-        header: true,
-        dynamicTyping: true,
-        complete: function(results) {
-          const timelineData = results.data;
-          const jsonTimelineData = parseTimelineData(timelineData);
+Papa.parse("csv/Timeline.csv", {
+  download: true,
+  header: true,
+  dynamicTyping: true,
+  complete: function(results) {
+    if (results.errors.length > 0) {
+      console.error("Timeline.csvの読み込みエラー:", results.errors);
+      return;
+    }
+    const timelineData = results.data;
+    const jsonTimelineData = parseTimelineData(timelineData);
 
-          // Events.csvの読み込み
-          Papa.parse("csv/Events.csv", {
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            complete: function(eventResults) {
-              const eventData = eventResults.data;
-              const jsonEventData = parseEventData(eventData);
+    // 次のCSV読み込み
+    Papa.parse("csv/Events.csv", {
+      download: true,
+      header: true,
+      dynamicTyping: true,
+      complete: function(eventResults) {
+        if (eventResults.errors.length > 0) {
+          console.error("Events.csvの読み込みエラー:", eventResults.errors);
+          return;
+        }
+        const eventData = eventResults.data;
+        const jsonEventData = parseEventData(eventData);
 
-              // ここでタイムラインと出来事のデータを利用する
-              renderTimeline(jsonTimelineData, jsonEventData);
-            }
-          });
+        renderTimeline(jsonTimelineData, jsonEventData);
+      }
+    });
+  }
+});
+
+    }
+
+// Timelineデータを解析
+function parseTimelineData(timelineData) {
+  const timeline = [];
+  const regions = new Set();
+
+  timelineData.forEach(item => {
+    const period = item.Period;
+    const region = item.Region;
+    const state = item.State;
+    const share = item.Share;
+    const color = item.Color;
+    
+    // Coordinatesを確認し、空ならスキップ
+    let coordinates = [];
+    if (item.Coordinates) {
+      try {
+        coordinates = JSON.parse(item.Coordinates);
+      } catch (e) {
+        console.error("Invalid JSON in Coordinates:", item.Coordinates, e);
+        return; // 次のデータに進む
+      }
+    }
+
+    // 地域をセットに追加してユニーク化
+    regions.add(region);
+
+    // タイムラインにデータをまとめる
+    const periodData = timeline.find(p => p.period === period);
+    if (periodData) {
+      const regionData = periodData.states[region] || [];
+      regionData.push({ name: state, share, color, coordinates });
+      periodData.states[region] = regionData;
+    } else {
+      timeline.push({
+        period,
+        states: {
+          [region]: [{ name: state, share, color, coordinates }]
         }
       });
     }
+  });
 
-    // Timelineデータを解析
-    function parseTimelineData(timelineData) {
-      const timeline = [];
-      const regions = new Set();
+  return { timeline, regions: Array.from(regions) };
+}
 
-      timelineData.forEach(item => {
-        const period = item.Period;
-        const region = item.Region;
-        const state = item.State;
-        const share = item.Share;
-        const color = item.Color;
-        const coordinates = JSON.parse(item.Coordinates);
-
-        // 地域をセットに追加してユニーク化
-        regions.add(region);
-
-        // タイムラインにデータをまとめる
-        const periodData = timeline.find(p => p.period === period);
-        if (periodData) {
-          const regionData = periodData.states[region] || [];
-          regionData.push({ name: state, share, color, coordinates });
-          periodData.states[region] = regionData;
-        } else {
-          timeline.push({
-            period,
-            states: {
-              [region]: [{ name: state, share, color, coordinates }]
-            }
-          });
-        }
-      });
-
-      return { timeline, regions: Array.from(regions) }; // ユニークな地域も返す
-    }
 
     // Eventsデータを解析
     function parseEventData(eventData) {
