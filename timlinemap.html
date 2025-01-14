@@ -56,6 +56,7 @@ Papa.parse("csv/Timeline.csv", {
   download: true,
   header: true,
   dynamicTyping: true,
+  skipEmptyLines: true,
   complete: function(results) {
     if (results.errors.length > 0) {
       console.error("Timeline.csvの読み込みエラー:", results.errors);
@@ -72,9 +73,13 @@ Papa.parse("csv/Timeline.csv", {
       download: true,
       header: true,
       dynamicTyping: true,
+      skipEmptyLines: true,
       complete: function(eventResults) {
         if (eventResults.errors.length > 0) {
           console.error("Events.csvの読み込みエラー:", eventResults.errors);
+          results.errors.forEach(error => {
+            console.error(`エラー詳細: 行番号 ${error.row}, メッセージ: ${error.message}`);
+          });
           return;
         }
         const eventData = eventResults.data;
