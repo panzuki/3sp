@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>歴史タイムラインとマップ</title>
+  <style>
+    /* 基本スタイル */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #timelineChart {
+      width: 100%;
+      height: 300px;
+    }
+    #map {
+      width: 100%;
+      height: 400px;
+    }
+    #modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <div id="timelineChart"></div>
+  <div id="map"></div>
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div id="modal"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+  <script>
+    // CSVファイルの読み込み
+    const loadCSV = async (url) => {
+      const response = await fetch(url);
+      const text = await response.text();
+      return new Promise((resolve) => {
+        Papa.parse(text, {
+          header: true,
+          complete: (results) => resolve(results.data),
+        });
+      });
+    };
+
+    // タイムライン表示
+    const renderTimeline = (timelineData, onPeriodClick) => {
+      const labels = [...new Set(timelineData.map((row) => row.Period))];
+      const regions = [...new Set(timelineData.map((row) => row.Region))];
+      const datasets = [];
+
+      regions.forEach((region) => {
+        const data = labels.map((label) => {
+          const rows = timelineData.filter((row) => row.Period === label && row.Region === region);
+          return rows.reduce((sum, row) => sum + parseFloat(row.Share), 0);
+        });
+
+        datasets.push({
+          label: region,
+          data,
+          backgroundColor: regions.map((region) => timelineData.find((row) => row.Region === region)?.Color || "gray"),
+        });
+      });
+
+      new Chart(document.getElementById("timelineChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets,
+        },
+        options: {
+          responsive: true,
+          onClick: (_, elements) => {
+            if (elements.length) {
+              const index = elements[0].index;
+              onPeriodClick(labels[index]);
+            }
+          },
+          scales: {
+            x: { stacked: true },
+            y: { stacked: true },
+          },
+        },
+      });
+    };
+
+    // 地図表示
+    const renderMap = (map, timelineData, eventsData, selectedPeriod) => {
+      map.eachLayer((layer) => {
+        if (!layer._url) map.removeLayer(layer); // TileLayer以外を削除
+      });
+
+      const periodData = timelineData.filter((row) => row.Period === selectedPeriod);
+      periodData.forEach(({ State, Coordinates, Color }) => {
+        const coords = JSON.parse(Coordinates);
+        coords.forEach(([lat, lng]) => {
+          L.circle([lat, lng], { color: Color, radius: 50000 }).addTo(map).bindPopup(State);
+        });
+      });
+
+      const periodEvents = eventsData.filter((event) => event.Period === selectedPeriod);
+      periodEvents.forEach(({ Region, State, Title, Coordinates }) => {
+        const { lat, lng } = JSON.parse(Coordinates);
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(`<strong>${Title}</strong><br>${Region}, ${State}`);
+      });
+    };
+
+    // モーダル表示
+    const showModal = (content) => {
+      const modal = document.getElementById("modal");
+      const overlay = document.getElementById("modalOverlay");
+
+      modal.innerHTML = content;
+      modal.style.display = "block";
+      overlay.style.display = "block";
+
+      overlay.addEventListener("click", () => {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+      });
+    };
+
+    // 初期化
+    (async () => {
+      const timelineData = await loadCSV("Timeline.csv");
+      const eventsData = await loadCSV("Events.csv");
+
+      const map = L.map("map").setView([0, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+      renderTimeline(timelineData, (selectedPeriod) => {
+        renderMap(map, timelineData, eventsData, selectedPeriod);
+      });
+    })();
+  </script>
+</body>
+</html>
