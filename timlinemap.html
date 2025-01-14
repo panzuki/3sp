@@ -52,7 +52,7 @@
     // CSVを読み込んでJSONに変換する
     function loadCSV() {
       // Timeline.csvの読み込み
-Papa.parse("./csv/Timeline.csv", {
+Papa.parse("csv/Timeline.csv", {
   download: true,
   header: true,
   dynamicTyping: true,
@@ -65,7 +65,7 @@ Papa.parse("./csv/Timeline.csv", {
     const jsonTimelineData = parseTimelineData(timelineData);
 
     // 次のCSV読み込み
-    Papa.parse("./csv/Events.csv", {
+    Papa.parse("csv/Events.csv", {
       download: true,
       header: true,
       dynamicTyping: true,
