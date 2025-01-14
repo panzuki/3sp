@@ -59,6 +59,9 @@ Papa.parse("csv/Timeline.csv", {
   complete: function(results) {
     if (results.errors.length > 0) {
       console.error("Timeline.csvの読み込みエラー:", results.errors);
+      results.errors.forEach(error => {
+        console.error(`エラー詳細: 行番号 ${error.row}, メッセージ: ${error.message}`);
+      });
       return;
     }
     const timelineData = results.data;
