@@ -1,163 +1,198 @@
 <!DOCTYPE html>
-<html lang="jp">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>歴史タイムラインとマップ</title>
+  <title>タイムライン表示</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <style>
-    /* 基本スタイル */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    #timelineChart {
+    /* スクロール可能なコンテナ */
+    .container {
+      overflow-x: auto;
+      overflow-y: auto;
       width: 100%;
-      height: 300px;
+      height: 500px;
+      display: block;
     }
-    #map {
-      width: 100%;
-      height: 400px;
+    /* ヘッダー */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
     }
-    #modal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
+    /* 各グラフ行 */
+    .chart-row {
+      display: flex;
+      justify-content: space-between;
+      height: 50px;
+      align-items: center;
     }
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
+    /* 出来事行 */
+    .event-row {
+      display: flex;
+      justify-content: space-between;
+      background-color: #f0f0f0;
+      align-items: center;
+      height: 50px;
     }
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-  <canvas id="timelineChart"></canvas>
-  <div id="map"></div>
-  <div class="modal-overlay" id="modalOverlay"></div>
-  <div id="modal"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <div class="container">
+    <div id="timelineContainer">
+      <!-- タイムラインとグラフがここに追加される -->
+    </div>
+  </div>
 
   <script>
-    // CSVファイルの読み込み
-    const loadCSV = async (url) => {
-      const response = await fetch(url);
-      const text = await response.text();
-      return new Promise((resolve) => {
-        Papa.parse(text, {
-          header: true,
-          complete: (results) => resolve(results.data),
-        });
-      });
-    };
+    // CSVを読み込んでJSONに変換する
+    function loadCSV() {
+      // Timeline.csvの読み込み
+      Papa.parse("csv/Timeline.csv", {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: function(results) {
+          const timelineData = results.data;
+          const jsonTimelineData = parseTimelineData(timelineData);
 
-    // タイムライン表示
-    const renderTimeline = (timelineData, onPeriodClick) => {
-      const labels = [...new Set(timelineData.map((row) => row.Period))];
-      const regions = [...new Set(timelineData.map((row) => row.Region))];
-      const datasets = [];
+          // Events.csvの読み込み
+          Papa.parse("csv/Events.csv", {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(eventResults) {
+              const eventData = eventResults.data;
+              const jsonEventData = parseEventData(eventData);
 
-      regions.forEach((region) => {
-        const data = labels.map((label) => {
-          const rows = timelineData.filter((row) => row.Period === label && row.Region === region);
-          return rows.reduce((sum, row) => sum + parseFloat(row.Share), 0);
-        });
-
-        datasets.push({
-          label: region,
-          data,
-          backgroundColor: regions.map((region) => timelineData.find((row) => row.Region === region)?.Color || "gray"),
-        });
-      });
-
-      new Chart(document.getElementById("timelineChart"), {
-        type: "bar",
-        data: {
-          labels,
-          datasets,
-        },
-        options: {
-          responsive: true,
-          onClick: (_, elements) => {
-            if (elements.length) {
-              const index = elements[0].index;
-              onPeriodClick(labels[index]);
+              // ここでタイムラインと出来事のデータを利用する
+              renderTimeline(jsonTimelineData, jsonEventData);
             }
-          },
-          scales: {
-            x: { stacked: true },
-            y: { stacked: true },
-          },
-        },
+          });
+        }
       });
-    };
+    }
 
-    // 地図表示
-    const renderMap = (map, timelineData, eventsData, selectedPeriod) => {
-      map.eachLayer((layer) => {
-        if (!layer._url) map.removeLayer(layer); // TileLayer以外を削除
+    // Timelineデータを解析
+    function parseTimelineData(timelineData) {
+      const timeline = [];
+      const regions = new Set();
+
+      timelineData.forEach(item => {
+        const period = item.Period;
+        const region = item.Region;
+        const state = item.State;
+        const share = item.Share;
+        const color = item.Color;
+        const coordinates = JSON.parse(item.Coordinates);
+
+        // 地域をセットに追加してユニーク化
+        regions.add(region);
+
+        // タイムラインにデータをまとめる
+        const periodData = timeline.find(p => p.period === period);
+        if (periodData) {
+          const regionData = periodData.states[region] || [];
+          regionData.push({ name: state, share, color, coordinates });
+          periodData.states[region] = regionData;
+        } else {
+          timeline.push({
+            period,
+            states: {
+              [region]: [{ name: state, share, color, coordinates }]
+            }
+          });
+        }
       });
 
-      const periodData = timelineData.filter((row) => row.Period === selectedPeriod);
-      periodData.forEach(({ State, Coordinates, Color }) => {
-        const coords = JSON.parse(Coordinates);
-        coords.forEach(([lat, lng]) => {
-          L.circle([lat, lng], { color: Color, radius: 50000 }).addTo(map).bindPopup(State);
+      return { timeline, regions: Array.from(regions) }; // ユニークな地域も返す
+    }
+
+    // Eventsデータを解析
+    function parseEventData(eventData) {
+      const events = [];
+
+      eventData.forEach(item => {
+        const period = item.Period;
+        const region = item.Region;
+        const state = item.State;
+        const title = item.Title;
+        const details = item.Details;
+        const image = item.Image;
+        const coordinates = item.Coordinates.split(",").map(val => parseFloat(val.trim()));
+
+        events.push({ period, region, state, title, details, image, coordinates });
+      });
+
+      return events;
+    }
+
+    // タイムラインの描画
+    function renderTimeline(timelineData, eventData) {
+      const timelineContainer = document.getElementById("timelineContainer");
+      const { timeline, regions } = timelineData;
+
+      // ヘッダー作成
+      const headerRow = document.createElement("div");
+      headerRow.className = "header";
+
+      // ヘッダーに地域を追加
+      ["空白", ...regions].forEach(region => {
+        const headerCell = document.createElement("div");
+        headerCell.textContent = region;
+        headerRow.appendChild(headerCell);
+      });
+      timelineContainer.appendChild(headerRow);
+
+      timeline.forEach(item => {
+        // 国家行を描画
+        Object.keys(item.states).forEach(region => {
+          const chartRow = document.createElement("div");
+          chartRow.className = "chart-row";
+          
+          item.states[region].forEach(state => {
+            const chartCell = document.createElement("canvas");
+            chartRow.appendChild(chartCell);
+
+            // Chart.js 横棒グラフの作成
+            new Chart(chartCell, {
+              type: 'bar',
+              data: {
+                labels: [state.name],
+                datasets: [{
+                  data: [state.share],
+                  backgroundColor: state.color,
+                  borderColor: 'black',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                scales: {
+                  x: { beginAtZero: true }
+                }
+              }
+            });
+          });
+          timelineContainer.appendChild(chartRow);
+
+          // 出来事行を描画
+          const eventRow = document.createElement("div");
+          eventRow.className = "event-row";
+          
+          eventData.filter(event => event.period === item.period && event.region === region).forEach(event => {
+            const eventCell = document.createElement("div");
+            eventCell.textContent = event.title;
+            eventRow.appendChild(eventCell);
+          });
+          timelineContainer.appendChild(eventRow);
         });
       });
+    }
 
-      const periodEvents = eventsData.filter((event) => event.Period === selectedPeriod);
-      periodEvents.forEach(({ Region, State, Title, Coordinates }) => {
-        const { lat, lng } = JSON.parse(Coordinates);
-        L.marker([lat, lng])
-          .addTo(map)
-          .bindPopup(`<strong>${Title}</strong><br>${Region}, ${State}`);
-      });
-    };
-
-    // モーダル表示
-    const showModal = (content) => {
-      const modal = document.getElementById("modal");
-      const overlay = document.getElementById("modalOverlay");
-
-      modal.innerHTML = content;
-      modal.style.display = "block";
-      overlay.style.display = "block";
-
-      overlay.addEventListener("click", () => {
-        modal.style.display = "none";
-        overlay.style.display = "none";
-      });
-    };
-
-    // 初期化
-    (async () => {
-      const timelineData = await loadCSV("csv/Timeline.csv");
-      const eventsData = await loadCSV("csv/Events.csv");
-
-      const map = L.map("map").setView([0, 0], 2);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-
-      renderTimeline(timelineData, (selectedPeriod) => {
-        renderMap(map, timelineData, eventsData, selectedPeriod);
-      });
-    })();
+    // ページ読み込み時にCSVをロード
+    window.onload = loadCSV;
   </script>
+
 </body>
 </html>
