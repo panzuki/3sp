@@ -149,86 +149,127 @@ function parseTimelineData(timelineData) {
     }
 
     // タイムラインの描画
-    function renderTimeline(timelineData, eventData) {
-      const timelineContainer = document.getElementById("timelineContainer");
-      const { timeline, regions } = timelineData;
+function renderTimeline(timelineData, eventData) {
+  const timelineContainer = document.getElementById("timelineContainer");
+  const { timeline, regions } = timelineData;
 
-      // ヘッダー作成
-      const headerRow = document.createElement("div");
-      headerRow.className = "header";
+  // ヘッダー行の作成
+  const headerRow = document.createElement("div");
+  headerRow.className = "header";
 
-      // ヘッダーに地域を追加
-      ["空白", ...regions].forEach(region => {
-        const headerCell = document.createElement("div");
-        headerCell.textContent = region;
-        headerRow.appendChild(headerCell);
-      });
-      timelineContainer.appendChild(headerRow);
+  ["空白", ...regions].forEach(region => {
+    const headerCell = document.createElement("div");
+    headerCell.textContent = region;
+    headerCell.style.flex = "1";
+    headerRow.appendChild(headerCell);
+  });
+  timelineContainer.appendChild(headerRow);
 
-      timeline.forEach(item => {
-        // 年代の表示
-  const periodRow = document.createElement("div");
-  periodRow.textContent = item.period; // 年代を表示
-  periodRow.style.fontWeight = "bold";
-  timelineContainer.appendChild(periodRow);
+  // タイムライン描画
+  timeline.forEach(item => {
+    // 年代表示
+    const periodRow = document.createElement("div");
+    periodRow.textContent = item.period;
+    periodRow.style.fontWeight = "bold";
+    timelineContainer.appendChild(periodRow);
 
-        // 国家行を描画
-        Object.keys(item.states).forEach(region => {
-          const chartRow = document.createElement("div");
-          chartRow.className = "chart-row";
-          
-          item.states[region].forEach(state => {
-            const chartCell = document.createElement("canvas");
-            chartRow.appendChild(chartCell);
+    // 積み上げグラフ: 国
+    const chartRow = document.createElement("div");
+    chartRow.className = "chart-row";
+    const chartCell = document.createElement("canvas");
+    chartCell.style.flex = "1";
+    chartRow.appendChild(chartCell);
 
-            // Chart.js 横棒グラフの作成
-new Chart(chartCell, {
-  type: 'bar',
-  data: {
-    labels: [region], // 地域をラベルとして使用
-    datasets: item.states[region].map(state => ({
-      label: state.name, // 王国名
-      data: [state.share], // 比率
-      backgroundColor: state.color, // 色
-      borderColor: 'black',
-      borderWidth: 1
-    }))
-  },
-  options: {
-    indexAxis: 'y', // 横向きの棒グラフ
-    plugins: {
-      legend: {
-        position: 'right' // 凡例の位置を右側に設定
-      }
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-        stacked: true // 積み上げグラフ
+    // Chart.js グラフ作成 (年代ごとの国の積み上げグラフ)
+    new Chart(chartCell, {
+      type: 'bar',
+      data: {
+        labels: [item.period],
+        datasets: Object.keys(item.states).flatMap(region => 
+          item.states[region].map(state => ({
+            label: state.name, // 王国名
+            data: [state.share], // シェア
+            backgroundColor: state.color, // 色
+            borderColor: 'black',
+            borderWidth: 1
+          }))
+        )
       },
-      y: {
-        stacked: true // 積み上げグラフ
+      options: {
+        indexAxis: 'y', // 横棒グラフ
+        plugins: {
+          legend: {
+            position: 'right', // 凡例の位置
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false, // サイズを柔軟に調整
+        scales: {
+          x: {
+            beginAtZero: true,
+            stacked: true // 積み上げ
+          },
+          y: {
+            stacked: true // 積み上げ
+          }
+        }
       }
-    }
-  }
-});
+    });
 
-          });
-          timelineContainer.appendChild(chartRow);
+    timelineContainer.appendChild(chartRow);
 
-          // 出来事行を描画
-          const eventRow = document.createElement("div");
-          eventRow.className = "event-row";
-          
-          eventData.filter(event => event.period === item.period && event.region === region).forEach(event => {
-            const eventCell = document.createElement("div");
-            eventCell.textContent = event.title;
-            eventRow.appendChild(eventCell);
-          });
-          timelineContainer.appendChild(eventRow);
-        });
+    // 出来事グラフ: 出来事
+    const eventRow = document.createElement("div");
+    eventRow.className = "chart-row";
+    const eventCell = document.createElement("canvas");
+    eventCell.style.flex = "1";
+    eventRow.appendChild(eventCell);
+
+    const eventDataset = eventData
+      .filter(event => event.period === item.period)
+      .map(event => ({
+        label: event.title, // 出来事タイトル
+        data: [1], // 比率（全て1で固定）
+        backgroundColor: 'lightblue', // 出来事の背景色
+        borderColor: 'black',
+        borderWidth: 1
+      }));
+
+    if (eventDataset.length > 0) {
+      new Chart(eventCell, {
+        type: 'bar',
+        data: {
+          labels: [item.period],
+          datasets: eventDataset
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: {
+            legend: {
+              position: 'right',
+            }
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
       });
+    } else {
+      eventCell.textContent = "出来事なし"; // 出来事がない場合の表示
     }
+
+    timelineContainer.appendChild(eventRow);
+  });
+}
+
 
     // ページ読み込み時にCSVをロード
     window.onload = loadCSV;
