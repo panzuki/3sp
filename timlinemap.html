@@ -176,6 +176,12 @@ function parseTimelineData(timelineData) {
       timelineContainer.appendChild(headerRow);
 
       timeline.forEach(item => {
+        // 年代の表示
+  const periodRow = document.createElement("div");
+  periodRow.textContent = item.period; // 年代を表示
+  periodRow.style.fontWeight = "bold";
+  timelineContainer.appendChild(periodRow);
+
         // 国家行を描画
         Object.keys(item.states).forEach(region => {
           const chartRow = document.createElement("div");
@@ -186,23 +192,37 @@ function parseTimelineData(timelineData) {
             chartRow.appendChild(chartCell);
 
             // Chart.js 横棒グラフの作成
-            new Chart(chartCell, {
-              type: 'bar',
-              data: {
-                labels: [state.name],
-                datasets: [{
-                  data: [state.share],
-                  backgroundColor: state.color,
-                  borderColor: 'black',
-                  borderWidth: 1
-                }]
-              },
-              options: {
-                scales: {
-                  x: { beginAtZero: true }
-                }
-              }
-            });
+new Chart(chartCell, {
+  type: 'bar',
+  data: {
+    labels: [region], // 地域をラベルとして使用
+    datasets: item.states[region].map(state => ({
+      label: state.name, // 王国名
+      data: [state.share], // 比率
+      backgroundColor: state.color, // 色
+      borderColor: 'black',
+      borderWidth: 1
+    }))
+  },
+  options: {
+    indexAxis: 'y', // 横向きの棒グラフ
+    plugins: {
+      legend: {
+        position: 'right' // 凡例の位置を右側に設定
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        stacked: true // 積み上げグラフ
+      },
+      y: {
+        stacked: true // 積み上げグラフ
+      }
+    }
+  }
+});
+
           });
           timelineContainer.appendChild(chartRow);
 
