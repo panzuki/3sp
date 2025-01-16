@@ -58,6 +58,8 @@ Papa.parse("csv/Timeline.csv", {
   dynamicTyping: true,
   skipEmptyLines: true,
   complete: function(results) {
+
+    
     if (results.errors.length > 0) {
       console.error("Timeline.csvの読み込みエラー:", results.errors);
       results.errors.forEach(error => {
@@ -65,7 +67,9 @@ Papa.parse("csv/Timeline.csv", {
       });
       return;
     }
+    console.log("Timeline.csv読み込み結果:", results.data); // データ確認
     const timelineData = results.data;
+    console.log("解析後のタイムラインデータ:", parseTimelineData(timelineData)); // 解析後の確認
     const jsonTimelineData = parseTimelineData(timelineData);
 
     // 次のCSV読み込み
