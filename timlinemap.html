@@ -190,18 +190,20 @@ function renderTimeline(timelineData, eventData) {
       options: {
         indexAxis: 'y', // 横棒グラフ
         plugins: {
-          legend: {
-            position: 'right', // 凡例の位置
-          }
+          legend: { display: false }, // 凡例を非表示
+          tooltip: { enabled: false } // ツールチップを非表示
         },
         responsive: true,
         maintainAspectRatio: false, // サイズを柔軟に調整
         scales: {
+          
           x: {
-            beginAtZero: true,
+            display: false,
+            //beginAtZero: true,
             stacked: true // 積み上げ
           },
           y: {
+            display: false,
             stacked: true // 積み上げ
           }
         }
@@ -238,17 +240,20 @@ function renderTimeline(timelineData, eventData) {
           indexAxis: 'y',
           plugins: {
             legend: {
-              position: 'right',
+              display: false
+              //position: 'right',
             }
           },
           responsive: true,
           maintainAspectRatio: false,
           scales: {
             x: {
-              beginAtZero: true,
+              display: false,
+              //beginAtZero: true,
               stacked: true
             },
             y: {
+              display: false,
               stacked: true
             }
           }
