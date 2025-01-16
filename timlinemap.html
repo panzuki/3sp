@@ -163,7 +163,7 @@ function renderTimeline(timelineData, eventData) {
     const periodRow = document.createElement("div");
     periodRow.textContent = item.period;
     periodRow.style.fontWeight = "bold";
-    timelineContainer.appendChild(periodRow);
+    //timelineContainer.appendChild(periodRow);
 
     // 積み上げグラフ: 国
     const chartRow = document.createElement("div");
@@ -203,7 +203,7 @@ function renderTimeline(timelineData, eventData) {
             stacked: true // 積み上げ
           },
           y: {
-            display: false,
+            //display: false,
             stacked: true // 積み上げ
           }
         }
