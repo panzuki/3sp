@@ -228,52 +228,6 @@ function renderTimeline(timelineData, eventData) {
         label: event.title, // 出来事のタイトル
         data: [1], // 固定値（全て1で表示）
         backgroundColor: 'lightblue', // 出来事の背景色
-        borderColor: 'black',
-        borderWidth: 1
-      }));
-
-    if (eventDataset.length > 0) {
-      new Chart(eventCell, {
-        type: 'bar',
-        data: {
-          labels: [item.period],
-          datasets: eventDataset
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { enabled: false }
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { display: false },
-            y: { display: false }
-          },
-          elements: {
-            bar: {
-              borderSkipped: false,
-              datalabels: {
-                anchor: 'center',
-                align: 'center',
-                color: 'black',
-                formatter: (value, context) => context.dataset.label // グラフ内に出来事のタイトルを表示
-              }
-            }
-          },
-          layout: {
-            padding: { top: 10, bottom: 10 }
-          }
-        }
-      });
-    } else {
-      eventCell.textContent = "出来事なし"; // 出来事がない場合の表示
-    }
-
-    timelineContainer.appendChild(eventRow);
-  });
-}
 
 
 
