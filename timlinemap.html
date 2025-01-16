@@ -86,9 +86,13 @@ Papa.parse("csv/Timeline.csv", {
           });
           return;
         }
+        console.log("Events.csv読み込み結果:", eventResults.data);
+         
         const eventData = eventResults.data;
         const jsonEventData = parseEventData(eventData);
 
+        console.log("タイムラインデータ:", timelineData);
+        console.log("イベントデータ:", eventData);
         renderTimeline(jsonTimelineData, jsonEventData);
       }
     });
