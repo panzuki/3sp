@@ -163,13 +163,6 @@ function renderTimeline(timelineData, eventData) {
 
   // タイムライン描画
   timeline.forEach(item => {
-    // 年代表示
-    const periodRow = document.createElement("div");
-    periodRow.textContent = item.period;
-    periodRow.style.fontWeight = "bold";
-    periodRow.style.marginTop = "20px";
-    //timelineContainer.appendChild(periodRow);
-
     // 積み上げグラフ: 国
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
@@ -181,7 +174,7 @@ function renderTimeline(timelineData, eventData) {
     new Chart(chartCell, {
       type: 'bar',
       data: {
-        labels: [item.period],
+        labels: [item.period], // 年代をY軸ラベルに表示
         datasets: Object.keys(item.states).flatMap(region =>
           item.states[region].map(state => ({
             label: state.name, // 王国名
@@ -212,7 +205,7 @@ function renderTimeline(timelineData, eventData) {
             stacked: true // 積み上げ
           },
           y: {
-            //display: false,
+            display: true, // 年代を表示
             stacked: true // 積み上げ
           }
         }
@@ -264,7 +257,7 @@ function renderTimeline(timelineData, eventData) {
               stacked: true
             },
             y: {
-             // display: false,
+              display: true, // 年代を表示
               stacked: true
             }
           }
@@ -277,6 +270,7 @@ function renderTimeline(timelineData, eventData) {
     timelineContainer.appendChild(eventRow);
   });
 }
+
 
 
 
