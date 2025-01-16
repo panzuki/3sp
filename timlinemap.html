@@ -94,61 +94,6 @@ Papa.parse("csv/Timeline.csv", {
     }
 
 // Timelineデータを解析
-function parseTimelineData(timelineData) {
-  const timeline = [];
-  const regions = new Set();
-
-  timelineData.forEach(item => {
-    const period = item.Period || "未定義";
-    const region = item.Region || "未定義";
-    const state = item.State || "未定義";
-    const share = item.Share || 0;
-    const color = item.Color || "gray";
-    const coordinates = item.Coordinates ? JSON.parse(item.Coordinates) : [];
-
-    // 地域をセットに追加してユニーク化
-    regions.add(region);
-
-    // タイムラインにデータをまとめる
-    const periodData = timeline.find(p => p.period === period);
-    if (periodData) {
-      const regionData = periodData.states[region] || [];
-      regionData.push({ name: state, share, color, coordinates });
-      periodData.states[region] = regionData;
-    } else {
-      timeline.push({
-        period,
-        states: {
-          [region]: [{ name: state, share, color, coordinates }]
-        }
-      });
-    }
-  });
-
-  return { timeline, regions: Array.from(regions) };
-}
-
-
-    // Eventsデータを解析
-    function parseEventData(eventData) {
-      const events = [];
-
-      eventData.forEach(item => {
-        const period = item.Period;
-        const region = item.Region;
-        const state = item.State;
-        const title = item.Title;
-        const details = item.Details;
-        const image = item.Image;
-        const coordinates = item.Coordinates.split(",").map(val => parseFloat(val.trim()));
-
-        events.push({ period, region, state, title, details, image, coordinates });
-      });
-
-      return events;
-    }
-
-    // タイムラインの描画
 function renderTimeline(timelineData, eventData) {
   const timelineContainer = document.getElementById("timelineContainer");
   const { timeline } = timelineData;
@@ -165,8 +110,7 @@ function renderTimeline(timelineData, eventData) {
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
     const chartCell = document.createElement("canvas");
-   // chartCell.style.height = "100px"; // グラフの高さを増やす
-    chartCell.style.flex = "1";
+    chartCell.style.height = "100px"; // グラフの高さを増やす
     chartRow.appendChild(chartCell);
 
     // 各王国の積み上げグラフ
@@ -228,7 +172,52 @@ function renderTimeline(timelineData, eventData) {
         label: event.title, // 出来事のタイトル
         data: [1], // 固定値（全て1で表示）
         backgroundColor: 'lightblue', // 出来事の背景色
+        borderColor: 'black',
+        borderWidth: 1
+      }));
 
+    if (eventDataset.length > 0) {
+      new Chart(eventCell, {
+        type: 'bar',
+        data: {
+          labels: [item.period],
+          datasets: eventDataset
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          },
+          elements: {
+            bar: {
+              borderSkipped: false,
+              datalabels: {
+                anchor: 'center',
+                align: 'center',
+                color: 'black',
+                formatter: (value, context) => context.dataset.label // グラフ内に出来事のタイトルを表示
+              }
+            }
+          },
+          layout: {
+            padding: { top: 10, bottom: 10 }
+          }
+        }
+      });
+    } else {
+      eventCell.textContent = "出来事なし"; // 出来事がない場合の表示
+    }
+
+    timelineContainer.appendChild(eventRow);
+  });
+}
 
 
 
