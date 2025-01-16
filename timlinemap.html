@@ -169,7 +169,8 @@ function renderTimeline(timelineData, eventData) {
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
     const chartCell = document.createElement("canvas");
-    chartCell.style.flex = "1";
+    //chartCell.style.flex = "1";
+    chartCell.style.height = "200px";
     chartRow.appendChild(chartCell);
 
     // Chart.js グラフ作成 (年代ごとの国の積み上げグラフ)
