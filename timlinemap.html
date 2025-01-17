@@ -154,15 +154,6 @@ function renderTimeline(timelineData, eventData) {
   const timelineContainer = document.getElementById("timelineContainer");
   const { timeline, regions } = timelineData;
 
-  // タイムラインに含まれる全ての年代を抽出
-  const allPeriods = timeline.map(item => item.period);
-
-  // イベントデータに存在する全ての年代を抽出
-  const eventPeriods = [...new Set(eventData.map(event => event.period))];
-
-  // 年代を統合して昇順ソート
-  const allUniquePeriods = [...new Set([...allPeriods, ...eventPeriods])].sort();
-
   // ヘッダー行の作成
   const headerRow = document.createElement("div");
   headerRow.className = "header";
@@ -179,58 +170,56 @@ function renderTimeline(timelineData, eventData) {
   });
   timelineContainer.appendChild(headerRow);
 
-  // タイムライン描画
-  allUniquePeriods.forEach(period => {
-    const item = timeline.find(t => t.period === period);
-    const states = item ? item.states : {};
+  // タイムラインデータを順番に処理
+  timeline.forEach(item => {
+    // 年代に該当するイベントを検索
+    const matchingEvents = eventData.filter(event => event.period === item.period);
+
+    // イベントがない場合は何も表示せずスキップ
+    if (matchingEvents.length === 0) return;
 
     // 積み上げグラフ: 国
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
     const chartCell = document.createElement("canvas");
-    chartCell.style.height = "150px"; // グラフの高さを調整
+    chartCell.style.height = "200px"; // グラフの高さを調整
     chartRow.appendChild(chartCell);
 
-    if (item) {
-      new Chart(chartCell, {
-        type: 'bar',
-        data: {
-          labels: [period],
-          datasets: Object.keys(states).flatMap(region =>
-            states[region].map(state => ({
-              label: state.name,
-              data: [state.share],
-              backgroundColor: state.color,
-              borderColor: 'black',
-              borderWidth: 1
-            }))
-          )
+    // Chart.js グラフ作成 (年代ごとの国の積み上げグラフ)
+    new Chart(chartCell, {
+      type: 'bar',
+      data: {
+        labels: [item.period], // 年代をY軸ラベルに表示
+        datasets: Object.keys(item.states).flatMap(region =>
+          item.states[region].map(state => ({
+            label: state.name, // 王国名
+            data: [state.share], // シェア
+            backgroundColor: state.color, // 色
+            borderColor: 'black',
+            borderWidth: 1
+          }))
+        )
+      },
+      options: {
+        indexAxis: 'y', // 横棒グラフ
+        plugins: {
+          legend: { display: false }, // 凡例を非表示
+          tooltip: { enabled: false }, // ツールチップを非表示
         },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { enabled: false },
-            datalabels: {
-              anchor: 'center',
-              align: 'center',
-              color: 'black',
-              formatter: (value, context) => context.dataset.label
-            }
+        responsive: true,
+        maintainAspectRatio: false, // サイズを柔軟に調整
+        scales: {
+          x: {
+            display: false,
+            stacked: true // 積み上げ
           },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { display: false, stacked: true },
-            y: { display: true, stacked: true }
+          y: {
+            display: true, // 年代を表示
+            stacked: true // 積み上げ
           }
         }
-      });
-    } else {
-      chartCell.textContent = "データなし";
-      chartCell.style.textAlign = "center";
-      chartCell.style.color = "gray";
-    }
+      }
+    });
 
     timelineContainer.appendChild(chartRow);
 
@@ -238,54 +227,47 @@ function renderTimeline(timelineData, eventData) {
     const eventRow = document.createElement("div");
     eventRow.className = "chart-row";
     const eventCell = document.createElement("canvas");
-    eventCell.style.height = "50px"; // イベントがない場合は間隔を狭める
+    eventCell.style.height = "200px"; // グラフの高さを調整
     eventRow.appendChild(eventCell);
 
-    const eventDataset = eventData
-      .filter(event => event.period === period)
-      .map(event => ({
-        label: event.title,
-        data: [1],
-        backgroundColor: 'lightblue',
-        borderColor: 'black',
-        borderWidth: 1
-      }));
+    const eventDataset = matchingEvents.map(event => ({
+      label: event.title, // 出来事タイトル
+      data: [1], // 比率（全て1で固定）
+      backgroundColor: 'lightblue', // 出来事の背景色
+      borderColor: 'black',
+      borderWidth: 1
+    }));
 
-    if (eventDataset.length > 0) {
-      new Chart(eventCell, {
-        type: 'bar',
-        data: {
-          labels: [period],
-          datasets: eventDataset
+    new Chart(eventCell, {
+      type: 'bar',
+      data: {
+        labels: [item.period],
+        datasets: eventDataset
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
         },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              anchor: 'center',
-              align: 'center',
-              color: 'black',
-              formatter: (value, context) => context.dataset.label
-            }
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            display: false,
+            stacked: true
           },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { display: false, stacked: true },
-            y: { display: true, stacked: true }
+          y: {
+            display: true, // 年代を表示
+            stacked: true
           }
         }
-      });
-    } else {
-      eventCell.textContent = "省略";
-      eventCell.style.textAlign = "center";
-      eventCell.style.color = "gray";
-    }
+      }
+    });
 
     timelineContainer.appendChild(eventRow);
   });
 }
+
 
 
 
