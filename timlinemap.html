@@ -297,7 +297,7 @@ function showMapDataForPeriod(item) {
           console.log("吹き出し表示:", state.eventTitle, state.eventPoint);
 
           // 吹き出し付きマーカーを追加
-          L.marker([lat, lng])
+          const marker = L.marker([lat, lng])
             .addTo(map)
             .bindPopup(`<b>${state.eventTitle}</b>`)
             .on('click', () => {
@@ -320,6 +320,9 @@ function showMapDataForPeriod(item) {
               // モーダルを表示
               modal.style.display = "block";
             });
+
+          // 吹き出しを自動的に開く
+          marker.openPopup();
         } catch (e) {
           console.error("EventPointのパースエラー:", state.eventPoint, e);
         }
@@ -328,7 +331,17 @@ function showMapDataForPeriod(item) {
       }
     });
   });
+
+  // モーダルを閉じるボタンの処理を追加
+  const modalCloseButton = document.getElementById('modalClose');
+  if (modalCloseButton) {
+    modalCloseButton.addEventListener('click', () => {
+      const modal = document.getElementById('modal');
+      modal.style.display = "none";
+    });
+  }
 }
+
 
 
 
