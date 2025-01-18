@@ -151,24 +151,27 @@ function parseTimelineData(timelineData) {
   console.log("Before merging:", JSON.stringify(timeline, null, 2));
 
   // **結合処理を期間内でさらに統合**
-  timeline.forEach(periodData => {
-    Object.keys(periodData.states).forEach(region => {
-      const states = periodData.states[region];
-      periodData.states[region] = states.reduce((acc, curr) => {
-        const lastState = acc[acc.length - 1];
-        if (lastState && lastState.name === curr.name) {
-          // 同じ国名が連続している場合、シェアを統合し、座標を追加（必要なら）
-          lastState.share += curr.share;
-          if (curr.coordinates && curr.coordinates.length) {
-            lastState.coordinates.push(...curr.coordinates);
-          }
-        } else {
-          acc.push(curr);
+timeline.forEach(periodData => {
+  Object.keys(periodData.states).forEach(region => {
+    const states = periodData.states[region];
+    periodData.states[region] = states.reduce((acc, curr) => {
+      const lastState = acc[acc.length - 1];
+      if (lastState && lastState.name === curr.name) {
+        // 同じ国名の場合、シェアと座標を統合
+        lastState.share += curr.share;
+        if (curr.coordinates && lastState.coordinates) {
+          lastState.coordinates.push(...curr.coordinates); // 座標を結合
+        } else if (curr.coordinates) {
+          lastState.coordinates = curr.coordinates; // 座標がない場合は現在の座標を設定
         }
-        return acc;
-      }, []);
-    });
+      } else {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
   });
+});
+
 
   console.log("After merging:", JSON.stringify(timeline, null, 2));
   return { timeline, regions: Array.from(regions) };
