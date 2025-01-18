@@ -222,7 +222,7 @@ function renderTimeline(timelineData, eventData) {
   timeline.forEach(item => {
     // 年代に該当するイベントを検索
     const matchingEvents = eventData.filter(event => event.period === item.period);
-    
+
     // 積み上げグラフ: 国
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
@@ -230,19 +230,23 @@ function renderTimeline(timelineData, eventData) {
     chartCell.style.height = "200px"; // グラフの高さを調整
     chartRow.appendChild(chartCell);
 
-    // 国データを合算
-    const mergedStates = {};
+    // 同じ国名が続く間、shareを累積する
+    let mergedStates = {}; // 累積結果を保持するオブジェクト
+    let prevStateName = null; // 前の国名
+
     Object.keys(item.states).forEach(region => {
       item.states[region].forEach(state => {
-        const key = state.name; // 国家名でキーを作成
-        if (mergedStates[key]) {
-          // 既存の国家があれば、shareを合算
-          mergedStates[key].share += state.share;
-          // 座標も合算
-          mergedStates[key].coordinates.push(...state.coordinates);
+        if (prevStateName === state.name) {
+          // 同じ国名が続いている場合、shareを合算
+          mergedStates[prevStateName].share += state.share;
         } else {
-          // 新しい国家の場合はそのまま追加
-          mergedStates[key] = { ...state };
+          // 国名が変わった場合、現在の国を新たに追加
+          mergedStates[state.name] = {
+            name: state.name,
+            share: state.share,
+            color: state.color
+          };
+          prevStateName = state.name; // 前の国名を更新
         }
       });
     });
@@ -266,10 +270,14 @@ function renderTimeline(timelineData, eventData) {
           legend: { display: false }, // 凡例を非表示
           tooltip: { enabled: false }, // ツールチップを非表示
           datalabels: {
-            color: 'white', // テキスト色
+            color: 'white', // テキスト色を白に変更
             align: 'center',
             anchor: 'center',
             formatter: (value, context) => context.dataset.label, // 国家名を表示
+            font: {
+              weight: 'bold',
+              size: 12
+            }
           },
         },
         responsive: true,
@@ -320,7 +328,11 @@ function renderTimeline(timelineData, eventData) {
               color: 'black', // テキストの色
               anchor: 'center', // ラベルの位置
               align: 'center', // ラベルを中央揃え
-              formatter: (value, context) => context.dataset.label // 出来事タイトルを表示
+              formatter: (value, context) => context.dataset.label, // 出来事タイトルを表示
+              font: {
+                weight: 'bold',
+                size: 12
+              }
             }
           },
           responsive: true,
@@ -342,6 +354,7 @@ function renderTimeline(timelineData, eventData) {
     }
   });
 }
+
 
 
 
