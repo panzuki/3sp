@@ -137,6 +137,9 @@ function parseTimelineData(timelineData) {
     if (existingStateIndex !== -1) {
       // 同じ国名が既に存在する場合、シェアを合算
       regionData[existingStateIndex].share += share;
+      if (coordinates.length) {
+        regionData[existingStateIndex].coordinates.push(...coordinates);
+      }
     } else {
       // 新しい国名を追加
       regionData.push({ name: state, share, color, coordinates });
@@ -144,7 +147,9 @@ function parseTimelineData(timelineData) {
 
     periodData.states[region] = regionData;
   });
-console.log("Before merging:", JSON.stringify(timeline, null, 2));
+
+  console.log("Before merging:", JSON.stringify(timeline, null, 2));
+
   // **結合処理を期間内でさらに統合**
   timeline.forEach(periodData => {
     Object.keys(periodData.states).forEach(region => {
@@ -154,7 +159,7 @@ console.log("Before merging:", JSON.stringify(timeline, null, 2));
         if (lastState && lastState.name === curr.name) {
           // 同じ国名が連続している場合、シェアを統合し、座標を追加（必要なら）
           lastState.share += curr.share;
-          if (curr.coordinates) {
+          if (curr.coordinates && curr.coordinates.length) {
             lastState.coordinates.push(...curr.coordinates);
           }
         } else {
@@ -164,9 +169,11 @@ console.log("Before merging:", JSON.stringify(timeline, null, 2));
       }, []);
     });
   });
- console.log("After merging:", JSON.stringify(timeline, null, 2));
+
+  console.log("After merging:", JSON.stringify(timeline, null, 2));
   return { timeline, regions: Array.from(regions) };
 }
+
 
 
     
