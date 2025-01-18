@@ -261,6 +261,13 @@ Chart.register(ChartDataLabels);
         indexAxis: 'y',
         plugins: {
           legend: { display: false },
+          tooltip: { enabled: false },
+        datalabels: {
+          color: 'black', // テキストの色
+          anchor: 'center', // ラベルの位置
+          align: 'center', // ラベルを中央揃え
+          formatter: (value, context) => context.dataset.label // 出来事タイトルを表示
+        }
         },
         responsive: true,
         maintainAspectRatio: false,
