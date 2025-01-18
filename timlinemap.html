@@ -130,19 +130,22 @@ function renderTimeline(timelineData) {
 
   // ヘッダー行の作成
   const headerRow = document.createElement("div");
-  headerRow.className = "header";
-  headerRow.style.display = "flex";
+  // ヘッダー行の作成
+const headerRow = document.createElement("div");
+headerRow.className = "header";
+headerRow.style.display = "flex";
 
-  ["空白", ...regions].forEach(region => {
-    const headerCell = document.createElement("div");
-    headerCell.textContent = region;
-    headerCell.style.flex = "1";
-    headerCell.style.textAlign = "center";
-    headerCell.style.fontWeight = "bold";
-    headerCell.style.borderBottom = "2px solid black";
-    headerRow.appendChild(headerCell);
-  });
-  timelineContainer.appendChild(headerRow);
+// "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
+["空白", ...regions.map(region => region.split(",")[0].trim())].forEach(region => {
+  const headerCell = document.createElement("div");
+  headerCell.textContent = region;
+  headerCell.style.flex = "1";
+  headerCell.style.textAlign = "center";
+  headerCell.style.fontWeight = "bold";
+  headerCell.style.borderBottom = "2px solid black";
+  headerRow.appendChild(headerCell);
+});
+timelineContainer.appendChild(headerRow);
 
   // タイムラインデータを順番に処理
   timeline.forEach(item => {
