@@ -55,14 +55,15 @@
     let circles = [];
     let popups = [];
 
-    function initializeMap() {
-      map = L.map('map').setView([20, 10], 2);
+function initializeMap() {
+  map = L.map('map').setView([20, 10], 2);
 
-      // OSMのタイルを追加
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-    }
+  // 日本語タイルレイヤーを追加
+  L.tileLayer('https://{s}.tile.openstreetmap.jp/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+}
+
 
     function clearMapOverlays() {
       circles.forEach(circle => circle.remove());
