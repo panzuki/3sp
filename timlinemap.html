@@ -124,6 +124,7 @@ function parseTimelineData(timelineData) {
 
 // タイムラインをレンダリング
 function renderTimeline(timelineData) {
+  Chart.register(ChartDataLabels);
   const timelineContainer = document.getElementById("timelineContainer");
   const { timeline, regions } = timelineData;
 
@@ -148,40 +149,13 @@ function renderTimeline(timelineData) {
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
 
-    // イベントが含まれている場合、改行を挿入
-    // if (item.period.includes("イベント")) {
-    //   const eventRow = document.createElement("div");
-    //   eventRow.className = "event-row";
-    //   const eventCell = document.createElement("div");
-    //   eventCell.textContent = item.period.replace("イベント", "").trim();
-    //   eventCell.style.textAlign = "center";
-    //   eventRow.appendChild(eventCell);
-    //   timelineContainer.appendChild(eventRow);
-    // }
-
     // グラフの表示
     const chartCell = document.createElement("canvas");
     chartCell.style.height = "200px";
     chartRow.appendChild(chartCell);
     timelineContainer.appendChild(chartRow);
 
-    let mergedStates = {};
-    let prevStateName = null;
 
-    Object.keys(item.states).forEach(region => {
-      item.states[region].forEach(state => {
-        if (prevStateName === state.name) {
-          mergedStates[prevStateName].share += state.share;
-        } else {
-          mergedStates[state.name] = {
-            name: state.name,
-            share: state.share,
-            color: state.color
-          };
-          prevStateName = state.name;
-        }
-      });
-    });
 
     new Chart(chartCell, {
       type: 'bar',
