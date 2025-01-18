@@ -85,7 +85,21 @@ function renderTimeline(timelineData) {
     const state = item.State || "未定義";
     const share = item.Share || 0;
     const color = item.Color || "gray";
-    const coordinates = item.Coordinates ? JSON.parse(item.Coordinates) : [];
+    
+    // Coordinatesを安全に解析する
+    let coordinates = [];
+    try {
+      if (item.Coordinates) {
+        // 正規表現で座標のペアを抽出して解析
+        coordinates = item.Coordinates
+          .match(/\[\[([^\]]+)\]\]/g)
+          .map(coord => {
+            return coord.replace(/\[|\]/g, '').split(',').map(Number);
+          });
+      }
+    } catch (e) {
+      console.error("Coordinates解析エラー:", e);
+    }
 
     // イベント行があれば、その前に改行を追加
     if (period.includes("イベント")) {
@@ -142,6 +156,7 @@ function renderTimeline(timelineData) {
     });
   });
 }
+
 
 window.onload = loadCSV;
 
