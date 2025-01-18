@@ -246,19 +246,22 @@ function showMapDataForPeriod(item) {
       }
 
       // イベントタイトルがあれば吹き出しを表示
-      if (state.EventTitle && state.EventPoint) {
-      //  const [lat, lng] = JSON.parse(state.EventPoint); // 座標をパース
+      if (state.eventTitle && state.eventPoint) {
         try {
-  const [lat, lng] = JSON.parse(state.EventPoint);
-} catch (e) {
-  console.error("EventPointのパースエラー:", e);
-}
-console.log(state.EventTitle, state.EventPoint);
+          // EventPointをパース
+          const [lat, lng] = JSON.parse(state.eventPoint);
+          console.log("吹き出し表示:", state.eventTitle, state.eventPoint);
 
-        L.marker([lat, lng])
-          .addTo(map)
-          .bindPopup(`<b>${state.EventTitle}</b><br>${state.EventDetail}`)
-          .openPopup();
+          // 吹き出しを追加
+          L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(`<b>${state.eventTitle}</b><br>${state.eventDetail}`)
+            .openPopup();
+        } catch (e) {
+          console.error("EventPointのパースエラー:", state.eventPoint, e);
+        }
+      } else {
+        console.warn("EventTitleまたはEventPointが存在しません:", state);
       }
     });
   });
