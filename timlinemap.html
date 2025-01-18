@@ -144,7 +144,7 @@ function parseTimelineData(timelineData) {
 
     periodData.states[region] = regionData;
   });
-
+console.log("Before merging:", JSON.stringify(timeline, null, 2));
   // **結合処理を期間内でさらに統合**
   timeline.forEach(periodData => {
     Object.keys(periodData.states).forEach(region => {
@@ -164,7 +164,7 @@ function parseTimelineData(timelineData) {
       }, []);
     });
   });
-
+ console.log("After merging:", JSON.stringify(timeline, null, 2));
   return { timeline, regions: Array.from(regions) };
 }
 
