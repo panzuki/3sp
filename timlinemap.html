@@ -150,6 +150,7 @@ function initializeMap() {
     }
 
     function renderTimeline(timelineData) {
+      Chart.register(ChartDataLabels);
   const timelineContainer = document.getElementById("timelineContainer");
   const { timeline, regions } = timelineData;
 
