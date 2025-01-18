@@ -125,7 +125,14 @@ function parseTimelineData(timelineData) {
     const periodData = timeline.find(p => p.period === period);
     if (periodData) {
       const regionData = periodData.states[region] || [];
-      regionData.push({ name: state, share, color, coordinates });
+      const existingState = regionData.find(s => s.name === state);
+      if (existingState) {
+        // 同じ国名が既にある場合、シェアを合算
+        existingState.share += share;
+      } else {
+        // 新しい国名の場合、追加
+        regionData.push({ name: state, share, color, coordinates });
+      }
       periodData.states[region] = regionData;
     } else {
       timeline.push({
