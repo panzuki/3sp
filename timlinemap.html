@@ -226,30 +226,40 @@ function initializeMap() {
 
 // 年代クリックで地図にデータを表示する関数
 function showMapDataForPeriod(item) {
-  item.states.forEach((regionData, region) => {
-    regionData.forEach(state => {
-      // 各地域に対応する座標で円を描画
-      state.coordinates.forEach(coord => {
-        const circle = L.circle([coord[0], coord[1]], {
-          color: state.color,
-          fillColor: state.color,
-          fillOpacity: 0.4,
-          radius: 100000
-        }).addTo(map);
-      });
-
-      // 各王国のEventTitleを表示
-      if (state.EventTitle) {
+  // 各地域（region）をループ
+  Object.keys(item.states).forEach(region => {
+    const stateData = item.states[region];
+    
+    // 各王国（stateData）の処理
+    stateData.forEach(state => {
+      // 座標と色で円を描画
+      if (state.coordinates) {
         state.coordinates.forEach(coord => {
-          const popup = L.popup()
-            .setLatLng([coord[0], coord[1]])
-            .setContent(`<strong>${state.EventTitle}</strong><br>${state.EventDetail || ''}`)
-            .openOn(map);
+          const [lat, lng] = coord;
+          const circle = L.circle([lat, lng], {
+            color: state.color,
+            fillColor: state.color,
+            fillOpacity: 0.5,
+            radius: 50000 // 半径を調整
+          }).addTo(map);
         });
+      }
+      
+      // イベントタイトルがあれば吹き出しを表示
+      if (state.EventTitle) {
+        const eventPoint = state.EventPoint;
+        if (eventPoint) {
+          const [lat, lng] = eventPoint;
+          L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(`<b>${state.EventTitle}</b><br>${state.EventDetail}`)
+            .openPopup();
+        }
       }
     });
   });
 }
+
 
 
     window.onload = () => {
