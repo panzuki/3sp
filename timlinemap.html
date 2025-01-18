@@ -229,7 +229,7 @@ function showMapDataForPeriod(item) {
   // 各地域（region）をループ
   Object.keys(item.states).forEach(region => {
     const stateData = item.states[region];
-    
+
     // 各王国（stateData）の処理
     stateData.forEach(state => {
       // 座標と色で円を描画
@@ -244,21 +244,19 @@ function showMapDataForPeriod(item) {
           }).addTo(map);
         });
       }
-      
+
       // イベントタイトルがあれば吹き出しを表示
-      if (state.EventTitle) {
-        const eventPoint = state.EventPoint;
-        if (eventPoint) {
-          const [lat, lng] = eventPoint;
-          L.marker([lat, lng])
-            .addTo(map)
-            .bindPopup(`<b>${state.EventTitle}</b><br>${state.EventDetail}`)
-            .openPopup();
-        }
+      if (state.EventTitle && state.EventPoint) {
+        const [lat, lng] = JSON.parse(state.EventPoint); // 座標をパース
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(`<b>${state.EventTitle}</b><br>${state.EventDetail}`)
+          .openPopup();
       }
     });
   });
 }
+
 
 
 
