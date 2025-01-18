@@ -151,76 +151,107 @@ function initializeMap() {
     }
 
     function renderTimeline(timelineData) {
-      Chart.register(ChartDataLabels);
-      const timelineContainer = document.getElementById("timelineContainer");
-      const { timeline, regions } = timelineData;
+  const timelineContainer = document.getElementById("timelineContainer");
+  const { timeline, regions } = timelineData;
 
-      const headerRow = document.createElement("div");
-      headerRow.className = "header";
-      ["　　", ...regions.map(region => region.split(",")[0].trim())].forEach(region => {
-        const headerCell = document.createElement("div");
-        headerCell.textContent = region;
-        headerCell.style.flex = "1";
-        headerCell.style.textAlign = "center";
-        headerCell.style.fontWeight = "bold";
-        headerRow.appendChild(headerCell);
-      });
-      timelineContainer.appendChild(headerRow);
+  // ヘッダー行の作成
+  const headerRow = document.createElement("div");
+  headerRow.className = "header";
+  headerRow.style.display = "flex";
 
-      timeline.forEach(item => {
-        const chartRow = document.createElement("div");
-        chartRow.className = "chart-row";
+  // "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
+  ["　　", ...regions.map(region => region.split(",")[0].trim())].forEach(region => {
+    const headerCell = document.createElement("div");
+    headerCell.textContent = region;
+    headerCell.style.flex = "1";
+    headerCell.style.textAlign = "center";
+    headerCell.style.fontWeight = "bold";
+    headerCell.style.borderBottom = "2px solid black";
+    headerRow.appendChild(headerCell);
+  });
+  timelineContainer.appendChild(headerRow);
 
-        const chartCell = document.createElement("canvas");
-        chartCell.style.height = "200px";
-        chartRow.appendChild(chartCell);
-        timelineContainer.appendChild(chartRow);
+  // タイムラインデータを順番に処理
+  timeline.forEach(item => {
+    const chartRow = document.createElement("div");
+    chartRow.className = "chart-row";
 
-        new Chart(chartCell, {
-          type: 'bar',
-          data: {
-            labels: [item.period],
-            datasets: Object.keys(item.states).flatMap(region =>
-              item.states[region].map(state => ({
-                label: state.name,
-                data: [state.share],
-                backgroundColor: state.color,
-                borderColor: 'black',
-                borderWidth: 1,
-                stateData: state // 状態データを保持
-              }))
-            )
+    // グラフの表示
+    const chartCell = document.createElement("canvas");
+    chartCell.style.height = "200px";
+    chartRow.appendChild(chartCell);
+    timelineContainer.appendChild(chartRow);
+
+    new Chart(chartCell, {
+      type: 'bar',
+      data: {
+        labels: [item.period],
+        datasets: Object.keys(item.states).flatMap(region =>
+          item.states[region].map(state => ({
+            label: state.name,
+            data: [state.share],
+            backgroundColor: state.color,
+            borderColor: 'black',
+            borderWidth: 1
+          }))
+        )
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+          datalabels: {
+            color: 'white',
+            align: 'center',
+            anchor: 'center',
+            formatter: (value, context) => context.dataset.label,
+            font: { weight: 'bold', size: 12 }
           },
-          options: {
-            indexAxis: 'y',
-            plugins: {
-              legend: { display: false },
-              tooltip: { enabled: false },
-              datalabels: {
-                color: 'white',
-                align: 'center',
-                anchor: 'center',
-                formatter: (value, context) => context.dataset.label,
-                font: { weight: 'bold', size: 12 }
-              },
-            },
-            onClick: (event, elements) => {
-              if (elements.length > 0) {
-                const dataset = elements[0].element.$context.dataset;
-                clearMapOverlays();
-                addMapOverlay(dataset.stateData.coordinates, dataset.stateData.color, dataset.stateData.eventTitle, JSON.parse(dataset.stateData.eventPoint || "null"));
-              }
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: { display: false, stacked: true },
-              y: { display: true, stacked: true }
-            }
-          }
-        });
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { display: false, stacked: true },
+          y: { display: true, stacked: true }
+        }
+      }
+    });
+
+    // 年代クリックイベントを追加
+    chartCell.addEventListener('click', function () {
+      showMapDataForPeriod(item);  // クリックされた年代に対応する地図データを表示
+    });
+  });
+}
+
+// 年代クリックで地図にデータを表示する関数
+function showMapDataForPeriod(item) {
+  item.states.forEach((regionData, region) => {
+    regionData.forEach(state => {
+      // 各地域に対応する座標で円を描画
+      state.coordinates.forEach(coord => {
+        const circle = L.circle([coord[0], coord[1]], {
+          color: state.color,
+          fillColor: state.color,
+          fillOpacity: 0.4,
+          radius: 100000
+        }).addTo(map);
       });
-    }
+
+      // 各王国のEventTitleを表示
+      if (state.EventTitle) {
+        state.coordinates.forEach(coord => {
+          const popup = L.popup()
+            .setLatLng([coord[0], coord[1]])
+            .setContent(`<strong>${state.EventTitle}</strong><br>${state.EventDetail || ''}`)
+            .openOn(map);
+        });
+      }
+    });
+  });
+}
+
 
     window.onload = () => {
       initializeMap();
