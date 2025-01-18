@@ -71,22 +71,22 @@ function loadCSV() {
       }
 
       const timelineData = results.data;
-      renderTimeline(timelineData);
+      const jsonTimelineData = parseTimelineData(timelineData);
+      renderTimeline(jsonTimelineData);
     }
   });
 }
 
-function renderTimeline(timelineData) {
-  const timelineContainer = document.getElementById("timelineContainer");
-
+// Timelineデータを解析
+function parseTimelineData(timelineData) {
+  const timeline = [];
+  const regions = new Set();
   timelineData.forEach(item => {
     const period = item.Period || "未定義";
     const region = item.Orther || "未定義";
     const state = item.State || "未定義";
     const share = item.Share || 0;
     const color = item.Color || "gray";
-    
-    // Coordinatesを安全に解析する
     let coordinates = [];
     try {
       if (item.Coordinates) {
@@ -101,37 +101,99 @@ function renderTimeline(timelineData) {
       console.error("Coordinates解析エラー:", e);
     }
 
-    // イベント行があれば、その前に改行を追加
-    if (period.includes("イベント")) {
+    // 地域をセットに追加してユニーク化
+    regions.add(region);
+
+    // タイムラインにデータをまとめる
+    const periodData = timeline.find(p => p.period === period);
+    if (periodData) {
+      const regionData = periodData.states[region] || [];
+      regionData.push({ name: state, share, color, coordinates });
+      periodData.states[region] = regionData;
+    } else {
+      timeline.push({
+        period,
+        states: {
+          [region]: [{ name: state, share, color, coordinates }]
+        }
+      });
+    }
+  });
+  return { timeline, regions: Array.from(regions) };
+}
+
+// タイムラインをレンダリング
+function renderTimeline(timelineData) {
+  const timelineContainer = document.getElementById("timelineContainer");
+  const { timeline, regions } = timelineData;
+
+  // ヘッダー行の作成
+  const headerRow = document.createElement("div");
+  headerRow.className = "header";
+  headerRow.style.display = "flex";
+
+  ["空白", ...regions].forEach(region => {
+    const headerCell = document.createElement("div");
+    headerCell.textContent = region;
+    headerCell.style.flex = "1";
+    headerCell.style.textAlign = "center";
+    headerCell.style.fontWeight = "bold";
+    headerCell.style.borderBottom = "2px solid black";
+    headerRow.appendChild(headerCell);
+  });
+  timelineContainer.appendChild(headerRow);
+
+  // タイムラインデータを順番に処理
+  timeline.forEach(item => {
+    const chartRow = document.createElement("div");
+    chartRow.className = "chart-row";
+
+    // イベントが含まれている場合、改行を挿入
+    if (item.period.includes("イベント")) {
       const eventRow = document.createElement("div");
       eventRow.className = "event-row";
       const eventCell = document.createElement("div");
-      eventCell.textContent = state;
+      eventCell.textContent = item.period.replace("イベント", "").trim();
       eventCell.style.textAlign = "center";
       eventRow.appendChild(eventCell);
       timelineContainer.appendChild(eventRow);
     }
 
-    // タイムラインのグラフ表示
-    const chartRow = document.createElement("div");
-    chartRow.className = "chart-row";
-
+    // グラフの表示
     const chartCell = document.createElement("canvas");
     chartCell.style.height = "200px";
     chartRow.appendChild(chartCell);
     timelineContainer.appendChild(chartRow);
 
+    let mergedStates = {};
+    let prevStateName = null;
+
+    Object.keys(item.states).forEach(region => {
+      item.states[region].forEach(state => {
+        if (prevStateName === state.name) {
+          mergedStates[prevStateName].share += state.share;
+        } else {
+          mergedStates[state.name] = {
+            name: state.name,
+            share: state.share,
+            color: state.color
+          };
+          prevStateName = state.name;
+        }
+      });
+    });
+
     new Chart(chartCell, {
       type: 'bar',
       data: {
-        labels: [period],
-        datasets: [{
-          label: state,
-          data: [share],
-          backgroundColor: color,
+        labels: [item.period],
+        datasets: Object.values(mergedStates).map(state => ({
+          label: state.name,
+          data: [state.share],
+          backgroundColor: state.color,
           borderColor: 'black',
           borderWidth: 1
-        }]
+        }))
       },
       options: {
         indexAxis: 'y',
@@ -149,14 +211,13 @@ function renderTimeline(timelineData) {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          x: { display: false },
-          y: { display: true }
+          x: { display: false, stacked: true },
+          y: { display: true, stacked: true }
         }
       }
     });
   });
 }
-
 
 window.onload = loadCSV;
 
