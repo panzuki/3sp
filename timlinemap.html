@@ -84,14 +84,14 @@
     <div id="timelineContainer"></div>
   </div>
   
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span id="closeModal" class="close">&times;</span>
-    <h2 id="modalTitle">タイトル</h2>
-    <p id="modalDetail">詳細情報</p>
-    <img id="modalImage" src="" alt="画像" style="max-width: 100%; display: none;">
-  </div>
+<!-- モーダル -->
+<div id="modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; z-index:1000; border:1px solid black;">
+  <button id="modalClose" style="position:absolute; top:5px; right:5px;">閉じる</button>
+  <h2 id="modalTitle"></h2>
+  <p id="modalDetail"></p>
+  <img id="modalImage" style="max-width:100%; display:none;" />
 </div>
+
 
   <script>
     let map;
