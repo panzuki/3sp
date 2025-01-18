@@ -145,18 +145,18 @@ function parseTimelineData(timelineData) {
     periodData.states[region] = regionData;
   });
 
-  // **デバッグログ**: 結合前のタイムラインデータを出力
-  console.log("Before merging:", JSON.stringify(timeline, null, 2));
-
-  // 同じ期間内で同一国名が続く場合をさらに統合
+  // **結合処理を期間内でさらに統合**
   timeline.forEach(periodData => {
     Object.keys(periodData.states).forEach(region => {
       const states = periodData.states[region];
       periodData.states[region] = states.reduce((acc, curr) => {
         const lastState = acc[acc.length - 1];
         if (lastState && lastState.name === curr.name) {
-          // 同じ国名が連続している場合にシェアを統合
+          // 同じ国名が連続している場合、シェアを統合し、座標を追加（必要なら）
           lastState.share += curr.share;
+          if (curr.coordinates) {
+            lastState.coordinates.push(...curr.coordinates);
+          }
         } else {
           acc.push(curr);
         }
@@ -165,11 +165,9 @@ function parseTimelineData(timelineData) {
     });
   });
 
-  // **デバッグログ**: 結合
-  console.log("After merging:", JSON.stringify(timeline, null, 2));
-
   return { timeline, regions: Array.from(regions) };
 }
+
 
     
     // Eventsデータを解析
