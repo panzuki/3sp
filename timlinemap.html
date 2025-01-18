@@ -174,6 +174,7 @@ function renderTimeline(timelineData, eventData) {
   // タイムラインデータを順番に処理
   timeline.forEach(item => {
     // 年代に該当するイベントを検索
+    
     const matchingEvents = eventData.filter(event => event.period === item.period);
 
     // イベントがない場合は何も表示せずスキップ
@@ -185,12 +186,12 @@ function renderTimeline(timelineData, eventData) {
 
     
     // 該当するイベントがない場合、間隔を詰めて次へ
-    if (matchingEvents.length === 0) {
-      const emptyRow = document.createElement("div");
-      emptyRow.style.height = "10px"; // 空白行の高さ
-      timelineContainer.appendChild(emptyRow);
-      return;
-    }
+    // if (matchingEvents.length === 0) {
+    //   const emptyRow = document.createElement("div");
+    //   emptyRow.style.height = "10px"; // 空白行の高さ
+    //   timelineContainer.appendChild(emptyRow);
+    //   return;
+    // }
 
     
     // 積み上げグラフ: 国
@@ -239,6 +240,7 @@ function renderTimeline(timelineData, eventData) {
     timelineContainer.appendChild(chartRow);
 
     // 出来事グラフ: 出来事
+     if (matchingEvents.length > 0) {
     const eventRow = document.createElement("div");
     eventRow.className = "chart-row";
     const eventCell = document.createElement("canvas");
