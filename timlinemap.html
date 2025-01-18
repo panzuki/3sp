@@ -83,7 +83,7 @@ function parseTimelineData(timelineData) {
   const regions = new Set();
   timelineData.forEach(item => {
     const period = item.Period || "未定義";
-    const region = item.Orther || "未定義";
+    const region = item.Region || "未定義";
     const state = item.State || "未定義";
     const share = item.Share || 0;
     const color = item.Color || "gray";
