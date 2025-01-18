@@ -73,9 +73,9 @@ Papa.parse("csv/Timeline.csv", {
       });
       return;
     }
-    console.log("Timeline.csv読み込み結果:", results.data); // データ確認
+    // console.log("Timeline.csv読み込み結果:", results.data); // データ確認
     const timelineData = results.data;
-    console.log("解析後のタイムラインデータ:", parseTimelineData(timelineData)); // 解析後の確認
+    // console.log("解析後のタイムラインデータ:", parseTimelineData(timelineData)); // 解析後の確認
     const jsonTimelineData = parseTimelineData(timelineData);
 
     // 次のCSV読み込み
@@ -92,13 +92,13 @@ Papa.parse("csv/Timeline.csv", {
           });
           return;
         }
-        console.log("Events.csv読み込み結果:", eventResults.data);
+        // console.log("Events.csv読み込み結果:", eventResults.data);
          
         const eventData = eventResults.data;
         const jsonEventData = parseEventData(eventData);
 
-        console.log("タイムラインデータ:", timelineData);
-        console.log("イベントデータ:", eventData);
+        // console.log("タイムラインデータ:", timelineData);
+        // console.log("イベントデータ:", eventData);
         renderTimeline(jsonTimelineData, jsonEventData);
       }
     });
@@ -114,9 +114,9 @@ function parseTimelineData(timelineData) {
   const regions = new Set();
 
   timelineData.forEach(item => {
-    const period = item.Period || "未定義";
-    const region = item.Region || "未定義";
-    const state = item.State || "未定義";
+    const period = item.Period?.trim() || "未定義";
+    const region = item.Region?.trim() || "未定義";
+    const state = item.State?.trim() || "未定義";
     const share = item.Share || 0;
     const color = item.Color || "gray";
     const coordinates = item.Coordinates ? JSON.parse(item.Coordinates) : [];
@@ -126,7 +126,6 @@ function parseTimelineData(timelineData) {
     // タイムラインに既存の期間があるか確認
     let periodData = timeline.find(p => p.period === period);
     if (!periodData) {
-      // 新しい期間を追加
       periodData = { period, states: {} };
       timeline.push(periodData);
     }
@@ -146,6 +145,9 @@ function parseTimelineData(timelineData) {
     periodData.states[region] = regionData;
   });
 
+  // **デバッグログ**: 結合前のタイムラインデータを出力
+  console.log("Before merging:", JSON.stringify(timeline, null, 2));
+
   // 同じ期間内で同一国名が続く場合をさらに統合
   timeline.forEach(periodData => {
     Object.keys(periodData.states).forEach(region => {
@@ -162,6 +164,9 @@ function parseTimelineData(timelineData) {
       }, []);
     });
   });
+
+  // **デバッグログ**: 結合
+  console.log("After merging:", JSON.stringify(timeline, null, 2));
 
   return { timeline, regions: Array.from(regions) };
 }
