@@ -189,7 +189,7 @@ function renderTimeline(timelineData, eventData) {
     const chartCell = document.createElement("canvas");
     chartCell.style.height = "200px"; // グラフの高さを調整
     chartRow.appendChild(chartCell);
-
+Chart.register(ChartDataLabels);
     // Chart.js グラフ作成 (年代ごとの国の積み上げグラフ)
     new Chart(chartCell, {
       type: 'bar',
