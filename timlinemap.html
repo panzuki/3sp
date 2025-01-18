@@ -55,58 +55,27 @@
   </div>
 
   <script>
-    // CSVを読み込んでJSONに変換する
     function loadCSV() {
-      // Timeline.csvの読み込み
-Papa.parse("csv/Timeline.csv", {
-  download: true,
-  header: true,
-  dynamicTyping: true,
-  skipEmptyLines: true,
-  complete: function(results) {
-
-    
-    if (results.errors.length > 0) {
-      console.error("Timeline.csvの読み込みエラー:", results.errors);
-      results.errors.forEach(error => {
-        console.error(`エラー詳細: 行番号 ${error.row}, メッセージ: ${error.message}`);
-      });
-      return;
-    }
-    // console.log("Timeline.csv読み込み結果:", results.data); // データ確認
-    const timelineData = results.data;
-    // console.log("解析後のタイムラインデータ:", parseTimelineData(timelineData)); // 解析後の確認
-    const jsonTimelineData = parseTimelineData(timelineData);
-
-    // 次のCSV読み込み
-    Papa.parse("csv/Events.csv", {
-      download: true,
-      header: true,
-      dynamicTyping: true,
-      skipEmptyLines: true,
-      complete: function(eventResults) {
-        if (eventResults.errors.length > 0) {
-          console.error("Events.csvの読み込みエラー:", eventResults.errors);
-          results.errors.forEach(error => {
-            console.error(`エラー詳細: 行番号 ${error.row}, メッセージ: ${error.message}`);
-          });
-          return;
-        }
-        // console.log("Events.csv読み込み結果:", eventResults.data);
-         
-        const eventData = eventResults.data;
-        const jsonEventData = parseEventData(eventData);
-
-        // console.log("タイムラインデータ:", timelineData);
-        // console.log("イベントデータ:", eventData);
-        renderTimeline(jsonTimelineData, jsonEventData);
+  Papa.parse("csv/Timeline.csv", {
+    download: true,
+    header: true,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      if (results.errors.length > 0) {
+        console.error("Timeline.csvの読み込みエラー:", results.errors);
+        results.errors.forEach(error => {
+          console.error(`エラー詳細: 行番号 ${error.row}, メッセージ: ${error.message}`);
+        });
+        return;
       }
-    });
-  }
-});
 
+      const timelineData = results.data;
+      const jsonTimelineData = parseTimelineData(timelineData);
+      renderTimeline(jsonTimelineData);
     }
-
+  });
+}
 
 // Timelineデータを解析
 function parseTimelineData(timelineData) {
@@ -119,8 +88,10 @@ function parseTimelineData(timelineData) {
     const share = item.Share || 0;
     const color = item.Color || "gray";
     const coordinates = item.Coordinates ? JSON.parse(item.Coordinates) : [];
+
     // 地域をセットに追加してユニーク化
     regions.add(region);
+
     // タイムラインにデータをまとめる
     const periodData = timeline.find(p => p.period === period);
     if (periodData) {
@@ -139,27 +110,8 @@ function parseTimelineData(timelineData) {
   return { timeline, regions: Array.from(regions) };
 }
 
-
-    
-    // Eventsデータを解析
-    function parseEventData(eventData) {
-      const events = [];
-      eventData.forEach(item => {
-        const period = item.Period;
-        const region = item.Region;
-        const state = item.State;
-        const title = item.Title;
-        const details = item.Details;
-        const image = item.Image;
-        const coordinates = item.Coordinates.split(",").map(val => parseFloat(val.trim()));
-        events.push({ period, region, state, title, details, image, coordinates });
-      });
-      return events;
-    }
-
-
-    
-function renderTimeline(timelineData, eventData) {
+// タイムラインをレンダリング
+function renderTimeline(timelineData) {
   const timelineContainer = document.getElementById("timelineContainer");
   const { timeline, regions } = timelineData;
 
@@ -181,153 +133,82 @@ function renderTimeline(timelineData, eventData) {
 
   // タイムラインデータを順番に処理
   timeline.forEach(item => {
-    // 年代に該当するイベントを検索
-    const matchingEvents = eventData.filter(event => event.period === item.period);
-
-    // 積み上げグラフ: 国
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
-    const chartCell = document.createElement("canvas");
-    chartCell.style.height = "200px"; // グラフの高さを調整
-    chartRow.appendChild(chartCell);
 
-    // 同じ国名が続く間、shareを累積する
-    let mergedStates = {}; // 累積結果を保持するオブジェクト
-    let prevStateName = null; // 前の国名
+    // イベントが含まれている場合、改行を挿入
+    if (item.period.includes("イベント")) {
+      const eventRow = document.createElement("div");
+      eventRow.className = "event-row";
+      const eventCell = document.createElement("div");
+      eventCell.textContent = item.period.replace("イベント", "").trim();
+      eventCell.style.textAlign = "center";
+      eventRow.appendChild(eventCell);
+      timelineContainer.appendChild(eventRow);
+    }
+
+    // グラフの表示
+    const chartCell = document.createElement("canvas");
+    chartCell.style.height = "200px";
+    chartRow.appendChild(chartCell);
+    timelineContainer.appendChild(chartRow);
+
+    let mergedStates = {};
+    let prevStateName = null;
 
     Object.keys(item.states).forEach(region => {
       item.states[region].forEach(state => {
         if (prevStateName === state.name) {
-          // 同じ国名が続いている場合、shareを合算
           mergedStates[prevStateName].share += state.share;
         } else {
-          // 国名が変わった場合、現在の国を新たに追加
           mergedStates[state.name] = {
             name: state.name,
             share: state.share,
             color: state.color
           };
-          prevStateName = state.name; // 前の国名を更新
+          prevStateName = state.name;
         }
       });
     });
 
-    // Chart.js グラフ作成 (年代ごとの国の積み上げグラフ)
     new Chart(chartCell, {
       type: 'bar',
       data: {
-        labels: [item.period], // 年代をY軸ラベルに表示
+        labels: [item.period],
         datasets: Object.values(mergedStates).map(state => ({
-          label: state.name, // 王国名
-          data: [state.share], // 合算されたシェア
-          backgroundColor: state.color, // 色
+          label: state.name,
+          data: [state.share],
+          backgroundColor: state.color,
           borderColor: 'black',
           borderWidth: 1
         }))
       },
       options: {
-        indexAxis: 'y', // 横棒グラフ
+        indexAxis: 'y',
         plugins: {
-          legend: { display: false }, // 凡例を非表示
-          tooltip: { enabled: false }, // ツールチップを非表示
+          legend: { display: false },
+          tooltip: { enabled: false },
           datalabels: {
-            color: 'white', // テキスト色を白に変更
+            color: 'white',
             align: 'center',
             anchor: 'center',
-            formatter: (value, context) => {
-              const label = context.dataset.label;
-              return label; // 国家名を表示
-            },
-            font: {
-              weight: 'bold',
-              size: 12
-            }
+            formatter: (value, context) => context.dataset.label,
+            font: { weight: 'bold', size: 12 }
           },
         },
         responsive: true,
-        maintainAspectRatio: false, // サイズを柔軟に調整
+        maintainAspectRatio: false,
         scales: {
-          x: {
-            display: false,
-            stacked: true // 積み上げ
-          },
-          y: {
-            display: true, // 年代を表示
-            stacked: true // 積み上げ
-          }
+          x: { display: false, stacked: true },
+          y: { display: true, stacked: true }
         }
       }
     });
-
-    timelineContainer.appendChild(chartRow);
-
-    // 出来事グラフ: 出来事
-    if (matchingEvents.length > 0) {
-      const eventRow = document.createElement("div");
-      eventRow.className = "chart-row";
-      const eventCell = document.createElement("canvas");
-      eventCell.style.height = "200px"; // グラフの高さを調整
-      eventRow.appendChild(eventCell);
-
-      const eventDataset = matchingEvents.map(event => ({
-        label: event.title, // 出来事タイトル
-        data: [1], // 比率（全て1で固定）
-        backgroundColor: 'lightblue', // 出来事の背景色
-        borderColor: 'black',
-        borderWidth: 1
-      }));
-
-      new Chart(eventCell, {
-        type: 'bar',
-        data: {
-          labels: [item.period],
-          datasets: eventDataset
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { enabled: false },
-            datalabels: {
-              color: 'black', // テキストの色
-              anchor: 'center', // ラベルの位置
-              align: 'center', // ラベルを中央揃え
-              formatter: (value, context) => context.dataset.label, // 出来事タイトルを表示
-              font: {
-                weight: 'bold',
-                size: 12
-              }
-            }
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              display: false,
-              stacked: true
-            },
-            y: {
-              display: true, // 年代を表示
-              stacked: true
-            }
-          }
-        }
-      });
-
-      timelineContainer.appendChild(eventRow);
-    }
   });
 }
 
+window.onload = loadCSV;
 
-
-
-
-
-
-
-    // ページ読み込み時にCSVをロード
-    window.onload = loadCSV;
   </script>
 
 </body>
