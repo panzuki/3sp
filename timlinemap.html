@@ -112,6 +112,7 @@ Papa.parse("csv/Timeline.csv", {
 function parseTimelineData(timelineData) {
   const timeline = [];
   const regions = new Set();
+
   timelineData.forEach(item => {
     const period = item.Period || "未定義";
     const region = item.Region || "未定義";
@@ -119,32 +120,52 @@ function parseTimelineData(timelineData) {
     const share = item.Share || 0;
     const color = item.Color || "gray";
     const coordinates = item.Coordinates ? JSON.parse(item.Coordinates) : [];
-    // 地域をセットに追加してユニーク化
+
     regions.add(region);
-    // タイムラインにデータをまとめる
-    const periodData = timeline.find(p => p.period === period);
-    if (periodData) {
-      const regionData = periodData.states[region] || [];
-      const existingState = regionData.find(s => s.name === state);
-      if (existingState) {
-        // 同じ国名が既にある場合、シェアを合算
-        existingState.share += share;
-      } else {
-        // 新しい国名の場合、追加
-        regionData.push({ name: state, share, color, coordinates });
-      }
-      periodData.states[region] = regionData;
-    } else {
-      timeline.push({
-        period,
-        states: {
-          [region]: [{ name: state, share, color, coordinates }]
-        }
-      });
+
+    // タイムラインに既存の期間があるか確認
+    let periodData = timeline.find(p => p.period === period);
+    if (!periodData) {
+      // 新しい期間を追加
+      periodData = { period, states: {} };
+      timeline.push(periodData);
     }
+
+    // 現在の期間内で地域データを取得
+    let regionData = periodData.states[region] || [];
+    const existingStateIndex = regionData.findIndex(s => s.name === state);
+
+    if (existingStateIndex !== -1) {
+      // 同じ国名が既に存在する場合、シェアを合算
+      regionData[existingStateIndex].share += share;
+    } else {
+      // 新しい国名を追加
+      regionData.push({ name: state, share, color, coordinates });
+    }
+
+    periodData.states[region] = regionData;
   });
+
+  // 同じ期間内で同一国名が続く場合をさらに統合
+  timeline.forEach(periodData => {
+    Object.keys(periodData.states).forEach(region => {
+      const states = periodData.states[region];
+      periodData.states[region] = states.reduce((acc, curr) => {
+        const lastState = acc[acc.length - 1];
+        if (lastState && lastState.name === curr.name) {
+          // 同じ国名が連続している場合にシェアを統合
+          lastState.share += curr.share;
+        } else {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
+    });
+  });
+
   return { timeline, regions: Array.from(regions) };
 }
+
     
     // Eventsデータを解析
     function parseEventData(eventData) {
