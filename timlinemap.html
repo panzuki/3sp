@@ -234,7 +234,10 @@ function renderTimeline(timelineData, eventData) {
             color: 'white', // テキスト色を白に変更
             align: 'center',
             anchor: 'center',
-            formatter: (value, context) => context.dataset.label, // 国家名を表示
+            formatter: (value, context) => {
+              const label = context.dataset.label;
+              return label; // 国家名を表示
+            },
             font: {
               weight: 'bold',
               size: 12
@@ -315,6 +318,7 @@ function renderTimeline(timelineData, eventData) {
     }
   });
 }
+
 
 
 
