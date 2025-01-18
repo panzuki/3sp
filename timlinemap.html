@@ -187,7 +187,9 @@ function renderTimeline(timelineData) {
       type: 'bar',
       data: {
         labels: [item.period],
-        datasets: Object.values(mergedStates).map(state => ({
+        datasets: Object.keys(item.states).flatMap(region =>
+          item.states[region].map(state => ({
+        //datasets: Object.values(mergedStates).map(state => ({
           label: state.name,
           data: [state.share],
           backgroundColor: state.color,
