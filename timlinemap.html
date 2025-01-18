@@ -173,11 +173,24 @@ function renderTimeline(timelineData, eventData) {
   // タイムラインデータを順番に処理
   timeline.forEach(item => {
     // 年代に該当するイベントを検索
-    const matchingEvents = eventData.filter(event => event.period === item.period);
+    //const matchingEvents = eventData.filter(event => event.period === item.period);
 
     // イベントがない場合は何も表示せずスキップ
-    if (matchingEvents.length === 0) return;
+    //if (matchingEvents.length === 0) return;
 
+    const matchingEvents = eventData.filter(event => {
+      return event.period === item.period;
+    });
+
+    // 該当するイベントがない場合、間隔を詰めて次へ
+    if (matchingEvents.length === 0) {
+      const emptyRow = document.createElement("div");
+      emptyRow.style.height = "10px"; // 空白行の高さ
+      timelineContainer.appendChild(emptyRow);
+      return;
+    }
+
+    
     // 積み上げグラフ: 国
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
