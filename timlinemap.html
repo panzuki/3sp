@@ -56,22 +56,13 @@
     let popups = [];
 
 function initializeMap() {
-  // 日本語対応の地図タイルURL
-const japanMapTileUrl = "https://{s}.tile.openstreetmap.jp/{z}/{x}/{y}.png";
+  map = L.map('map').setView([20, 10], 2);
 
-// 地図の作成
-const map = L.map('map', {
-  center: [35.6762, 139.6503], // 東京の座標を中心に設定
-  zoom: 5
-});
-
-// 日本語対応の地図タイルを設定
-L.tileLayer(japanMapTileUrl, {
-  attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-}).addTo(map);
-
+  // 日本語タイルレイヤーを追加
+  L.tileLayer('https://{s}.tile.openstreetmap.jp/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
 }
-
 
     function clearMapOverlays() {
       circles.forEach(circle => circle.remove());
