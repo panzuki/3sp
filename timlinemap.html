@@ -3,21 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>タイムライン表示</title>
+  <title>タイムラインと地図表示</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-
-
   <style>
-    /* スクロール可能なコンテナ */
-    .container {
-      overflow-x: auto;
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+    }
+    /* 地図表示エリア */
+    #map {
+      flex: 7;
+      position: relative;
+    }
+    /* タイムラインエリア */
+    .timeline-container {
+      flex: 3;
       overflow-y: auto;
-      width: 100%;
-      height: 500px;
-      display: block;
     }
     /* ヘッダー */
     .header {
@@ -26,35 +32,41 @@
       font-weight: bold;
     }
     /* 各グラフ行 */
-.chart-row {
-  display: flex; /* 必要に応じて他の子要素に対応 */
-  align-items: center; /* 子要素を中央揃え */
-  justify-content: center;
-  height: 150px; /* 必要な高さを設定 */
-  width: 100%; /* 横幅を親要素に合わせる */
-  position: relative; /* 必要なら設定 */
-  overflow: hidden; /* 描画がはみ出さないように調整 */
-}
-
-    /* 出来事行 */
-    .event-row {
+    .chart-row {
       display: flex;
-      justify-content: space-between;
-      background-color: #f0f0f0;
       align-items: center;
-      height: 50px;
+      justify-content: center;
+      height: 150px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <!-- 地図表示エリア -->
+  <div id="map"></div>
+
+  <!-- タイムラインエリア -->
+  <div class="timeline-container">
     <div id="timelineContainer">
       <!-- タイムラインとグラフがここに追加される -->
     </div>
   </div>
 
   <script>
+let map; // 地図オブジェクト
+const mapCircles = []; // 地図上の円を管理
+const mapBalloons = []; // 地図上の吹き出しを管理
+
+// 地図を初期化
+function initializeMap() {
+  map = L.map('map').setView([30, 40], 3); // 初期中心座標とズームレベル
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+}
+
+// CSVを読み込む
 function loadCSV() {
   Papa.parse("csv/Timeline.csv", {
     download: true,
@@ -64,20 +76,15 @@ function loadCSV() {
     complete: function(results) {
       if (results.errors.length > 0) {
         console.error("Timeline.csvの読み込みエラー:", results.errors);
-        results.errors.forEach(error => {
-          console.error(`エラー詳細: 行番号 ${error.row}, メッセージ: ${error.message}`);
-        });
         return;
       }
-
-      const timelineData = results.data;
-      const jsonTimelineData = parseTimelineData(timelineData);
-      renderTimeline(jsonTimelineData);
+      const timelineData = parseTimelineData(results.data);
+      renderTimeline(timelineData);
     }
   });
 }
 
-// Timelineデータを解析
+// タイムラインデータを解析
 function parseTimelineData(timelineData) {
   const timeline = [];
   const regions = new Set();
@@ -87,34 +94,29 @@ function parseTimelineData(timelineData) {
     const state = item.State || "未定義";
     const share = item.Share || 0;
     const color = item.Color || "gray";
+    const eventTitle = item.EventTitle || null;
+    const eventDetail = item.EventDetail || null;
+    const eventPoint = item.EventPoint ? item.EventPoint.split(',').map(Number) : null;
+
     let coordinates = [];
-    try {
-      if (item.Coordinates) {
-        // 正規表現で座標のペアを抽出して解析
-        coordinates = item.Coordinates
-          .match(/\[\[([^\]]+)\]\]/g)
-          .map(coord => {
-            return coord.replace(/\[|\]/g, '').split(',').map(Number);
-          });
-      }
-    } catch (e) {
-      console.error("Coordinates解析エラー:", e);
+    if (item.Coordinates) {
+      coordinates = item.Coordinates
+        .match(/\[\[([^\]]+)\]\]/g)
+        .map(coord => coord.replace(/\[|\]/g, '').split(',').map(Number));
     }
 
-    // 地域をセットに追加してユニーク化
     regions.add(region);
 
-    // タイムラインにデータをまとめる
     const periodData = timeline.find(p => p.period === period);
     if (periodData) {
       const regionData = periodData.states[region] || [];
-      regionData.push({ name: state, share, color, coordinates });
+      regionData.push({ name: state, share, color, coordinates, eventTitle, eventDetail, eventPoint });
       periodData.states[region] = regionData;
     } else {
       timeline.push({
         period,
         states: {
-          [region]: [{ name: state, share, color, coordinates }]
+          [region]: [{ name: state, share, color, coordinates, eventTitle, eventDetail, eventPoint }]
         }
       });
     }
@@ -128,79 +130,105 @@ function renderTimeline(timelineData) {
   const timelineContainer = document.getElementById("timelineContainer");
   const { timeline, regions } = timelineData;
 
-  // ヘッダー行の作成
-const headerRow = document.createElement("div");
-headerRow.className = "header";
-headerRow.style.display = "flex";
+  // ヘッダー行を作成
+  const headerRow = document.createElement("div");
+  headerRow.className = "header";
+  ["　　", ...regions].forEach(region => {
+    const headerCell = document.createElement("div");
+    headerCell.textContent = region;
+    headerCell.style.flex = "1";
+    headerCell.style.textAlign = "center";
+    headerCell.style.fontWeight = "bold";
+    headerRow.appendChild(headerCell);
+  });
+  timelineContainer.appendChild(headerRow);
 
-// "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
-["　　", ...regions.map(region => region.split(",")[0].trim())].forEach(region => {
-  const headerCell = document.createElement("div");
-  headerCell.textContent = region;
-  headerCell.style.flex = "1";
-  headerCell.style.textAlign = "center";
-  headerCell.style.fontWeight = "bold";
-  headerCell.style.borderBottom = "2px solid black";
-  headerRow.appendChild(headerCell);
-});
-timelineContainer.appendChild(headerRow);
-
-  // タイムラインデータを順番に処理
   timeline.forEach(item => {
     const chartRow = document.createElement("div");
     chartRow.className = "chart-row";
 
-    // グラフの表示
     const chartCell = document.createElement("canvas");
     chartCell.style.height = "200px";
     chartRow.appendChild(chartCell);
     timelineContainer.appendChild(chartRow);
 
-
-
-    new Chart(chartCell, {
+    const chart = new Chart(chartCell, {
       type: 'bar',
       data: {
         labels: [item.period],
         datasets: Object.keys(item.states).flatMap(region =>
           item.states[region].map(state => ({
-        //datasets: Object.values(mergedStates).map(state => ({
-          label: state.name,
-          data: [state.share],
-          backgroundColor: state.color,
-          borderColor: 'black',
-          borderWidth: 1
-        }))
+            label: state.name,
+            data: [state.share],
+            backgroundColor: state.color,
+          }))
         )
       },
       options: {
-        indexAxis: 'y',
+        onClick: (_, elements) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            handlePeriodClick(item, timeline[index]);
+          }
+        },
         plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false },
           datalabels: {
             color: 'white',
-            align: 'center',
             anchor: 'center',
+            align: 'center',
             formatter: (value, context) => context.dataset.label,
             font: { weight: 'bold', size: 12 }
-          },
+          }
         },
         responsive: true,
         maintainAspectRatio: false,
-        scales: {
-          x: { display: false, stacked: true },
-          y: { display: true, stacked: true }
-        }
+        scales: { x: { display: false }, y: { display: true } }
       }
     });
   });
 }
 
-window.onload = loadCSV;
+// 年代クリック時の処理
+function handlePeriodClick(periodData) {
+  clearMap(); // 既存のマーカーを削除
 
+  Object.values(periodData.states).flat().forEach(state => {
+    // 地図に円を描画
+    state.coordinates.forEach(coord => {
+      const circle = L.circle(coord, {
+        color: state.color,
+        fillColor: state.color,
+        fillOpacity: 0.5,
+        radius: 50000
+      }).addTo(map);
+      mapCircles.push(circle);
+    });
 
+    // イベント情報を吹き出しで表示
+    if (state.eventTitle && state.eventPoint) {
+      const popup = L.popup({ closeButton: false })
+        .setLatLng(state.eventPoint)
+        .setContent(`<b>${state.eventTitle}</b><br>${state.eventDetail}`);
+      mapBalloons.push(popup);
+      popup.openOn(map);
+    }
+  });
+}
+
+// 地図上の要素を削除
+function clearMap() {
+  mapCircles.forEach(circle => map.removeLayer(circle));
+  mapBalloons.forEach(balloon => map.removeLayer(balloon));
+  mapCircles.length = 0;
+  mapBalloons.length = 0;
+}
+
+window.onload = () => {
+  initializeMap();
+  loadCSV();
+};
   </script>
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
