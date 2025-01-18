@@ -149,15 +149,15 @@ function renderTimeline(timelineData) {
     chartRow.className = "chart-row";
 
     // イベントが含まれている場合、改行を挿入
-    if (item.period.includes("イベント")) {
-      const eventRow = document.createElement("div");
-      eventRow.className = "event-row";
-      const eventCell = document.createElement("div");
-      eventCell.textContent = item.period.replace("イベント", "").trim();
-      eventCell.style.textAlign = "center";
-      eventRow.appendChild(eventCell);
-      timelineContainer.appendChild(eventRow);
-    }
+    // if (item.period.includes("イベント")) {
+    //   const eventRow = document.createElement("div");
+    //   eventRow.className = "event-row";
+    //   const eventCell = document.createElement("div");
+    //   eventCell.textContent = item.period.replace("イベント", "").trim();
+    //   eventCell.style.textAlign = "center";
+    //   eventRow.appendChild(eventCell);
+    //   timelineContainer.appendChild(eventRow);
+    // }
 
     // グラフの表示
     const chartCell = document.createElement("canvas");
