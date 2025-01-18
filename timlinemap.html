@@ -247,7 +247,14 @@ function showMapDataForPeriod(item) {
 
       // イベントタイトルがあれば吹き出しを表示
       if (state.EventTitle && state.EventPoint) {
-        const [lat, lng] = JSON.parse(state.EventPoint); // 座標をパース
+      //  const [lat, lng] = JSON.parse(state.EventPoint); // 座標をパース
+        try {
+  const [lat, lng] = JSON.parse(state.EventPoint);
+} catch (e) {
+  console.error("EventPointのパースエラー:", e);
+}
+console.log(state.EventTitle, state.EventPoint);
+
         L.marker([lat, lng])
           .addTo(map)
           .bindPopup(`<b>${state.EventTitle}</b><br>${state.EventDetail}`)
