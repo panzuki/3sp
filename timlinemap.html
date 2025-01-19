@@ -287,8 +287,11 @@ initializeMap()
 let markersLayer = L.layerGroup().addTo(map);
 
 function showMapDataForPeriod(item) {
-  // 古いマーカーを削除
-  markersLayer.clearLayers();
+  // 地図上の既存の円や吹き出しをクリア
+  circles.forEach(circle => map.removeLayer(circle));
+  circles = [];
+  popups.forEach(popup => map.removeLayer(popup));
+  popups = [];
 
   // 各地域（region）をループ
   Object.keys(item.states).forEach(region => {
@@ -296,44 +299,56 @@ function showMapDataForPeriod(item) {
 
     // 各王国（stateData）の処理
     stateData.forEach(state => {
+      // 座標と色で円を描画
+      if (state.coordinates) {
+        try {
+          const coordinates = JSON.parse(state.coordinates); // JSONパース
+          coordinates.forEach(coord => {
+            const [lat, lng] = coord;
+            const circle = L.circle([lat, lng], {
+              color: state.color,
+              fillColor: state.color,
+              fillOpacity: 0.5,
+              radius: 50000 // 半径を調整
+            }).addTo(map);
+            circles.push(circle);
+          });
+        } catch (e) {
+          console.error("Coordinatesのパースエラー:", state.coordinates, e);
+        }
+      }
+
       // イベントタイトルがあれば吹き出しを表示
       if (state.eventTitle && state.eventPoint) {
         try {
-          // EventPointをパース
-          const coordinates = JSON.parse(state.eventPoint);
+          const eventPoint = JSON.parse(state.eventPoint); // JSONパース
+          const [lat, lng] = eventPoint;
+          const popup = L.popup()
+            .setLatLng([lat, lng])
+            .setContent(`<b>${state.eventTitle}</b>`)
+            .addTo(map);
 
-          coordinates.forEach(coord => {
-            const [lat, lng] = coord;
+          popup.on('click', () => {
+            // モーダル表示処理
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDetail = document.getElementById('modalDetail');
+            const modalImage = document.getElementById('modalImage');
 
-            // 吹き出し付きマーカーを表示
-            const marker = L.marker([lat, lng], { opacity: 0 }) // 座標ポインターは透明に設定
-              .addTo(markersLayer)
-              .bindPopup(`<b>${state.eventTitle}</b>`)
-              .on('click', () => {
-                // モーダル表示処理
-                const modal = document.getElementById('modal');
-                const modalTitle = document.getElementById('modalTitle');
-                const modalDetail = document.getElementById('modalDetail');
-                const modalImage = document.getElementById('modalImage');
+            // モーダルの内容を設定
+            modalTitle.textContent = state.eventTitle || "タイトル未設定";
+            modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
+            if (state.eventImage) {
+              modalImage.src = state.eventImage;
+              modalImage.style.display = "block";
+            } else {
+              modalImage.style.display = "none";
+            }
 
-                // モーダルの内容を設定
-                modalTitle.textContent = state.eventTitle || "タイトル未設定";
-                modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
-                if (state.eventImage) {
-                  modalImage.src = state.eventImage;
-                  modalImage.style.display = "block";
-                } else {
-                  modalImage.style.display = "none";
-                }
-
-                // モーダルを表示
-                modal.style.display = "block";
-              });
-
-            // 吹き出しを自動的に開く
-            marker.openPopup();
+            modal.style.display = "block";
           });
 
+          popups.push(popup);
         } catch (e) {
           console.error("EventPointのパースエラー:", state.eventPoint, e);
         }
@@ -342,6 +357,7 @@ function showMapDataForPeriod(item) {
       }
     });
   });
+}
 
   // モーダルを閉じるボタンの処理を追加
   const modalCloseButton = document.getElementById('modalClose');
