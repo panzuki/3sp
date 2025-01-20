@@ -95,6 +95,8 @@
 
   <script>
     let map;
+let circles = []; // 地図上の円を管理
+let popups = [];  // 地図上の吹き出しを管理
 
 // 地図の初期化関数
 function initializeMap() {
@@ -107,7 +109,7 @@ function initializeMap() {
   // 地図の初期化
   const 初期緯度 = 48.8566; // ヨーロッパ中心（パリ付近）
   const 初期経度 = 2.3522;  // ヨーロッパ中心（パリ付近）
-  const 初期ズームレベル = 4;
+  const 初期ズームレベル = 3;
 
   map = L.map('map').setView([初期緯度, 初期経度], 初期ズームレベル);
 
