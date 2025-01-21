@@ -94,7 +94,7 @@
 
 
   <script>
-    let map;
+let map;
 let circles = []; // 地図上の円を管理
 let popups = [];  // 地図上の吹き出しを管理
 
@@ -175,15 +175,20 @@ function initializeMap() {
         const share = item.Share || 0;
         const color = item.Color || "gray";
         let coordinates = [];
-        try {
-          if (item.Coordinates) {
-            coordinates = item.Coordinates
-              .match(/\[\[([^\]]+)\]\]/g)
-              .map(coord => coord.replace(/\[|\]/g, '').split(',').map(Number));
-          }
-        } catch (e) {
-          console.error("Coordinates解析エラー:", e);
-        }
+try {
+  if (item.Coordinates) {
+    // [[29.8, 31.15]],[[39.0, 35.0]] を解析
+    coordinates = item.Coordinates
+      .match(/\[[^\]]+\]/g) // [29.8, 31.15] の部分を抽出
+      .map(coord => coord
+        .replace(/\[|\]/g, '') // [ と ] を取り除く
+        .split(',') // カンマで分割
+        .map(Number) // 数値に変換
+      );
+  }
+} catch (e) {
+  console.error("Coordinatesのパースエラー:", coordinates, e);
+}
 
         regions.add(region);
 
