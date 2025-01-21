@@ -367,31 +367,31 @@ clearMapOverlays();
         try {
           const eventPoint = state.eventPoint;
           const [lat, lng] = eventPoint[0];
-          const marker = L.marker([lat, lng])
-            .addTo(markersLayer) // マーカーグループに追加
-            .bindPopup(`<b>${state.eventTitle}</b>`)
-            .on('click', () => {
-              // モーダル表示処理
-              const modal = document.getElementById('modal');
-              const modalTitle = document.getElementById('modalTitle');
-              const modalDetail = document.getElementById('modalDetail');
-              const modalImage = document.getElementById('modalImage');
+    const popup = L.popup()
+      .setLatLng([lat, lng])
+      .setContent(`<b>${state.eventTitle}</b>`)
+      .addTo(map);
 
-              // モーダルの内容を設定
-              modalTitle.textContent = state.eventTitle || "タイトル未設定";
-              modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
-              if (state.eventImage) {
-                modalImage.src = state.eventImage;
-                modalImage.style.display = "block";
-              } else {
-                modalImage.style.display = "none";
-              }
+    popup.on('click', () => {
+      // モーダル表示処理
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDetail = document.getElementById('modalDetail');
+      const modalImage = document.getElementById('modalImage');
 
-              // モーダルを表示
-              modal.style.display = "block";
-            });
+      // モーダルの内容を設定
+      modalTitle.textContent = state.eventTitle || "タイトル未設定";
+      modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
+      if (state.eventImage) {
+        modalImage.src = state.eventImage;
+        modalImage.style.display = "block";
+      } else {
+        modalImage.style.display = "none";
+      }
 
-          marker.openPopup();
+      modal.style.display = "block";
+    });
+          popups.push(popup);
         } catch (e) {
           console.error("EventPointのパースエラー:", state.eventPoint, e);
         }
@@ -403,13 +403,15 @@ clearMapOverlays();
 }
 
   // モーダルを閉じるボタンの処理を追加
-  const modalCloseButton = document.getElementById('modalClose');
-  if (modalCloseButton) {
-    modalCloseButton.addEventListener('click', () => {
-      const modal = document.getElementById('modal');
-      modal.style.display = "none";
-    });
-  }
+  // 閉じるボタンのクリックイベント
+const closeButton = document.querySelector('.close');
+if (closeButton) {
+  closeButton.addEventListener('click', () => {
+    const modal = document.getElementById('modal');
+    modal.style.display = 'none';
+  });
+}
+
 
 
 
