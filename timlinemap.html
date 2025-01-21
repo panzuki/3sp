@@ -175,6 +175,7 @@ function initializeMap() {
         const share = item.Share || 0;
         const color = item.Color || "gray";
         let coordinates = [];
+        let eventPoint = null;
 try {
   if (item.Coordinates) {
     // [[29.8, 31.15]],[[39.0, 35.0]] を解析
@@ -189,23 +190,49 @@ try {
 } catch (e) {
   console.error("Coordinatesのパースエラー:", coordinates, e);
 }
+        
+    try {
+      if (item.EventPoint) {
+        eventPoint = JSON.parse(item.EventPoint); // JSONとして直接パース
+      }
+    } catch (e) {
+      console.error("EventPoint解析エラー:", item.EventPoint, e);
+    }
 
         regions.add(region);
 
         const periodData = timeline.find(p => p.period === period);
         if (periodData) {
-          const regionData = periodData.states[region] || [];
-          regionData.push({ name: state, share, color, coordinates, eventTitle: item.EventTitle, eventPoint: item.EventPoint });
-          periodData.states[region] = regionData;
-        } else {
-          timeline.push({
-            period,
-            states: {
-              [region]: [{ name: state, share, color, coordinates, eventTitle: item.EventTitle, eventPoint: item.EventPoint }]
-            }
-          });
+      const regionData = periodData.states[region] || [];
+      regionData.push({ 
+        name: state, 
+        share, 
+        color, 
+        coordinates, 
+        eventTitle: item.EventTitle, 
+        eventDetail: item.EventDetail, 
+        eventImage: item.EventImage, 
+        eventPoint 
+      });
+      periodData.states[region] = regionData;
+    } else {
+      timeline.push({
+        period,
+        states: {
+          [region]: [{ 
+            name: state, 
+            share, 
+            color, 
+            coordinates, 
+            eventTitle: item.EventTitle, 
+            eventDetail: item.EventDetail, 
+            eventImage: item.EventImage, 
+            eventPoint 
+          }]
         }
       });
+    }
+  });
 
       return { timeline, regions: Array.from(regions) };
     }
@@ -295,11 +322,11 @@ let markersLayer = L.layerGroup().addTo(map);
 
 function showMapDataForPeriod(item) {
   // 地図上の既存の円や吹き出しをクリア
-  circles.forEach(circle => map.removeLayer(circle));
-  circles = [];
-  popups.forEach(popup => map.removeLayer(popup));
-  popups = [];
-
+ //circles.forEach(circle => map.removeLayer(circle));
+  //circles = [];
+ // popups.forEach(popup => map.removeLayer(popup));
+//  popups = [];
+clearMapOverlays();
   // 各地域（region）をループ
   Object.keys(item.states).forEach(region => {
     const stateData = item.states[region];
