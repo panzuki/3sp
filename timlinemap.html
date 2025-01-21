@@ -356,7 +356,7 @@ clearMapOverlays();
       // イベントタイトルがあれば吹き出しを表示
       if (state.eventTitle && state.eventPoint) {
         try {
-          const eventPoint = JSON.parse(state.eventPoint); // JSONパース
+          const eventPoint = state.eventPoint; // JSONパース
           const [lat, lng] = eventPoint;
           const popup = L.popup()
             .setLatLng([lat, lng])
