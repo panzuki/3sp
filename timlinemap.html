@@ -399,6 +399,7 @@ if (state.eventTitle && state.eventPoint) {
     const popup = L.popup({
       closeButton: false, // 必要に応じて閉じるボタンを無効化
       className: 'custom-popup' // カスタムクラス
+    })
       .setLatLng([lat, lng])
       .setContent(`<div class="popup-content">${state.eventTitle}</div>`)
       .addTo(map);
