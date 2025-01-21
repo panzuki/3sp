@@ -198,6 +198,7 @@ try {
       .match(/\[[^\]]+\]/g) // [29.8, 31.15] の部分を抽出
       .map(coord => coord
         .replace(/\[|\]/g, '') 
+        .split(',') 
         .map(Number) // 数値に変換
       );
       }
