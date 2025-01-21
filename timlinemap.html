@@ -193,7 +193,13 @@ try {
         
     try {
       if (item.EventPoint) {
-        eventPoint = JSON.parse(item.EventPoint); // JSONとして直接パース
+       // eventPoint = JSON.parse(item.EventPoint); // JSONとして直接パース
+            eventPoint = item.EventPoint
+      .match(/\[[^\]]+\]/g) // [29.8, 31.15] の部分を抽出
+      .map(coord => coord
+        .replace(/\[|\]/g, '') 
+        .map(Number) // 数値に変換
+      );
       }
     } catch (e) {
       console.error("EventPoint解析エラー:", item.EventPoint, e);
@@ -356,7 +362,8 @@ clearMapOverlays();
       // イベントタイトルがあれば吹き出しを表示
       if (state.eventTitle && state.eventPoint) {
         try {
-          const eventPoint = state.eventPoint; // JSONパース
+          const eventPoint = state.eventPoint;
+          console.log(eventPoint);
           const [lat, lng] = eventPoint;
           const popup = L.popup()
             .setLatLng([lat, lng])
