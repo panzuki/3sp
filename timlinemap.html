@@ -325,7 +325,7 @@ try {
           legend: { display: false },
           tooltip: { enabled: false },
           datalabels: {
-            color: 'white',
+            color: 'black',
             align: 'center',
             anchor: 'center',
             formatter: (value, context) => context.dataset.label,
@@ -374,8 +374,8 @@ function showMapDataForPeriod(item) {
             const circle = L.circle([lat, lng], {
               color: state.color,
               fillColor: state.color,
-              fillOpacity: 0.5,
-              radius: 50000 // 半径を調整
+              fillOpacity: 0.3,
+              radius: 80000 // 半径を調整
             }).addTo(map);
             circles.push(circle);
           });
