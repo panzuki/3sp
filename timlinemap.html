@@ -374,6 +374,7 @@ clearMapOverlays();
 
     popup.on('click', () => {
       // モーダル表示処理
+      console.log(state.eventTitle, state.eventDetail, state.eventImage); 
       const modal = document.getElementById('modal');
       const modalTitle = document.getElementById('modalTitle');
       const modalDetail = document.getElementById('modalDetail');
@@ -390,6 +391,8 @@ clearMapOverlays();
       }
 
       modal.style.display = "block";
+      console.log("ポップアップクリックが発生しました");
+
     });
           popups.push(popup);
         } catch (e) {
@@ -402,27 +405,27 @@ clearMapOverlays();
   });
 }
 
-  // モーダルを閉じるボタンの処理を追加
-  // 閉じるボタンのクリックイベント
-const closeButton = document.querySelector('.close');
-if (closeButton) {
-  closeButton.addEventListener('click', () => {
-    const modal = document.getElementById('modal');
-    modal.style.display = 'none';
-  });
-}
-
-
-
-
-
-
-
 
 
     window.onload = () => {
       initializeMap();
       loadCSV();
+
+        const closeButton = document.querySelector('.close');
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      const modal = document.getElementById('modal');
+      modal.style.display = 'none';
+    });
+  }
+
+  // モーダルの外側をクリックした場合に閉じる処理
+  const modal = document.getElementById('modal');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
     };
   </script>
 </body>
