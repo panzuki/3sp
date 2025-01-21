@@ -400,7 +400,10 @@ function showMapDataForPeriod(item) {
             .addTo(map);
 
           // ポップアップにクリックイベントを追加
-          popup.on('click', () => {
+   const popupContent = popup.getElement();
+          const contentDiv = popupContent.querySelector('.popup-content');
+
+          contentDiv.addEventListener('click', () => {
             console.log(state.eventTitle, state.eventDetail, state.eventImage);
 
             // モーダル表示処理
