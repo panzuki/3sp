@@ -309,7 +309,8 @@ function showMapDataForPeriod(item) {
       // 座標と色で円を描画
       if (state.coordinates) {
         try {
-          const coordinates = JSON.parse(state.coordinates); // JSONパース
+          //const coordinates = JSON.parse(state.coordinates); // JSONパース
+          coordinates = state.coordinates;
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
             const circle = L.circle([lat, lng], {
