@@ -72,6 +72,18 @@
   cursor: pointer;
 }
 
+    .custom-marker .marker-content {
+  background-color: #ffcc00; /* マーカーの背景色 */
+  color: #000; /* テキストの色 */
+  padding: 5px 10px; /* 内側の余白 */
+  border-radius: 5px; /* 丸みを追加 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* 影を追加 */
+  text-align: center;
+  font-size: 12px; /* フォントサイズ */
+  white-space: nowrap; /* 文字の折り返しを防止 */
+}
+
+
   </style>
 </head>
 <body>
@@ -368,33 +380,38 @@ clearMapOverlays();
           const eventPoint = state.eventPoint;
           const [lat, lng] = eventPoint[0];
     const popup = L.popup()
-      .setLatLng([lat, lng])
-      .setContent(`<b>${state.eventTitle}</b>`)
-      .addTo(map);
-console.log("ポップアップ設定開始");
-    popup.on('click', () => {
-      // モーダル表示処理
-      console.log(state.eventTitle, state.eventDetail, state.eventImage); 
-      const modal = document.getElementById('modal');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalDetail = document.getElementById('modalDetail');
-      const modalImage = document.getElementById('modalImage');
+// カスタムマーカーの作成
+const customMarker = L.divIcon({
+  className: 'custom-marker', // 独自のクラスを設定
+  html: `<div class="marker-content">${state.eventTitle}</div>`,
+  iconSize: [100, 40], // サイズを調整
+  iconAnchor: [50, 20] // 中央下を基準点に
+});
 
-      // モーダルの内容を設定
-      modalTitle.textContent = state.eventTitle || "タイトル未設定";
-      modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
-      if (state.eventImage) {
-        modalImage.src = state.eventImage;
-        modalImage.style.display = "block";
-      } else {
-        modalImage.style.display = "none";
-      }
+// マーカーの追加
+const marker = L.marker([lat, lng], { icon: customMarker }).addTo(map);
 
-      modal.style.display = "block";
-      console.log("ポップアップクリックが発生しました");
+// クリックイベントでモーダルを表示
+marker.on('click', () => {
+  console.log(state.eventTitle, state.eventDetail, state.eventImage); 
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDetail = document.getElementById('modalDetail');
+  const modalImage = document.getElementById('modalImage');
 
-    });
-          popups.push(popup);
+  // モーダルの内容を設定
+  modalTitle.textContent = state.eventTitle || "タイトル未設定";
+  modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
+  if (state.eventImage) {
+    modalImage.src = state.eventImage;
+    modalImage.style.display = "block";
+  } else {
+    modalImage.style.display = "none";
+  }
+
+  modal.style.display = "block";
+});
+
         } catch (e) {
           console.error("EventPointのパースエラー:", state.eventPoint, e);
         }
