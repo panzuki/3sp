@@ -161,7 +161,7 @@ function initializeMap() {
           color: color,
           fillColor: color,
           fillOpacity: 0.5,
-          radius: 90000 // 半径を調整
+          radius: 100000 // 半径を調整
         }).addTo(map);
         circles.push(circle);
       });
@@ -372,10 +372,10 @@ function showMapDataForPeriod(item) {
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
             const circle = L.circle([lat, lng], {
-              color: state.color,
-              fillColor: none,
+              color: 'transparent',
+              fillColor: state.color,
               fillOpacity: 0.3,
-              radius: 80000 // 半径を調整
+              radius: 90000 // 半径を調整
             }).addTo(map);
             circles.push(circle);
           });
