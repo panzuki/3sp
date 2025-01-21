@@ -371,7 +371,7 @@ clearMapOverlays();
       .setLatLng([lat, lng])
       .setContent(`<b>${state.eventTitle}</b>`)
       .addTo(map);
-
+console.log("ポップアップ設定開始");
     popup.on('click', () => {
       // モーダル表示処理
       console.log(state.eventTitle, state.eventDetail, state.eventImage); 
