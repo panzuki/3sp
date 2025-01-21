@@ -72,15 +72,16 @@
   cursor: pointer;
 }
 
-    .custom-marker .marker-content {
-  background-color: #ffcc00; /* マーカーの背景色 */
-  color: #000; /* テキストの色 */
+.custom-marker .marker-content {
+  display: inline-block; /* テキストの長さに合わせて幅を自動調整 */
+  background-color: #ffcc00; /* 背景色 */
+  color: #000; /* テキスト色 */
   padding: 5px 10px; /* 内側の余白 */
   border-radius: 5px; /* 丸みを追加 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* 影を追加 */
   text-align: center;
   font-size: 12px; /* フォントサイズ */
-  white-space: nowrap; /* 文字の折り返しを防止 */
+  white-space: nowrap; /* 改行を防止 */
 }
 
 
@@ -111,7 +112,7 @@
 let map;
 let circles = []; // 地図上の円を管理
 let popups = [];  // 地図上の吹き出しを管理
-
+let customMarkers = [];
 // 地図の初期化関数
 function initializeMap() {
   // すでに地図が初期化されている場合は処理をスキップ
@@ -136,7 +137,9 @@ function initializeMap() {
 
     function clearMapOverlays() {
       circles.forEach(circle => circle.remove());
-      popups.forEach(popup => popup.remove());
+     // popups.forEach(popup => popup.remove());
+      customMarkers.forEach(marker => map.removeLayer(marker));
+  customMarkers = [];
       circles = [];
       popups = [];
     }
@@ -384,13 +387,12 @@ clearMapOverlays();
 const customMarker = L.divIcon({
   className: 'custom-marker', // 独自のクラスを設定
   html: `<div class="marker-content">${state.eventTitle}</div>`,
-  iconSize: [100, 40], // サイズを調整
-  iconAnchor: [50, 20] // 中央下を基準点に
+  iconSize: null
 });
 
 // マーカーの追加
 const marker = L.marker([lat, lng], { icon: customMarker }).addTo(map);
-
+customMarkers.push(marker);
 // クリックイベントでモーダルを表示
 marker.on('click', () => {
   console.log(state.eventTitle, state.eventDetail, state.eventImage); 
