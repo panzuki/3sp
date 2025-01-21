@@ -365,7 +365,7 @@ clearMapOverlays();
         try {
           const eventPoint = state.eventPoint;
           console.log(eventPoint);
-          const [lat, lng] = eventPoint;
+          const [lat, lng] = eventPoint[0];
           const popup = L.popup()
             .setLatLng([lat, lng])
             .setContent(`<b>${state.eventTitle}</b>`)
