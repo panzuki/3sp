@@ -284,7 +284,7 @@ try {
 
   // "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
 // ヘッダー用の一意な地域を取得
-const uniqueRegions = ["　　", ...new Set(regions.map(region => region.split(",")[0].trim()))];
+const uniqueRegions = ["　　　　", ...new Set(regions.map(region => region.split(",")[0].trim()))];
 
 // ヘッダーの作成
 uniqueRegions.forEach(region => {
@@ -376,11 +376,14 @@ function showMapDataForPeriod(item) {
           const coordinates = state.coordinates;
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
-            const circle = L.circle([lat, lng], {
-              color: 'transparent',
-              fillColor: state.color,
-              fillOpacity: 0.3,
-              radius: 120000 // 半径を調整
+             // 年代が「地域」の場合の半径を設定
+          const radius = region === "　　地域" ? 1000000 : 120000;
+
+          const circle = L.circle([lat, lng], {
+            color: 'transparent',
+            fillColor: state.color,
+            fillOpacity: 0.3,
+            radius: radius // 半径を設定
             }).addTo(map);
             circles.push(circle);
           });
