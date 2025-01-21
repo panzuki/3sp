@@ -378,6 +378,7 @@ function showMapDataForPeriod(item) {
             const [lat, lng] = coord;
              // 年代が「地域」の場合の半径を設定
           const radius = region === "地域" ? 1000000 : 120000;
+          const setcolor = region === "地域" ? "orange" : state.color;
 
           const circle = L.circle([lat, lng], {
             color: 'transparent',
