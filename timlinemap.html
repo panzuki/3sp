@@ -357,11 +357,8 @@ let markersLayer = L.layerGroup().addTo(map);
 
 function showMapDataForPeriod(item) {
   // 地図上の既存の円や吹き出しをクリア
- //circles.forEach(circle => map.removeLayer(circle));
-  //circles = [];
- // popups.forEach(popup => map.removeLayer(popup));
-//  popups = [];
-clearMapOverlays();
+  clearMapOverlays();
+
   // 各地域（region）をループ
   Object.keys(item.states).forEach(region => {
     const stateData = item.states[region];
@@ -371,8 +368,7 @@ clearMapOverlays();
       // 座標と色で円を描画
       if (state.coordinates) {
         try {
-          //const coordinates = JSON.parse(state.coordinates); // JSONパース
-          coordinates = state.coordinates;
+          const coordinates = state.coordinates;
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
             const circle = L.circle([lat, lng], {
@@ -390,54 +386,53 @@ clearMapOverlays();
 
       // イベントタイトルがあれば吹き出しを表示
       if (state.eventTitle && state.eventPoint) {
-if (state.eventTitle && state.eventPoint) {
-  try {
-    const eventPoint = state.eventPoint;
-    const [lat, lng] = eventPoint[0];
+        try {
+          const eventPoint = state.eventPoint;
+          const [lat, lng] = eventPoint[0];
 
-    // ポップアップを作成
-    const popup = L.popup({
-      closeButton: false, // 必要に応じて閉じるボタンを無効化
-      className: 'custom-popup' // カスタムクラス
-    })
-      .setLatLng([lat, lng])
-      .setContent(`<div class="popup-content">${state.eventTitle}</div>`)
-      .addTo(map);
+          // ポップアップを作成
+          const popup = L.popup({
+            closeButton: false, // 必要に応じて閉じるボタンを無効化
+            className: 'custom-popup' // カスタムクラス
+          })
+            .setLatLng([lat, lng])
+            .setContent(`<div class="popup-content">${state.eventTitle}</div>`)
+            .addTo(map);
 
-    // ポップアップにクリックイベントを追加
-    popup.on('click', () => {
-      console.log(state.eventTitle, state.eventDetail, state.eventImage);
-      
-      // モーダル表示処理
-      const modal = document.getElementById('modal');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalDetail = document.getElementById('modalDetail');
-      const modalImage = document.getElementById('modalImage');
+          // ポップアップにクリックイベントを追加
+          popup.on('click', () => {
+            console.log(state.eventTitle, state.eventDetail, state.eventImage);
 
-      // モーダルの内容を設定
-      modalTitle.textContent = state.eventTitle || "タイトル未設定";
-      modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
-      if (state.eventImage) {
-        modalImage.src = state.eventImage;
-        modalImage.style.display = "block";
+            // モーダル表示処理
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDetail = document.getElementById('modalDetail');
+            const modalImage = document.getElementById('modalImage');
+
+            // モーダルの内容を設定
+            modalTitle.textContent = state.eventTitle || "タイトル未設定";
+            modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
+            if (state.eventImage) {
+              modalImage.src = state.eventImage;
+              modalImage.style.display = "block";
+            } else {
+              modalImage.style.display = "none";
+            }
+
+            modal.style.display = "block";
+          });
+          popups.push(popup);
+
+        } catch (e) {
+          console.error("EventPointのパースエラー:", state.eventPoint, e);
+        }
       } else {
-        modalImage.style.display = "none";
+        console.warn("EventTitleまたはEventPointが存在しません:", state);
       }
-
-      modal.style.display = "block";
-    });
-    popups.push(popup);
-
-  } catch (e) {
-    console.error("EventPointのパースエラー:", state.eventPoint, e);
-  }
-} else {
-  console.warn("EventTitleまたはEventPointが存在しません:", state);
-}
-
     });
   });
 }
+
 
 
 
