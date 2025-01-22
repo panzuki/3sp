@@ -377,12 +377,12 @@ function showMapDataForPeriod(item) {
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
              // 年代が「地域」の場合の半径を設定
-          const radius = state.period === "地域" ? 1000000 : 120000;
+          const radius = state.period === "地域" ? 10000000 : 120000;
           const setcolor = state.period === "地域" ? "orange" : state.color;
 
           const circle = L.circle([lat, lng], {
             color: 'transparent',
-            fillColor: state.color,
+            fillColor: setcolor,
             fillOpacity: 0.3,
             radius: radius // 半径を設定
             }).addTo(map);
