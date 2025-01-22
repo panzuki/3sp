@@ -365,7 +365,6 @@ function showMapDataForPeriod(item) {
   clearMapOverlays();
 
   // 各地域（region）をループ
-  console.log(item.states);
   Object.keys(item.states).forEach(region => {
     const stateData = item.states[region];
 
@@ -379,15 +378,19 @@ function showMapDataForPeriod(item) {
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
              // 年代が「地域」の場合の半径を設定
-          console.log(state.period);
-          const radius = state.period === "地域" ? 10000000 : 120000;
-          const setcolor = state.period === "地域" ? "orange" : state.color;
+          
+          //const radius = state.period === "地域" ? 10000000 : 120000;
+          //const setcolor = state.period === "地域" ? "orange" : state.color;
+
+            const isRegionPeriod = item.period === "地域";
+            const circleColor = isRegionPeriod ? "orange" : state.color;
+            const circleRadius = isRegionPeriod ? 1000000 : 120000;
 
           const circle = L.circle([lat, lng], {
             color: 'transparent',
-            fillColor: setcolor,
+            fillColor: circleColor,
             fillOpacity: 0.3,
-            radius: radius // 半径を設定
+            radius: circleRadius // 半径を設定
             }).addTo(map);
             circles.push(circle);
           });
