@@ -371,6 +371,7 @@ function showMapDataForPeriod(item) {
     // 各王国（stateData）の処理
     stateData.forEach(state => {
       // 座標と色で円を描画
+      console.log(state);
       if (state.coordinates) {
         try {
           const coordinates = state.coordinates;
