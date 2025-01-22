@@ -365,13 +365,14 @@ function showMapDataForPeriod(item) {
   clearMapOverlays();
 
   // 各地域（region）をループ
+  console.log(item.states);
   Object.keys(item.states).forEach(region => {
     const stateData = item.states[region];
 
     // 各王国（stateData）の処理
     stateData.forEach(state => {
       // 座標と色で円を描画
-      console.log(state);
+      
       if (state.coordinates) {
         try {
           const coordinates = state.coordinates;
