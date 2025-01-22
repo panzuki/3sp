@@ -377,6 +377,7 @@ function showMapDataForPeriod(item) {
           coordinates.forEach(coord => {
             const [lat, lng] = coord;
              // 年代が「地域」の場合の半径を設定
+          console.log(state.period);
           const radius = state.period === "地域" ? 10000000 : 120000;
           const setcolor = state.period === "地域" ? "orange" : state.color;
 
