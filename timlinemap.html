@@ -384,7 +384,7 @@ function showMapDataForPeriod(item) {
 
             const isRegionPeriod = item.period === "地域";
             const circleColor = isRegionPeriod ? "orange" : state.color;
-            const circleRadius = isRegionPeriod ? 500000 : 120000;
+            const circleRadius = isRegionPeriod ? 300000 : 120000;
 
           const circle = L.circle([lat, lng], {
             color: 'transparent',
