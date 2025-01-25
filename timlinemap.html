@@ -366,16 +366,8 @@ timelineContainer.appendChild(headerRow);
         plugins: {
           legend: { display: false },
           tooltip: { enabled: false },
-          datalabels: {
-            color: 'black',
-            align: 'center',
-            anchor: 'center',
-            formatter: (value, context) => context.dataset.label,
-            font: { weight: 'bold', size: 12 }
-          },
-          title: { 
-        display: false // タイトルを削除
-          }
+   
+          title: { display: false }
         },
         responsive: true,
         maintainAspectRatio: false,
