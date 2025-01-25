@@ -99,10 +99,7 @@
     display: inline-block;
     min-width: 150px; /* 適切な幅に調整 */
     text-align: right; /* タイトルを右寄せ */
-    padding-right: 10px; /* グラフとの間隔を調整 */
-    white-space: nowrap; /* テキストの折り返しを防止 */
-    overflow: hidden; /* はみ出したテキストを非表示 */
-    text-overflow: ellipsis; /* はみ出し部分を省略表示 */
+    white-space: wrap;
   }
 
   .chart-row {
@@ -373,13 +370,12 @@ timelineContainer.appendChild(headerRow);
             formatter: (value, context) => context.dataset.label,
             font: { weight: 'bold', size: 12 }
           },
-          title: { display: false }
         },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
           x: { display: false, stacked: true },
-          y: { display: true, stacked: true }
+          y: { display: false, stacked: true }
         }
       }
     });
