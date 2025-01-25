@@ -95,6 +95,25 @@
   text-decoration: none;
 }
 
+  .chart-row-title {
+    display: inline-block;
+    min-width: 150px; /* 適切な幅に調整 */
+    text-align: right; /* タイトルを右寄せ */
+    padding-right: 10px; /* グラフとの間隔を調整 */
+    white-space: nowrap; /* テキストの折り返しを防止 */
+    overflow: hidden; /* はみ出したテキストを非表示 */
+    text-overflow: ellipsis; /* はみ出し部分を省略表示 */
+  }
+
+  .chart-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .chart-container {
+    flex: 1; /* グラフエリアを残りの幅で拡大 */
+  }
+
 
   </style>
 </head>
@@ -272,6 +291,8 @@ try {
       return { timeline, regions: Array.from(regions) };
     }
 
+
+    
     function renderTimeline(timelineData) {
       Chart.register(ChartDataLabels);
   const timelineContainer = document.getElementById("timelineContainer");
@@ -305,9 +326,25 @@ timelineContainer.appendChild(headerRow);
     chartRow.className = "chart-row";
 
     // グラフの表示
-    const chartCell = document.createElement("canvas");
-    chartCell.style.height = "200px";
-    chartRow.appendChild(chartCell);
+  //  const chartCell = document.createElement("canvas");
+   // chartCell.style.height = "200px";
+   // chartRow.appendChild(chartCell);
+
+    // タイトルセル
+  const titleCell = document.createElement("div");
+  titleCell.className = "chart-row-title";
+  titleCell.textContent = item.period; // タイトルを表示
+  chartRow.appendChild(titleCell);
+
+  // グラフセル
+  const chartContainer = document.createElement("div");
+  chartContainer.className = "chart-container";
+  const chartCell = document.createElement("canvas");
+  chartCell.style.height = "200px";
+  chartContainer.appendChild(chartCell);
+  chartRow.appendChild(chartContainer);
+
+
     timelineContainer.appendChild(chartRow);
 
     new Chart(chartCell, {
