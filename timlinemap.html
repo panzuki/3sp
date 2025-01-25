@@ -353,7 +353,7 @@ timelineContainer.appendChild(headerRow);
         labels: [item.period],
         datasets: Object.keys(item.states).flatMap(region =>
           item.states[region].map(state => ({
-            label: "",
+            label: state.name,
             data: [state.share],
             backgroundColor: state.color,
             borderColor: 'black',
