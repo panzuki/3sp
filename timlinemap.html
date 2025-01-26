@@ -302,18 +302,52 @@ try {
 
   // "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
 // ヘッダー用の一意な地域を取得
-const uniqueRegions = ["　　　　", ...new Set(regions.map(region => region.split(",")[0].trim()))];
+//const uniqueRegions = ["　　　　", ...new Set(regions.map(region => region.split(",")[0].trim()))];
+
+// ヘッダーの作成
+//uniqueRegions.forEach(region => {
+//  const headerCell = document.createElement("div");
+//  headerCell.textContent = region;
+//  headerCell.style.flex = "1";
+//  headerCell.style.textAlign = "center";
+ // headerCell.style.fontWeight = "bold";
+//  headerCell.style.borderBottom = "2px solid black";
+//  headerRow.appendChild(headerCell);
+//});
+
+
+// "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
+const uniqueRegions = ["", ...new Set(regions.map(region => region.split(",")[0].trim()))];
+
+// 各地域の Share 値を計算
+const regionShares = {};
+timeline.forEach(item => {
+  Object.keys(item.states).forEach(region => {
+    const totalShare = item.states[region].reduce((sum, state) => sum + state.share, 0);
+    regionShares[region] = totalShare;
+  });
+});
 
 // ヘッダーの作成
 uniqueRegions.forEach(region => {
   const headerCell = document.createElement("div");
   headerCell.textContent = region;
-  headerCell.style.flex = "1";
+  
+  // グラフタイトル分の空白を確保
+  if (region === "") {
+    headerCell.style.flexBasis = "150px"; // タイトルに対応する幅を設定
+  } else {
+    // Share 値に基づいて幅を設定
+    const shareValue = regionShares[region] || 1;
+    headerCell.style.flexBasis = `${shareValue * 100}px`; // 必要に応じて倍率調整
+  }
+  
   headerCell.style.textAlign = "center";
   headerCell.style.fontWeight = "bold";
   headerCell.style.borderBottom = "2px solid black";
   headerRow.appendChild(headerCell);
 });
+
 
 timelineContainer.appendChild(headerRow);
 
