@@ -330,23 +330,27 @@ timeline.forEach(item => {
 
 // ヘッダーの作成
 uniqueRegions.forEach(region => {
+// ヘッダーの作成
+uniqueRegions.forEach(region => {
   const headerCell = document.createElement("div");
   headerCell.textContent = region;
-  
-  // グラフタイトル分の空白を確保
+
+  // 空白部分の幅をグラフタイトルと一致させる
   if (region === "") {
-    headerCell.style.flexBasis = "150px"; // タイトルに対応する幅を設定
+    headerCell.style.flexBasis = "150px"; // タイトル分の幅を設定
+    headerCell.style.width = "150px";    // 必要に応じて幅を明示
   } else {
     // Share 値に基づいて幅を設定
     const shareValue = regionShares[region] || 1;
     headerCell.style.flexBasis = `${shareValue * 100}px`; // 必要に応じて倍率調整
   }
-  
+
   headerCell.style.textAlign = "center";
   headerCell.style.fontWeight = "bold";
   headerCell.style.borderBottom = "2px solid black";
   headerRow.appendChild(headerCell);
 });
+
 
 
 timelineContainer.appendChild(headerRow);
