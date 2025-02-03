@@ -156,8 +156,9 @@
     position: relative;
     -webkit-box-sizing: content-box;
             box-sizing: content-box;
-/*     max-width: 1200px; */
-    width:90vw;
+    width: 100%;
+    max-width: 1200px;
+/*     width:90vw; */
     margin: 0 auto;
 /*     padding: 0 14rem; */
   }
@@ -382,7 +383,14 @@
     height: 12rem;
   }
 
+body {
+    margin: 0 auto;
+    overflow-x: hidden; /* 横スクロールを防止 */
+}
 
+.flow01 .swiper-main {
+    width: 100%;
+}
 
   @media only screen and (max-width: 1024px) {
     html {
