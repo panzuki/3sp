@@ -367,7 +367,8 @@
             box-shadow: var(--box-shadow);
   }
   .flow01 .mainslide-title {
-    font-size: 2.4rem;
+/*     font-size: 2.4rem; */
+    font-size: clamp(16px, 7rem, calc(86vw / 22));
     line-height: 1.6;
     display: inline-block;
     border-bottom: 3px solid currentColor;
@@ -383,6 +384,10 @@
     height: 12rem;
   }
 
+  .flow01 .subslide-text {
+    font-size: clamp(10px, 1.5rem, calc(86vw / 22 / 2));
+      }
+      
 body {
     margin: 0 auto;
     overflow-x: hidden; /* 横スクロールを防止 */
@@ -390,14 +395,6 @@ body {
 
 .flow01 .swiper-main {
     width: 100%;
-}
-
-.mainslide-title {
-    font-size: clamp(16px, 7rem, calc(86vw / 22));
-}
-
-.subslide-text {
-    font-size: clamp(10px, 1.5rem, calc(86vw / 22 / 2));
 }
       
   @media only screen and (max-width: 1024px) {
