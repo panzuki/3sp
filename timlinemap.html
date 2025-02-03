@@ -506,7 +506,7 @@ function showMapDataForPeriod(item) {
             modalTitle.textContent = state.eventTitle || "タイトル未設定";
             modalDetail.textContent = state.eventDetail || "詳細情報がありません。";
             if (state.eventImage) {
-              modalImage.src = state.eventImage;
+              modalImage.src = "images/" + state.eventImage;
               modalImage.style.display = "block";
             } else {
               modalImage.style.display = "none";
