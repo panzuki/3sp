@@ -322,7 +322,12 @@ try {
 
 
 // "空白" を最初に追加し、regions の先頭地域だけを抽出して処理
-const uniqueRegions = ["", ...new Set(regions.map(region => region.split(",")[0].trim()))];
+//const uniqueRegions = ["", ...new Set(regions.map(region => region.split(",")[0].trim()))];
+const uniqueRegions = ["", ...new Set(
+  regions
+    .map(region => region.split(",")[0].trim())
+    .filter(region => region !== "未定義") // ここで「未定義」を除外
+)];
 
 // 各地域の Share 値を計算
 const regionShares = {};
