@@ -25,11 +25,18 @@
       overflow-y: auto;
       flex: 1;
     }
+
     .header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-    }
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  background-color: #fff;  /* 背景色を設定（オプション） */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* ヘッダーの下に影を付ける（オプション） */
+  z-index: 10;
+}
+    
     .chart-row {
       display: flex;
       align-items: center;
@@ -356,7 +363,7 @@ uniqueRegions.forEach(region => {
 
   headerCell.style.textAlign = "center";
   headerCell.style.fontWeight = "bold";
-  headerCell.style.borderBottom = "2px solid black";
+ // headerCell.style.borderBottom = "2px solid black";
   headerRow.appendChild(headerCell);
 });
 
