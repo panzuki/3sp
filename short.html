@@ -153,10 +153,6 @@
   cursor: default;
 }
 
-
-さきほどのは一部でした
-以下を最適化して欲しい。
-
   .l-inner {
     position: relative;
     -webkit-box-sizing: content-box;
@@ -239,6 +235,10 @@
     pointer-events: none;
     opacity: 0;
   }
+      
+.flow01 .swiper-main .swiper-wrapper {
+    display: flex;
+}
 
 .flow01 .swiper-button-prev,
 .flow01 .swiper-button-next {
@@ -379,7 +379,7 @@
   }
   .flow01 .swiper-slide {
     width: 100%;
-    text-align: center;
+    flex-shrink: 0;
   }
   .flow01 .mainslide {
     width: 100%;
@@ -752,7 +752,7 @@ body {
   // });
 
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
-  spaceBetween: 10,
+  spaceBetween: 0,
   centeredSlides: true,
   slidesPerView: 1,
   grabCursor: true,
