@@ -190,8 +190,7 @@
     -o-object-fit: cover;
        object-fit: cover;
   }
-
-
+      
   .swiper-button-prev, .swiper-button-next {
     display: grid;
     place-content: center;
@@ -201,6 +200,7 @@
     -webkit-transition: var(--transition);
     transition: var(--transition);
   }
+      
   .swiper-button-prev::before, .swiper-button-next::before {
     position: absolute;
     top: 0;
@@ -212,6 +212,7 @@
     -webkit-box-shadow: var(--box-shadow);
             box-shadow: var(--box-shadow);
   }
+      
   .swiper-button-prev::after, .swiper-button-next::after {
     width: 1.2rem;
     height: 1.2rem;
@@ -234,6 +235,21 @@
     opacity: 0;
   }
 
+.flow01 .swiper-button-prev,
+.flow01 .swiper-button-next {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.flow01 .swiper-button-prev {
+  left: -40px; /* スライド間隔に応じて調整 */
+}
+
+.flow01 .swiper-button-next {
+  right: -40px; /* スライド間隔に応じて調整 */
+}
+
+      
   .flow01 {
     overflow: hidden;
     width: 100%;
@@ -474,6 +490,14 @@ body {
       -webkit-transform: translateX(0.8rem) rotate(45deg);
               transform: translateX(0.8rem) rotate(45deg);
     }
+
+      .flow01 .swiper-button-prev {
+    left: -80px; /* スライド間隔が80pxの場合 */
+  }
+
+  .flow01 .swiper-button-next {
+    right: -80px; /* スライド間隔が80pxの場合 */
+  }
   }
 
   @media only screen and (min-width: 600px) {
