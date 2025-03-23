@@ -236,9 +236,12 @@
 
   .flow01 {
     overflow: hidden;
+    width: 100%;
   }
   .flow01 .swiper-main {
-    overflow: visible;
+    width: 100%;
+    max-width: 1200px; /* 最大幅を固定 */
+    margin: 0 auto; /* 中央配置 */
   }
   .flow01 .swiper-main,
   .flow01 .swiper-pagination-main {
@@ -356,6 +359,7 @@
   .flow01 .swiper-slide {
     width: 100%;
     height: auto;
+    text-align: center;
   }
   .flow01 .mainslide {
     width: 100%;
@@ -427,6 +431,10 @@ body {
     .pc-tab {
       display: none !important;
     }
+        .flow01 .swiper-main {
+        max-width: 100vw;
+        }
+    
     .flow01 .swiper-main,
   .flow01 .swiper-pagination-main {
       max-width: calc(100% - 3.2rem);
@@ -687,32 +695,32 @@ body {
   // });
 
   const mySwiper_main = new Swiper('.flow01 .swiper-main', {
-    spaceBetween: 80,
-    centeredSlides: true,
-    slidesPerView:1,
-    grabCursor: true,
-    pagination: {
-      el: '.flow01 .swiper-pagination-main',
-      clickable: true,
-      renderBullet: (index, className) => {
-        let num = ('00' + (index + 1)).slice(-2);
-        return '<span class="' + className + '">' + num + '</span>';
-      },
+  spaceBetween: 10,
+  centeredSlides: true,
+  slidesPerView: 1,
+  grabCursor: true,
+  pagination: {
+    el: '.flow01 .swiper-pagination-main',
+    clickable: true,
+    renderBullet: (index, className) => {
+      let num = String(index + 1).padStart(2, '0'); // 2桁の数値を維持
+      return `<span class="${className}">${num}</span>`;
     },
-    navigation: {
-      nextEl: '.flow01 .swiper-button-next',
-      prevEl: '.flow01 .swiper-button-prev',
-    },
-    breakpoints: {
-      1025: {
-        spaceBetween: 80,
-      }
-    },
-    keyboard: {
-      enabled: true,
-      onlyInViewport: false,
-    },
-  });
+  },
+  navigation: {
+    nextEl: '.flow01 .swiper-button-next',
+    prevEl: '.flow01 .swiper-button-prev',
+  },
+  breakpoints: {
+    1025: {
+      spaceBetween: 80,
+    }
+  },
+  keyboard: {
+    enabled: true,
+    onlyInViewport: false,
+  },
+});
 </script>
   </body>
 </html>
