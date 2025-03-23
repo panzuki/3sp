@@ -152,366 +152,314 @@
   text-align: center;
   cursor: default;
 }
-  .l-inner {
-    position: relative;
-    -webkit-box-sizing: content-box;
-            box-sizing: content-box;
-    width: 100%;
-    max-width: 1200px;
-/*     width:90vw; */
-    margin: 0 auto;
-/*     padding: 0 14rem; */
-  }
 
-  .l-section {
-    border-top: 1px solid #eee;
-  }
-  .l-section .l-inner {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
+.l-inner {
+  position: relative;
+  box-sizing: content-box;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-  [class*=swiper]:focus {
-    outline: none;
-  }
+.l-section {
+  border-top: 1px solid #eee;
+}
 
-  .slide-media,
-  .thumb-media {
-    position: relative;
-    overflow: hidden;
-  }
-  .slide-media img,
-  .thumb-media img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    -o-object-fit: cover;
-       object-fit: cover;
-  }
-      
-  .swiper-button-prev, .swiper-button-next {
-    display: grid;
-    place-content: center;
-    width: 6.4rem;
-    height: 6.4rem;
-    cursor: pointer;
-    -webkit-transition: var(--transition);
-    transition: var(--transition);
-  }
-      
-  .swiper-button-prev::before, .swiper-button-next::before {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    content: "";
-    border-radius: 50%;
-    -webkit-box-shadow: var(--box-shadow);
-            box-shadow: var(--box-shadow);
-  }
-      
-  .swiper-button-prev::after, .swiper-button-next::after {
-    width: 1.2rem;
-    height: 1.2rem;
-    content: "";
-    border: solid var(--color-gray);
-    border-width: 3px 3px 0 0;
-  }
-  .swiper-button-prev::after {
-    margin-left: 0.4rem;
-    -webkit-transform: rotate(-135deg);
-            transform: rotate(-135deg);
-  }
-  .swiper-button-next::after {
-    margin-right: 0.4rem;
-    -webkit-transform: rotate(45deg);
-            transform: rotate(45deg);
-  }
-  .swiper-button-disabled {
-    pointer-events: none;
-    opacity: 0;
-  }
+.l-section .l-inner {
+  padding: 2rem 0;
+}
+
+[class*="swiper"]:focus {
+  outline: none;
+}
+
+.slide-media,
+.thumb-media {
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-media img,
+.thumb-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  display: grid;
+  place-content: center;
+  width: 6.4rem;
+  height: 6.4rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.swiper-button-prev::before,
+.swiper-button-next::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  border-radius: 50%;
+  box-shadow: var(--box-shadow);
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  width: 1.2rem;
+  height: 1.2rem;
+  content: "";
+  border: solid var(--color-gray);
+  border-width: 3px 3px 0 0;
+}
+
+.swiper-button-prev::after {
+  margin-left: 0.4rem;
+  transform: rotate(-135deg);
+}
+
+.swiper-button-next::after {
+  margin-right: 0.4rem;
+  transform: rotate(45deg);
+}
+
+.swiper-button-disabled {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.flow01 {
+  overflow: hidden;
+  width: 100%;
+}
+
+.flow01 .swiper-main {
+  max-width: 90vw;
+  margin: auto;
+}
+
+.flow01 .swiper-pagination-main {
+  display: flex;
+  margin-bottom: 6.4rem;
+}
+
+.flow01 .swiper-pagination-main .swiper-pagination-bullet {
+  font-size: 3.2rem;
+  font-weight: bold;
+  line-height: 1;
+  flex: 1;
+  padding-bottom: 2.4rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  color: var(--color-gray);
+}
+
+.flow01 .swiper-pagination-main .swiper-pagination-bullet::before {
+  position: absolute;
+  content: "";
+  background-color: var(--color-theme);
+  right: 0;
+  bottom: -6px;
+  left: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin: auto;
+  border-radius: 100px;
+  box-shadow: 0 0 0 5px var(--color-base);
+}
+
+.flow01 .swiper-pagination-main .swiper-pagination-bullet-active {
+  color: var(--color-theme);
+}
+
+.flow01 .swiper-pagination-main .swiper-pagination-bullet-active::before {
+  box-shadow: 0 0 0 4px var(--color-base), 0 0 0 7px var(--color-theme);
+}
+
+.flow01 .swiper-pagination-sub {
+  font-size: 0;
+  text-align: center;
+}
+
+.flow01 .swiper-pagination-sub .swiper-pagination-bullet {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  background-color: var(--color-gray);
+}
+
+.flow01 .swiper-pagination-sub .swiper-pagination-bullet:not(:first-child) {
+  margin-left: 8px;
+}
+
+.flow01 .swiper-pagination-sub .swiper-pagination-bullet-active {
+  background-color: var(--color-theme);
+}
 
 .flow01 .swiper-button-prev,
 .flow01 .swiper-button-next {
+  position: absolute;
+  z-index: 1;
   top: 50%;
   transform: translateY(-50%);
 }
 
 .flow01 .swiper-button-prev {
-  left: -40px; /* スライド間隔に応じて調整 */
+  left: -40px;
 }
 
 .flow01 .swiper-button-next {
-  right: -40px; /* スライド間隔に応じて調整 */
+  right: -40px;
 }
 
-      
-  .flow01 {
-    overflow: hidden;
-    width: 100%;
+.flow01 .swiper-slide {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.flow01 .mainslide {
+  width: 100%;
+  height: 100%;
+  padding: 6.4rem 2rem 4.8rem;
+  text-align: center;
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
+}
+
+.flow01 .mainslide-title {
+  font-size: clamp(16px, 5rem, calc(70vw / 17));
+  line-height: 1.6;
+  display: inline-block;
+  border-bottom: 3px solid currentColor;
+}
+
+.flow01 .subslide {
+  padding: 4.8rem;
+}
+
+.flow01 .subslide-media {
+  margin-bottom: 3.2rem;
+}
+
+.flow01 .subslide-media img {
+  width: 12rem;
+  height: 12rem;
+}
+
+body {
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1024px) {
+  html {
+    text-size-adjust: 100%;
   }
+
+  .l-inner {
+    padding: 0 4rem;
+  }
+
+  .pc {
+    display: none !important;
+  }
+
+  .flow01 .swiper-button-prev::after,
+  .flow01 .swiper-button-next::after {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+
+  .flow01 .swiper-button-prev {
+    right: calc(100% - 4rem);
+  }
+
+  .flow01 .swiper-button-next {
+    left: calc(100% - 4rem);
+  }
+}
+
+@media (max-width: 599px) {
+  html {
+    font-size: 50%;
+  }
+
+  .pc-tab {
+    display: none !important;
+  }
+
   .flow01 .swiper-main {
-    width: 100%;
-    max-width: 1200px; /* 最大幅を固定 */
-    margin: 0 auto; /* 中央配置 */
+    max-width: calc(100% - 3.2rem);
   }
+
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet::before {
+    bottom: -5px;
+  }
+
+  .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
+    font-size: 1.4rem;
+    display: block;
+    margin-bottom: 0.5em;
+    text-indent: 0.5em;
+  }
+}
+
+@media (min-width: 1025px) {
+  .tab-sp {
+    display: none !important;
+  }
+
+  .swiper-button-prev::before,
+  .swiper-button-next::before,
+  .flow01 .swiper-button-prev::after,
+  .flow01 .swiper-button-next::after {
+    transition: var(--transition);
+  }
+
+  .swiper-button-prev:hover::before,
+  .swiper-button-next:hover::before {
+    transform: scale(1.2);
+  }
+
+  .flow01 .swiper-button-prev:hover::after {
+    transform: translateX(-0.8rem) rotate(-135deg);
+  }
+
+  .flow01 .swiper-button-next:hover::after {
+    transform: translateX(0.8rem) rotate(45deg);
+  }
+
+  .flow01 .swiper-button-prev {
+    left: -80px;
+  }
+
+  .flow01 .swiper-button-next {
+    right: -80px;
+  }
+}
+
+@media (min-width: 600px) {
+  .sp {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 600px) {
   .flow01 .swiper-main,
   .flow01 .swiper-pagination-main {
-    max-width: 90vw;
-    margin: auto;
+    max-width: calc(100% - 6.4rem);
   }
-  .flow01 .swiper-pagination-main {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    margin-bottom: 6.4rem;
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet {
-    font-size: 3.2rem;
-    font-weight: bold;
-    line-height: 1;
-    position: relative;
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
-    padding-bottom: 2.4rem;
-    cursor: pointer;
-    -webkit-transition: var(--transition);
-    transition: var(--transition);
-    text-align: center;
-    color: var(--color-gray);
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet::before, .flow01 .swiper-pagination-main .swiper-pagination-bullet::after {
-    position: absolute;
-    content: "";
-    -webkit-transition: var(--transition);
-    transition: var(--transition);
-    background-color: var(--color-theme);
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet::before {
-    z-index: 1;
-    right: 0;
-    bottom: -6px;
-    left: 0;
-    width: 1.6rem;
-    height: 1.6rem;
-    margin: auto;
-    border-radius: 100px;
-    -webkit-box-shadow: 0 0 0 5px var(--color-base);
-            box-shadow: 0 0 0 5px var(--color-base);
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet::after {
-    right: 50%;
-    bottom: 0;
-    width: 100%;
-    height: 3px;
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet:first-child::after {
-    display: none;
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
-    font-size: 1.6rem;
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet-active {
-    color: var(--color-theme);
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet-active::before {
-    -webkit-box-shadow: 0 0 0 4px var(--color-base), 0 0 0 7px var(--color-theme);
-            box-shadow: 0 0 0 4px var(--color-base), 0 0 0 7px var(--color-theme);
-  }
-  .flow01 .swiper-pagination-main .swiper-pagination-bullet-active ~ *::before, .flow01 .swiper-pagination-main .swiper-pagination-bullet-active ~ *::after {
-    background-color: var(--color-gray);
-  }
-  .flow01 .swiper-pagination-sub {
-    font-size: 0;
-    text-align: center;
-  }
-  .flow01 .swiper-pagination-sub .swiper-pagination-bullet {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    cursor: pointer;
-    -webkit-transition: var(--transition);
-    transition: var(--transition);
-    vertical-align: top;
-    background-color: var(--color-gray);
-  }
-  .flow01 .swiper-pagination-sub .swiper-pagination-bullet:not(:first-child) {
-    margin-left: 8px;
-  }
-  .flow01 .swiper-pagination-sub .swiper-pagination-bullet-active {
-    background-color: var(--color-theme);
-  }
-  .flow01 .swiper-button-prev, .flow01 .swiper-button-next {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-  }
-  .flow01 .swiper-button-prev::before, .flow01 .swiper-button-next::before {
-    display: none;
-  }
-  .flow01 .swiper-button-prev::after, .flow01 .swiper-button-next::after {
-    position: relative;
-    width: 1.6rem;
-    height: 1.6rem;
-    content: "";
-    border: solid var(--color-gray);
-    border-width: 3px 3px 0 0;
-  }
-  .flow01 .swiper-button-prev {
-    right: calc(100% + 0.6rem);
-  }
-  .flow01 .swiper-button-next {
-    left: calc(100% + 0.6rem);
-  }
-  .flow01 .swiper-slide {
-    width: 100%;
-    height: auto;
-    text-align: center;
-  }
-  .flow01 .mainslide {
-    width: 100%;
-    height: 100%;
-    padding: 6.4rem 2rem 4.8rem;;
-    text-align: center;
-    border-radius: 4px;
-    -webkit-box-shadow: var(--box-shadow);
-            box-shadow: var(--box-shadow);
-  }
-  .flow01 .mainslide-title {
-    font-size: clamp(16px, 5rem, calc(70vw / 17));
-    line-height: 1.6;
-    display: inline-block;
-    border-bottom: 3px solid currentColor;
-  }
-
-  .flow01 .subslide-text {
-    font-size: clamp(10px, 2rem, calc(70vw / 17 / 2));
-  }
-      
-  .flow01 .subslide {
-    padding: 4.8rem;
-  }
-  .flow01 .subslide-media {
-    margin-bottom: 3.2rem;
-  }
-  .flow01 .subslide-media img {
-    width: 12rem;
-    height: 12rem;
-  }
-
-      
-body {
-    margin: 0 auto;
-    overflow-x: hidden; /* 横スクロールを防止 */
 }
 
-.flow01 .swiper-main {
-    width: 100%;
-}
-      
-  @media only screen and (max-width: 1024px) {
-    html {
-      -webkit-text-size-adjust: 100%;
-    }
-    .l-inner {
-      padding: 0 4rem;
-    }
-    .pc {
-      display: none !important;
-    }
-    .flow01 .swiper-button-prev::after, .flow01 .swiper-button-next::after {
-      width: 3.2rem;
-      height: 3.2rem;
-    }
-    .flow01 .swiper-button-prev {
-      right: calc(100% - 4rem);
-    }
-    .flow01 .swiper-button-next {
-      left: calc(100% - 4rem);
-    }
-  }
 
-  @media only screen and (max-width: 599px) {
-    html {
-      font-size: 50%;
-    }
-    .pc-tab {
-      display: none !important;
-    }
-        .flow01 .swiper-main {
-        max-width: 100vw;
-        }
-    
-    .flow01 .swiper-main,
-  .flow01 .swiper-pagination-main {
-      max-width: calc(100% - 3.2rem);
-    }
-    .flow01 .swiper-pagination-main .swiper-pagination-bullet::before {
-      bottom: -5px;
-    }
-    .flow01 .swiper-pagination-main .swiper-pagination-bullet .step {
-      font-size: 1.4rem;
-      display: block;
-      margin-bottom: 0.5em;
-      text-indent: 0.5em;
-    }
-  }
-
-  @media only screen and (min-width: 1025px) {
-    .tab-sp {
-      display: none !important;
-    }
-    .swiper-button-prev::before, .swiper-button-next::before {
-      -webkit-transition: var(--transition);
-      transition: var(--transition);
-    }
-    .swiper-button-prev:hover::before, .swiper-button-next:hover::before {
-      -webkit-transform: scale(1.2);
-              transform: scale(1.2);
-    }
-    .flow01 .swiper-button-prev::after, .flow01 .swiper-button-next::after {
-      -webkit-transition: var(--transition);
-      transition: var(--transition);
-    }
-    .flow01 .swiper-button-prev:hover::after {
-      -webkit-transform: translateX(-0.8rem) rotate(-135deg);
-              transform: translateX(-0.8rem) rotate(-135deg);
-    }
-    .flow01 .swiper-button-next:hover::after {
-      -webkit-transform: translateX(0.8rem) rotate(45deg);
-              transform: translateX(0.8rem) rotate(45deg);
-    }
-
-      .flow01 .swiper-button-prev {
-    left: -80px; /* スライド間隔が80pxの場合 */
-  }
-
-  .flow01 .swiper-button-next {
-    right: -80px; /* スライド間隔が80pxの場合 */
-  }
-  }
-
-  @media only screen and (min-width: 600px) {
-    .sp {
-      display: none !important;
-    }
-  }
-
-  @media only screen and (max-width: 1024px) and (min-width: 600px) {
-    .flow01 .swiper-main,
-  .flow01 .swiper-pagination-main {
-      max-width: calc(100% - 6.4rem);
-    }
-  }
 </style>
   </head>
   <body>
