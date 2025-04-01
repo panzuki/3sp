@@ -1,4 +1,4 @@
-名前,発祥,食べ方,おすすめスプレッド,栄養,保存,その他,レシピ,歴史,特徴
-パン1,日本,そのまま,バター,カルシウム,冷凍,aaa,bbb,ggg,eee
-パン2,フランス,ジャム,バター,ビタミンB,常温,ccc,ddd,hhh,jjjj
-パン3,ドイツ,スープ,マスタード,たんぱく質,冷蔵,eee,fff,ffff,eeee
+名前,発祥,食べ方,おすすめスプレッド,栄養,保存,その他,レシピ,歴史,特徴,画像1,画像2
+あんぱん,日本,そのまま,バター,カルシウム,冷凍,aaa,bbb,ggg,eee,https://panzuki.github.io/3sp/images/anpan.jpg,https://panzuki.github.io/3sp/images/anpanfont.jpg
+パン2,フランス,ジャム,バター,ビタミンB,常温,ccc,ddd,hhh,jjjj,https://placehold.jp/500x500.png,https://placehold.jp/500x500.png
+パン3,ドイツ,スープ,マスタード,たんぱく質,冷蔵,eee,fff,ffff,eeee,https://placehold.jp/500x500.png,https://placehold.jp/500x500.png
