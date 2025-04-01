@@ -184,6 +184,24 @@
 .slick-prev:hover, .slick-next:hover {
     background-color: #555; /* ホバー時の色を少し明るくする */
 }
+
+
+h1 {
+  font-size: clamp(1.75rem, 5vw, 2.5rem); /* ビュー用 */
+}
+.selected, .grid-item, h2{
+  font-size: clamp(1.5rem, 4.5vw, 2rem); /* タイトル */
+}
+h3, dt {
+  font-size: clamp(1.25rem, 4vw, 1.75rem); /* 小見出し・定義語 */
+}
+p, dd {
+  font-size: clamp(0.875rem, 3.5vw, 1rem); /* 本文・定義説明文 */
+}
+small {
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem); /* 注釈 */
+}
+      
       
   </style>
 </head>
