@@ -292,22 +292,6 @@ $(document).ready(function() {
             adaptiveHeight: true,
         });
 
-//         // サムネイルのクリックイベントを追加
-// $('.slider').on('click', '.thumbnail', function() {
-//     const panId = $(this).data('pan');
-//     const breadName = `パン${panId}`; // パンの名前を生成
-//     selectedBreadName = breadName;
-//     $('#selected-bread-name').text(breadName);
-
-//     // アクティブなサムネイルのデータを設定
-//     $('.thumbnail').removeClass('active'); // 他のサムネイルのactiveクラスを削除
-//     $(this).addClass('active'); // クリックしたサムネイルにactiveクラスを追加
-//     $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
-//     $('.detail-view').css('background-image', `url('https://placehold.jp/500x500.png')`);
-//     $('.detail-view').hide();
-//     $('.grid-container').show();
-// });
-
 $('.slider').on('click', '.thumbnail', function() {
     const panId = $(this).data('pan');
     const panData = breadData[panId - 1]; // パンデータを取得
@@ -333,7 +317,6 @@ $('.slider').on('click', '.thumbnail', function() {
     $(this).addClass('active'); // クリックしたサムネイルにactiveクラスを追加
 
     // 対応するパンのデータを取得
-    // const panData = breadData[panId - 1]; // インデックスを調整してデータを取得
     if (panData) {
         const imageUrl = panData['画像1']; // CSVデータの画像1を取得
         $('.grid-container').css('background-image', `url('${imageUrl}')`); // 背景画像を設定
