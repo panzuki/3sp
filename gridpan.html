@@ -314,7 +314,7 @@ $('.slider').on('click', '.thumbnail', function() {
     $(this).addClass('active'); // クリックしたサムネイルにactiveクラスを追加
 
     // 対応するパンのデータを取得
-    const panData = breadData[panId - 1]; // インデックスを調整してデータを取得
+    // const panData = breadData[panId - 1]; // インデックスを調整してデータを取得
     if (panData) {
         const imageUrl = panData['画像1']; // CSVデータの画像1を取得
         $('.grid-container').css('background-image', `url('${imageUrl}')`); // 背景画像を設定
