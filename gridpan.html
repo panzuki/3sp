@@ -176,6 +176,18 @@
     padding: 10px; /* パディングを追加して文字と背景の境界を確保 */
 }
 
+      .slick-prev, .slick-next {
+    background-color: #333; /* ダークな背景色 */
+    color: white; /* 文字色を白に変更 */
+    border: none; /* 枠線をなくす */
+    padding: 10px; /* パディングを追加してクリックしやすく */
+    border-radius: 50%; /* 丸いボタンにする */
+}
+
+.slick-prev:hover, .slick-next:hover {
+    background-color: #555; /* ホバー時の色を少し明るくする */
+}
+      
   </style>
 </head>
 <body>
@@ -283,8 +295,21 @@ $(document).ready(function() {
 
 $('.slider').on('click', '.thumbnail', function() {
     const panId = $(this).data('pan');
-    const breadName = breadData[panId - 1]['名前']; // CSVの「名前」列を使用
+    const panData = breadData[panId - 1]; // パンデータを取得
+    const breadName = panData['名前']; // パン名を取得
+    const image2Url = panData['画像2']; // 画像2のURLを取得
     selectedBreadName = breadName;
+
+
+        // 画像2が存在する場合は画像を表示、存在しない場合はパン名を表示
+    if (image2Url) {
+        // 画像2が存在する場合、画像2を表示
+        $('#selected-bread-name').html(`<img src="${image2Url}" alt="${breadName}" style="width: auto; max-width: 100%; height: auto;">`);
+    } else {
+        // 画像2が存在しない場合、パン名を表示
+        $('#selected-bread-name').text(breadName);
+    }
+    
     $('#selected-bread-name').text(breadName); // パン名を表示
 
     // アクティブなサムネイルのデータを設定
