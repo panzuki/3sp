@@ -264,7 +264,6 @@ small {
     </div>
 </div>
 
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -379,72 +378,6 @@ $('.grid-item').on('click', function() {
     $('.grid-container').hide(); // 9マスを隠す
     $('.detail-view').show(); // 詳細を表示
 });
-        
-// $('.grid-item').on('click', function() {
-//     const contentType = $(this).data('content');
-//     // クリックされたサムネイルのIDを取得
-//     const panId = $('.thumbnail.active').data('pan'); // activeクラスを持つサムネイルのIDを取得
-//     const panData = breadData[panId - 1]; // ここでインデックスを調整
-
-//     if (!panData) {
-//         console.error(`パンデータが見つかりません: panId = ${panId}`);
-//         return; // パンデータがない場合は処理を中断
-//     }
-
-//     let contentText;
-//     let contentSelected;
-//     switch (contentType) {
-//         case '発祥':
-//             contentText = panData['発祥'];
-//             contentSelected = selectedBreadName + "の発祥"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case '食べ方':
-//             contentText = panData['食べ方'];
-//             contentSelected = selectedBreadName + "の食べ方"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case 'おすすめスプレッド':
-//             contentText = panData['おすすめスプレッド'];
-//             contentSelected = selectedBreadName + "のおすすめスプレッド"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case '栄養':
-//             contentText = panData['栄養'];
-//             contentSelected = selectedBreadName + "の栄養"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case '保存':
-//             contentText = panData['保存'];
-//             contentSelected = selectedBreadName + "の保存"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case '歴史':
-//             contentText = panData['歴史'];
-//             contentSelected = selectedBreadName + "の歴史"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case 'その他':
-//             contentText = panData['その他'];
-//             contentSelected = selectedBreadName + "のその他"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case 'レシピ':
-//             contentText = panData['レシピ'];
-//             contentSelected = selectedBreadName + "のレシピ"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//         case '特徴':
-//             contentText = panData['特徴'];
-//             contentSelected = selectedBreadName + "の特徴"
-//             $('#selected-bread-name').text(contentSelected);
-//             break;
-//     }
-
-//     $('.detail-content').text(contentText);
-//     $('.grid-container').hide(); // 9マスを隠す
-//     $('.detail-view').show(); // 詳細を表示
-// });
 
         $('.back-button').on('click', function() {
             $('.detail-view').hide();
