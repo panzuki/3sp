@@ -179,7 +179,7 @@ html {
     background-color: rgba(255, 255, 255, 0.1); /* 背景の半透明白 */
 }
 
-      .detail-view {
+.detail-view {
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
@@ -364,14 +364,7 @@ $('.slider').on('click', '.thumbnail', function() {
         // その他のイベントリスナー
 // DOMPurifyを利用するため、CDNをスクリプトに追加する
 
-$(".grid-item").on("click", function () {
-    $(".detail-view").addClass("show");
-});
-
-$(".back-button").on("click", function () {
-    $(".detail-view").removeClass("show");
-});
-
+// grid-item をクリックしたときに detail-view を表示
 $('.grid-item').on('click', function() {
     const contentType = $(this).data('content');
     
@@ -412,8 +405,17 @@ $('.grid-item').on('click', function() {
 
     $('#selected-bread-name').text(contentSelected);
     $('.detail-content').html(sanitizedContent); // .html() を使用
-    $('.grid-container').hide(); // 9マスを隠す
-    $('.detail-view').show(); // 詳細を表示
+
+    // 9マスを非表示にして詳細を表示
+    $('.grid-container').hide();
+    $('.detail-view').addClass('show'); // ← ここを変更
+});
+
+// 戻るボタンをクリックしたときに detail-view を非表示にする
+$('.back-button').on('click', function() {
+    $('.detail-view').removeClass('show'); // ← ここを変更
+    $('.grid-container').show();
+    $('#selected-bread-name').text(selectedBreadName);
 });
 
         $('.back-button').on('click', function() {
