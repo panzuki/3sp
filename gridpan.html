@@ -300,16 +300,16 @@ small {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
 <script>
-let breadData = [];
-let selectedBreadName = ''; // 選択したパン名を格納する変数
-$('.content').show();
 $(document).ready(function() {
+    let breadData = [];
+    let selectedBreadName = '';
+
     // CSVを読み込む
     Papa.parse('csv/pandata.csv', {
         download: true,
         header: true,
         complete: function(results) {
-            breadData = results.data; // パースしたデータを格納
+            breadData = results.data;
             initializeSlider();
         }
     });
@@ -323,103 +323,80 @@ $(document).ready(function() {
             adaptiveHeight: true,
         });
 
-$('.slider').on('click', '.thumbnail', function() {
-    const panId = $(this).data('pan');
-    const panData = breadData[panId - 1]; // パンデータを取得
-    const breadName = panData['名前']; // パン名を取得
-    const image2Url = panData['画像2']; // 画像2のURLを取得
-    selectedBreadName = breadName;
+        $('.slider').on('click', '.thumbnail', function() {
+            const panId = $(this).data('pan');
+            const panData = breadData[panId - 1];
+            const breadName = panData['名前'];
+            const image2Url = panData['画像2'];
+            selectedBreadName = breadName;
 
+            if (image2Url) {
+                $('#selected-bread-name').html(`<img src="${image2Url}" alt="${breadName}" style="width: auto; max-width: 100%; height: 100%; object-fit: contain;">`);
+            } else {
+                $('#selected-bread-name').text(breadName);
+            }
 
-        // 画像2が存在する場合は画像を表示、存在しない場合はパン名を表示
-    if (image2Url) {
-        // 画像2が存在する場合、画像2を表示
-        $('#selected-bread-name').html(`<img src="${image2Url}" alt="${breadName}" style="width: auto; max-width: 100%; height: 100%; object-fit: contain;">`);
+            $('.thumbnail').removeClass('active');
+            $(this).addClass('active');
 
-    } else {
-        // 画像2が存在しない場合、パン名を表示
-        $('#selected-bread-name').text(breadName);
-    }
-    
-    // $('#selected-bread-name').text(breadName); // パン名を表示
+            if (panData) {
+                const imageUrl = panData['画像1'];
+                $('.grid-container').css('background-image', `url('${imageUrl}')`);
+                $('.detail-view').css('background-image', `url('${imageUrl}')`);
+            } else {
+                $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
+                $('.detail-view').css('background-image', `url('https://placehold.jp/500x500.png')`);
+            }
 
-    // アクティブなサムネイルのデータを設定
-    $('.thumbnail').removeClass('active'); // 他のサムネイルのactiveクラスを削除
-    $(this).addClass('active'); // クリックしたサムネイルにactiveクラスを追加
+            $('.detail-view').hide();
+            $('.grid-container').show();
+        });
 
-    // 対応するパンのデータを取得
-    if (panData) {
-        const imageUrl = panData['画像1']; // CSVデータの画像1を取得
-        $('.grid-container').css('background-image', `url('${imageUrl}')`); // 背景画像を設定
-        $('.detail-view').css('background-image', `url('${imageUrl}')`); // 詳細画面の背景画像も設定
-    } else {
-        // データがない場合はデフォルトの画像を使用
-        $('.grid-container').css('background-image', `url('https://placehold.jp/500x500.png')`);
-        $('.detail-view').css('background-image', `url('https://placehold.jp/500x500.png')`);
-    }
+        $('.grid-item').on('click', function() {
+            const contentType = $(this).data('content');
+            const panId = parseInt($('.thumbnail.active').data('pan'), 10);
+            if (isNaN(panId) || panId < 1 || panId > breadData.length) {
+                console.error(`無効なパンID: ${panId}`);
+                return;
+            }
 
-    $('.detail-view').hide();
-    $('.grid-container').show();
-});
+            const panData = breadData[panId - 1];
+            if (!panData) {
+                console.error(`パンデータが見つかりません: panId = ${panId}`);
+                return;
+            }
 
-        // その他のイベントリスナー
-// DOMPurifyを利用するため、CDNをスクリプトに追加する
+            const selectedBreadName = panData['名前'] || '選択されたパン';
+            const contentMap = {
+                '発祥': '発祥',
+                '食べ方': '食べ方',
+                'おすすめスプレッド': 'おすすめスプレッド',
+                '栄養': '栄養',
+                '保存': '保存',
+                '歴史': '歴史',
+                'その他': 'その他',
+                'レシピ': 'レシピ',
+                '特徴': '特徴'
+            };
 
-// grid-item をクリックしたときに detail-view を表示
-$('.grid-item').on('click', function() {
-    const contentType = $(this).data('content');
-    
-    // active クラスを持つサムネイルの ID を取得
-    const panId = parseInt($('.thumbnail.active').data('pan'), 10);
-    if (isNaN(panId) || panId < 1 || panId > breadData.length) {
-        console.error(`無効なパンID: ${panId}`);
-        return;
-    }
+            let contentText = panData[contentMap[contentType]] || '<p>情報がありません</p>';
+            let contentSelected = `${selectedBreadName}の${contentType}`;
 
-    const panData = breadData[panId - 1];
-    if (!panData) {
-        console.error(`パンデータが見つかりません: panId = ${panId}`);
-        return;
-    }
+            const sanitizedContent = DOMPurify.sanitize(contentText);
+            $('#selected-bread-name').text(contentSelected);
+            $('.detail-content').html(sanitizedContent);
 
-    // selectedBreadName の安全な取得
-    const selectedBreadName = panData['名前'] || '選択されたパン';
+            $('.grid-container').hide();
+            $('.detail-view').addClass('show');
+        });
 
-    // contentType に対応するデータを取得
-    const contentMap = {
-        '発祥': '発祥',
-        '食べ方': '食べ方',
-        'おすすめスプレッド': 'おすすめスプレッド',
-        '栄養': '栄養',
-        '保存': '保存',
-        '歴史': '歴史',
-        'その他': 'その他',
-        'レシピ': 'レシピ',
-        '特徴': '特徴'
-    };
-
-    let contentText = panData[contentMap[contentType]] || '<p>情報がありません</p>';
-    let contentSelected = `${selectedBreadName}の${contentType}`;
-
-    // DOMPurifyでHTMLを安全に処理
-    const sanitizedContent = DOMPurify.sanitize(contentText);
-
-    $('#selected-bread-name').text(contentSelected);
-    $('.detail-content').html(sanitizedContent); // .html() を使用
-
-    // 9マスを非表示にして詳細を表示
-    $('.grid-container').hide();
-    $('.detail-view').addClass('show'); // ← ここを変更
-});
-
-// 戻るボタンをクリックしたときに detail-view を非表示にする
-$('.back-button').on('click', function() {
-    $('.detail-view').removeClass('show'); // 表示を隠す
-    $('.grid-container').show(); // 9マスを再表示
-});
-
+        $('.back-button').on('click', function() {
+            $('.detail-view').removeClass('show');
+            $('.grid-container').show();
+        });
     }
 });
+
 
 </script>
 </body>
