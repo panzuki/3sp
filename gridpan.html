@@ -179,12 +179,13 @@ html {
     background-color: rgba(255, 255, 255, 0.1); /* 背景の半透明白 */
 }
 
-.detail-view {
+
+      .detail-view {
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-    display: none;
 }
+
 
 .detail-view.show {
     opacity: 1;
@@ -413,16 +414,10 @@ $('.grid-item').on('click', function() {
 
 // 戻るボタンをクリックしたときに detail-view を非表示にする
 $('.back-button').on('click', function() {
-    $('.detail-view').removeClass('show'); // ← ここを変更
-    $('.grid-container').show();
-    $('#selected-bread-name').text(selectedBreadName);
+    $('.detail-view').removeClass('show'); // 表示を隠す
+    $('.grid-container').show(); // 9マスを再表示
 });
 
-        $('.back-button').on('click', function() {
-            $('.detail-view').hide();
-            $('.grid-container').show();
-            $('#selected-bread-name').text(selectedBreadName);
-        });
     }
 });
 
