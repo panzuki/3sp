@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>スライドサムネイル一覧</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .thumb {
+      text-align: center;
+    }
+    .thumb img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    .thumb-title {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>スライド一覧</h1>
+  <div class="grid" id="slide-grid"></div>
+
+  <script>
+    fetch('slides.json')
+      .then(response => response.json())
+      .then(slides => {
+        const grid = document.getElementById('slide-grid');
+        slides.forEach(slide => {
+          const thumbUrl = `https://docs.google.com/presentation/d/${slide.id}/export/jpeg?pageid=${slide.pageid}`;
+          const slidePageUrl = `slides/${slide.id}.html`; // 埋め込み用ページへのリンク
+
+          const div = document.createElement('div');
+          div.className = 'thumb';
+          div.innerHTML = `
+            <a href="${slidePageUrl}">
+              <img src="${thumbUrl}" alt="${slide.title}">
+              <div class="thumb-title">${slide.title}</div>
+            </a>
+          `;
+          grid.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>
