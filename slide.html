@@ -41,7 +41,7 @@
         const grid = document.getElementById('slide-grid');
         slides.forEach(slide => {
           const thumbUrl = `https://docs.google.com/presentation/d/${slide.id}/export/jpeg?pageid=${slide.pageid}`;
-          const slidePageUrl = `slides/${slide.id}.html`; // 埋め込み用ページへのリンク
+          const slidePageUrl = `https://panzuki.github.io/3sp/slides/${slide.id}.html`; // 埋め込み用ページへのリンク
 
           const div = document.createElement('div');
           div.className = 'thumb';
