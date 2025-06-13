@@ -102,17 +102,26 @@
     const slideFrame = document.getElementById('slideFrame');
     const closeModal = document.getElementById('closeModal');
 
-    slides.forEach(slide => {
-      const img = document.createElement('img');
-      img.src = `https://docs.google.com/presentation/d/${slide.id}/export/jpeg?pageid=${slide.pageid}`;
-      img.alt = slide.title;
-      img.className = 'thumb';
-      img.onclick = () => {
-        slideFrame.src = `https://docs.google.com/presentation/d/${slide.id}/embed?slide=id.${slide.pageid}&rm=minimal`;
-        modal.style.display = 'flex';
-      };
-      thumbnails.appendChild(img);
-    });
+slides.forEach(slide => {
+  const img = document.createElement('img');
+  img.src = slide.pageid
+    ? `https://docs.google.com/presentation/d/${slide.id}/export/jpeg?pageid=${slide.pageid}`
+    : `https://docs.google.com/presentation/d/${slide.id}/export/jpeg`; // pageidが無い場合は最初のスライド画像
+
+  img.alt = slide.title;
+  img.className = 'thumb';
+
+  img.onclick = () => {
+    slideFrame.src = slide.pageid
+      ? `https://docs.google.com/presentation/d/${slide.id}/embed?slide=id.${slide.pageid}&rm=minimal`
+      : `https://docs.google.com/presentation/d/${slide.id}/embed?rm=minimal`; // pageidが無いときは先頭スライド
+
+    modal.style.display = 'flex';
+  };
+
+  thumbnails.appendChild(img);
+});
+
 
     closeModal.onclick = () => {
       modal.style.display = 'none';
