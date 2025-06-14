@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>スライドサムネイル一覧</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>パンの小ネタ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <style>
     body {
       font-family: sans-serif;
@@ -59,7 +60,34 @@
   </style>
 </head>
 <body>
-  <h1>スライド一覧</h1>
+   <main>
+          <nav class="breadcrumb">
+          <ol itemscope itemtype="http://schema.org/BreadcrumbList">
+            <li
+              itemprop="itemListElement"
+              itemscope
+              itemtype="http://schema.org/ListItem"
+            >
+              <a itemprop="item" href="https://panzuki.github.io/3sp/"
+                ><span itemprop="name">ホーム</span></a
+              >
+              <meta itemprop="position" content="1" />
+            </li>
+            <li
+              class="page"
+              itemprop="itemListElement"
+              itemscope
+              itemtype="http://schema.org/ListItem"
+            >
+              <a itemprop="item" href="" tabindex="-1"
+                ><span itemprop="name">パンの小ネタ</span></a
+              >
+              <meta itemprop="position" content="2" />
+            </li>
+          </ol>
+          </nav>
+  
+  <h1>パンの小ネタ</h1>
   <div class="grid" id="slide-grid"></div>
 
   <!-- モーダル表示部分 -->
@@ -67,7 +95,7 @@
     <div class="close-btn" id="closeBtn">✕</div>
     <iframe id="slideFrame" allowfullscreen></iframe>
   </div>
-
+   </main>
   <script>
     const slides = [
       {
