@@ -11,6 +11,58 @@
       padding: 20px;
       margin: 0;
     }
+
+  main {
+    display: block;
+  }
+      
+.breadcrumb {
+  height: 4vh;
+  margin: 0;
+  padding: 0 20px;
+  list-style: none;
+}
+
+.breadcrumb li {
+  display: inline; /*横に並ぶように*/
+  list-style: none;
+  font-weight: bold; /*太字*/
+  text-align: center;
+  line-height: 4vh;
+}
+
+.breadcrumb li:after {
+  /* >を表示*/
+  content: ">";
+  text-align: center;
+  line-height: 4vh;
+  padding: 0 0.2em;
+  color: #555;
+  font-size: 1.5rem;
+}
+
+.breadcrumb li:last-child:after {
+  content: "";
+}
+
+.breadcrumb li a {
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #3f60f1; /*色*/
+}
+
+.breadcrumb li a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb li:last-child a {
+  color: #333;
+  font-size: 1.5rem;
+  text-decoration: none;
+  text-align: center;
+  cursor: default;
+}
+    
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
