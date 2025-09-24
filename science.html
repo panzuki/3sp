@@ -84,6 +84,7 @@
         const groupRadius = 150;
         const groupSpacingX = 400;
         const chart2TextWidth = 150;
+        const nodeLabelOffset = 10; // ノードラベルのオフセット量
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -202,11 +203,16 @@
                     let targetX = targetNode.x;
                     let targetY = targetNode.y;
 
-                    // Chart1とChart3の線を円周から開始
+                    // Chart1とChart3の線を円周上のノードラベルの先端から開始/終了
                     if (sourceNode.group !== 'chart2') {
                         const angle = sourceNode.angle;
-                        sourceX += Math.cos(angle) * 5;
-                        sourceY += Math.sin(angle) * 5;
+                        sourceX += Math.cos(angle) * nodeLabelOffset;
+                        sourceY += Math.sin(angle) * nodeLabelOffset;
+                    }
+                    if (targetNode.group !== 'chart2') {
+                         const angle = targetNode.angle;
+                        targetX += Math.cos(angle) * nodeLabelOffset;
+                        targetY += Math.sin(angle) * nodeLabelOffset;
                     }
 
                     // Chart2のテキスト幅を考慮して線の接続位置を調整
@@ -216,7 +222,7 @@
                     if (sourceNode.group === 'chart2') {
                         sourceX += chart2TextWidth / 2;
                     }
-
+                    
                     return `M${sourceX},${sourceY}
                             C${sourceX + (targetX - sourceX) / 3},${sourceY}
                              ${sourceX + (targetX - sourceX) * 2 / 3},${targetY}
@@ -272,7 +278,7 @@
                         const textElement = d3.select(this).append("text")
                             .attr("class", "node-label")
                             .attr("text-anchor", "middle")
-                            .attr("transform", `rotate(${angle * 180 / Math.PI + 90}) translate(0, -10)`);
+                            .attr("transform", `rotate(${angle * 180 / Math.PI + 90}) translate(0, ${-groupRadius + 50})`);
                             
                         const totalHeight = (nodeText.length - 1) * charSpacing;
                         const startY = -totalHeight / 2;
