@@ -86,7 +86,7 @@
         const chart2TextWidth = 150;
         const charSpacing = 10;
         const circleRadius = 5;
-        const labelOffsetFromCircle = 15; // 文字列と点の間の距離を確保
+        const labelOffsetFromCircle = 15;
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -183,14 +183,18 @@
                     const angleStep = 2 * Math.PI / groupNodes.length;
                     groupNodes.forEach((node, i) => {
                         const angle = i * angleStep;
-                        // 点は円周上に配置
-                        node.circleX = center.x + groupRadius * Math.cos(angle);
-                        node.circleY = center.y + groupRadius * Math.sin(angle);
+                        
+                        // 文字列の位置を計算（前回と同じ）
+                        node.textX = center.x + groupRadius * Math.cos(angle);
+                        node.textY = center.y + groupRadius * Math.sin(angle);
+                        
+                        // 点は文字列から少し離れた円周上に配置
+                        const offset = 20; // 文字列の長さに応じて調整可能なオフセット
+                        const isRightHalf = Math.cos(angle) > 0;
+                        const pointOffset = isRightHalf ? 15 : -15; // 右側は外向き、左側は内向きにずらす
 
-                        // 文字列は円の中心に近い位置に配置
-                        const textRadius = groupRadius - labelOffsetFromCircle;
-                        node.textX = center.x + textRadius * Math.cos(angle);
-                        node.textY = center.y + textRadius * Math.sin(angle);
+                        node.circleX = center.x + (groupRadius + pointOffset) * Math.cos(angle);
+                        node.circleY = center.y + (groupRadius + pointOffset) * Math.sin(angle);
                         
                         node.angle = angle;
                     });
@@ -270,7 +274,7 @@
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY);
                     
-                    // ノードラベル（中心近くに配置）
+                    // ノードラベル（文字列を配置）
                     nodeElements.each(function(d) {
                         const nodeText = d.name;
                         const angle = d.angle;
