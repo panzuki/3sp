@@ -56,9 +56,12 @@
         }
         .vertical-node-label {
             font-size: 10px;
-            text-anchor: start;
+            text-anchor: middle;
             pointer-events: none;
             user-select: none;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            transform-origin: center;
         }
         .tooltip {
             position: absolute;
@@ -84,6 +87,7 @@
         const height = 900;
         const groupRadius = 150;
         const groupSpacingX = 400;
+        const chart2XOffset = 150;
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -106,7 +110,6 @@
             'chart2': { x: 0, y: 0 },
             'chart3': { x: groupSpacingX, y: 0 }
         };
-        const chart2XOffset = 150; // chart2ノードの描画開始位置
 
         Promise.all(files.map(url => d3.csv(url))).then(datasets => {
             const chart1Data = datasets[0];
@@ -199,19 +202,24 @@
 
                     let sourceX = sourceNode.x;
                     let targetX = targetNode.x;
+                    let sourceY = sourceNode.y;
+                    let targetY = targetNode.y;
 
                     // chart2への接続とからの接続の制御
                     if (targetNode.group === 'chart2') {
-                        targetX -= chart2XOffset;
+                        // 文字幅を考慮して線の開始位置を決定
+                        const textWidth = targetNode.name.length * 6; // 簡易的な文字幅計算
+                        targetX -= textWidth / 2 + 5;
                     }
                     if (sourceNode.group === 'chart2') {
-                        sourceX += chart2XOffset;
+                        const textWidth = sourceNode.name.length * 6;
+                        sourceX += textWidth / 2 + 5;
                     }
 
-                    return `M${sourceX},${sourceNode.y}
-                            C${sourceX + (targetX - sourceX) / 3},${sourceNode.y}
-                             ${sourceX + (targetX - sourceX) * 2 / 3},${targetNode.y}
-                             ${targetX},${targetNode.y}`;
+                    return `M${sourceX},${sourceY}
+                            C${sourceX + (targetX - sourceX) / 3},${sourceY}
+                             ${sourceX + (targetX - sourceX) * 2 / 3},${targetY}
+                             ${targetX},${targetY}`;
                 });
 
             const nodeGroups = svg.selectAll(".node-group")
@@ -229,7 +237,7 @@
                         .data(groupNodes)
                         .enter().append("g")
                         .attr("class", "node")
-                        .attr("transform", d => `translate(${d.x - chart2XOffset},${d.y})`);
+                        .attr("transform", d => `translate(${d.x},${d.y})`);
 
                     nodeElements.append("text")
                         .attr("class", "vertical-node-label")
@@ -255,13 +263,23 @@
                         .attr("r", 5)
                         .attr("fill", groupColors[group]);
                     
-                    nodeElements.append("text")
-                        .attr("class", "node-label")
-                        .attr("transform", (d, i) => {
-                            const angle = i * angleStep;
-                            return `rotate(${angle * 180 / Math.PI + 90}) translate(0, -10)`;
-                        })
-                        .text(d => d.name);
+                    const charSpacing = 10;
+                    nodeElements.each(function(d, nodeIndex) {
+                        const nodeText = d.name;
+                        const angle = nodeIndex * angleStep;
+                        const isRightSide = Math.cos(angle) > 0;
+                        const textElement = d3.select(this).append("text")
+                            .attr("class", "node-label")
+                            .attr("text-anchor", "middle")
+                            .attr("transform", `rotate(${angle * 180 / Math.PI + 90}) translate(0, -10)`);
+
+                        for (let i = 0; i < nodeText.length; i++) {
+                            textElement.append("tspan")
+                                .attr("x", 0)
+                                .attr("y", i * charSpacing)
+                                .text(nodeText[i]);
+                        }
+                    });
                 }
 
                 groupElement.append("text")
