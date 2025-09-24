@@ -44,7 +44,6 @@
         }
         .node-label {
             font-size: 10px;
-            text-anchor: middle;
             pointer-events: none;
             user-select: none;
         }
@@ -54,14 +53,11 @@
             text-anchor: middle;
             fill: #555;
         }
-        .vertical-node-label {
+        .chart2-node-label {
             font-size: 10px;
             text-anchor: middle;
             pointer-events: none;
             user-select: none;
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            transform-origin: center;
         }
         .tooltip {
             position: absolute;
@@ -87,7 +83,7 @@
         const height = 900;
         const groupRadius = 150;
         const groupSpacingX = 400;
-        const chart2XOffset = 150;
+        const chart2TextWidth = 150;
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -186,6 +182,7 @@
                         const angle = i * angleStep;
                         node.x = center.x + groupRadius * Math.cos(angle);
                         node.y = center.y + groupRadius * Math.sin(angle);
+                        node.angle = angle;
                     });
                 }
             });
@@ -201,19 +198,23 @@
                     const targetNode = nodes.find(n => n.id === d.target);
 
                     let sourceX = sourceNode.x;
-                    let targetX = targetNode.x;
                     let sourceY = sourceNode.y;
+                    let targetX = targetNode.x;
                     let targetY = targetNode.y;
 
-                    // chart2への接続とからの接続の制御
+                    // Chart1とChart3の線を円周から開始
+                    if (sourceNode.group !== 'chart2') {
+                        const angle = sourceNode.angle;
+                        sourceX += Math.cos(angle) * 5;
+                        sourceY += Math.sin(angle) * 5;
+                    }
+
+                    // Chart2のテキスト幅を考慮して線の接続位置を調整
                     if (targetNode.group === 'chart2') {
-                        // 文字幅を考慮して線の開始位置を決定
-                        const textWidth = targetNode.name.length * 6; // 簡易的な文字幅計算
-                        targetX -= textWidth / 2 + 5;
+                        targetX -= chart2TextWidth / 2;
                     }
                     if (sourceNode.group === 'chart2') {
-                        const textWidth = sourceNode.name.length * 6;
-                        sourceX += textWidth / 2 + 5;
+                        sourceX += chart2TextWidth / 2;
                     }
 
                     return `M${sourceX},${sourceY}
@@ -240,7 +241,7 @@
                         .attr("transform", d => `translate(${d.x},${d.y})`);
 
                     nodeElements.append("text")
-                        .attr("class", "vertical-node-label")
+                        .attr("class", "chart2-node-label")
                         .attr("x", 0)
                         .attr("y", 0)
                         .text(d => d.name);
@@ -267,16 +268,19 @@
                     nodeElements.each(function(d, nodeIndex) {
                         const nodeText = d.name;
                         const angle = nodeIndex * angleStep;
-                        const isRightSide = Math.cos(angle) > 0;
+                        
                         const textElement = d3.select(this).append("text")
                             .attr("class", "node-label")
                             .attr("text-anchor", "middle")
                             .attr("transform", `rotate(${angle * 180 / Math.PI + 90}) translate(0, -10)`);
+                            
+                        const totalHeight = (nodeText.length - 1) * charSpacing;
+                        const startY = -totalHeight / 2;
 
                         for (let i = 0; i < nodeText.length; i++) {
                             textElement.append("tspan")
                                 .attr("x", 0)
-                                .attr("y", i * charSpacing)
+                                .attr("y", startY + i * charSpacing)
                                 .text(nodeText[i]);
                         }
                     });
