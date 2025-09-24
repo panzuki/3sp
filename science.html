@@ -86,6 +86,7 @@
         const chart2TextWidth = 150;
         const charSpacing = 10;
         const circleRadius = 5;
+        const labelOffsetFromCircle = 15; // 文字列と点の間の距離を確保
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -182,14 +183,15 @@
                     const angleStep = 2 * Math.PI / groupNodes.length;
                     groupNodes.forEach((node, i) => {
                         const angle = i * angleStep;
-                        const textRadius = groupRadius / 2; // 文字列は中心近くに配置
-                        node.textX = center.x + textRadius * Math.cos(angle);
-                        node.textY = center.y + textRadius * Math.sin(angle);
-                        
                         // 点は円周上に配置
                         node.circleX = center.x + groupRadius * Math.cos(angle);
                         node.circleY = center.y + groupRadius * Math.sin(angle);
 
+                        // 文字列は円の中心に近い位置に配置
+                        const textRadius = groupRadius - labelOffsetFromCircle;
+                        node.textX = center.x + textRadius * Math.cos(angle);
+                        node.textY = center.y + textRadius * Math.sin(angle);
+                        
                         node.angle = angle;
                     });
                 }
@@ -269,7 +271,7 @@
                         .attr("cy", d => d.circleY);
                     
                     // ノードラベル（中心近くに配置）
-                    nodeElements.each(function(d, nodeIndex) {
+                    nodeElements.each(function(d) {
                         const nodeText = d.name;
                         const angle = d.angle;
                         const textElement = d3.select(this).append("text")
