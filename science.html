@@ -54,6 +54,12 @@
             text-anchor: middle;
             fill: #555;
         }
+        .vertical-node-label {
+            font-size: 10px;
+            text-anchor: start;
+            pointer-events: none;
+            user-select: none;
+        }
         .tooltip {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.9);
@@ -68,7 +74,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷図</h1>
+    <h1>パン生地の物質変遷フロー図</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -76,9 +82,8 @@
     <script>
         const width = 1200;
         const height = 900;
-        const groupRadius = 150; // 各円の半径
-        const groupSpacingX = 400; // グループ間の水平間隔
-        const groupSpacingY = 100; // グループ間の垂直間隔
+        const groupRadius = 150;
+        const groupSpacingX = 400;
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -101,6 +106,7 @@
             'chart2': { x: 0, y: 0 },
             'chart3': { x: groupSpacingX, y: 0 }
         };
+        const chart2XOffset = 150; // chart2ノードの描画開始位置
 
         Promise.all(files.map(url => d3.csv(url))).then(datasets => {
             const chart1Data = datasets[0];
@@ -111,7 +117,6 @@
             const links = [];
             const nodeMap = new Map();
 
-            // chart1, chart2, chart3のノードを生成
             const createNodes = (data, group, groupName) => {
                 data.forEach(d => {
                     const id = `${group}-${d.番号}`;
@@ -126,7 +131,6 @@
             createNodes(chart2Data, 'C2', 'chart2');
             createNodes(chart3Data, 'C3', 'chart3');
 
-            // リンクの解析
             chart3Data.forEach(d => {
                 const targetNode = nodeMap.get(d.番号);
                 if (d.引き継ぎ番号) {
@@ -139,7 +143,6 @@
                             const reactionId = reactionMatch[2];
                             const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
 
-                            // 物質 → 反応のリンク
                             sourceMaterials.forEach(matId => {
                                 const sourceNode = nodeMap.get(matId);
                                 const reactionNode = nodeMap.get(reactionId);
@@ -148,14 +151,12 @@
                                 }
                             });
                             
-                            // 反応 → 最終物質のリンク
                             const reactionNode = nodeMap.get(reactionId);
                             if (reactionNode) {
                                 links.push({ source: reactionNode.id, target: targetNode.id });
                             }
 
                         } else if (part) {
-                            // 直接的な引き継ぎのリンク (C1 → C3)
                             const sourceNode = nodeMap.get(part);
                             if (sourceNode) {
                                 links.push({ source: sourceNode.id, target: targetNode.id });
@@ -165,21 +166,27 @@
                 }
             });
 
-            // ノードをグループごとに円形に配置
             const groupData = d3.groups(nodes, d => d.group);
 
             groupData.forEach(([group, groupNodes]) => {
                 const center = groupPositions[group];
-                const angleStep = 2 * Math.PI / groupNodes.length;
-
-                groupNodes.forEach((node, i) => {
-                    const angle = i * angleStep;
-                    node.x = center.x + groupRadius * Math.cos(angle);
-                    node.y = center.y + groupRadius * Math.sin(angle);
-                });
+                if (group === 'chart2') {
+                    const nodeSpacing = 30;
+                    const totalHeight = groupNodes.length * nodeSpacing;
+                    groupNodes.forEach((node, i) => {
+                        node.x = center.x;
+                        node.y = center.y - (totalHeight / 2) + i * nodeSpacing;
+                    });
+                } else {
+                    const angleStep = 2 * Math.PI / groupNodes.length;
+                    groupNodes.forEach((node, i) => {
+                        const angle = i * angleStep;
+                        node.x = center.x + groupRadius * Math.cos(angle);
+                        node.y = center.y + groupRadius * Math.sin(angle);
+                    });
+                }
             });
 
-            // リンクの描画 (グループ間の線)
             svg.append("g")
                 .attr("class", "links")
                 .selectAll("path")
@@ -189,53 +196,78 @@
                 .attr("d", d => {
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
-                    // ベジェ曲線で滑らかな線を引く
-                    return `M${sourceNode.x},${sourceNode.y}
-                            C${sourceNode.x},${targetNode.y}
-                             ${targetNode.x},${sourceNode.y}
-                             ${targetNode.x},${targetNode.y}`;
+
+                    let sourceX = sourceNode.x;
+                    let targetX = targetNode.x;
+
+                    // chart2への接続とからの接続の制御
+                    if (targetNode.group === 'chart2') {
+                        targetX -= chart2XOffset;
+                    }
+                    if (sourceNode.group === 'chart2') {
+                        sourceX += chart2XOffset;
+                    }
+
+                    return `M${sourceX},${sourceNode.y}
+                            C${sourceX + (targetX - sourceX) / 3},${sourceNode.y}
+                             ${sourceX + (targetX - sourceX) * 2 / 3},${targetNode.y}
+                             ${targetX},${targetNode.y}`;
                 });
 
-            // ノードグループのコンテナを作成
             const nodeGroups = svg.selectAll(".node-group")
                 .data(groupData)
                 .enter().append("g")
                 .attr("class", "node-group")
-                .attr("transform", ([group]) => `translate(${groupPositions[group].x}, ${groupPositions[group].y})`);
+                .attr("transform", ([group]) => `translate(0, 0)`);
 
-            // 各グループ内にノードとラベルを描画
             nodeGroups.each(function([group, groupNodes]) {
                 const groupElement = d3.select(this);
-                const angleStep = 2 * Math.PI / groupNodes.length;
+                const center = groupPositions[group];
 
-                const nodeElements = groupElement.selectAll(".node")
-                    .data(groupNodes)
-                    .enter().append("g")
-                    .attr("class", "node")
-                    .attr("transform", (d, i) => {
-                        const angle = i * angleStep;
-                        const x = groupRadius * Math.cos(angle);
-                        const y = groupRadius * Math.sin(angle);
-                        d.localX = x;
-                        d.localY = y;
-                        return `translate(${x},${y})`;
-                    });
+                if (group === 'chart2') {
+                    const nodeElements = groupElement.selectAll(".node")
+                        .data(groupNodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+                        .attr("transform", d => `translate(${d.x - chart2XOffset},${d.y})`);
 
-                nodeElements.append("circle")
-                    .attr("class", "node-circle")
-                    .attr("r", 5)
-                    .attr("fill", groupColors[group]);
+                    nodeElements.append("text")
+                        .attr("class", "vertical-node-label")
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .text(d => d.name);
 
-                nodeElements.append("text")
-                    .attr("class", "node-label")
-                    .attr("dy", d => d.localY < 0 ? 15 : -10)
-                    .attr("text-anchor", "middle")
-                    .text(d => d.name);
+                } else {
+                    const angleStep = 2 * Math.PI / groupNodes.length;
+                    const nodeElements = groupElement.selectAll(".node")
+                        .data(groupNodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+                        .attr("transform", (d, i) => {
+                            const angle = i * angleStep;
+                            const x = center.x + groupRadius * Math.cos(angle);
+                            const y = center.y + groupRadius * Math.sin(angle);
+                            return `translate(${x},${y})`;
+                        });
+                    
+                    nodeElements.append("circle")
+                        .attr("class", "node-circle")
+                        .attr("r", 5)
+                        .attr("fill", groupColors[group]);
+                    
+                    nodeElements.append("text")
+                        .attr("class", "node-label")
+                        .attr("transform", (d, i) => {
+                            const angle = i * angleStep;
+                            return `rotate(${angle * 180 / Math.PI + 90}) translate(0, -10)`;
+                        })
+                        .text(d => d.name);
+                }
 
-                // グループラベルの描画
                 groupElement.append("text")
                     .attr("class", "group-label")
-                    .attr("y", -groupRadius - 30)
+                    .attr("x", center.x)
+                    .attr("y", center.y - (group === 'chart2' ? 300 : groupRadius + 30))
                     .text(() => {
                         if (group === 'chart1') return '原材料';
                         if (group === 'chart2') return '化学反応';
@@ -243,7 +275,6 @@
                     });
             });
 
-            // ツールチップ機能
             svg.selectAll(".node")
                 .on("mouseover", (event, d) => {
                     tooltip.style("opacity", 1)
