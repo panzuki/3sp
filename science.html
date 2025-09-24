@@ -84,7 +84,8 @@
         const groupRadius = 150;
         const groupSpacingX = 400;
         const chart2TextWidth = 150;
-        const nodeLabelOffset = 10; // ノードラベルのオフセット量
+        const charSpacing = 10;
+        const circleRadius = 5;
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -181,8 +182,14 @@
                     const angleStep = 2 * Math.PI / groupNodes.length;
                     groupNodes.forEach((node, i) => {
                         const angle = i * angleStep;
-                        node.x = center.x + groupRadius * Math.cos(angle);
-                        node.y = center.y + groupRadius * Math.sin(angle);
+                        const textRadius = groupRadius / 2; // 文字列は中心近くに配置
+                        node.textX = center.x + textRadius * Math.cos(angle);
+                        node.textY = center.y + textRadius * Math.sin(angle);
+                        
+                        // 点は円周上に配置
+                        node.circleX = center.x + groupRadius * Math.cos(angle);
+                        node.circleY = center.y + groupRadius * Math.sin(angle);
+
                         node.angle = angle;
                     });
                 }
@@ -198,29 +205,24 @@
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
 
-                    let sourceX = sourceNode.x;
-                    let sourceY = sourceNode.y;
-                    let targetX = targetNode.x;
-                    let targetY = targetNode.y;
+                    let sourceX, sourceY, targetX, targetY;
 
-                    // Chart1とChart3の線を円周上のノードラベルの先端から開始/終了
+                    // 始点の座標を決定
                     if (sourceNode.group !== 'chart2') {
-                        const angle = sourceNode.angle;
-                        sourceX += Math.cos(angle) * nodeLabelOffset;
-                        sourceY += Math.sin(angle) * nodeLabelOffset;
-                    }
-                    if (targetNode.group !== 'chart2') {
-                         const angle = targetNode.angle;
-                        targetX += Math.cos(angle) * nodeLabelOffset;
-                        targetY += Math.sin(angle) * nodeLabelOffset;
+                        sourceX = sourceNode.circleX;
+                        sourceY = sourceNode.circleY;
+                    } else {
+                        sourceX = sourceNode.x + chart2TextWidth / 2;
+                        sourceY = sourceNode.y;
                     }
 
-                    // Chart2のテキスト幅を考慮して線の接続位置を調整
-                    if (targetNode.group === 'chart2') {
-                        targetX -= chart2TextWidth / 2;
-                    }
-                    if (sourceNode.group === 'chart2') {
-                        sourceX += chart2TextWidth / 2;
+                    // 終点の座標を決定
+                    if (targetNode.group !== 'chart2') {
+                        targetX = targetNode.circleX;
+                        targetY = targetNode.circleY;
+                    } else {
+                        targetX = targetNode.x - chart2TextWidth / 2;
+                        targetY = targetNode.y;
                     }
                     
                     return `M${sourceX},${sourceY}
@@ -253,32 +255,27 @@
                         .text(d => d.name);
 
                 } else {
-                    const angleStep = 2 * Math.PI / groupNodes.length;
                     const nodeElements = groupElement.selectAll(".node")
                         .data(groupNodes)
                         .enter().append("g")
-                        .attr("class", "node")
-                        .attr("transform", (d, i) => {
-                            const angle = i * angleStep;
-                            const x = center.x + groupRadius * Math.cos(angle);
-                            const y = center.y + groupRadius * Math.sin(angle);
-                            return `translate(${x},${y})`;
-                        });
+                        .attr("class", "node");
                     
+                    // ノード円（円周上に配置）
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
-                        .attr("r", 5)
-                        .attr("fill", groupColors[group]);
+                        .attr("r", circleRadius)
+                        .attr("fill", d => groupColors[d.group])
+                        .attr("cx", d => d.circleX)
+                        .attr("cy", d => d.circleY);
                     
-                    const charSpacing = 10;
+                    // ノードラベル（中心近くに配置）
                     nodeElements.each(function(d, nodeIndex) {
                         const nodeText = d.name;
-                        const angle = nodeIndex * angleStep;
-                        
+                        const angle = d.angle;
                         const textElement = d3.select(this).append("text")
                             .attr("class", "node-label")
                             .attr("text-anchor", "middle")
-                            .attr("transform", `rotate(${angle * 180 / Math.PI + 90}) translate(0, ${-groupRadius + 50})`);
+                            .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
                             
                         const totalHeight = (nodeText.length - 1) * charSpacing;
                         const startY = -totalHeight / 2;
