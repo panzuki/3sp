@@ -92,20 +92,18 @@
             opacity: 1;
         }
         /* 線の色分け */
-        .highlight-link.generated {
-            stroke: gold !important;
+        .highlight-link {
             stroke-opacity: 1 !important;
             stroke-width: 2.5px !important;
+        }
+        .highlight-link.generated {
+            stroke: gold !important;
         }
         .highlight-link.consumed {
             stroke: #00BFFF !important;
-            stroke-opacity: 1 !important;
-            stroke-width: 2.5px !important;
         }
         .highlight-link.direct {
             stroke: #333 !important;
-            stroke-opacity: 1 !important;
-            stroke-width: 2.5px !important;
         }
     </style>
 </head>
@@ -336,10 +334,10 @@
 
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
-                        .attr("x", -chartTextWidth / 2)
-                        .attr("y", -15) 
-                        .attr("width", chartTextWidth)
-                        .attr("height", 30); 
+                        .attr("x", d => - (d.name.length * 5) / 2) // 文字列の長さに合わせて調整
+                        .attr("y", -10) 
+                        .attr("width", d => d.name.length * 5) // 文字列の長さに合わせて調整
+                        .attr("height", 20); 
 
                     nodeElements.append("text")
                         .attr("class", "chart-node-label")
@@ -414,10 +412,7 @@
                     relatedNodeIds.add(d.id);
 
                     const relatedLinks = finalLinks.filter(link => {
-                        if (link.source === d.id || link.target === d.id) {
-                            return true;
-                        }
-                        return false;
+                        return link.source === d.id || link.target === d.id;
                     });
 
                     relatedLinks.forEach(link => {
@@ -426,7 +421,7 @@
                     });
 
                     // 関連するノードとリンクをハイライト
-                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true).classed(l => l.type, true);
+                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true);
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                 });
             
@@ -434,7 +429,7 @@
                 const isClickOnNode = d3.select(event.target).closest(".node").node();
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
                 }
             });
 
