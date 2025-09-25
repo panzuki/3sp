@@ -83,7 +83,6 @@
             opacity: 0.2;
         }
         .highlight-node .node-circle {
-            fill: gold !important;
             stroke: #333;
             opacity: 1;
         }
@@ -92,8 +91,19 @@
             font-weight: bold;
             opacity: 1;
         }
-        .highlight-link {
+        /* 線の色分け */
+        .highlight-link.generated {
             stroke: gold !important;
+            stroke-opacity: 1 !important;
+            stroke-width: 2.5px !important;
+        }
+        .highlight-link.consumed {
+            stroke: #00BFFF !important;
+            stroke-opacity: 1 !important;
+            stroke-width: 2.5px !important;
+        }
+        .highlight-link.direct {
+            stroke: #333 !important;
             stroke-opacity: 1 !important;
             stroke-width: 2.5px !important;
         }
@@ -165,7 +175,7 @@
                 data.forEach(d => {
                     const id = `${groupName}-${d.番号}`;
                     const name = d['物質名'] || d['反応名'] || d['構成物質名'];
-                    const node = { id, name, group: groupName, number: d.番号, isProcess };
+                    const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
                     groupMap.set(d.番号, groupName);
@@ -181,10 +191,7 @@
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
                     
-                    if (currentNode.isProcess) { // 化学反応ノードの場合
-                         const targetNode = nodes.find(n => n.group === nextGroupName && n.引き継ぎ番号 && n.引き継ぎ番号.includes(d.番号));
-                         //この部分のロジックはより複雑なため、物質ノードからの逆引きで構築します
-                    } else { // 物質ノードの場合
+                    if (!currentNode.isProcess) { // 物質ノードの場合
                         if (d.引き継ぎ番号) {
                             const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
                             const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
@@ -201,13 +208,13 @@
                                         sourceMaterials.forEach(matId => {
                                             const sourceNode = nodeMap.get(matId);
                                             if (sourceNode) {
-                                                links.push({ source: sourceNode.id, target: reactionNode.id });
+                                                links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
                                             }
                                         });
 
                                         // 化学反応 -> 物質
                                         if (reactionMatch[1] !== '-') { // プラス記号の場合
-                                            links.push({ source: reactionNode.id, target: currentNode.id });
+                                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
                                         }
                                     }
                                 } else {
@@ -216,7 +223,7 @@
                                         const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
                                         const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
                                         if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
-                                            links.push({ source: sourceNode.id, target: currentNode.id });
+                                            links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
                                         }
                                     }
                                 }
@@ -225,7 +232,7 @@
                     }
                 });
             });
-
+            
             // リンクの重複を排除
             const uniqueLinks = new Map();
             links.forEach(link => {
@@ -278,7 +285,7 @@
                 .selectAll("path")
                 .data(finalLinks)
                 .enter().append("path")
-                .attr("class", "link")
+                .attr("class", d => `link ${d.type}`)
                 .attr("d", d => {
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
@@ -330,9 +337,9 @@
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
                         .attr("x", -chartTextWidth / 2)
-                        .attr("y", -10)
+                        .attr("y", -15) // タップ領域を広げた
                         .attr("width", chartTextWidth)
-                        .attr("height", 20);
+                        .attr("height", 30); // タップ領域を広げた
 
                     nodeElements.append("text")
                         .attr("class", "chart-node-label")
@@ -397,8 +404,9 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
+                    // 全てのノードとリンクをリセット
                     d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false);
+                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                     
                     d3.select(event.currentTarget).classed("faded", false).classed("highlight-node", true);
 
@@ -406,7 +414,10 @@
                     relatedNodeIds.add(d.id);
 
                     const relatedLinks = finalLinks.filter(link => {
-                        return link.source === d.id || link.target === d.id;
+                        if (link.source === d.id || link.target === d.id) {
+                            return true;
+                        }
+                        return false;
                     });
 
                     relatedLinks.forEach(link => {
@@ -414,7 +425,8 @@
                         relatedNodeIds.add(link.target);
                     });
 
-                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true);
+                    // 関連するノードとリンクをハイライト
+                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true).classed(l => l.type, true);
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                 });
             
@@ -422,7 +434,7 @@
                 const isClickOnNode = d3.select(event.target).closest(".node").node();
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                 }
             });
 
