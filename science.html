@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>物質の変遷フロー図</title>
+    <title>パン生地の物質変遷フロー図</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -156,6 +156,7 @@
             const nodes = [];
             const links = [];
             const nodeMap = new Map();
+            const groupMap = new Map();
 
             validDatasets.forEach((data, i) => {
                 const groupName = `chart${i + 1}`;
@@ -167,9 +168,11 @@
                     const node = { id, name, group: groupName, number: d.番号, isProcess };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
+                    groupMap.set(d.番号, groupName);
                 });
             });
 
+            // リンク生成ロジックの改善
             validDatasets.forEach((data, i) => {
                 const targetGroupName = `chart${i + 2}`;
                 if (!targetGroupName || !groupLabels[targetGroupName]) return;
@@ -178,7 +181,7 @@
                     const targetNode = nodeMap.get(d.番号);
                     if (d.引き継ぎ番号) {
                         const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                        // 正規表現を修正してM, R, Sを含む番号を正確に分割
+                        // 正規表現を修正してM, R, Sを含む番号とそれ以外の番号を正確に分割
                         const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
 
                         parts.forEach(part => {
@@ -197,10 +200,16 @@
                                         links.push({ source: sourceNode.id, target: reactionNode.id });
                                     }
                                 });
-                            } else if (part) {
+                            } else {
+                                // 単一の番号（例: '3'）を処理
                                 const sourceNode = nodeMap.get(part);
                                 if (sourceNode) {
-                                    links.push({ source: sourceNode.id, target: targetNode.id });
+                                     // ターゲットノードとソースノードのグループが隣接しているか確認
+                                    const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
+                                    const targetGroupIndex = parseInt(targetNode.group.replace('chart', ''));
+                                    if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2) {
+                                        links.push({ source: sourceNode.id, target: targetNode.id });
+                                    }
                                 }
                             }
                         });
