@@ -33,6 +33,7 @@
         }
         .node {
             cursor: pointer;
+            pointer-events: all; /* この行を追加 */
         }
         .node-circle {
             stroke: #fff;
@@ -45,7 +46,7 @@
         }
         .node-label {
             font-size: 10px;
-            pointer-events: none;
+            pointer-events: none; /* この行を変更 */
             user-select: none;
             transition: fill 0.3s;
         }
@@ -266,7 +267,6 @@
                 .attr("class", "node-group")
                 .attr("transform", ([group]) => `translate(0, 0)`);
 
-            const allNodes = [];
             nodeGroups.each(function([group, groupNodes]) {
                 const groupElement = d3.select(this);
                 const center = groupPositions[group];
@@ -283,8 +283,6 @@
                         .attr("x", 0)
                         .attr("y", 0)
                         .text(d => d.name);
-
-                    allNodes.push(...nodeElements.nodes());
 
                 } else {
                     const nodeElements = groupElement.selectAll(".node")
@@ -319,8 +317,6 @@
                                 .text(nodeText[i]);
                         }
                     });
-
-                    allNodes.push(...nodeElements.nodes());
                 }
 
                 groupElement.append("text")
@@ -345,32 +341,36 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    // すべてのハイライトとフェードをリセット
+                    // ハイライトとフェードのリセット
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
                     
                     // クリックしたノードをハイライト
                     d3.select(event.currentTarget).classed("highlight-node", true);
 
-                    // 関連するノードとリンクを特定してハイライト
-                    links.forEach(link => {
+                    // 関連するノードとリンクを特定
+                    const relatedNodeIds = new Set();
+                    relatedNodeIds.add(d.id);
+                    const relatedLinks = links.filter(link => {
                         if (link.source === d.id) {
-                            d3.select(d3.selectAll(".link").filter(ld => ld === link).node()).classed("highlight-link", true);
-                            d3.select(d3.selectAll(".node").filter(nd => nd.id === link.target).node()).classed("highlight-node", true);
+                            relatedNodeIds.add(link.target);
+                            return true;
                         } else if (link.target === d.id) {
-                            d3.select(d3.selectAll(".link").filter(ld => ld === link).node()).classed("highlight-link", true);
-                            d3.select(d3.selectAll(".node").filter(nd => nd.id === link.source).node()).classed("highlight-node", true);
+                            relatedNodeIds.add(link.source);
+                            return true;
                         }
+                        return false;
                     });
 
-                    // ハイライトされていない要素をフェード
-                    d3.selectAll(".node").filter(function() {
-                        return !d3.select(this).classed("highlight-node");
-                    }).classed("faded", true);
+                    // 関連するリンクをハイライト
+                    linkElements.filter(link => relatedLinks.includes(link)).classed("highlight-link", true);
 
-                    d3.selectAll(".link").filter(function() {
-                        return !d3.select(this).classed("highlight-link");
-                    }).classed("faded", true);
+                    // 関連するノードをハイライト
+                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
+
+                    // ハイライトされていない要素をフェード
+                    d3.selectAll(".node").filter(nd => !relatedNodeIds.has(nd.id)).classed("faded", true);
+                    linkElements.filter(link => !relatedLinks.includes(link)).classed("faded", true);
                 });
             
             // 背景クリックでリセット
