@@ -86,7 +86,7 @@
         const chart2TextWidth = 150;
         const charSpacing = 10;
         const circleRadius = 5;
-        const labelOffsetFromCircle = 15;
+        const textRadius = 100; // 文字列の配置半径を固定
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -184,17 +184,14 @@
                     groupNodes.forEach((node, i) => {
                         const angle = i * angleStep;
                         
-                        // 文字列の位置を計算（前回と同じ）
-                        node.textX = center.x + groupRadius * Math.cos(angle);
-                        node.textY = center.y + groupRadius * Math.sin(angle);
+                        // 文字列の位置を計算
+                        node.textX = center.x + textRadius * Math.cos(angle);
+                        node.textY = center.y + textRadius * Math.sin(angle);
                         
-                        // 点は文字列から少し離れた円周上に配置
-                        const offset = 20; // 文字列の長さに応じて調整可能なオフセット
-                        const isRightHalf = Math.cos(angle) > 0;
-                        const pointOffset = isRightHalf ? 15 : -15; // 右側は外向き、左側は内向きにずらす
-
-                        node.circleX = center.x + (groupRadius + pointOffset) * Math.cos(angle);
-                        node.circleY = center.y + (groupRadius + pointOffset) * Math.sin(angle);
+                        // 点は文字列の先端に配置
+                        const pointOffset = 30; // 文字列の長さと文字間隔を考慮したオフセット
+                        node.circleX = center.x + (textRadius + pointOffset) * Math.cos(angle);
+                        node.circleY = center.y + (textRadius + pointOffset) * Math.sin(angle);
                         
                         node.angle = angle;
                     });
