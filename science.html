@@ -264,7 +264,7 @@
                 .attr("d", d => {
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
-                    if (!sourceNode || !targetNode || isNaN(sourceNode.y) || isNaN(targetNode.y)) return;
+                    if (!sourceNode || !targetNode) return;
 
                     let sourceX, sourceY, targetX, targetY;
 
