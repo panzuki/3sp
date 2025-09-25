@@ -49,7 +49,7 @@
             r: 8px;
         }
         .node-label {
-            font-size: 8px; /* 文字サイズを小さく */
+            font-size: 8px;
             pointer-events: none;
             user-select: none;
             transition: fill 0.3s;
@@ -139,9 +139,9 @@
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
 
         Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
-            const validDatasets = datasets.filter(d => d !== null);
+            const validDatasets = datasets.filter(d => d !== null && d.length > 0);
             if (validDatasets.length === 0) {
-                console.error("CSVファイルが読み込まれませんでした。");
+                console.error("CSVファイルが正しく読み込まれませんでした。");
                 return;
             }
 
@@ -149,6 +149,7 @@
             const links = [];
             const nodeMap = new Map();
             const groupMap = new Map();
+            const processGroups = [];
 
             validDatasets.forEach((data, i) => {
                 const groupName = `chart${i + 1}`;
@@ -164,7 +165,6 @@
                 });
             });
             
-            // リンク生成ロジック
             validDatasets.forEach((data, i) => {
                 data.forEach(d => {
                     const currentNode = nodeMap.get(d.番号);
@@ -380,7 +380,7 @@
                 })
                 .on("click", (event, d) => {
                     d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false);
                     
                     d3.select(event.currentTarget).classed("faded", false).classed("highlight-node", true);
 
@@ -396,9 +396,15 @@
                         relatedNodeIds.add(link.target);
                     });
 
-                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true).each(function(l) {
-                        d3.select(this).classed(l.type, true);
-                    });
+                    linkElements.filter(link => relatedLinks.includes(link))
+                        .classed("faded", false)
+                        .classed("highlight-link", true)
+                        .each(function(l) {
+                            d3.select(this)
+                                .classed("generated", l.type === "generated")
+                                .classed("consumed", l.type === "consumed")
+                                .classed("direct", l.type === "direct");
+                        });
                     
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                 });
