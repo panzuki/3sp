@@ -182,11 +182,8 @@
                     if (!currentNode) return;
                     
                     if (currentNode.isProcess) { // 化学反応ノードの場合
-                        const targetNode = nodes.find(n => n.group === nextGroupName && n.引き継ぎ番号 && n.引き継ぎ番号.includes(d.番号));
-                        // if (targetNode) {
-                        //     links.push({ source: currentNode.id, target: targetNode.id });
-                        // }
-                        
+                         const targetNode = nodes.find(n => n.group === nextGroupName && n.引き継ぎ番号 && n.引き継ぎ番号.includes(d.番号));
+                         //この部分のロジックはより複雑なため、物質ノードからの逆引きで構築します
                     } else { // 物質ノードの場合
                         if (d.引き継ぎ番号) {
                             const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
@@ -216,7 +213,11 @@
                                 } else {
                                     const sourceNode = nodeMap.get(part);
                                     if (sourceNode) {
-                                        links.push({ source: sourceNode.id, target: currentNode.id });
+                                        const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
+                                        const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
+                                        if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
+                                            links.push({ source: sourceNode.id, target: currentNode.id });
+                                        }
                                     }
                                 }
                             });
@@ -225,23 +226,15 @@
                 });
             });
 
-            // 一部のノードに欠落している引き継ぎ番号を補完してリンク生成
-            nodes.forEach(node => {
-                if (node.number === '3-65a' && node.group === 'chart3') {
-                    const reactionNode = nodeMap.get('M9a');
-                    const targetNode = nodeMap.get('3-4'); // アミロース
-                    if (reactionNode && targetNode) {
-                         links.push({ source: node.id, target: reactionNode.id });
-                    }
-                }
-                if (node.number === '3-65b' && node.group === 'chart3') {
-                    const reactionNode = nodeMap.get('M9b');
-                    const targetNode = nodeMap.get('3-4'); // アミロース
-                    if (reactionNode && targetNode) {
-                         links.push({ source: node.id, target: reactionNode.id });
-                    }
+            // リンクの重複を排除
+            const uniqueLinks = new Map();
+            links.forEach(link => {
+                const key = `${link.source}-${link.target}`;
+                if (!uniqueLinks.has(key)) {
+                    uniqueLinks.set(key, link);
                 }
             });
+            const finalLinks = Array.from(uniqueLinks.values());
             
             const groupData = d3.groups(nodes, d => d.group);
 
@@ -283,7 +276,7 @@
             const linkElements = chartGroup.append("g")
                 .attr("class", "links")
                 .selectAll("path")
-                .data(links)
+                .data(finalLinks)
                 .enter().append("path")
                 .attr("class", "link")
                 .attr("d", d => {
@@ -404,15 +397,15 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
+                    d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false);
                     
-                    d3.select(event.currentTarget).classed("highlight-node", true);
+                    d3.select(event.currentTarget).classed("faded", false).classed("highlight-node", true);
 
                     const relatedNodeIds = new Set();
                     relatedNodeIds.add(d.id);
 
-                    const relatedLinks = links.filter(link => {
+                    const relatedLinks = finalLinks.filter(link => {
                         return link.source === d.id || link.target === d.id;
                     });
 
@@ -421,11 +414,8 @@
                         relatedNodeIds.add(link.target);
                     });
 
-                    linkElements.filter(link => relatedLinks.includes(link)).classed("highlight-link", true);
-                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
-                    
-                    d3.selectAll(".node").filter(nd => !relatedNodeIds.has(nd.id)).classed("faded", true);
-                    linkElements.filter(link => !relatedLinks.includes(link)).classed("faded", true);
+                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true);
+                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                 });
             
             d3.select("#chart").on("click", function(event) {
