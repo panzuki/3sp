@@ -152,7 +152,6 @@
                 const groupName = `chart${i + 1}`;
                 const isProcess = (i + 1) % 2 === 0;
 
-                // データの有効性を検証するフィルタリングを追加
                 data.filter(d => d.番号).forEach(d => {
                     const id = `${groupName}-${d.番号}`;
                     const name = d['物質名'] || d['反応名'] || d['構成物質名'];
@@ -385,31 +384,29 @@
                     d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                     
-                    d3.select(event.currentTarget).classed("faded", false).classed("highlight-node", true);
-
                     const relatedNodeIds = new Set();
-                    relatedNodeIds.add(d.id);
+                    const relatedLinkIds = new Set();
 
-                    const relatedLinks = finalLinks.filter(link => {
-                        return link.source === d.id || link.target === d.id;
-                    });
+                    function findRelated(startNodeId) {
+                        if (relatedNodeIds.has(startNodeId)) return;
+                        relatedNodeIds.add(startNodeId);
 
-                    relatedLinks.forEach(link => {
-                        relatedNodeIds.add(link.source);
-                        relatedNodeIds.add(link.target);
-                    });
-
-                    linkElements.filter(link => relatedLinks.includes(link))
-                        .classed("faded", false)
-                        .classed("highlight-link", true)
-                        .each(function(l) {
-                            d3.select(this)
-                                .classed("generated", l.type === "generated")
-                                .classed("consumed", l.type === "consumed")
-                                .classed("direct", l.type === "direct");
+                        finalLinks.forEach(link => {
+                            if (link.source === startNodeId) {
+                                relatedLinkIds.add(`${link.source}-${link.target}`);
+                                findRelated(link.target);
+                            }
+                            if (link.target === startNodeId) {
+                                relatedLinkIds.add(`${link.source}-${link.target}`);
+                                findRelated(link.source);
+                            }
                         });
+                    }
                     
+                    findRelated(d.id);
+
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
+                    linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}`)).classed("faded", false).classed("highlight-link", true).classed(l => l.type, true);
                 });
             
             d3.select("#chart").on("click", function(event) {
