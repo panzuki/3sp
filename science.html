@@ -152,7 +152,8 @@
                 const groupName = `chart${i + 1}`;
                 const isProcess = (i + 1) % 2 === 0;
 
-                data.forEach(d => {
+                // データの有効性を検証するフィルタリングを追加
+                data.filter(d => d.番号).forEach(d => {
                     const id = `${groupName}-${d.番号}`;
                     const name = d['物質名'] || d['反応名'] || d['構成物質名'];
                     const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
@@ -163,7 +164,7 @@
             });
             
             validDatasets.forEach((data, i) => {
-                data.forEach(d => {
+                data.filter(d => d.番号).forEach(d => {
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
                     
@@ -217,13 +218,18 @@
             
             const groupData = d3.groups(nodes, d => d.group);
 
+            if (groupData.length === 0) {
+                console.error("有効なデータからグループが生成されませんでした。");
+                return;
+            }
+
             const totalHeight = groupData.length * groupSpacingY + 200;
             svg.attr("height", totalHeight).attr("width", width);
             chartGroup.attr("transform", `translate(${width / 2}, 50)`);
 
             groupData.forEach(([group, groupNodes], i) => {
                 const center = { x: 0, y: i * groupSpacingY };
-                if (groupNodes[0].isProcess) {
+                if (groupNodes[0] && groupNodes[0].isProcess) {
                     const nodeSpacing = 15;
                     const totalHeight = groupNodes.length * nodeSpacing;
                     groupNodes.forEach((node, j) => {
@@ -299,7 +305,7 @@
                 const groupElement = d3.select(this);
                 const center = { x: 0, y: groupNodes[0].y };
 
-                if (groupNodes[0].isProcess) {
+                if (groupNodes[0] && groupNodes[0].isProcess) {
                     const nodeElements = groupElement.selectAll(".node")
                         .data(groupNodes)
                         .enter().append("g")
@@ -319,7 +325,7 @@
                         .attr("y", 0)
                         .text(d => d.name);
 
-                } else {
+                } else if (groupNodes[0]) {
                     const nodeElements = groupElement.selectAll(".node")
                         .data(groupNodes)
                         .enter().append("g")
