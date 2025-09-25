@@ -115,10 +115,10 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
         const width = 1200;
-        const groupSpacingY = 350; /* グループ間の距離を拡大 */
+        const groupSpacingY = 350;
         const chartTextWidth = 150;
-        const charSpacing = 8; /* 文字間隔を調整 */
-        const circleRadius = 8; /* 円の大きさを拡大 */
+        const charSpacing = 8;
+        const circleRadius = 8;
 
         const svg = d3.select("#chart");
         const chartGroup = svg.append("g");
@@ -129,27 +129,11 @@
             'chart1': '原材料',
             'chart2': 'ミキシング',
             'chart3': 'ミキシング後',
-            'chart4': '一次発酵',
-            'chart5': '一次発酵後',
-            'chart6': '分割・丸め',
-            'chart7': '分割・丸め後',
-            'chart8': 'ベンチタイム',
-            'chart9': 'ベンチタイム後',
-            'chart10': '成形',
-            'chart11': '焼成後',
         };
         const groupColors = {
             'chart1': '#a8e6cf',
             'chart2': '#ff8b94',
             'chart3': '#dcedc1',
-            'chart4': '#a8d1e6',
-            'chart5': '#e6c8a8',
-            'chart6': '#c2a8e6',
-            'chart7': '#a8e6e0',
-            'chart8': '#e6a8d7',
-            'chart9': '#e6e3a8',
-            'chart10': '#d5e6a8',
-            'chart11': '#a8bfe6',
         };
 
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
@@ -180,16 +164,13 @@
                 });
             });
             
-            // リンク生成ロジックの改善
+            // リンク生成ロジック
             validDatasets.forEach((data, i) => {
-                const currentGroupName = `chart${i + 1}`;
-                const nextGroupName = `chart${i + 2}`;
-
                 data.forEach(d => {
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
                     
-                    if (!currentNode.isProcess) { // 物質ノードの場合
+                    if (!currentNode.isProcess) {
                         if (d.引き継ぎ番号) {
                             const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
                             const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
@@ -202,16 +183,13 @@
                                     
                                     const reactionNode = nodeMap.get(reactionId);
                                     if (reactionNode) {
-                                        // 物質 -> 化学反応
                                         sourceMaterials.forEach(matId => {
                                             const sourceNode = nodeMap.get(matId);
                                             if (sourceNode) {
                                                 links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
                                             }
                                         });
-
-                                        // 化学反応 -> 物質
-                                        if (reactionMatch[1] !== '-') { // プラス記号の場合
+                                        if (reactionMatch[1] !== '-') {
                                             links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
                                         }
                                     }
@@ -231,10 +209,9 @@
                 });
             });
             
-            // リンクの重複を排除
             const uniqueLinks = new Map();
             links.forEach(link => {
-                const key = `${link.source}-${link.target}`;
+                const key = `${link.source}-${link.target}-${link.type}`;
                 if (!uniqueLinks.has(key)) {
                     uniqueLinks.set(key, link);
                 }
@@ -250,7 +227,7 @@
             groupData.forEach(([group, groupNodes], i) => {
                 const center = { x: 0, y: i * groupSpacingY };
                 if (groupNodes[0].isProcess) {
-                    const nodeSpacing = 15; /* 間隔を半分に */
+                    const nodeSpacing = 15;
                     const totalHeight = groupNodes.length * nodeSpacing;
                     groupNodes.forEach((node, j) => {
                         node.x = center.x;
@@ -334,9 +311,9 @@
 
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
-                        .attr("x", d => - (d.name.length * 5) / 2) // 文字列の長さに合わせて調整
+                        .attr("x", d => - (d.name.length * 5) / 2)
                         .attr("y", -10) 
-                        .attr("width", d => d.name.length * 5) // 文字列の長さに合わせて調整
+                        .attr("width", d => d.name.length * 5)
                         .attr("height", 20); 
 
                     nodeElements.append("text")
@@ -402,7 +379,6 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    // 全てのノードとリンクをリセット
                     d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                     
@@ -421,7 +397,10 @@
                     });
 
                     // 関連するノードとリンクをハイライト
-                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true);
+                    linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true).each(function(l) {
+                        d3.select(this).classed(l.type, true);
+                    });
+                    
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                 });
             
@@ -429,7 +408,7 @@
                 const isClickOnNode = d3.select(event.target).closest(".node").node();
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                 }
             });
 
@@ -439,3 +418,4 @@
     </script>
 </body>
 </html>
+
