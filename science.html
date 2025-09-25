@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>物質の変遷フロー図</title>
+    <title>パン生地の物質変遷フロー図</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -20,6 +20,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
+            overflow: visible; /* 親要素の切り取りを無効化 */
         }
         .link {
             fill: none;
@@ -33,7 +34,10 @@
         }
         .node {
             cursor: pointer;
-            pointer-events: all; /* クリック領域を確保 */
+        }
+        .node-click-area {
+            fill: transparent;
+            pointer-events: all;
         }
         .node-circle {
             stroke: #fff;
@@ -83,7 +87,7 @@
             stroke: #333;
             opacity: 1;
         }
-        .highlight-node .node-label {
+        .highlight-node .node-label, .highlight-node .chart-node-label {
             fill: #000;
             font-weight: bold;
             opacity: 1;
@@ -207,7 +211,7 @@
             
             const groupData = d3.groups(nodes, d => d.group);
 
-            const totalHeight = groupData.length * groupSpacingY + 100;
+            const totalHeight = groupData.length * groupSpacingY + 200; // 余白を増やしました
             svg.attr("height", totalHeight).attr("width", width);
             chartGroup.attr("transform", `translate(${width / 2}, 50)`);
 
@@ -283,11 +287,7 @@
             const nodeGroups = chartGroup.selectAll(".node-group")
                 .data(groupData)
                 .enter().append("g")
-                .attr("class", "node-group")
-                .attr("transform", ([group, groupNodes]) => {
-                    const center = { x: 0, y: groupNodes[0].y };
-                    return `translate(0, 0)`;
-                });
+                .attr("class", "node-group");
 
             nodeGroups.each(function([group, groupNodes]) {
                 const groupElement = d3.select(this);
@@ -299,6 +299,14 @@
                         .enter().append("g")
                         .attr("class", "node")
                         .attr("transform", d => `translate(${d.x},${d.y})`);
+
+                    // クリック領域を確保する透明な四角形を追加
+                    nodeElements.append("rect")
+                        .attr("class", "node-click-area")
+                        .attr("x", -chartTextWidth / 2)
+                        .attr("y", -10)
+                        .attr("width", chartTextWidth)
+                        .attr("height", 20);
 
                     nodeElements.append("text")
                         .attr("class", "chart-node-label")
@@ -312,6 +320,13 @@
                         .enter().append("g")
                         .attr("class", "node");
                     
+                    // クリック領域を確保する透明な円を追加
+                    nodeElements.append("circle")
+                        .attr("class", "node-click-area")
+                        .attr("cx", d => d.circleX)
+                        .attr("cy", d => d.circleY)
+                        .attr("r", 20); // クリック範囲を広げる
+
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
                         .attr("r", circleRadius)
@@ -383,7 +398,9 @@
                 });
             
             d3.select("#chart").on("click", function(event) {
-                if (event.target === this) {
+                // SVG要素のクリックイベント
+                const isClickOnNode = d3.select(event.target).closest(".node").node();
+                if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
                 }
