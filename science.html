@@ -86,7 +86,6 @@
         const chart2TextWidth = 150;
         const charSpacing = 10;
         const circleRadius = 5;
-        const textRadius = 100; // 文字列の配置半径を固定
 
         const svg = d3.select("#chart")
             .attr("width", width)
@@ -184,14 +183,23 @@
                     groupNodes.forEach((node, i) => {
                         const angle = i * angleStep;
                         
-                        // 文字列の位置を計算
-                        node.textX = center.x + textRadius * Math.cos(angle);
-                        node.textY = center.y + textRadius * Math.sin(angle);
+                        // 文字列の中心位置を計算
+                        node.textX = center.x + groupRadius * Math.cos(angle);
+                        node.textY = center.y + groupRadius * Math.sin(angle);
+
+                        // 薄い点の位置を計算
+                        // 文字列のy軸方向の長さ（文字数 * 文字間隔）の半分
+                        const totalTextLength = (node.name.length - 1) * charSpacing;
+                        const textHalfLength = totalTextLength / 2;
                         
-                        // 点は文字列の先端に配置
-                        const pointOffset = 30; // 文字列の長さと文字間隔を考慮したオフセット
-                        node.circleX = center.x + (textRadius + pointOffset) * Math.cos(angle);
-                        node.circleY = center.y + (textRadius + pointOffset) * Math.sin(angle);
+                        // 点のオフセット量を計算
+                        const pointOffsetFromText = 5 + circleRadius;
+                        
+                        // 点の座標は、文字列の中心から外周方向にずらす
+                        const circleRadiusFromCenter = groupRadius + textHalfLength + pointOffsetFromText;
+                        
+                        node.circleX = center.x + circleRadiusFromCenter * Math.cos(angle);
+                        node.circleY = center.y + circleRadiusFromCenter * Math.sin(angle);
                         
                         node.angle = angle;
                     });
@@ -263,7 +271,7 @@
                         .enter().append("g")
                         .attr("class", "node");
                     
-                    // ノード円（円周上に配置）
+                    // ノード円（円周上の文字列の先端に配置）
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
                         .attr("r", circleRadius)
@@ -271,7 +279,7 @@
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY);
                     
-                    // ノードラベル（文字列を配置）
+                    // ノードラベル（円周上、中心から放射状に配置）
                     nodeElements.each(function(d) {
                         const nodeText = d.name;
                         const angle = d.angle;
