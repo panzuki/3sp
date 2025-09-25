@@ -396,7 +396,6 @@
                         relatedNodeIds.add(link.target);
                     });
 
-                    // 関連するノードとリンクをハイライト
                     linkElements.filter(link => relatedLinks.includes(link)).classed("faded", false).classed("highlight-link", true).each(function(l) {
                         d3.select(this).classed(l.type, true);
                     });
@@ -418,4 +417,3 @@
     </script>
 </body>
 </html>
-
