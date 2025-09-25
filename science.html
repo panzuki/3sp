@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図</title>
+    <title>物質の変遷フロー図</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -20,7 +20,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
-            overflow: visible; /* 親要素の切り取りを無効化 */
+            overflow: visible;
         }
         .link {
             fill: none;
@@ -50,7 +50,7 @@
         }
         .node-label {
             font-size: 10px;
-            pointer-events: none; /* 親要素でクリックを処理 */
+            pointer-events: none;
             user-select: none;
             transition: fill 0.3s;
         }
@@ -63,7 +63,7 @@
         .chart-node-label {
             font-size: 10px;
             text-anchor: middle;
-            pointer-events: none; /* 親要素でクリックを処理 */
+            pointer-events: none;
             user-select: none;
         }
         .tooltip {
@@ -178,26 +178,25 @@
                     const targetNode = nodeMap.get(d.番号);
                     if (d.引き継ぎ番号) {
                         const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                        const parts = cleanText.split(/,(?![^()]*\))/g).map(p => p.trim());
+                        // 正規表現を修正してM, R, Sを含む番号を正確に分割
+                        const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
 
                         parts.forEach(part => {
-                            const reactionMatch = part.match(/([+\-]?)(M\d+|R\d+)(?:\((.*?)\))?/);
+                            const reactionMatch = part.match(/([+\-]?)([MR]\d+|S\d+)(?:\((.*?)\))?/);
                             if (reactionMatch) {
                                 const reactionId = reactionMatch[2];
                                 const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
-                                
-                                sourceMaterials.forEach(matId => {
-                                    const sourceNode = nodeMap.get(matId);
-                                    const reactionNode = nodeMap.get(reactionId);
-                                    if (sourceNode && reactionNode) {
-                                        links.push({ source: sourceNode.id, target: reactionNode.id });
-                                    }
-                                });
                                 
                                 const reactionNode = nodeMap.get(reactionId);
                                 if (reactionNode) {
                                     links.push({ source: reactionNode.id, target: targetNode.id });
                                 }
+                                sourceMaterials.forEach(matId => {
+                                    const sourceNode = nodeMap.get(matId);
+                                    if (sourceNode && reactionNode) {
+                                        links.push({ source: sourceNode.id, target: reactionNode.id });
+                                    }
+                                });
                             } else if (part) {
                                 const sourceNode = nodeMap.get(part);
                                 if (sourceNode) {
@@ -211,7 +210,7 @@
             
             const groupData = d3.groups(nodes, d => d.group);
 
-            const totalHeight = groupData.length * groupSpacingY + 200; // 余白を増やしました
+            const totalHeight = groupData.length * groupSpacingY + 200;
             svg.attr("height", totalHeight).attr("width", width);
             chartGroup.attr("transform", `translate(${width / 2}, 50)`);
 
@@ -300,7 +299,6 @@
                         .attr("class", "node")
                         .attr("transform", d => `translate(${d.x},${d.y})`);
 
-                    // クリック領域を確保する透明な四角形を追加
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
                         .attr("x", -chartTextWidth / 2)
@@ -320,12 +318,11 @@
                         .enter().append("g")
                         .attr("class", "node");
                     
-                    // クリック領域を確保する透明な円を追加
                     nodeElements.append("circle")
                         .attr("class", "node-click-area")
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY)
-                        .attr("r", 20); // クリック範囲を広げる
+                        .attr("r", 20);
 
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
@@ -398,7 +395,6 @@
                 });
             
             d3.select("#chart").on("click", function(event) {
-                // SVG要素のクリックイベント
                 const isClickOnNode = d3.select(event.target).closest(".node").node();
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
