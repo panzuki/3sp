@@ -137,7 +137,7 @@
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
 
         Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
-            const validDatasets = datasets.filter(d => d !== null);
+            const validDatasets = datasets.filter(d => d !== null && d.length > 0);
             if (validDatasets.length === 0) {
                 console.error("CSVファイルが読み込まれませんでした。");
                 return;
@@ -146,7 +146,6 @@
             const nodes = [];
             const links = [];
             const nodeMap = new Map();
-            const groupMap = new Map();
 
             validDatasets.forEach((data, i) => {
                 const groupName = `chart${i + 1}`;
@@ -158,7 +157,6 @@
                     const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
-                    groupMap.set(d.番号, groupName);
                 });
             });
             
@@ -215,7 +213,7 @@
             });
             const finalLinks = Array.from(uniqueLinks.values());
             
-            const groupData = d3.groups(nodes, d => d.group);
+            const groupData = d3.groups(nodes, d => d.group).filter(([group, groupNodes]) => groupNodes.length > 0);
 
             if (groupData.length === 0) {
                 console.error("有効なデータからグループが生成されませんでした。");
@@ -266,7 +264,7 @@
                 .attr("d", d => {
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
-                    if (!sourceNode || !targetNode) return;
+                    if (!sourceNode || !targetNode || isNaN(sourceNode.y) || isNaN(targetNode.y)) return;
 
                     let sourceX, sourceY, targetX, targetY;
 
@@ -302,6 +300,8 @@
 
             nodeGroups.each(function([group, groupNodes]) {
                 const groupElement = d3.select(this);
+                if (groupNodes.length === 0) return;
+
                 const center = { x: 0, y: groupNodes[0].y };
 
                 if (groupNodes[0] && groupNodes[0].isProcess) {
