@@ -26,6 +26,7 @@
             stroke: #999;
             stroke-opacity: 0.6;
             stroke-width: 1.5px;
+            transition: stroke-opacity 0.3s, stroke-width 0.3s;
         }
         .node-group {
             transition: transform 0.3s ease;
@@ -36,7 +37,7 @@
         .node-circle {
             stroke: #fff;
             stroke-width: 2px;
-            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out;
+            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s;
         }
         .node:hover .node-circle {
             fill: #3b82f6;
@@ -46,6 +47,7 @@
             font-size: 10px;
             pointer-events: none;
             user-select: none;
+            transition: fill 0.3s;
         }
         .group-label {
             font-size: 18px;
@@ -69,6 +71,27 @@
             opacity: 0;
             transition: opacity 0.2s;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ハイライト用クラス */
+        .faded {
+            opacity: 0.2;
+        }
+
+        .highlight-node .node-circle {
+            fill: gold !important;
+            stroke: #333;
+            opacity: 1;
+        }
+        .highlight-node .node-label {
+            fill: #000;
+            font-weight: bold;
+            opacity: 1;
+        }
+        .highlight-link {
+            stroke: gold !important;
+            stroke-opacity: 1 !important;
+            stroke-width: 2.5px !important;
         }
     </style>
 </head>
@@ -188,14 +211,9 @@
                         node.textY = center.y + groupRadius * Math.sin(angle);
 
                         // 薄い点の位置を計算
-                        // 文字列のy軸方向の長さ（文字数 * 文字間隔）の半分
                         const totalTextLength = (node.name.length - 1) * charSpacing;
                         const textHalfLength = totalTextLength / 2;
-                        
-                        // 点のオフセット量を計算
                         const pointOffsetFromText = 5 + circleRadius;
-                        
-                        // 点の座標は、文字列の中心から外周方向にずらす
                         const circleRadiusFromCenter = groupRadius + textHalfLength + pointOffsetFromText;
                         
                         node.circleX = center.x + circleRadiusFromCenter * Math.cos(angle);
@@ -206,7 +224,7 @@
                 }
             });
 
-            svg.append("g")
+            const linkElements = svg.append("g")
                 .attr("class", "links")
                 .selectAll("path")
                 .data(links)
@@ -248,6 +266,7 @@
                 .attr("class", "node-group")
                 .attr("transform", ([group]) => `translate(0, 0)`);
 
+            const allNodes = [];
             nodeGroups.each(function([group, groupNodes]) {
                 const groupElement = d3.select(this);
                 const center = groupPositions[group];
@@ -264,6 +283,8 @@
                         .attr("x", 0)
                         .attr("y", 0)
                         .text(d => d.name);
+
+                    allNodes.push(...nodeElements.nodes());
 
                 } else {
                     const nodeElements = groupElement.selectAll(".node")
@@ -298,6 +319,8 @@
                                 .text(nodeText[i]);
                         }
                     });
+
+                    allNodes.push(...nodeElements.nodes());
                 }
 
                 groupElement.append("text")
@@ -311,7 +334,7 @@
                     });
             });
 
-            svg.selectAll(".node")
+            d3.selectAll(".node")
                 .on("mouseover", (event, d) => {
                     tooltip.style("opacity", 1)
                         .html(`<strong>${d.name}</strong><br>番号: ${d.number}`)
@@ -320,7 +343,43 @@
                 })
                 .on("mouseout", () => {
                     tooltip.style("opacity", 0);
+                })
+                .on("click", (event, d) => {
+                    // すべてのハイライトとフェードをリセット
+                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
+                    
+                    // クリックしたノードをハイライト
+                    d3.select(event.currentTarget).classed("highlight-node", true);
+
+                    // 関連するノードとリンクを特定してハイライト
+                    links.forEach(link => {
+                        if (link.source === d.id) {
+                            d3.select(d3.selectAll(".link").filter(ld => ld === link).node()).classed("highlight-link", true);
+                            d3.select(d3.selectAll(".node").filter(nd => nd.id === link.target).node()).classed("highlight-node", true);
+                        } else if (link.target === d.id) {
+                            d3.select(d3.selectAll(".link").filter(ld => ld === link).node()).classed("highlight-link", true);
+                            d3.select(d3.selectAll(".node").filter(nd => nd.id === link.source).node()).classed("highlight-node", true);
+                        }
+                    });
+
+                    // ハイライトされていない要素をフェード
+                    d3.selectAll(".node").filter(function() {
+                        return !d3.select(this).classed("highlight-node");
+                    }).classed("faded", true);
+
+                    d3.selectAll(".link").filter(function() {
+                        return !d3.select(this).classed("highlight-link");
+                    }).classed("faded", true);
                 });
+            
+            // 背景クリックでリセット
+            d3.select("#chart").on("click", function(event) {
+                if (event.target === this) {
+                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false);
+                }
+            });
 
         }).catch(error => {
             console.error("CSVファイルの読み込み中にエラーが発生しました。", error);
