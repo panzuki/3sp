@@ -381,30 +381,44 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
+                    const isHighlighted = d3.select(event.currentTarget).classed("highlight-node");
+                    
+                    // 既にハイライトされている場合は解除する
+                    if (isHighlighted) {
+                        d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
+                        d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                        return;
+                    }
+
+                    // 全てのハイライトをリセット
                     d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                     
                     const relatedNodeIds = new Set();
                     const relatedLinkIds = new Set();
-
-                    function findRelated(startNodeId) {
-                        if (relatedNodeIds.has(startNodeId)) return;
-                        relatedNodeIds.add(startNodeId);
+                    const nodesToProcess = [d.id];
+                    
+                    while (nodesToProcess.length > 0) {
+                        const currentNodeId = nodesToProcess.shift();
+                        if (relatedNodeIds.has(currentNodeId)) continue;
+                        relatedNodeIds.add(currentNodeId);
 
                         finalLinks.forEach(link => {
-                            if (link.source === startNodeId) {
+                            if (link.source === currentNodeId) {
                                 relatedLinkIds.add(`${link.source}-${link.target}`);
-                                findRelated(link.target);
+                                if (!relatedNodeIds.has(link.target)) {
+                                    nodesToProcess.push(link.target);
+                                }
                             }
-                            if (link.target === startNodeId) {
+                            if (link.target === currentNodeId) {
                                 relatedLinkIds.add(`${link.source}-${link.target}`);
-                                findRelated(link.source);
+                                if (!relatedNodeIds.has(link.source)) {
+                                    nodesToProcess.push(link.source);
+                                }
                             }
                         });
                     }
                     
-                    findRelated(d.id);
-
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                     linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}`)).classed("faded", false).classed("highlight-link", true).classed(l => l.type, true);
                 });
