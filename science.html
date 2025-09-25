@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図</title>
+    <title>物質の変遷フロー図</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -33,7 +33,7 @@
         }
         .node {
             cursor: pointer;
-            pointer-events: all;
+            pointer-events: all; /* クリック領域を確保 */
         }
         .node-circle {
             stroke: #fff;
@@ -46,7 +46,7 @@
         }
         .node-label {
             font-size: 10px;
-            pointer-events: none;
+            pointer-events: none; /* 親要素でクリックを処理 */
             user-select: none;
             transition: fill 0.3s;
         }
@@ -59,7 +59,7 @@
         .chart-node-label {
             font-size: 10px;
             text-anchor: middle;
-            pointer-events: none;
+            pointer-events: none; /* 親要素でクリックを処理 */
             user-select: none;
         }
         .tooltip {
@@ -166,9 +166,7 @@
                 });
             });
 
-            // リンクの生成ロジック
             validDatasets.forEach((data, i) => {
-                const sourceGroupName = `chart${i + 1}`;
                 const targetGroupName = `chart${i + 2}`;
                 if (!targetGroupName || !groupLabels[targetGroupName]) return;
 
@@ -256,31 +254,25 @@
                     if (!sourceNode || !targetNode) return;
 
                     let sourceX, sourceY, targetX, targetY;
-                    let sourceAnchorOffset, targetAnchorOffset;
 
                     if (sourceNode.isProcess) {
-                        sourceX = sourceNode.x;
+                        sourceX = sourceNode.x + chartTextWidth / 2;
                         sourceY = sourceNode.y;
-                        sourceAnchorOffset = chartTextWidth / 2;
                     } else {
                         sourceX = sourceNode.circleX;
                         sourceY = sourceNode.circleY;
-                        sourceAnchorOffset = 0;
                     }
 
                     if (targetNode.isProcess) {
-                        targetX = targetNode.x;
+                        targetX = targetNode.x - chartTextWidth / 2;
                         targetY = targetNode.y;
-                        targetAnchorOffset = chartTextWidth / 2;
                     } else {
                         targetX = targetNode.circleX;
                         targetY = targetNode.circleY;
-                        targetAnchorOffset = 0;
                     }
                     
                     const dx = targetX - sourceX;
                     const dy = targetY - sourceY;
-                    const dr = Math.sqrt(dx * dx + dy * dy);
 
                     return `M${sourceX},${sourceY}
                             C${sourceX + dx / 2},${sourceY}
@@ -313,6 +305,7 @@
                         .attr("x", 0)
                         .attr("y", 0)
                         .text(d => d.name);
+
                 } else {
                     const nodeElements = groupElement.selectAll(".node")
                         .data(groupNodes)
