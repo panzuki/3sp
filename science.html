@@ -402,20 +402,44 @@
                         if (relatedNodeIds.has(currentNodeId)) continue;
                         relatedNodeIds.add(currentNodeId);
 
-                        finalLinks.forEach(link => {
-                            if (link.source === currentNodeId) {
-                                relatedLinkIds.add(`${link.source}-${link.target}`);
-                                if (!relatedNodeIds.has(link.target)) {
-                                    nodesToProcess.push(link.target);
+                        // ノードがプロセスノードか物質ノードかで処理を分ける
+                        const isProcessNode = nodes.find(n => n.id === currentNodeId)?.isProcess;
+                        
+                        // プロセスノードからのリンク（生成）
+                        if (isProcessNode) {
+                            finalLinks.forEach(link => {
+                                if (link.source === currentNodeId) {
+                                    relatedLinkIds.add(`${link.source}-${link.target}`);
+                                    if (!relatedNodeIds.has(link.target)) {
+                                        nodesToProcess.push(link.target);
+                                    }
                                 }
-                            }
-                            if (link.target === currentNodeId) {
-                                relatedLinkIds.add(`${link.source}-${link.target}`);
-                                if (!relatedNodeIds.has(link.source)) {
-                                    nodesToProcess.push(link.source);
+                            });
+                        }
+                        
+                        // 物質ノードからのリンク（消費）
+                        if (!isProcessNode) {
+                            finalLinks.forEach(link => {
+                                if (link.target === currentNodeId) {
+                                    relatedLinkIds.add(`${link.source}-${link.target}`);
+                                    if (!relatedNodeIds.has(link.source)) {
+                                        nodesToProcess.push(link.source);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+
+                        // プロセスノードの場合、入力（消費）リンクも探索
+                        if (isProcessNode) {
+                            finalLinks.forEach(link => {
+                                if (link.target === currentNodeId) {
+                                    relatedLinkIds.add(`${link.source}-${link.target}`);
+                                    if (!relatedNodeIds.has(link.source)) {
+                                        nodesToProcess.push(link.source);
+                                    }
+                                }
+                            });
+                        }
                     }
                     
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
@@ -425,7 +449,8 @@
             d3.select("#chart").on("click", function(event) {
                 // クリックされた要素がノードではない場合、全てのハイライトをリセット
                 const nodeParent = d3.select(event.target.parentNode);
-                if (!nodeParent.classed("node")) {
+                const isClickOnNode = d3.select(event.target).classed("node-click-area") || d3.select(event.target.parentNode).classed("node");
+                if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                 }
