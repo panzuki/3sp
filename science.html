@@ -77,7 +77,7 @@
             transition: opacity 0.2s;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
+        /* ハイライト関連のスタイルを修正 */
         .faded {
             opacity: 0.2;
         }
@@ -427,7 +427,8 @@
                 });
             
             d3.select("#chart").on("click", function(event) {
-                const isClickOnNode = d3.select(event.target).classed("node-click-area");
+                // クリックされた要素がノードではない場合、全てのハイライトをリセット
+                const isClickOnNode = d3.select(event.target).closest(".node").size() > 0;
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
@@ -440,4 +441,3 @@
     </script>
 </body>
 </html>
-
