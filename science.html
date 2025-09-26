@@ -396,31 +396,41 @@
 
                     // 新しいノードの関連要素を特定
                     const relatedNodeIds = new Set();
-                    relatedNodeIds.add(d.id);
-                    const relatedLinks = finalLinks.filter(link => link.source === d.id || link.target === d.id);
-                    relatedLinks.forEach(link => {
-                        relatedNodeIds.add(link.source);
-                        relatedNodeIds.add(link.target);
-                    });
+                    const relatedLinkIds = new Set();
+                    const nodesToProcess = [d.id];
+                    
+                    while (nodesToProcess.length > 0) {
+                        const currentNodeId = nodesToProcess.shift();
+                        if (relatedNodeIds.has(currentNodeId)) continue;
+                        relatedNodeIds.add(currentNodeId);
 
-                    // 関係のない要素をフェードアウト
-                    d3.selectAll(".node").classed("faded", nd => !relatedNodeIds.has(nd.id));
-                    d3.selectAll(".link").classed("faded", link => !relatedLinks.includes(link));
-
-                    // 関連要素をハイライト
-                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
-                    linkElements.filter(link => relatedLinks.includes(link))
-                        .classed("highlight-link", true)
-                        .each(function(l) {
-                            d3.select(this)
-                                .classed("generated", l.type === "generated")
-                                .classed("consumed", l.type === "consumed")
-                                .classed("direct", l.type === "direct");
+                        finalLinks.forEach(link => {
+                            if (link.source === currentNodeId || link.target === currentNodeId) {
+                                relatedLinkIds.add(`${link.source}-${link.target}`);
+                                if (link.source === currentNodeId && !relatedNodeIds.has(link.target)) {
+                                    nodesToProcess.push(link.target);
+                                }
+                                if (link.target === currentNodeId && !relatedNodeIds.has(link.source)) {
+                                    nodesToProcess.push(link.source);
+                                }
+                            }
                         });
+                    }
+                    
+                    // 非関連ノードとリンクをフェードアウト
+                    d3.selectAll(".node").classed("faded", nd => !relatedNodeIds.has(nd.id));
+                    d3.selectAll(".link").classed("faded", link => !relatedLinkIds.has(`${link.source}-${link.target}`));
+
+                    // 関連ノードとリンクをハイライト
+                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
+                    linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}`))
+                        .classed("highlight-link", true)
+                        .classed(l => l.type, true);
                 });
             
             d3.select("#chart").on("click", function(event) {
-                const isClickOnNode = d3.select(event.target).closest(".node").node();
+                // クリックされた要素がノードでない場合、すべてのハイライトをリセット
+                const isClickOnNode = event.target.closest(".node");
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
@@ -433,3 +443,4 @@
     </script>
 </body>
 </html>
+　
