@@ -90,6 +90,7 @@
             font-weight: bold;
             opacity: 1;
         }
+        /* ハイライトの優先度を上げる */
         .highlight-link {
             stroke-opacity: 1 !important;
             stroke-width: 2.5px !important;
@@ -168,37 +169,40 @@
                     if (!currentNode.isProcess) {
                         if (d.引き継ぎ番号) {
                             const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                            const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
+                            // 正規表現を修正して、複数の括弧内の文字列も正しく抽出
+                            const parts = cleanText.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?|([^\s,]+)/g);
 
-                            parts.forEach(part => {
-                                const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
-                                if (reactionMatch) {
-                                    const reactionId = reactionMatch[2];
-                                    const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
-                                    
-                                    const reactionNode = nodeMap.get(reactionId);
-                                    if (reactionNode) {
-                                        sourceMaterials.forEach(matId => {
-                                            const sourceNode = nodeMap.get(matId);
-                                            if (sourceNode) {
-                                                links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
+                            if (parts) {
+                                parts.forEach(part => {
+                                    const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
+                                    if (reactionMatch) {
+                                        const reactionId = reactionMatch[2];
+                                        const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
+                                        
+                                        const reactionNode = nodeMap.get(reactionId);
+                                        if (reactionNode) {
+                                            sourceMaterials.forEach(matId => {
+                                                const sourceNode = nodeMap.get(matId);
+                                                if (sourceNode) {
+                                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
+                                                }
+                                            });
+                                            if (reactionMatch[1] !== '-') {
+                                                links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
                                             }
-                                        });
-                                        if (reactionMatch[1] !== '-') {
-                                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
+                                        }
+                                    } else {
+                                        const sourceNode = nodeMap.get(part.trim());
+                                        if (sourceNode) {
+                                            const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
+                                            const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
+                                            if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
+                                                links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
+                                            }
                                         }
                                     }
-                                } else {
-                                    const sourceNode = nodeMap.get(part);
-                                    if (sourceNode) {
-                                        const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
-                                        const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
-                                        if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
-                                            links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
-                                        }
-                                    }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
                 });
@@ -313,9 +317,9 @@
 
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
-                        .attr("x", d => - (d.name.length * 5) / 2)
+                        .attr("x", d => - (d.name.length * 5) / 2 - 5)
                         .attr("y", -10) 
-                        .attr("width", d => d.name.length * 5)
+                        .attr("width", d => d.name.length * 5 + 10)
                         .attr("height", 20); 
 
                     nodeElements.append("text")
@@ -402,44 +406,20 @@
                         if (relatedNodeIds.has(currentNodeId)) continue;
                         relatedNodeIds.add(currentNodeId);
 
-                        // ノードがプロセスノードか物質ノードかで処理を分ける
-                        const isProcessNode = nodes.find(n => n.id === currentNodeId)?.isProcess;
-                        
-                        // プロセスノードからのリンク（生成）
-                        if (isProcessNode) {
-                            finalLinks.forEach(link => {
-                                if (link.source === currentNodeId) {
-                                    relatedLinkIds.add(`${link.source}-${link.target}`);
-                                    if (!relatedNodeIds.has(link.target)) {
-                                        nodesToProcess.push(link.target);
-                                    }
+                        finalLinks.forEach(link => {
+                            if (link.source === currentNodeId) {
+                                relatedLinkIds.add(`${link.source}-${link.target}`);
+                                if (!relatedNodeIds.has(link.target)) {
+                                    nodesToProcess.push(link.target);
                                 }
-                            });
-                        }
-                        
-                        // 物質ノードからのリンク（消費）
-                        if (!isProcessNode) {
-                            finalLinks.forEach(link => {
-                                if (link.target === currentNodeId) {
-                                    relatedLinkIds.add(`${link.source}-${link.target}`);
-                                    if (!relatedNodeIds.has(link.source)) {
-                                        nodesToProcess.push(link.source);
-                                    }
+                            }
+                            if (link.target === currentNodeId) {
+                                relatedLinkIds.add(`${link.source}-${link.target}`);
+                                if (!relatedNodeIds.has(link.source)) {
+                                    nodesToProcess.push(link.source);
                                 }
-                            });
-                        }
-
-                        // プロセスノードの場合、入力（消費）リンクも探索
-                        if (isProcessNode) {
-                            finalLinks.forEach(link => {
-                                if (link.target === currentNodeId) {
-                                    relatedLinkIds.add(`${link.source}-${link.target}`);
-                                    if (!relatedNodeIds.has(link.source)) {
-                                        nodesToProcess.push(link.source);
-                                    }
-                                }
-                            });
-                        }
+                            }
+                        });
                     }
                     
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
@@ -447,9 +427,7 @@
                 });
             
             d3.select("#chart").on("click", function(event) {
-                // クリックされた要素がノードではない場合、全てのハイライトをリセット
-                const nodeParent = d3.select(event.target.parentNode);
-                const isClickOnNode = d3.select(event.target).classed("node-click-area") || d3.select(event.target.parentNode).classed("node");
+                const isClickOnNode = d3.select(event.target).classed("node-click-area");
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
@@ -462,3 +440,4 @@
     </script>
 </body>
 </html>
+
