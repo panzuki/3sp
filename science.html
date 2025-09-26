@@ -381,19 +381,18 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    const isHighlighted = d3.select(event.currentTarget).classed("highlight-node");
+                    const isCurrentlyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
                     
-                    // 既にハイライトされている場合は解除する
-                    if (isHighlighted) {
-                        d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                        d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    // すべてのハイライトをリセット
+                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+
+                    // クリックしたノードが既にハイライトされていた場合は、ハイライトを解除して終了
+                    if (isCurrentlyHighlighted) {
                         return;
                     }
 
-                    // 全てのハイライトをリセット
-                    d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
-                    
+                    // 新しいノードのハイライト処理
                     const relatedNodeIds = new Set();
                     const relatedLinkIds = new Set();
                     const nodesToProcess = [d.id];
@@ -424,8 +423,9 @@
                 });
             
             d3.select("#chart").on("click", function(event) {
-                const isClickOnNode = d3.select(event.target).closest(".node").node();
-                if (!isClickOnNode) {
+                // クリックされた要素がノードではない場合、全てのハイライトをリセット
+                const nodeParent = d3.select(event.target.parentNode);
+                if (!nodeParent.classed("node")) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                 }
