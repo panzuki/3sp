@@ -388,11 +388,13 @@
                     const isCurrentlyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
                     
                     // すべてのハイライトをリセット
-                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
 
                     // クリックしたノードが既にハイライトされていた場合は、ハイライトを解除して終了
                     if (isCurrentlyHighlighted) {
+                        d3.selectAll(".node").classed("faded", false);
+                        d3.selectAll(".link").classed("faded", false);
                         return;
                     }
 
