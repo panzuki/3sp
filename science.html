@@ -35,19 +35,17 @@
         .node {
             cursor: pointer;
         }
-        /* クリック領域は常に透明にする */
         .node-click-area {
-            fill: transparent;
+            fill: transparent !important; /* クリック領域を強制的に透明にする */
             pointer-events: all;
         }
-        /* ノードの形状（円と四角）に分けてスタイルを適用 */
         .node-circle {
             stroke: #fff;
             stroke-width: 2px;
             transition: r 0.2s ease-in-out, fill 0.2s ease-in-out;
         }
         .node-rect {
-            fill: #ddd; /* 四角形ノードのデフォルト色 */
+            fill: #ddd;
             stroke: #fff;
             stroke-width: 2px;
             transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out;
@@ -97,6 +95,10 @@
         .highlight-node .node-circle, .highlight-node .node-rect {
             stroke: #333;
             opacity: 1;
+        }
+        /* ハイライトされた四角形の色をグレーにして文字を見やすくする */
+        .highlight-node .node-rect {
+            fill: #999;
         }
         .highlight-node .node-label, .highlight-node .chart-node-label {
             fill: #000;
