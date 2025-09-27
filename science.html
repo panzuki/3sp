@@ -35,15 +35,24 @@
         .node {
             cursor: pointer;
         }
+        /* クリック領域は常に透明にする */
         .node-click-area {
             fill: transparent;
             pointer-events: all;
         }
-        .node-circle, .node-rect {
+        /* ノードの形状（円と四角）に分けてスタイルを適用 */
+        .node-circle {
             stroke: #fff;
             stroke-width: 2px;
-            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s, stroke 0.3s;
+            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out;
         }
+        .node-rect {
+            fill: #ddd; /* 四角形ノードのデフォルト色 */
+            stroke: #fff;
+            stroke-width: 2px;
+            transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out;
+        }
+        /* ホバー時のスタイル */
         .node:hover .node-circle {
             fill: #3b82f6;
             r: 8px;
@@ -51,6 +60,7 @@
         .node:hover .node-rect {
             fill: #3b82f6;
         }
+        /* テキストのスタイル */
         .node-label, .chart-node-label {
             font-size: 8px;
             pointer-events: none;
@@ -80,7 +90,7 @@
             transition: opacity 0.2s;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        /* ハイライト関連のスタイルを修正 */
+        /* ハイライト関連のスタイル */
         .faded {
             opacity: 0.2;
         }
@@ -93,7 +103,6 @@
             font-weight: bold;
             opacity: 1;
         }
-        /* ハイライトの優先度を上げる */
         .highlight-link {
             stroke-opacity: 1 !important;
             stroke-width: 2.5px !important;
@@ -316,7 +325,7 @@
                         .attr("class", "node")
                         .attr("transform", d => `translate(${d.x},${d.y})`);
 
-                    // 四角形ノードの描画とクリック領域の追加
+                    // 四角形ノードの描画
                     nodeElements.append("rect")
                         .attr("class", "node-rect")
                         .attr("x", d => - (d.name.length * 5) / 2 - 5)
@@ -324,10 +333,7 @@
                         .attr("rx", 5)
                         .attr("ry", 5)
                         .attr("width", d => d.name.length * 5 + 10)
-                        .attr("height", 20)
-                        .attr("fill", "#ddd")
-                        .style("stroke-width", "2px")
-                        .style("stroke", "#fff");
+                        .attr("height", 20);
 
                     // クリック領域を透明なrectで追加
                     nodeElements.append("rect")
