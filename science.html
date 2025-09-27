@@ -39,16 +39,19 @@
             fill: transparent;
             pointer-events: all;
         }
-        .node-circle {
+        .node-circle, .node-rect {
             stroke: #fff;
             stroke-width: 2px;
-            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s;
+            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s, stroke 0.3s;
         }
         .node:hover .node-circle {
             fill: #3b82f6;
             r: 8px;
         }
-        .node-label {
+        .node:hover .node-rect {
+            fill: #3b82f6;
+        }
+        .node-label, .chart-node-label {
             font-size: 8px;
             pointer-events: none;
             user-select: none;
@@ -81,7 +84,7 @@
         .faded {
             opacity: 0.2;
         }
-        .highlight-node .node-circle {
+        .highlight-node .node-circle, .highlight-node .node-rect {
             stroke: #333;
             opacity: 1;
         }
@@ -313,12 +316,26 @@
                         .attr("class", "node")
                         .attr("transform", d => `translate(${d.x},${d.y})`);
 
+                    // 四角形ノードの描画とクリック領域の追加
+                    nodeElements.append("rect")
+                        .attr("class", "node-rect")
+                        .attr("x", d => - (d.name.length * 5) / 2 - 5)
+                        .attr("y", -10)
+                        .attr("rx", 5)
+                        .attr("ry", 5)
+                        .attr("width", d => d.name.length * 5 + 10)
+                        .attr("height", 20)
+                        .attr("fill", "#ddd")
+                        .style("stroke-width", "2px")
+                        .style("stroke", "#fff");
+
+                    // クリック領域を透明なrectで追加
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
                         .attr("x", d => - (d.name.length * 5) / 2 - 5)
-                        .attr("y", -10) 
+                        .attr("y", -10)
                         .attr("width", d => d.name.length * 5 + 10)
-                        .attr("height", 20); 
+                        .attr("height", 20);
 
                     nodeElements.append("text")
                         .attr("class", "chart-node-label")
@@ -429,7 +446,6 @@
                 });
             
             d3.select("#chart").on("click", function(event) {
-                // クリックされた要素がノードでない場合、すべてのハイライトをリセット
                 const isClickOnNode = event.target.closest(".node");
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
@@ -443,4 +459,3 @@
     </script>
 </body>
 </html>
-　
