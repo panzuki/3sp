@@ -15,6 +15,9 @@
             flex-direction: column;
             align-items: center;
         }
+        h1 {
+            margin-bottom: 20px;
+        }
         svg {
             background-color: white;
             border-radius: 12px;
@@ -79,16 +82,16 @@
         }
 
         .faded {
-            opacity: 0.2;
+            opacity: 0.2 !important;
         }
         .highlight-node .node-circle {
             stroke: #333;
-            opacity: 1;
+            opacity: 1 !important;
         }
         .highlight-node .node-label, .highlight-node .chart-node-label {
             fill: #000;
             font-weight: bold;
-            opacity: 1;
+            opacity: 1 !important;
         }
         .highlight-link {
             stroke-opacity: 1 !important;
@@ -114,7 +117,6 @@
     <script>
         const width = 1200;
         const groupSpacingY = 350;
-        const chartTextWidth = 150;
         const charSpacing = 8;
         const circleRadius = 8;
 
@@ -152,10 +154,10 @@
                 const groupName = `chart${i + 1}`;
                 const isProcess = (i + 1) % 2 === 0;
 
-                // データの有効性を検証するフィルタリングを追加
                 data.filter(d => d.番号).forEach(d => {
                     const id = `${groupName}-${d.番号}`;
                     const name = d['物質名'] || d['反応名'] || d['構成物質名'];
+                    if (!name) return; // 名前がないノードはスキップ
                     const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
@@ -382,46 +384,62 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    const isCurrentlyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
                     
-                    d3.select(event.currentTarget).classed("faded", false).classed("highlight-node", true);
+                    // 全てのリセット
+                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    
+                    if (isCurrentlyHighlighted) {
+                        return;
+                    }
 
+                    // 関連ノードと関連リンクを探索する
                     const relatedNodeIds = new Set();
+                    const nodesToProcess = [d.id];
                     relatedNodeIds.add(d.id);
-
-                    const relatedLinks = finalLinks.filter(link => {
-                        return link.source === d.id || link.target === d.id;
-                    });
-
-                    relatedLinks.forEach(link => {
-                        relatedNodeIds.add(link.source);
-                        relatedNodeIds.add(link.target);
-                    });
-
-                    linkElements.filter(link => relatedLinks.includes(link))
-                        .classed("faded", false)
-                        .classed("highlight-link", true)
-                        .each(function(l) {
-                            d3.select(this)
-                                .classed("generated", l.type === "generated")
-                                .classed("consumed", l.type === "consumed")
-                                .classed("direct", l.type === "direct");
-                        });
                     
-                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
+                    let head = 0;
+                    while (head < nodesToProcess.length) {
+                        const currentNodeId = nodesToProcess[head++];
+                        
+                        finalLinks.forEach(link => {
+                            if (link.source === currentNodeId && !relatedNodeIds.has(link.target)) {
+                                relatedNodeIds.add(link.target);
+                                nodesToProcess.push(link.target);
+                            }
+                            if (link.target === currentNodeId && !relatedNodeIds.has(link.source)) {
+                                relatedNodeIds.add(link.source);
+                                nodesToProcess.push(link.source);
+                            }
+                        });
+                    }
+                    
+                    // フェード処理とハイライト
+                    d3.selectAll(".node").classed("faded", nd => !relatedNodeIds.has(nd.id));
+                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
+
+                    linkElements.classed("faded", l => !(relatedNodeIds.has(l.source) && relatedNodeIds.has(l.target)));
+                    
+                    linkElements.filter(l => relatedNodeIds.has(l.source) && relatedNodeIds.has(l.target))
+                        .classed("highlight-link", true)
+                        .classed("generated", l => l.type === "generated")
+                        .classed("consumed", l => l.type === "consumed")
+                        .classed("direct", l => l.type === "direct");
                 });
             
-            d3.select("#chart").on("click", function(event) {
-                const isClickOnNode = d3.select(event.target).closest(".node").node();
-                if (!isClickOnNode) {
+            d3.select("body").on("click", function(event) {
+                const isClickOnNode = event.target.closest(".node");
+                const isClickOnSVG = event.target.closest("#chart");
+
+                if (!isClickOnNode && isClickOnSVG) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                 }
             });
 
         }).catch(error => {
-            console.error("CSVファイルの読み込み中にエラーが発生しました。", error);
+            console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
         });
     </script>
 </body>
