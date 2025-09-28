@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図002</title>
+    <title>パン生地の物質変遷フロー図003</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -106,16 +106,13 @@
         .highlight-link.direct {
             stroke: #333 !important;
         }
-        .highlight-link.consumed.process-node {
-            stroke: blue !important;
-        }
         .extinct-link {
             stroke-dasharray: 4, 2;
         }
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図002</h1>
+    <h1>パン生地の物質変遷フロー図003</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -155,64 +152,55 @@
             const links = [];
             const nodeMap = new Map();
             const groupMap = new Map();
+            const allData = validDatasets.flat();
 
-            validDatasets.forEach((data, i) => {
-                const groupName = `chart${i + 1}`;
-                const isProcess = (i + 1) % 2 === 0;
-
-                data.filter(d => d.番号).forEach(d => {
-                    const id = `${groupName}-${d.番号}`;
-                    const name = d['物質名'] || d['反応名'] || d['構成物質名'];
-                    if (!name) return;
-                    const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
-                    nodes.push(node);
-                    nodeMap.set(d.番号, node);
-                    groupMap.set(d.番号, groupName);
-                });
+            allData.filter(d => d.番号).forEach(d => {
+                const groupName = groupMap.get(d.番号) || `chart${allData.findIndex(row => row.番号 === d.番号) + 1}`;
+                const isProcess = groupName === 'chart2';
+                const id = `${groupName}-${d.番号}`;
+                const name = d['物質名'] || d['反応名'] || d['構成物質名'];
+                if (!name) return;
+                const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
+                nodes.push(node);
+                nodeMap.set(d.番号, node);
             });
             
-            validDatasets.forEach((data, i) => {
-                data.filter(d => d.番号).forEach(d => {
-                    const currentNode = nodeMap.get(d.番号);
-                    if (!currentNode) return;
+            allData.forEach(d => {
+                const currentNode = nodeMap.get(d.番号);
+                if (!currentNode) return;
+                
+                if (d.引き継ぎ番号) {
+                    const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
+                    const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
                     
-                    if (d.引き継ぎ番号) {
-                        const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                        const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
-                        
-                        parts.forEach(part => {
-                            const isExtinct = part.startsWith('×');
-                            const actualPart = isExtinct ? part.substring(1) : part;
+                    parts.forEach(part => {
+                        const isExtinct = part.startsWith('×');
+                        const actualPart = isExtinct ? part.substring(1) : part;
 
-                            const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
-                            if (reactionMatch) {
-                                const reactionId = reactionMatch[1];
-                                const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()) : [];
+                        const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
+                        if (reactionMatch) {
+                            const reactionId = reactionMatch[1];
+                            const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()) : [];
+                            
+                            const reactionNode = nodeMap.get(reactionId);
+                            if (reactionNode) {
+                                links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
                                 
-                                const reactionNode = nodeMap.get(reactionId);
-                                if (reactionNode) {
-                                    links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
-                                    
-                                    sourceMaterials.forEach(matId => {
-                                        const sourceNode = nodeMap.get(matId);
-                                        if (sourceNode) {
-                                            links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct });
-                                        }
-                                    });
-                                }
-                            } else {
-                                const sourceNode = nodeMap.get(actualPart);
-                                if (sourceNode) {
-                                    const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
-                                    const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
-                                    if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
-                                        links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct', isExtinct });
+                                sourceMaterials.forEach(matId => {
+                                    const sourceNode = nodeMap.get(matId);
+                                    if (sourceNode) {
+                                        links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct });
                                     }
-                                }
+                                });
                             }
-                        });
-                    }
-                });
+                        } else {
+                            const sourceNode = nodeMap.get(actualPart);
+                            if (sourceNode) {
+                                links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct', isExtinct });
+                            }
+                        }
+                    });
+                }
             });
             
             const uniqueLinks = new Map();
@@ -391,11 +379,11 @@
                     if (!isAlreadyHighlighted) {
                         const relatedNodeIds = new Set();
                         const relatedLinkIds = new Set();
-
+                        
                         function traverse(nodeId, direction) {
                             if (relatedNodeIds.has(nodeId)) return;
                             relatedNodeIds.add(nodeId);
-
+                            
                             finalLinks.forEach(link => {
                                 if (direction === 'forward' && link.source === nodeId) {
                                     relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
@@ -408,7 +396,21 @@
                         }
                         
                         traverse(d.id, 'forward');
-                        traverse(d.id, 'backward');
+                        if (d.isProcess) {
+                            const linkDetails = d.data.引き継ぎ番号;
+                            const reactionMatch = linkDetails ? linkDetails.match(/([MR]\d+[a-z]?)\((.*?)\)/) : null;
+                            if (reactionMatch) {
+                                const sourceMaterials = reactionMatch[2].split(',').map(s => s.trim());
+                                sourceMaterials.forEach(matId => {
+                                    const sourceNode = nodeMap.get(matId);
+                                    if (sourceNode) {
+                                        traverse(sourceNode.id, 'backward');
+                                    }
+                                });
+                            }
+                        } else {
+                            traverse(d.id, 'backward');
+                        }
 
                         d3.selectAll(".node").classed("faded", node => !relatedNodeIds.has(node.id));
                         d3.selectAll(".node").filter(node => relatedNodeIds.has(node.id)).classed("highlight-node", true);
