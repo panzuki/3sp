@@ -189,8 +189,10 @@
                                                 links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
                                             }
                                         });
+                                        // 修正：化学反応の出力（生成物）のIDを正しく組み立てる
                                         if (reactionMatch[1] !== '-') {
-                                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
+                                            const targetId = `${groupMap.get(d.番号)}-${d.番号}`;
+                                            links.push({ source: reactionNode.id, target: targetId, type: 'generated' });
                                         }
                                     }
                                 } else {
@@ -239,9 +241,8 @@
                         node.y = center.y - (totalHeight / 2) + j * nodeSpacing;
                     });
                 } else {
-                    // ノードの配置を動的に調整
-                    const radius = 200; // 半径を広げる
-                    const textRadius = 140; // テキストの半径を広げる
+                    const radius = 200;
+                    const textRadius = 140;
                     const angleStep = 2 * Math.PI / groupNodes.length;
                     
                     groupNodes.forEach((node, j) => {
