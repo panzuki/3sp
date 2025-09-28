@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図004</title>
+    <title>パン生地の物質変遷フロー図005</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -112,7 +112,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図004</h1>
+    <h1>パン生地の物質変遷フロー図005</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -190,7 +190,7 @@
                             sourceMaterials.forEach(matId => {
                                 const sourceNode = nodeMap.get(matId);
                                 if (sourceNode) {
-                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: isExtinct || matId.startsWith('×') });
+                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct });
                                 }
                             });
                         }
@@ -343,7 +343,7 @@
                         .attr("text-anchor", "middle")
                         .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
                         
-                    const totalHeight = (nodeText.length > 0 ? nodeText.length - 1 : 0) * charSpacing;
+                    const totalHeight = (nodeText && nodeText.length > 0 ? nodeText.length - 1 : 0) * charSpacing;
                     const startY = -totalHeight / 2;
 
                     for (let i = 0; i < nodeText.length; i++) {
@@ -360,7 +360,7 @@
                 .enter().append("text")
                 .attr("class", "group-label")
                 .attr("x", 0)
-                .attr("y", d => d[1][0].y - 150)
+                .attr("y", d => d[1].length > 0 ? d[1][0].y - 150 : 0)
                 .text(d => groupLabels[d[0]]);
 
             d3.selectAll(".node")
@@ -398,21 +398,20 @@
                             });
                         }
                         
-                        traverse(d.id, 'forward');
-                        
                         if (d.isProcess) {
-                            const linkDetails = d.data.引き継ぎ番号;
-                            const reactionMatch = linkDetails ? linkDetails.match(/([MR]\d+[a-z]?)\((.*?)\)/) : null;
-                            if (reactionMatch) {
-                                const sourceMaterials = reactionMatch[2].split(',').map(s => s.trim());
-                                sourceMaterials.forEach(matId => {
-                                    const sourceNode = nodeMap.get(matId);
-                                    if (sourceNode) {
-                                        traverse(sourceNode.id, 'backward');
-                                    }
-                                });
-                            }
+                            // 化学反応ノードの場合、インプット（consumed）とアウトプット（generated）をハイライト
+                            finalLinks.forEach(link => {
+                                if (link.source === d.id && link.type === 'generated') {
+                                    relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
+                                    traverse(link.target, 'forward');
+                                } else if (link.target === d.id && link.type === 'consumed') {
+                                    relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
+                                    traverse(link.source, 'backward');
+                                }
+                            });
                         } else {
+                            // 材料ノードの場合、前方と後方をすべて追跡
+                            traverse(d.id, 'forward');
                             traverse(d.id, 'backward');
                         }
 
