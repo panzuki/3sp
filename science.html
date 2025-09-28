@@ -35,6 +35,10 @@
         .node {
             cursor: pointer;
         }
+        .node-click-area {
+            fill: transparent !important;
+            pointer-events: all;
+        }
         .node-circle {
             stroke: #fff;
             stroke-width: 2px;
@@ -162,13 +166,21 @@
             const nodeMap = new Map();
 
             validDatasets.forEach((data, i) => {
-                const groupName = `chart${i + 1}`;
-                const isProcess = (i + 1) % 2 === 0;
-
-                data.filter(d => d.番号).forEach(d => {
-                    const id = `${groupName}-${d.番号}`;
+                data.forEach(d => {
+                    if (!d.番号) {
+                        console.warn(`警告: '番号'が欠落している行をスキップします:`, d);
+                        return;
+                    }
+                    const groupName = `chart${i + 1}`;
+                    const isProcess = (i + 1) % 2 === 0;
                     const name = d['構成物質名'] || d['物質名'] || d['反応名'] || '';
-                    const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
+
+                    // NaNエラーの原因を特定するロジック
+                    if (name === '' || typeof name !== 'string') {
+                        console.error(`D3エラー: 'name'プロパティが欠落または無効なデータが見つかりました。番号: ${d.番号}, データ:`, d);
+                    }
+
+                    const node = { id: `${groupName}-${d.番号}`, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
                 });
@@ -279,7 +291,8 @@
                     let sourceX, sourceY, targetX, targetY;
 
                     if (sourceNode.isProcess) {
-                        sourceX = sourceNode.x + (sourceNode.name.length * 5) / 2;
+                        const nameLength = sourceNode.name ? sourceNode.name.length : 0;
+                        sourceX = sourceNode.x + (nameLength * 5) / 2;
                         sourceY = sourceNode.y;
                     } else {
                         sourceX = sourceNode.circleX;
@@ -287,7 +300,8 @@
                     }
 
                     if (targetNode.isProcess) {
-                        targetX = targetNode.x - (targetNode.name.length * 5) / 2;
+                        const nameLength = targetNode.name ? targetNode.name.length : 0;
+                        targetX = targetNode.x - (nameLength * 5) / 2;
                         targetY = targetNode.y;
                     } else {
                         targetX = targetNode.circleX;
@@ -324,18 +338,18 @@
                     // クリック領域を先に描画し、視覚的に隠す
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
-                        .attr("x", d => - (d.name.length * 5) / 2 - 5)
+                        .attr("x", d => -(d.name.length * 5) / 2 - 5)
                         .attr("y", -10)
                         .attr("rx", 5)
                         .attr("ry", 5)
                         .attr("width", d => (d.name ? d.name.length * 5 + 10 : 10))
                         .attr("height", 20)
-                        .style("fill", "transparent"); // 透明に設定
+                        .style("fill", "transparent");
 
                     // 四角形ノードの本体を描画
                     nodeElements.append("rect")
                         .attr("class", "node-rect")
-                        .attr("x", d => - (d.name.length * 5) / 2 - 5)
+                        .attr("x", d => -(d.name.length * 5) / 2 - 5)
                         .attr("y", -10)
                         .attr("rx", 5)
                         .attr("ry", 5)
@@ -360,7 +374,7 @@
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY)
                         .attr("r", 20)
-                        .style("fill", "transparent"); // 透明に設定
+                        .style("fill", "transparent");
 
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
