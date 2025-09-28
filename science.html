@@ -239,11 +239,14 @@
                         node.y = center.y - (totalHeight / 2) + j * nodeSpacing;
                     });
                 } else {
+                    // ノードの配置を動的に調整
+                    const radius = 200; // 半径を広げる
+                    const textRadius = 140; // テキストの半径を広げる
                     const angleStep = 2 * Math.PI / groupNodes.length;
+                    
                     groupNodes.forEach((node, j) => {
                         const angle = j * angleStep;
                         
-                        const textRadius = 100;
                         node.textX = center.x + textRadius * Math.cos(angle);
                         node.textY = center.y + textRadius * Math.sin(angle);
                         
@@ -377,12 +380,10 @@
                 .on("click", (event, d) => {
                     const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
 
-                    // すべてをリセット
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
 
                     if (!isAlreadyHighlighted) {
-                        // クリックしたノードと直接関連するノードを特定
                         const directRelatedNodeIds = new Set();
                         directRelatedNodeIds.add(d.id);
 
@@ -395,11 +396,9 @@
                             }
                         });
 
-                        // 関連ノードのハイライトとフェード
                         d3.selectAll(".node").classed("faded", node => !directRelatedNodeIds.has(node.id));
                         d3.selectAll(".node").filter(node => directRelatedNodeIds.has(node.id)).classed("highlight-node", true);
                         
-                        // 関連リンクのハイライトとフェード
                         linkElements.classed("faded", link => !(link.source === d.id || link.target === d.id));
                         
                         linkElements.filter(link => link.source === d.id || link.target === d.id)
