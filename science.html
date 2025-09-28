@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図005</title>
+    <title>パン生地の物質変遷フロー図006</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -68,6 +68,7 @@
             text-anchor: middle;
             pointer-events: none;
             user-select: none;
+            opacity: 1 !important;
         }
         .tooltip {
             position: absolute;
@@ -88,7 +89,7 @@
             stroke: #333;
             opacity: 1 !important;
         }
-        .highlight-node .node-label, .highlight-node .chart-node-label {
+        .highlight-node .node-label {
             fill: #000;
             font-weight: bold;
             opacity: 1 !important;
@@ -112,7 +113,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図005</h1>
+    <h1>パン生地の物質変遷フロー図006</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -384,7 +385,9 @@
                         const relatedLinkIds = new Set();
                         
                         function traverse(nodeId, direction) {
-                            if (relatedNodeIds.has(nodeId)) return;
+                            if (relatedNodeIds.has(nodeId)) {
+                                return;
+                            }
                             relatedNodeIds.add(nodeId);
                             
                             finalLinks.forEach(link => {
@@ -399,7 +402,8 @@
                         }
                         
                         if (d.isProcess) {
-                            // 化学反応ノードの場合、インプット（consumed）とアウトプット（generated）をハイライト
+                            // 化学反応ノードの場合、インプットとアウトプットをハイライト
+                            relatedNodeIds.add(d.id); // 自分自身をハイライト
                             finalLinks.forEach(link => {
                                 if (link.source === d.id && link.type === 'generated') {
                                     relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
