@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図003</title>
+    <title>パン生地の物質変遷フロー図004</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -112,7 +112,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図003</h1>
+    <h1>パン生地の物質変遷フロー図004</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -151,11 +151,12 @@
             const nodes = [];
             const links = [];
             const nodeMap = new Map();
-            const groupMap = new Map();
             const allData = validDatasets.flat();
-
-            allData.filter(d => d.番号).forEach(d => {
-                const groupName = groupMap.get(d.番号) || `chart${allData.findIndex(row => row.番号 === d.番号) + 1}`;
+            
+            // ノードの生成とデータマップの構築
+            allData.forEach(d => {
+                if (!d.番号) return;
+                const groupName = `chart${validDatasets.findIndex(dataset => dataset.includes(d)) + 1}`;
                 const isProcess = groupName === 'chart2';
                 const id = `${groupName}-${d.番号}`;
                 const name = d['物質名'] || d['反応名'] || d['構成物質名'];
@@ -165,42 +166,41 @@
                 nodeMap.set(d.番号, node);
             });
             
+            // リンクの生成
             allData.forEach(d => {
                 const currentNode = nodeMap.get(d.番号);
-                if (!currentNode) return;
+                if (!currentNode || !d.引き継ぎ番号) return;
                 
-                if (d.引き継ぎ番号) {
-                    const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                    const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
-                    
-                    parts.forEach(part => {
-                        const isExtinct = part.startsWith('×');
-                        const actualPart = isExtinct ? part.substring(1) : part;
+                const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
+                const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
+                
+                parts.forEach(part => {
+                    const isExtinct = part.startsWith('×');
+                    const actualPart = isExtinct ? part.substring(1) : part;
 
-                        const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
-                        if (reactionMatch) {
-                            const reactionId = reactionMatch[1];
-                            const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()) : [];
+                    const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
+                    if (reactionMatch) {
+                        const reactionId = reactionMatch[1];
+                        const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()) : [];
+                        
+                        const reactionNode = nodeMap.get(reactionId);
+                        if (reactionNode) {
+                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
                             
-                            const reactionNode = nodeMap.get(reactionId);
-                            if (reactionNode) {
-                                links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
-                                
-                                sourceMaterials.forEach(matId => {
-                                    const sourceNode = nodeMap.get(matId);
-                                    if (sourceNode) {
-                                        links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct });
-                                    }
-                                });
-                            }
-                        } else {
-                            const sourceNode = nodeMap.get(actualPart);
-                            if (sourceNode) {
-                                links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct', isExtinct });
-                            }
+                            sourceMaterials.forEach(matId => {
+                                const sourceNode = nodeMap.get(matId);
+                                if (sourceNode) {
+                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: isExtinct || matId.startsWith('×') });
+                                }
+                            });
                         }
-                    });
-                }
+                    } else {
+                        const sourceNode = nodeMap.get(actualPart);
+                        if (sourceNode) {
+                            links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct', isExtinct });
+                        }
+                    }
+                });
             });
             
             const uniqueLinks = new Map();
@@ -243,8 +243,8 @@
                         node.textX = center.x + textRadius * Math.cos(angle);
                         node.textY = center.y + textRadius * Math.sin(angle);
                         
-                        const totalTextLength = (node.name.length - 1) * charSpacing;
-                        const textHalfLength = totalTextLength / 2;
+                        const totalTextLength = (node.name ? node.name.length : 0);
+                        const textHalfLength = totalTextLength / 2 * charSpacing;
                         const pointOffsetFromText = 5 + circleRadius;
                         const circleRadiusFromCenter = textRadius + textHalfLength + pointOffsetFromText;
                         
@@ -270,7 +270,8 @@
                     let sourceX, sourceY, targetX, targetY;
 
                     if (sourceNode.isProcess) {
-                        sourceX = sourceNode.x + (sourceNode.name.length * 5) / 2;
+                        const textLength = sourceNode.name ? sourceNode.name.length : 0;
+                        sourceX = sourceNode.x + (textLength * 5) / 2;
                         sourceY = sourceNode.y;
                     } else {
                         sourceX = sourceNode.circleX;
@@ -278,7 +279,8 @@
                     }
 
                     if (targetNode.isProcess) {
-                        targetX = targetNode.x - (targetNode.name.length * 5) / 2;
+                        const textLength = targetNode.name ? targetNode.name.length : 0;
+                        targetX = targetNode.x - (textLength * 5) / 2;
                         targetY = targetNode.y;
                     } else {
                         targetX = targetNode.circleX;
@@ -307,11 +309,12 @@
             nodeElements.each(function(d) {
                 const nodeElement = d3.select(this);
                 if (d.isProcess) {
+                    const textLength = d.name ? d.name.length : 0;
                     nodeElement.append("rect")
                         .attr("class", "node-click-area")
-                        .attr("x", d => - (d.name.length * 5) / 2)
+                        .attr("x", - (textLength * 5) / 2)
                         .attr("y", -10)
-                        .attr("width", d => d.name.length * 5)
+                        .attr("width", textLength * 5)
                         .attr("height", 20);
 
                     nodeElement.append("text")
@@ -340,7 +343,7 @@
                         .attr("text-anchor", "middle")
                         .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
                         
-                    const totalHeight = (nodeText.length - 1) * charSpacing;
+                    const totalHeight = (nodeText.length > 0 ? nodeText.length - 1 : 0) * charSpacing;
                     const startY = -totalHeight / 2;
 
                     for (let i = 0; i < nodeText.length; i++) {
@@ -396,6 +399,7 @@
                         }
                         
                         traverse(d.id, 'forward');
+                        
                         if (d.isProcess) {
                             const linkDetails = d.data.引き継ぎ番号;
                             const reactionMatch = linkDetails ? linkDetails.match(/([MR]\d+[a-z]?)\((.*?)\)/) : null;
