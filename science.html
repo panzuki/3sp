@@ -15,13 +15,11 @@
             flex-direction: column;
             align-items: center;
         }
-        h1 {
-            margin-bottom: 20px;
-        }
         svg {
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
             overflow: visible;
         }
         .link {
@@ -38,30 +36,19 @@
             cursor: pointer;
         }
         .node-click-area {
-            fill: transparent !important;
+            fill: transparent;
             pointer-events: all;
         }
         .node-circle {
             stroke: #fff;
             stroke-width: 2px;
-            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out;
+            transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s;
         }
-        .node-rect {
-            fill: #ddd;
-            stroke: #fff;
-            stroke-width: 2px;
-            transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out;
-        }
-        /* ホバー時のスタイル */
         .node:hover .node-circle {
             fill: #3b82f6;
             r: 8px;
         }
-        .node:hover .node-rect {
-            fill: #3b82f6;
-        }
-        /* テキストのスタイル */
-        .node-label, .chart-node-label {
+        .node-label {
             font-size: 8px;
             pointer-events: none;
             user-select: none;
@@ -90,17 +77,17 @@
             transition: opacity 0.2s;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        /* ハイライト関連のスタイル */
+
         .faded {
             opacity: 0.2;
         }
         .highlight-node .node-circle {
-            fill: #ff6347 !important;
-            r: 10px !important;
+            stroke: #333;
             opacity: 1;
         }
-        .highlight-node .node-rect {
-            fill: #ff6347 !important;
+        .highlight-node .node-label, .highlight-node .chart-node-label {
+            fill: #000;
+            font-weight: bold;
             opacity: 1;
         }
         .highlight-link {
@@ -108,13 +95,13 @@
             stroke-width: 2.5px !important;
         }
         .highlight-link.generated {
-            stroke: #ffc107 !important;
+            stroke: gold !important;
         }
         .highlight-link.consumed {
-            stroke: #00bcd4 !important;
+            stroke: #00BFFF !important;
         }
         .highlight-link.direct {
-            stroke: #666 !important;
+            stroke: #333 !important;
         }
     </style>
 </head>
@@ -127,6 +114,7 @@
     <script>
         const width = 1200;
         const groupSpacingY = 350;
+        const chartTextWidth = 150;
         const charSpacing = 8;
         const circleRadius = 8;
 
@@ -148,47 +136,43 @@
 
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
 
-        Promise.all(fileNames.map(url => d3.csv(url).catch(e => {
-            console.error(`ファイル ${url} の読み込みに失敗しました:`, e);
-            return null;
-        }))).then(datasets => {
-            const validDatasets = datasets.filter(d => d !== null && d.length > 0);
+        Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
+            const validDatasets = datasets.filter(d => d !== null);
             if (validDatasets.length === 0) {
-                console.error("有効なCSVファイルが読み込まれませんでした。");
+                console.error("CSVファイルが読み込まれませんでした。");
                 return;
             }
 
             const nodes = [];
             const links = [];
             const nodeMap = new Map();
+            const groupMap = new Map();
 
             validDatasets.forEach((data, i) => {
                 const groupName = `chart${i + 1}`;
                 const isProcess = (i + 1) % 2 === 0;
 
-                data.forEach(d => {
-                    const name = d['構成物質名'] || d['物質名'] || d['反応名'];
-                    if (!d.番号 || !name) {
-                        console.warn(`警告: '番号'または'構成物質名'が欠落している行をスキップします:`, d);
-                        return;
-                    }
+                // データの有効性を検証するフィルタリングを追加
+                data.filter(d => d.番号).forEach(d => {
                     const id = `${groupName}-${d.番号}`;
+                    const name = d['物質名'] || d['反応名'] || d['構成物質名'];
                     const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
+                    groupMap.set(d.番号, groupName);
                 });
             });
-
-            validDatasets.forEach((data) => {
+            
+            validDatasets.forEach((data, i) => {
                 data.filter(d => d.番号).forEach(d => {
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
+                    
+                    if (!currentNode.isProcess) {
+                        if (d.引き継ぎ番号) {
+                            const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
+                            const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
 
-                    if (d.引き継ぎ番号) {
-                        const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                        const parts = cleanText.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?|([^\s,]+)/g);
-
-                        if (parts) {
                             parts.forEach(part => {
                                 const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
                                 if (reactionMatch) {
@@ -208,9 +192,13 @@
                                         }
                                     }
                                 } else {
-                                    const sourceNode = nodeMap.get(part.trim());
+                                    const sourceNode = nodeMap.get(part);
                                     if (sourceNode) {
-                                        links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
+                                        const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
+                                        const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
+                                        if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
+                                            links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
+                                        }
                                     }
                                 }
                             });
@@ -218,7 +206,7 @@
                     }
                 });
             });
-
+            
             const uniqueLinks = new Map();
             links.forEach(link => {
                 const key = `${link.source}-${link.target}-${link.type}`;
@@ -227,8 +215,8 @@
                 }
             });
             const finalLinks = Array.from(uniqueLinks.values());
-
-            const groupData = d3.groups(nodes, d => d.group).filter(([group, groupNodes]) => groupNodes.length > 0);
+            
+            const groupData = d3.groups(nodes, d => d.group);
 
             if (groupData.length === 0) {
                 console.error("有効なデータからグループが生成されませんでした。");
@@ -249,19 +237,21 @@
                         node.y = center.y - (totalHeight / 2) + j * nodeSpacing;
                     });
                 } else {
-                    const radius = 150; // ノードの配置円の半径
                     const angleStep = 2 * Math.PI / groupNodes.length;
                     groupNodes.forEach((node, j) => {
                         const angle = j * angleStep;
                         
-                        // ノード円の座標
-                        node.circleX = center.x + radius * Math.cos(angle);
-                        node.circleY = center.y + radius * Math.sin(angle);
-                        
-                        // テキストの座標をノードの外側に配置
-                        const textRadius = radius + 20; // テキスト配置用の半径
+                        const textRadius = 100;
                         node.textX = center.x + textRadius * Math.cos(angle);
                         node.textY = center.y + textRadius * Math.sin(angle);
+                        
+                        const totalTextLength = (node.name.length - 1) * charSpacing;
+                        const textHalfLength = totalTextLength / 2;
+                        const pointOffsetFromText = 5 + circleRadius;
+                        const circleRadiusFromCenter = textRadius + textHalfLength + pointOffsetFromText;
+                        
+                        node.circleX = center.x + circleRadiusFromCenter * Math.cos(angle);
+                        node.circleY = center.y + circleRadiusFromCenter * Math.sin(angle);
                         
                         node.angle = angle;
                     });
@@ -277,16 +267,12 @@
                 .attr("d", d => {
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
-                    if (!sourceNode || !targetNode) {
-                        console.warn(`警告: 無効なリンクデータ - source: ${d.source}, target: ${d.target}`);
-                        return;
-                    }
+                    if (!sourceNode || !targetNode) return;
 
                     let sourceX, sourceY, targetX, targetY;
 
                     if (sourceNode.isProcess) {
-                        const nameLength = sourceNode.name ? sourceNode.name.length : 0;
-                        sourceX = sourceNode.x + (nameLength * 5) / 2;
+                        sourceX = sourceNode.x + (sourceNode.name.length * 5) / 2;
                         sourceY = sourceNode.y;
                     } else {
                         sourceX = sourceNode.circleX;
@@ -294,8 +280,7 @@
                     }
 
                     if (targetNode.isProcess) {
-                        const nameLength = targetNode.name ? targetNode.name.length : 0;
-                        targetX = targetNode.x - (nameLength * 5) / 2;
+                        targetX = targetNode.x - (targetNode.name.length * 5) / 2;
                         targetY = targetNode.y;
                     } else {
                         targetX = targetNode.circleX;
@@ -318,8 +303,6 @@
 
             nodeGroups.each(function([group, groupNodes]) {
                 const groupElement = d3.select(this);
-                if (groupNodes.length === 0) return;
-
                 const center = { x: 0, y: groupNodes[0].y };
 
                 if (groupNodes[0] && groupNodes[0].isProcess) {
@@ -331,22 +314,10 @@
 
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
-                        .attr("x", d => -(d.name.length * 5) / 2 - 5)
-                        .attr("y", -10)
-                        .attr("rx", 5)
-                        .attr("ry", 5)
-                        .attr("width", d => (d.name ? d.name.length * 5 + 10 : 10))
-                        .attr("height", 20)
-                        .style("fill", "transparent");
-
-                    nodeElements.append("rect")
-                        .attr("class", "node-rect")
-                        .attr("x", d => -(d.name.length * 5) / 2 - 5)
-                        .attr("y", -10)
-                        .attr("rx", 5)
-                        .attr("ry", 5)
-                        .attr("width", d => (d.name ? d.name.length * 5 + 10 : 10))
-                        .attr("height", 20);
+                        .attr("x", d => - (d.name.length * 5) / 2)
+                        .attr("y", -10) 
+                        .attr("width", d => d.name.length * 5)
+                        .attr("height", 20); 
 
                     nodeElements.append("text")
                         .attr("class", "chart-node-label")
@@ -364,8 +335,7 @@
                         .attr("class", "node-click-area")
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY)
-                        .attr("r", 20)
-                        .style("fill", "transparent");
+                        .attr("r", 20);
 
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
@@ -375,24 +345,16 @@
                         .attr("cy", d => d.circleY);
                     
                     nodeElements.each(function(d) {
-                        const nodeText = d.name || '';
+                        const nodeText = d.name;
                         const angle = d.angle;
                         const textElement = d3.select(this).append("text")
                             .attr("class", "node-label")
                             .attr("text-anchor", "middle")
-                            .attr("transform", `translate(${d.textX}, ${d.textY})`);
-                        
-                        // テキストの向きを調整
-                        const rotateAngle = angle * 180 / Math.PI + 90;
-                        if (rotateAngle > 90 && rotateAngle < 270) {
-                            textElement.attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${rotateAngle + 180})`);
-                        } else {
-                            textElement.attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${rotateAngle})`);
-                        }
-                        
+                            .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
+                            
                         const totalHeight = (nodeText.length - 1) * charSpacing;
                         const startY = -totalHeight / 2;
-                        
+
                         for (let i = 0; i < nodeText.length; i++) {
                             textElement.append("tspan")
                                 .attr("x", 0)
@@ -420,48 +382,38 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    const isCurrentlyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
+                    d3.selectAll(".node").classed("faded", true).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", true).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                     
-                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
-
-                    if (isCurrentlyHighlighted) {
-                        return;
-                    }
+                    d3.select(event.currentTarget).classed("faded", false).classed("highlight-node", true);
 
                     const relatedNodeIds = new Set();
-                    const relatedLinkIds = new Set();
-                    const nodesToProcess = [d.id];
-                    
-                    while (nodesToProcess.length > 0) {
-                        const currentNodeId = nodesToProcess.shift();
-                        if (relatedNodeIds.has(currentNodeId)) continue;
-                        relatedNodeIds.add(currentNodeId);
+                    relatedNodeIds.add(d.id);
 
-                        finalLinks.forEach(link => {
-                            if (link.source === currentNodeId || link.target === currentNodeId) {
-                                relatedLinkIds.add(`${link.source}-${link.target}`);
-                                if (link.source === currentNodeId && !relatedNodeIds.has(link.target)) {
-                                    nodesToProcess.push(link.target);
-                                }
-                                if (link.target === currentNodeId && !relatedNodeIds.has(link.source)) {
-                                    nodesToProcess.push(link.source);
-                                }
-                            }
-                        });
-                    }
-                    
-                    d3.selectAll(".node").classed("faded", nd => !relatedNodeIds.has(nd.id));
-                    d3.selectAll(".link").classed("faded", link => !relatedLinkIds.has(`${link.source}-${link.target}`));
+                    const relatedLinks = finalLinks.filter(link => {
+                        return link.source === d.id || link.target === d.id;
+                    });
 
-                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
-                    linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}`))
+                    relatedLinks.forEach(link => {
+                        relatedNodeIds.add(link.source);
+                        relatedNodeIds.add(link.target);
+                    });
+
+                    linkElements.filter(link => relatedLinks.includes(link))
+                        .classed("faded", false)
                         .classed("highlight-link", true)
-                        .classed(l => l.type, true);
+                        .each(function(l) {
+                            d3.select(this)
+                                .classed("generated", l.type === "generated")
+                                .classed("consumed", l.type === "consumed")
+                                .classed("direct", l.type === "direct");
+                        });
+                    
+                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("faded", false).classed("highlight-node", true);
                 });
             
             d3.select("#chart").on("click", function(event) {
-                const isClickOnNode = event.target.closest(".node");
+                const isClickOnNode = d3.select(event.target).closest(".node").node();
                 if (!isClickOnNode) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
@@ -469,8 +421,8 @@
             });
 
         }).catch(error => {
-            console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
+            console.error("CSVファイルの読み込み中にエラーが発生しました。", error);
         });
-  </script>
+    </script>
 </body>
 </html>
