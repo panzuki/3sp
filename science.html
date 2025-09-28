@@ -157,7 +157,7 @@
                 data.filter(d => d.番号).forEach(d => {
                     const id = `${groupName}-${d.番号}`;
                     const name = d['物質名'] || d['反応名'] || d['構成物質名'];
-                    if (!name) return; // 名前がないノードはスキップ
+                    if (!name) return;
                     const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
@@ -298,80 +298,71 @@
                              ${targetX},${targetY}`;
                 });
 
-            const nodeGroups = chartGroup.selectAll(".node-group")
+            const nodeElements = chartGroup.selectAll(".node-group")
                 .data(groupData)
                 .enter().append("g")
-                .attr("class", "node-group");
+                .attr("class", "node-group")
+                .selectAll(".node")
+                .data(d => d[1])
+                .enter().append("g")
+                .attr("class", "node")
+                .attr("transform", d => d.isProcess ? `translate(${d.x},${d.y})` : null);
 
-            nodeGroups.each(function([group, groupNodes]) {
-                const groupElement = d3.select(this);
-                const center = { x: 0, y: groupNodes[0].y };
-
-                if (groupNodes[0] && groupNodes[0].isProcess) {
-                    const nodeElements = groupElement.selectAll(".node")
-                        .data(groupNodes)
-                        .enter().append("g")
-                        .attr("class", "node")
-                        .attr("transform", d => `translate(${d.x},${d.y})`);
-
-                    nodeElements.append("rect")
+            nodeElements.each(function(d) {
+                const nodeElement = d3.select(this);
+                if (d.isProcess) {
+                    nodeElement.append("rect")
                         .attr("class", "node-click-area")
                         .attr("x", d => - (d.name.length * 5) / 2)
-                        .attr("y", -10) 
+                        .attr("y", -10)
                         .attr("width", d => d.name.length * 5)
-                        .attr("height", 20); 
+                        .attr("height", 20);
 
-                    nodeElements.append("text")
+                    nodeElement.append("text")
                         .attr("class", "chart-node-label")
                         .attr("x", 0)
                         .attr("y", 0)
                         .text(d => d.name);
-
-                } else if (groupNodes[0]) {
-                    const nodeElements = groupElement.selectAll(".node")
-                        .data(groupNodes)
-                        .enter().append("g")
-                        .attr("class", "node");
-                    
-                    nodeElements.append("circle")
+                } else {
+                    nodeElement.append("circle")
                         .attr("class", "node-click-area")
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY)
                         .attr("r", 20);
 
-                    nodeElements.append("circle")
+                    nodeElement.append("circle")
                         .attr("class", "node-circle")
                         .attr("r", circleRadius)
                         .attr("fill", d => groupColors[d.group])
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY);
-                    
-                    nodeElements.each(function(d) {
-                        const nodeText = d.name;
-                        const angle = d.angle;
-                        const textElement = d3.select(this).append("text")
-                            .attr("class", "node-label")
-                            .attr("text-anchor", "middle")
-                            .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
-                            
-                        const totalHeight = (nodeText.length - 1) * charSpacing;
-                        const startY = -totalHeight / 2;
 
-                        for (let i = 0; i < nodeText.length; i++) {
-                            textElement.append("tspan")
-                                .attr("x", 0)
-                                .attr("y", startY + i * charSpacing)
-                                .text(nodeText[i]);
-                        }
-                    });
+                    const nodeText = d.name;
+                    const angle = d.angle;
+                    const textElement = nodeElement.append("text")
+                        .attr("class", "node-label")
+                        .attr("text-anchor", "middle")
+                        .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
+                        
+                    const totalHeight = (nodeText.length - 1) * charSpacing;
+                    const startY = -totalHeight / 2;
+
+                    for (let i = 0; i < nodeText.length; i++) {
+                        textElement.append("tspan")
+                            .attr("x", 0)
+                            .attr("y", startY + i * charSpacing)
+                            .text(nodeText[i]);
+                    }
                 }
-                
-                groupElement.append("text")
-                    .attr("class", "group-label")
-                    .attr("x", 0)
-                    .attr("y", center.y - 150)
-                    .text(group => groupLabels[group[0]]);
             });
+
+            chartGroup.selectAll(".group-label")
+                .data(groupData)
+                .enter().append("text")
+                .attr("class", "group-label")
+                .attr("x", 0)
+                .attr("y", d => d[1][0].y - 150)
+                .text(d => groupLabels[d[0]]);
 
             d3.selectAll(".node")
                 .on("mouseover", (event, d) => {
@@ -384,55 +375,43 @@
                     tooltip.style("opacity", 0);
                 })
                 .on("click", (event, d) => {
-                    const isCurrentlyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
-                    
-                    // 全てのリセット
+                    const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
+
+                    // すべてをリセット
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
-                    
-                    if (isCurrentlyHighlighted) {
-                        return;
-                    }
 
-                    // 関連ノードと関連リンクを探索する
-                    const relatedNodeIds = new Set();
-                    const nodesToProcess = [d.id];
-                    relatedNodeIds.add(d.id);
-                    
-                    let head = 0;
-                    while (head < nodesToProcess.length) {
-                        const currentNodeId = nodesToProcess[head++];
-                        
+                    if (!isAlreadyHighlighted) {
+                        // クリックしたノードと直接関連するノードを特定
+                        const directRelatedNodeIds = new Set();
+                        directRelatedNodeIds.add(d.id);
+
                         finalLinks.forEach(link => {
-                            if (link.source === currentNodeId && !relatedNodeIds.has(link.target)) {
-                                relatedNodeIds.add(link.target);
-                                nodesToProcess.push(link.target);
+                            if (link.source === d.id) {
+                                directRelatedNodeIds.add(link.target);
                             }
-                            if (link.target === currentNodeId && !relatedNodeIds.has(link.source)) {
-                                relatedNodeIds.add(link.source);
-                                nodesToProcess.push(link.source);
+                            if (link.target === d.id) {
+                                directRelatedNodeIds.add(link.source);
                             }
                         });
-                    }
-                    
-                    // フェード処理とハイライト
-                    d3.selectAll(".node").classed("faded", nd => !relatedNodeIds.has(nd.id));
-                    d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
 
-                    linkElements.classed("faded", l => !(relatedNodeIds.has(l.source) && relatedNodeIds.has(l.target)));
-                    
-                    linkElements.filter(l => relatedNodeIds.has(l.source) && relatedNodeIds.has(l.target))
-                        .classed("highlight-link", true)
-                        .classed("generated", l => l.type === "generated")
-                        .classed("consumed", l => l.type === "consumed")
-                        .classed("direct", l => l.type === "direct");
+                        // 関連ノードのハイライトとフェード
+                        d3.selectAll(".node").classed("faded", node => !directRelatedNodeIds.has(node.id));
+                        d3.selectAll(".node").filter(node => directRelatedNodeIds.has(node.id)).classed("highlight-node", true);
+                        
+                        // 関連リンクのハイライトとフェード
+                        linkElements.classed("faded", link => !(link.source === d.id || link.target === d.id));
+                        
+                        linkElements.filter(link => link.source === d.id || link.target === d.id)
+                            .classed("highlight-link", true)
+                            .classed("generated", link => link.type === "generated")
+                            .classed("consumed", link => link.type === "consumed")
+                            .classed("direct", link => link.type === "direct");
+                    }
                 });
             
             d3.select("body").on("click", function(event) {
-                const isClickOnNode = event.target.closest(".node");
-                const isClickOnSVG = event.target.closest("#chart");
-
-                if (!isClickOnNode && isClickOnSVG) {
+                if (!event.target.closest(".node")) {
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
                 }
