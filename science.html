@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図</title>
+    <title>パン生地の物質変遷フロー図001</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -109,7 +109,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図</h1>
+    <h1>パン生地の物質変遷フロー図001</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -184,11 +184,9 @@
                                 const reactionNode = nodeMap.get(reactionId);
                                 if (reactionNode) {
                                     if (sign !== '-') {
-                                        // 生成されるリンク（反応 -> 物質）
                                         links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
                                     }
                                     
-                                    // 消費されるリンク（材料 -> 反応）
                                     sourceMaterials.forEach(matId => {
                                         const sourceNode = nodeMap.get(matId);
                                         if (sourceNode) {
@@ -385,24 +383,33 @@
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
 
                     if (!isAlreadyHighlighted) {
-                        const directRelatedNodeIds = new Set();
-                        directRelatedNodeIds.add(d.id);
+                        const relatedNodeIds = new Set();
+                        const relatedLinkIds = new Set();
 
-                        finalLinks.forEach(link => {
-                            if (link.source === d.id) {
-                                directRelatedNodeIds.add(link.target);
-                            }
-                            if (link.target === d.id) {
-                                directRelatedNodeIds.add(link.source);
-                            }
-                        });
+                        function traverse(nodeId, direction) {
+                            if (relatedNodeIds.has(nodeId)) return;
+                            relatedNodeIds.add(nodeId);
 
-                        d3.selectAll(".node").classed("faded", node => !directRelatedNodeIds.has(node.id));
-                        d3.selectAll(".node").filter(node => directRelatedNodeIds.has(node.id)).classed("highlight-node", true);
+                            finalLinks.forEach(link => {
+                                if (direction === 'forward' && link.source === nodeId) {
+                                    relatedLinkIds.add(`${link.source}-${link.target}-${link.type}`);
+                                    traverse(link.target, 'forward');
+                                } else if (direction === 'backward' && link.target === nodeId) {
+                                    relatedLinkIds.add(`${link.source}-${link.target}-${link.type}`);
+                                    traverse(link.source, 'backward');
+                                }
+                            });
+                        }
                         
-                        linkElements.classed("faded", link => !(link.source === d.id || link.target === d.id));
+                        traverse(d.id, 'forward');
+                        traverse(d.id, 'backward');
                         
-                        linkElements.filter(link => link.source === d.id || link.target === d.id)
+                        d3.selectAll(".node").classed("faded", node => !relatedNodeIds.has(node.id));
+                        d3.selectAll(".node").filter(node => relatedNodeIds.has(node.id)).classed("highlight-node", true);
+                        
+                        linkElements.classed("faded", link => !relatedLinkIds.has(`${link.source}-${link.target}-${link.type}`));
+                        
+                        linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}-${link.type}`))
                             .classed("highlight-link", true)
                             .classed("generated", link => link.type === "generated")
                             .classed("consumed", link => link.type === "consumed")
