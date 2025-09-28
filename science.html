@@ -170,43 +170,43 @@
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
                     
-                    if (!currentNode.isProcess) {
-                        if (d.引き継ぎ番号) {
-                            const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                            const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
-
-                            parts.forEach(part => {
-                                const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
-                                if (reactionMatch) {
-                                    const reactionId = reactionMatch[2];
-                                    const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
-                                    
-                                    const reactionNode = nodeMap.get(reactionId);
-                                    if (reactionNode) {
-                                        sourceMaterials.forEach(matId => {
-                                            const sourceNode = nodeMap.get(matId);
-                                            if (sourceNode) {
-                                                links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
-                                            }
-                                        });
-                                        // 修正：化学反応の出力（生成物）のIDを正しく組み立てる
-                                        if (reactionMatch[1] !== '-') {
-                                            const targetId = `${groupMap.get(d.番号)}-${d.番号}`;
-                                            links.push({ source: reactionNode.id, target: targetId, type: 'generated' });
-                                        }
+                    if (d.引き継ぎ番号) {
+                        const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
+                        const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
+                        
+                        parts.forEach(part => {
+                            const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
+                            if (reactionMatch) {
+                                const sign = reactionMatch[1];
+                                const reactionId = reactionMatch[2];
+                                const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
+                                
+                                const reactionNode = nodeMap.get(reactionId);
+                                if (reactionNode) {
+                                    if (sign !== '-') {
+                                        // 生成されるリンク（反応 -> 物質）
+                                        links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
                                     }
-                                } else {
-                                    const sourceNode = nodeMap.get(part);
-                                    if (sourceNode) {
-                                        const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
-                                        const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
-                                        if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
-                                            links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
+                                    
+                                    // 消費されるリンク（材料 -> 反応）
+                                    sourceMaterials.forEach(matId => {
+                                        const sourceNode = nodeMap.get(matId);
+                                        if (sourceNode) {
+                                            links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
                                         }
+                                    });
+                                }
+                            } else {
+                                const sourceNode = nodeMap.get(part);
+                                if (sourceNode) {
+                                    const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
+                                    const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
+                                    if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
+                                        links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
                                     }
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 });
             });
