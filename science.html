@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図006</title>
+    <title>パン生地の物質変遷フロー図007</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -113,7 +113,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図006</h1>
+    <h1>パン生地の物質変遷フロー図007</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -173,20 +173,24 @@
                 if (!currentNode || !d.引き継ぎ番号) return;
                 
                 const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                const parts = cleanText.split(/,(?![^()]*\))|(?=[\+\-])/g).map(p => p.trim()).filter(p => p);
+                
+                // パターンをより厳密に修正
+                const parts = cleanText.split(/(?=[+-]M[0-9a-z]+|\/)/g).map(p => p.trim()).filter(p => p);
                 
                 parts.forEach(part => {
                     const isExtinct = part.startsWith('×');
                     const actualPart = isExtinct ? part.substring(1) : part;
 
-                    const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
+                    const reactionMatch = actualPart.match(/([+-]?[MR]\d+[a-z]?)(?:\((.*?)\))?/);
                     if (reactionMatch) {
-                        const reactionId = reactionMatch[1];
+                        const reactionId = reactionMatch[1].replace(/^[+-]/, '');
                         const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()) : [];
                         
                         const reactionNode = nodeMap.get(reactionId);
                         if (reactionNode) {
-                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
+                            if (reactionMatch[1].startsWith('+') || !reactionMatch[1].startsWith('-')) {
+                                links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
+                            }
                             
                             sourceMaterials.forEach(matId => {
                                 const sourceNode = nodeMap.get(matId);
