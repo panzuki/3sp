@@ -166,27 +166,28 @@
             const nodeMap = new Map();
 
             validDatasets.forEach((data, i) => {
+                const groupName = `chart${i + 1}`;
+                const isProcess = (i + 1) % 2 === 0;
+
                 data.forEach(d => {
                     if (!d.番号) {
                         console.warn(`警告: '番号'が欠落している行をスキップします:`, d);
                         return;
                     }
-                    const groupName = `chart${i + 1}`;
-                    const isProcess = (i + 1) % 2 === 0;
                     const name = d['構成物質名'] || d['物質名'] || d['反応名'] || '';
-
-                    // NaNエラーの原因を特定するロジック
-                    if (name === '' || typeof name !== 'string') {
-                        console.error(`D3エラー: 'name'プロパティが欠落または無効なデータが見つかりました。番号: ${d.番号}, データ:`, d);
+                    if (!name) {
+                        console.warn(`警告: 番号 ${d.番号} の'構成物質名'が欠落しているためスキップします。`, d);
+                        return;
                     }
 
-                    const node = { id: `${groupName}-${d.番号}`, name, group: groupName, number: d.番号, isProcess, data: d };
+                    const id = `${groupName}-${d.番号}`;
+                    const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
                 });
             });
 
-            validDatasets.forEach((data, i) => {
+            validDatasets.forEach((data) => {
                 data.filter(d => d.番号).forEach(d => {
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
@@ -256,21 +257,19 @@
                         node.y = center.y - (totalHeight / 2) + j * nodeSpacing;
                     });
                 } else {
+                    const radius = 150; // ノードの配置円の半径
                     const angleStep = 2 * Math.PI / groupNodes.length;
                     groupNodes.forEach((node, j) => {
                         const angle = j * angleStep;
                         
-                        const textRadius = 100;
+                        // ノード円の座標
+                        node.circleX = center.x + radius * Math.cos(angle);
+                        node.circleY = center.y + radius * Math.sin(angle);
+                        
+                        // テキストの座標をノードの外側に配置
+                        const textRadius = radius + 20; // テキスト配置用の半径
                         node.textX = center.x + textRadius * Math.cos(angle);
                         node.textY = center.y + textRadius * Math.sin(angle);
-                        
-                        const totalTextLength = (node.name.length - 1) * charSpacing;
-                        const textHalfLength = totalTextLength / 2;
-                        const pointOffsetFromText = 5 + circleRadius;
-                        const circleRadiusFromCenter = textRadius + textHalfLength + pointOffsetFromText;
-                        
-                        node.circleX = center.x + circleRadiusFromCenter * Math.cos(angle);
-                        node.circleY = center.y + circleRadiusFromCenter * Math.sin(angle);
                         
                         node.angle = angle;
                     });
@@ -286,7 +285,10 @@
                 .attr("d", d => {
                     const sourceNode = nodes.find(n => n.id === d.source);
                     const targetNode = nodes.find(n => n.id === d.target);
-                    if (!sourceNode || !targetNode) return;
+                    if (!sourceNode || !targetNode) {
+                        console.warn(`警告: 無効なリンクデータ - source: ${d.source}, target: ${d.target}`);
+                        return;
+                    }
 
                     let sourceX, sourceY, targetX, targetY;
 
@@ -335,7 +337,6 @@
                         .attr("class", "node")
                         .attr("transform", d => `translate(${d.x},${d.y})`);
 
-                    // クリック領域を先に描画し、視覚的に隠す
                     nodeElements.append("rect")
                         .attr("class", "node-click-area")
                         .attr("x", d => -(d.name.length * 5) / 2 - 5)
@@ -346,7 +347,6 @@
                         .attr("height", 20)
                         .style("fill", "transparent");
 
-                    // 四角形ノードの本体を描画
                     nodeElements.append("rect")
                         .attr("class", "node-rect")
                         .attr("x", d => -(d.name.length * 5) / 2 - 5)
@@ -368,7 +368,6 @@
                         .enter().append("g")
                         .attr("class", "node");
                     
-                    // クリック領域を先に描画し、視覚的に隠す
                     nodeElements.append("circle")
                         .attr("class", "node-click-area")
                         .attr("cx", d => d.circleX)
@@ -389,11 +388,19 @@
                         const textElement = d3.select(this).append("text")
                             .attr("class", "node-label")
                             .attr("text-anchor", "middle")
-                            .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
-                            
+                            .attr("transform", `translate(${d.textX}, ${d.textY})`);
+                        
+                        // テキストの向きを調整
+                        const rotateAngle = angle * 180 / Math.PI + 90;
+                        if (rotateAngle > 90 && rotateAngle < 270) {
+                            textElement.attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${rotateAngle + 180})`);
+                        } else {
+                            textElement.attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${rotateAngle})`);
+                        }
+                        
                         const totalHeight = (nodeText.length - 1) * charSpacing;
                         const startY = -totalHeight / 2;
-
+                        
                         for (let i = 0; i < nodeText.length; i++) {
                             textElement.append("tspan")
                                 .attr("x", 0)
@@ -472,6 +479,4 @@
         }).catch(error => {
             console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
         });
-    </script>
-</body>
-</html>
+  
