@@ -35,10 +35,6 @@
         .node {
             cursor: pointer;
         }
-        .node-click-area {
-            fill: transparent !important; /* クリック領域を強制的に透明にする */
-            pointer-events: all;
-        }
         .node-circle {
             stroke: #fff;
             stroke-width: 2px;
@@ -92,17 +88,18 @@
         .faded {
             opacity: 0.2;
         }
-        .highlight-node .node-circle, .highlight-node .node-rect {
-            stroke: #333;
+        .highlight-node .node-circle {
+            fill: #ff6347 !important;
+            r: 10px !important;
             opacity: 1;
         }
-        /* ハイライトされた四角形の色をグレーにして文字を見やすくする */
         .highlight-node .node-rect {
-            fill: #999;
+            fill: #ff6347 !important;
+            opacity: 1;
         }
         .highlight-node .node-label, .highlight-node .chart-node-label {
-            fill: #000;
-            font-weight: bold;
+            fill: #000 !important;
+            font-weight: bold !important;
             opacity: 1;
         }
         .highlight-link {
@@ -110,13 +107,13 @@
             stroke-width: 2.5px !important;
         }
         .highlight-link.generated {
-            stroke: gold !important;
+            stroke: #ffc107 !important;
         }
         .highlight-link.consumed {
-            stroke: #00BFFF !important;
+            stroke: #00bcd4 !important;
         }
         .highlight-link.direct {
-            stroke: #333 !important;
+            stroke: #666 !important;
         }
     </style>
 </head>
@@ -150,10 +147,13 @@
 
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
 
-        Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
+        Promise.all(fileNames.map(url => d3.csv(url).catch(e => {
+            console.error(`ファイル ${url} の読み込みに失敗しました:`, e);
+            return null;
+        }))).then(datasets => {
             const validDatasets = datasets.filter(d => d !== null && d.length > 0);
             if (validDatasets.length === 0) {
-                console.error("CSVファイルが読み込まれませんでした。");
+                console.error("有効なCSVファイルが読み込まれませんでした。");
                 return;
             }
 
@@ -167,59 +167,53 @@
 
                 data.filter(d => d.番号).forEach(d => {
                     const id = `${groupName}-${d.番号}`;
-                    const name = d['物質名'] || d['反応名'] || d['構成物質名'];
+                    const name = d['構成物質名'] || d['物質名'] || d['反応名'] || '';
                     const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                     nodes.push(node);
                     nodeMap.set(d.番号, node);
                 });
             });
-            
+
             validDatasets.forEach((data, i) => {
                 data.filter(d => d.番号).forEach(d => {
                     const currentNode = nodeMap.get(d.番号);
                     if (!currentNode) return;
-                    
-                    if (!currentNode.isProcess) {
-                        if (d.引き継ぎ番号) {
-                            const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
-                            const parts = cleanText.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?|([^\s,]+)/g);
 
-                            if (parts) {
-                                parts.forEach(part => {
-                                    const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
-                                    if (reactionMatch) {
-                                        const reactionId = reactionMatch[2];
-                                        const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
-                                        
-                                        const reactionNode = nodeMap.get(reactionId);
-                                        if (reactionNode) {
-                                            sourceMaterials.forEach(matId => {
-                                                const sourceNode = nodeMap.get(matId);
-                                                if (sourceNode) {
-                                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
-                                                }
-                                            });
-                                            if (reactionMatch[1] !== '-') {
-                                                links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
+                    if (d.引き継ぎ番号) {
+                        const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
+                        const parts = cleanText.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?|([^\s,]+)/g);
+
+                        if (parts) {
+                            parts.forEach(part => {
+                                const reactionMatch = part.match(/([+\-]?)([MR]\d+[a-z]?)(?:\((.*?)\))?/);
+                                if (reactionMatch) {
+                                    const reactionId = reactionMatch[2];
+                                    const sourceMaterials = reactionMatch[3] ? reactionMatch[3].split(',').map(s => s.trim()) : [];
+                                    
+                                    const reactionNode = nodeMap.get(reactionId);
+                                    if (reactionNode) {
+                                        sourceMaterials.forEach(matId => {
+                                            const sourceNode = nodeMap.get(matId);
+                                            if (sourceNode) {
+                                                links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed' });
                                             }
-                                        }
-                                    } else {
-                                        const sourceNode = nodeMap.get(part.trim());
-                                        if (sourceNode) {
-                                            const sourceGroupIndex = parseInt(sourceNode.group.replace('chart', ''));
-                                            const targetGroupIndex = parseInt(currentNode.group.replace('chart', ''));
-                                            if (targetGroupIndex === sourceGroupIndex + 1 || targetGroupIndex === sourceGroupIndex + 2 || sourceGroupIndex === targetGroupIndex) {
-                                                links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
-                                            }
+                                        });
+                                        if (reactionMatch[1] !== '-') {
+                                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated' });
                                         }
                                     }
-                                });
-                            }
+                                } else {
+                                    const sourceNode = nodeMap.get(part.trim());
+                                    if (sourceNode) {
+                                        links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct' });
+                                    }
+                                }
+                            });
                         }
                     }
                 });
             });
-            
+
             const uniqueLinks = new Map();
             links.forEach(link => {
                 const key = `${link.source}-${link.target}-${link.type}`;
@@ -228,7 +222,7 @@
                 }
             });
             const finalLinks = Array.from(uniqueLinks.values());
-            
+
             const groupData = d3.groups(nodes, d => d.group).filter(([group, groupNodes]) => groupNodes.length > 0);
 
             if (groupData.length === 0) {
@@ -327,22 +321,25 @@
                         .attr("class", "node")
                         .attr("transform", d => `translate(${d.x},${d.y})`);
 
-                    // 四角形ノードの描画
+                    // クリック領域を先に描画し、視覚的に隠す
+                    nodeElements.append("rect")
+                        .attr("class", "node-click-area")
+                        .attr("x", d => - (d.name.length * 5) / 2 - 5)
+                        .attr("y", -10)
+                        .attr("rx", 5)
+                        .attr("ry", 5)
+                        .attr("width", d => (d.name ? d.name.length * 5 + 10 : 10))
+                        .attr("height", 20)
+                        .style("fill", "transparent"); // 透明に設定
+
+                    // 四角形ノードの本体を描画
                     nodeElements.append("rect")
                         .attr("class", "node-rect")
                         .attr("x", d => - (d.name.length * 5) / 2 - 5)
                         .attr("y", -10)
                         .attr("rx", 5)
                         .attr("ry", 5)
-                        .attr("width", d => d.name.length * 5 + 10)
-                        .attr("height", 20);
-
-                    // クリック領域を透明なrectで追加
-                    nodeElements.append("rect")
-                        .attr("class", "node-click-area")
-                        .attr("x", d => - (d.name.length * 5) / 2 - 5)
-                        .attr("y", -10)
-                        .attr("width", d => d.name.length * 5 + 10)
+                        .attr("width", d => (d.name ? d.name.length * 5 + 10 : 10))
                         .attr("height", 20);
 
                     nodeElements.append("text")
@@ -357,11 +354,13 @@
                         .enter().append("g")
                         .attr("class", "node");
                     
+                    // クリック領域を先に描画し、視覚的に隠す
                     nodeElements.append("circle")
                         .attr("class", "node-click-area")
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY)
-                        .attr("r", 20);
+                        .attr("r", 20)
+                        .style("fill", "transparent"); // 透明に設定
 
                     nodeElements.append("circle")
                         .attr("class", "node-circle")
@@ -371,7 +370,7 @@
                         .attr("cy", d => d.circleY);
                     
                     nodeElements.each(function(d) {
-                        const nodeText = d.name;
+                        const nodeText = d.name || '';
                         const angle = d.angle;
                         const textElement = d3.select(this).append("text")
                             .attr("class", "node-label")
@@ -410,16 +409,13 @@
                 .on("click", (event, d) => {
                     const isCurrentlyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
                     
-                    // すべてのハイライトとフェードを完全にリセット
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
                     d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
 
-                    // 同じノードを再度クリックした場合は、ハイライトを解除して終了
                     if (isCurrentlyHighlighted) {
                         return;
                     }
 
-                    // 新しいノードの関連要素を特定
                     const relatedNodeIds = new Set();
                     const relatedLinkIds = new Set();
                     const nodesToProcess = [d.id];
@@ -442,11 +438,9 @@
                         });
                     }
                     
-                    // 非関連ノードとリンクをフェードアウト
                     d3.selectAll(".node").classed("faded", nd => !relatedNodeIds.has(nd.id));
                     d3.selectAll(".link").classed("faded", link => !relatedLinkIds.has(`${link.source}-${link.target}`));
 
-                    // 関連ノードとリンクをハイライト
                     d3.selectAll(".node").filter(nd => relatedNodeIds.has(nd.id)).classed("highlight-node", true);
                     linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}`))
                         .classed("highlight-link", true)
@@ -462,7 +456,7 @@
             });
 
         }).catch(error => {
-            console.error("CSVファイルの読み込み中にエラーが発生しました。", error);
+            console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
         });
     </script>
 </body>
