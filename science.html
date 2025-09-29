@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図009</title>
+    <title>パン生地の物質変遷フロー図010</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -113,7 +113,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図009</h1>
+    <h1>パン生地の物質変遷フロー図010</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -390,6 +390,26 @@
                         const relatedNodeIds = new Set();
                         const relatedLinkIds = new Set();
                         
+                        // 修正されたハイライト関数
+                        const findPath = (nodeId, direction, isInitialCall = true) => {
+                            if (relatedNodeIds.has(nodeId) && !isInitialCall) {
+                                return;
+                            }
+                            relatedNodeIds.add(nodeId);
+
+                            if (direction === 'forward') {
+                                finalLinks.filter(link => link.source === nodeId).forEach(link => {
+                                    relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
+                                    findPath(link.target, 'forward', false);
+                                });
+                            } else if (direction === 'backward') {
+                                finalLinks.filter(link => link.target === nodeId).forEach(link => {
+                                    relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
+                                    findPath(link.source, 'backward', false);
+                                });
+                            }
+                        };
+                        
                         if (d.isProcess) {
                             // 化学反応ノードの場合、インプットとアウトプットのみをハイライト
                             relatedNodeIds.add(d.id);
@@ -400,26 +420,11 @@
                                     relatedNodeIds.add(link.target);
                                 }
                             });
-                        } else {
-                            // 材料ノードの場合、前方と後方の経路のみを追跡
-                            const findPath = (nodeId, direction) => {
-                                if (relatedNodeIds.has(nodeId)) {
-                                    return;
-                                }
-                                relatedNodeIds.add(nodeId);
-
-                                finalLinks.forEach(link => {
-                                    if (direction === 'forward' && link.source === nodeId) {
-                                        relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
-                                        findPath(link.target, 'forward');
-                                    } else if (direction === 'backward' && link.target === nodeId) {
-                                        relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
-                                        findPath(link.source, 'backward');
-                                    }
-                                });
-                            };
-
+                        } else if (d.group === 'chart1') {
+                            // chart1のノードの場合、前方のみをハイライト
                             findPath(d.id, 'forward');
+                        } else if (d.group === 'chart3') {
+                            // chart3のノードの場合、後方のみをハイライト
                             findPath(d.id, 'backward');
                         }
 
