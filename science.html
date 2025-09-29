@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図008</title>
+    <title>パン生地の物質変遷フロー図009</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -113,7 +113,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図008</h1>
+    <h1>パン生地の物質変遷フロー図009</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -160,7 +160,7 @@
                 const groupName = `chart${validDatasets.findIndex(dataset => dataset.includes(d)) + 1}`;
                 const isProcess = groupName === 'chart2';
                 const id = `${groupName}-${d.番号}`;
-                const name = d['物質名'] || d['反応名'] || d['構成物質名'];
+                const name = d['物質名'] || d['反応名'] || d['構成物質名'] || d.番号;
                 if (!name) return;
                 const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                 nodes.push(node);
@@ -174,7 +174,6 @@
                 
                 const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
                 
-                // M13(3-72,38)といった形式を処理するため、より厳密に解析
                 const parts = cleanText.split(/,(?![^()]*\))|(?=[+-]M[0-9a-z]+)/g).map(p => p.trim()).filter(p => p);
                 
                 parts.forEach(part => {
@@ -275,7 +274,7 @@
                     let sourceX, sourceY, targetX, targetY;
 
                     if (sourceNode.isProcess) {
-                        const textLength = sourceNode.name ? sourceNode.name.length : 0;
+                        const textLength = (sourceNode.name ? sourceNode.name.length : 0);
                         sourceX = sourceNode.x + (textLength * 5) / 2;
                         sourceY = sourceNode.y;
                     } else {
@@ -284,7 +283,7 @@
                     }
 
                     if (targetNode.isProcess) {
-                        const textLength = targetNode.name ? targetNode.name.length : 0;
+                        const textLength = (targetNode.name ? targetNode.name.length : 0);
                         targetX = targetNode.x - (textLength * 5) / 2;
                         targetY = targetNode.y;
                     } else {
@@ -313,8 +312,11 @@
 
             nodeElements.each(function(d) {
                 const nodeElement = d3.select(this);
+                const nodeName = d.name || d.number;
+                if (!nodeName) return;
+
                 if (d.isProcess) {
-                    const textLength = d.name ? d.name.length : 0;
+                    const textLength = nodeName.length;
                     nodeElement.append("rect")
                         .attr("class", "node-click-area")
                         .attr("x", - (textLength * 5) / 2)
@@ -326,7 +328,7 @@
                         .attr("class", "chart-node-label")
                         .attr("x", 0)
                         .attr("y", 0)
-                        .text(d => d.name);
+                        .text(nodeName);
                 } else {
                     nodeElement.append("circle")
                         .attr("class", "node-click-area")
@@ -341,14 +343,14 @@
                         .attr("cx", d => d.circleX)
                         .attr("cy", d => d.circleY);
 
-                    const nodeText = d.name;
+                    const nodeText = nodeName;
                     const angle = d.angle;
                     const textElement = nodeElement.append("text")
                         .attr("class", "node-label")
                         .attr("text-anchor", "middle")
                         .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
                         
-                    const totalHeight = (nodeText && nodeText.length > 0 ? nodeText.length - 1 : 0) * charSpacing;
+                    const totalHeight = (nodeText.length > 0 ? nodeText.length - 1 : 0) * charSpacing;
                     const startY = -totalHeight / 2;
 
                     for (let i = 0; i < nodeText.length; i++) {
@@ -400,25 +402,30 @@
                             });
                         } else {
                             // 材料ノードの場合、前方と後方をすべて追跡
-                            const traverse = (nodeId, direction) => {
-                                if (relatedNodeIds.has(nodeId)) {
-                                    return;
-                                }
-                                relatedNodeIds.add(nodeId);
+                            const queue = [d.id];
+                            const visited = new Set();
+                            
+                            while (queue.length > 0) {
+                                const currentNodeId = queue.shift();
+                                if (visited.has(currentNodeId)) continue;
                                 
+                                visited.add(currentNodeId);
+                                relatedNodeIds.add(currentNodeId);
+
                                 finalLinks.forEach(link => {
-                                    if (direction === 'forward' && link.source === nodeId) {
+                                    if (link.source === currentNodeId) {
                                         relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
-                                        traverse(link.target, 'forward');
-                                    } else if (direction === 'backward' && link.target === nodeId) {
+                                        if (!visited.has(link.target)) {
+                                            queue.push(link.target);
+                                        }
+                                    } else if (link.target === currentNodeId) {
                                         relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
-                                        traverse(link.source, 'backward');
+                                        if (!visited.has(link.source)) {
+                                            queue.push(link.source);
+                                        }
                                     }
                                 });
-                            };
-
-                            traverse(d.id, 'forward');
-                            traverse(d.id, 'backward');
+                            }
                         }
 
                         d3.selectAll(".node").classed("faded", node => !relatedNodeIds.has(node.id));
