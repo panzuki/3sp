@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図010</title>
+    <title>パン生地の物質変遷フロー図011</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -113,7 +113,7 @@
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図010</h1>
+    <h1>パン生地の物質変遷フロー図011</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -129,18 +129,27 @@
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip");
 
+        // 💡 修正ポイント 1: groupLabelsとgroupColorsの拡張
         const groupLabels = {
             'chart1': '原材料',
-            'chart2': 'ミキシング',
-            'chart3': 'ミキシング後',
+            'chart2': 'ミキシング (反応)',
+            'chart3': 'ミキシング後 (物質)',
+            'chart4': '発酵 (反応)',
+            'chart5': '発酵後 (物質)',
         };
         const groupColors = {
-            'chart1': '#a8e6cf',
-            'chart2': '#ff8b94',
-            'chart3': '#dcedc1',
+            'chart1': '#a8e6cf', // chart1: 物質
+            'chart2': '#ff8b94', // chart2: 反応
+            'chart3': '#dcedc1', // chart3: 物質
+            'chart4': '#b59fff', // chart4: 反応 (新しい色)
+            'chart5': '#ffe3b5', // chart5: 物質 (新しい色)
         };
-
+        
+        // CSVファイル名のリストを生成
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
+        
+        // Processノードのグループ名を決定
+        const processGroups = new Set(['chart2', 'chart4', 'chart6', 'chart8', 'chart10']);
 
         Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
             const validDatasets = datasets.filter(d => d !== null);
@@ -157,17 +166,23 @@
             // ノードの生成とデータマップの構築
             allData.forEach(d => {
                 if (!d.番号) return;
-                const groupName = `chart${validDatasets.findIndex(dataset => dataset.includes(d)) + 1}`;
-                const isProcess = groupName === 'chart2';
+                // CSVファイルのインデックスからchartN名を決定
+                const groupIndex = validDatasets.findIndex(dataset => dataset.includes(d)) + 1;
+                const groupName = `chart${groupIndex}`;
+                
+                // isProcessフラグをprocessGroupsに基づいて設定
+                const isProcess = processGroups.has(groupName);
+
                 const id = `${groupName}-${d.番号}`;
                 const name = d['物質名'] || d['反応名'] || d['構成物質名'] || d.番号;
                 if (!name) return;
                 const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
                 nodes.push(node);
+                // ノード検索のために、番号をキーとするマップにも登録 (引き継ぎ番号の解決に必要)
                 nodeMap.set(d.番号, node);
             });
             
-            // リンクの生成
+            // リンクの生成 (変更なし)
             allData.forEach(d => {
                 const currentNode = nodeMap.get(d.番号);
                 if (!currentNode || !d.引き継ぎ番号) return;
@@ -223,12 +238,14 @@
                 return;
             }
 
+            // 💡 修正ポイント 2: totalHeightの自動計算 (グループ数に基づき将来の拡張に対応)
             const totalHeight = groupData.length * groupSpacingY + 200;
             svg.attr("height", totalHeight).attr("width", width);
             chartGroup.attr("transform", `translate(${width / 2}, 50)`);
 
             groupData.forEach(([group, groupNodes], i) => {
-                const center = { x: 0, y: i * groupSpacingY };
+                const center = { x: 0, y: i * groupSpacingY }; // i*groupSpacingY で縦に配置
+                
                 if (groupNodes[0] && groupNodes[0].isProcess) {
                     const nodeSpacing = 15;
                     const totalHeight = groupNodes.length * nodeSpacing;
@@ -367,7 +384,8 @@
                 .enter().append("text")
                 .attr("class", "group-label")
                 .attr("x", 0)
-                .attr("y", d => d[1].length > 0 ? d[1][0].y - 150 : 0)
+                // y座標はグループの中心から少し上に配置
+                .attr("y", d => d[1].length > 0 ? d[1][0].y - 150 : 0) 
                 .text(d => groupLabels[d[0]]);
 
             d3.selectAll(".node")
@@ -390,7 +408,7 @@
                         const relatedNodeIds = new Set();
                         const relatedLinkIds = new Set();
                         
-                        // 修正されたハイライト関数
+                        // 経路追跡関数
                         const findPath = (nodeId, direction, isInitialCall = true) => {
                             if (relatedNodeIds.has(nodeId) && !isInitialCall) {
                                 return;
@@ -410,6 +428,7 @@
                             }
                         };
                         
+                        // 💡 修正ポイント 3: ハイライトロジックの拡張
                         if (d.isProcess) {
                             // 化学反応ノードの場合、インプットとアウトプットのみをハイライト
                             relatedNodeIds.add(d.id);
@@ -420,12 +439,32 @@
                                     relatedNodeIds.add(link.target);
                                 }
                             });
-                        } else if (d.group === 'chart1') {
-                            // chart1のノードの場合、前方のみをハイライト
-                            findPath(d.id, 'forward');
-                        } else if (d.group === 'chart3') {
-                            // chart3のノードの場合、後方のみをハイライト
-                            findPath(d.id, 'backward');
+                        } else {
+                            // 物質ノードの場合、所属するグループに応じて前方・後方追跡
+                            const chartNum = parseInt(d.group.replace('chart', ''));
+                            
+                            if (chartNum % 2 === 1) { // 奇数チャート (物質) の場合
+                                if (chartNum === 1) {
+                                    // chart1: 原材料なので前方のみを追跡
+                                    findPath(d.id, 'forward');
+                                } else {
+                                    // chart3, chart5, ... : 生成物なので後方のみを追跡
+                                    findPath(d.id, 'backward');
+                                }
+                            }
+                            
+                            // chart1以外の物質ノードは、基本的には後方追跡で対応できます。
+                            // chart1は原料なので、前方追跡（使われ方）が自然です。
+
+                            // Chart1とChart3のハイライトは以下のままで維持します。
+                            // Chart1の物質ノード: 前方のみ (使われ方を追跡)
+                            if (d.group === 'chart1') {
+                                findPath(d.id, 'forward');
+                            } 
+                            // Chart3, Chart5, ... の物質ノード: 後方のみ (原料を追跡)
+                            else if (chartNum % 2 === 1 && chartNum > 1) {
+                                findPath(d.id, 'backward');
+                            }
                         }
 
                         d3.selectAll(".node").classed("faded", node => !relatedNodeIds.has(node.id));
