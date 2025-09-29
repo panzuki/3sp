@@ -401,31 +401,26 @@
                                 }
                             });
                         } else {
-                            // 材料ノードの場合、前方と後方をすべて追跡
-                            const queue = [d.id];
-                            const visited = new Set();
-                            
-                            while (queue.length > 0) {
-                                const currentNodeId = queue.shift();
-                                if (visited.has(currentNodeId)) continue;
-                                
-                                visited.add(currentNodeId);
-                                relatedNodeIds.add(currentNodeId);
+                            // 材料ノードの場合、前方と後方の経路のみを追跡
+                            const findPath = (nodeId, direction) => {
+                                if (relatedNodeIds.has(nodeId)) {
+                                    return;
+                                }
+                                relatedNodeIds.add(nodeId);
 
                                 finalLinks.forEach(link => {
-                                    if (link.source === currentNodeId) {
+                                    if (direction === 'forward' && link.source === nodeId) {
                                         relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
-                                        if (!visited.has(link.target)) {
-                                            queue.push(link.target);
-                                        }
-                                    } else if (link.target === currentNodeId) {
+                                        findPath(link.target, 'forward');
+                                    } else if (direction === 'backward' && link.target === nodeId) {
                                         relatedLinkIds.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
-                                        if (!visited.has(link.source)) {
-                                            queue.push(link.source);
-                                        }
+                                        findPath(link.source, 'backward');
                                     }
                                 });
-                            }
+                            };
+
+                            findPath(d.id, 'forward');
+                            findPath(d.id, 'backward');
                         }
 
                         d3.selectAll(".node").classed("faded", node => !relatedNodeIds.has(node.id));
