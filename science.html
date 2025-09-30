@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パン生地の物質変遷フロー図011</title>
+    <title>パン生地の物質変遷フロー図012</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -47,10 +47,16 @@
             stroke-width: 2px;
             transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s;
         }
+        /* 通常のノードホバー */
         .node:hover .node-circle {
             fill: #3b82f6;
             r: 8px;
         }
+        /* 消滅ノードのホバー */
+        .extinct-node:hover .node-circle {
+            fill: none; /* ホバーで色を変えず、Xを維持 */
+        }
+
         .node-label {
             font-size: 8px;
             pointer-events: none;
@@ -107,13 +113,32 @@
         .highlight-link.direct {
             stroke: #333 !important;
         }
+        /* 💡 修正ポイント 2: 消滅ノードのハイライト色 (紫) */
+        .highlight-link.extinct-link {
+            stroke: #9400D3 !important; /* 紫色 */
+            stroke-dasharray: none; /* ハイライト時は点線解除 */
+        }
+        
         .extinct-link {
             stroke-dasharray: 4, 2;
         }
+        
+        /* 💡 修正ポイント 1: 赤いXマークのスタイル */
+        .extinct-x {
+            font-family: sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            fill: red;
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+            user-select: none;
+        }
+
     </style>
 </head>
 <body>
-    <h1>パン生地の物質変遷フロー図011</h1>
+    <h1>パン生地の物質変遷フロー図012</h1>
     <svg id="chart"></svg>
     <div class="tooltip"></div>
 
@@ -129,7 +154,6 @@
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip");
 
-        // 💡 修正ポイント 1: groupLabelsとgroupColorsの拡張
         const groupLabels = {
             'chart1': '原材料',
             'chart2': 'ミキシング (反応)',
@@ -141,14 +165,11 @@
             'chart1': '#a8e6cf', // chart1: 物質
             'chart2': '#ff8b94', // chart2: 反応
             'chart3': '#dcedc1', // chart3: 物質
-            'chart4': '#b59fff', // chart4: 反応 (新しい色)
-            'chart5': '#ffe3b5', // chart5: 物質 (新しい色)
+            'chart4': '#b59fff', // chart4: 反応
+            'chart5': '#ffe3b5', // chart5: 物質
         };
         
-        // CSVファイル名のリストを生成
         const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
-        
-        // Processノードのグループ名を決定
         const processGroups = new Set(['chart2', 'chart4', 'chart6', 'chart8', 'chart10']);
 
         Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
@@ -166,23 +187,29 @@
             // ノードの生成とデータマップの構築
             allData.forEach(d => {
                 if (!d.番号) return;
-                // CSVファイルのインデックスからchartN名を決定
                 const groupIndex = validDatasets.findIndex(dataset => dataset.includes(d)) + 1;
                 const groupName = `chart${groupIndex}`;
                 
-                // isProcessフラグをprocessGroupsに基づいて設定
                 const isProcess = processGroups.has(groupName);
 
                 const id = `${groupName}-${d.番号}`;
                 const name = d['物質名'] || d['反応名'] || d['構成物質名'] || d.番号;
                 if (!name) return;
-                const node = { id, name, group: groupName, number: d.番号, isProcess, data: d };
+                
+                // 💡 修正ポイント 1: 消滅ノードの判定
+                const isExtinct = (groupIndex % 2 === 1 && groupIndex > 1) 
+                                  ? (d.番号 && allData.some(item => 
+                                        item.引き継ぎ番号 && 
+                                        item.引き継ぎ番号.includes(`×${d.番号}`)
+                                    ))
+                                  : false;
+
+                const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, data: d };
                 nodes.push(node);
-                // ノード検索のために、番号をキーとするマップにも登録 (引き継ぎ番号の解決に必要)
                 nodeMap.set(d.番号, node);
             });
             
-            // リンクの生成 (変更なし)
+            // リンクの生成
             allData.forEach(d => {
                 const currentNode = nodeMap.get(d.番号);
                 if (!currentNode || !d.引き継ぎ番号) return;
@@ -209,7 +236,9 @@
                             sourceMaterials.forEach(matId => {
                                 const sourceNode = nodeMap.get(matId);
                                 if (sourceNode) {
-                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct });
+                                    // 💡 修正ポイント 2: 消滅リンクのisExtinctフラグを物質ノードのフラグと連動させる
+                                    const sourceIsExtinct = sourceNode.isExtinct;
+                                    links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: sourceIsExtinct });
                                 }
                             });
                         }
@@ -238,14 +267,12 @@
                 return;
             }
 
-            // 💡 修正ポイント 2: totalHeightの自動計算 (グループ数に基づき将来の拡張に対応)
             const totalHeight = groupData.length * groupSpacingY + 200;
             svg.attr("height", totalHeight).attr("width", width);
             chartGroup.attr("transform", `translate(${width / 2}, 50)`);
 
             groupData.forEach(([group, groupNodes], i) => {
-                const center = { x: 0, y: i * groupSpacingY }; // i*groupSpacingY で縦に配置
-                
+                const center = { x: 0, y: i * groupSpacingY };
                 if (groupNodes[0] && groupNodes[0].isProcess) {
                     const nodeSpacing = 15;
                     const totalHeight = groupNodes.length * nodeSpacing;
@@ -324,7 +351,7 @@
                 .selectAll(".node")
                 .data(d => d[1])
                 .enter().append("g")
-                .attr("class", "node")
+                .attr("class", d => `node ${d.isExtinct ? 'extinct-node' : ''}`) // 消滅ノードクラスを追加
                 .attr("transform", d => d.isProcess ? `translate(${d.x},${d.y})` : null);
 
             nodeElements.each(function(d) {
@@ -353,13 +380,23 @@
                         .attr("cy", d => d.circleY)
                         .attr("r", 20);
 
-                    nodeElement.append("circle")
-                        .attr("class", "node-circle")
-                        .attr("r", circleRadius)
-                        .attr("fill", d => groupColors[d.group])
-                        .attr("cx", d => d.circleX)
-                        .attr("cy", d => d.circleY);
-
+                    // 物質ノード (非反応ノード)
+                    if (d.isExtinct) {
+                        // 💡 修正ポイント 1: 赤いXマークの追加
+                        nodeElement.append("text")
+                            .attr("class", "extinct-x")
+                            .attr("x", d => d.circleX)
+                            .attr("y", d => d.circleY)
+                            .text("×");
+                    } else {
+                        nodeElement.append("circle")
+                            .attr("class", "node-circle")
+                            .attr("r", circleRadius)
+                            .attr("fill", d => groupColors[d.group])
+                            .attr("cx", d => d.circleX)
+                            .attr("cy", d => d.circleY);
+                    }
+                    
                     const nodeText = nodeName;
                     const angle = d.angle;
                     const textElement = nodeElement.append("text")
@@ -384,14 +421,13 @@
                 .enter().append("text")
                 .attr("class", "group-label")
                 .attr("x", 0)
-                // y座標はグループの中心から少し上に配置
                 .attr("y", d => d[1].length > 0 ? d[1][0].y - 150 : 0) 
                 .text(d => groupLabels[d[0]]);
 
             d3.selectAll(".node")
                 .on("mouseover", (event, d) => {
                     tooltip.style("opacity", 1)
-                        .html(`<strong>${d.name}</strong><br>番号: ${d.number}`)
+                        .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}`)
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 20) + "px");
                 })
@@ -402,13 +438,12 @@
                     const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
 
                     d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
-                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false);
 
                     if (!isAlreadyHighlighted) {
                         const relatedNodeIds = new Set();
                         const relatedLinkIds = new Set();
                         
-                        // 経路追跡関数
                         const findPath = (nodeId, direction, isInitialCall = true) => {
                             if (relatedNodeIds.has(nodeId) && !isInitialCall) {
                                 return;
@@ -428,7 +463,6 @@
                             }
                         };
                         
-                        // 💡 修正ポイント 3: ハイライトロジックの拡張
                         if (d.isProcess) {
                             // 化学反応ノードの場合、インプットとアウトプットのみをハイライト
                             relatedNodeIds.add(d.id);
@@ -440,29 +474,14 @@
                                 }
                             });
                         } else {
-                            // 物質ノードの場合、所属するグループに応じて前方・後方追跡
+                            // 物質ノードの場合
                             const chartNum = parseInt(d.group.replace('chart', ''));
                             
-                            if (chartNum % 2 === 1) { // 奇数チャート (物質) の場合
-                                if (chartNum === 1) {
-                                    // chart1: 原材料なので前方のみを追跡
-                                    findPath(d.id, 'forward');
-                                } else {
-                                    // chart3, chart5, ... : 生成物なので後方のみを追跡
-                                    findPath(d.id, 'backward');
-                                }
-                            }
-                            
-                            // chart1以外の物質ノードは、基本的には後方追跡で対応できます。
-                            // chart1は原料なので、前方追跡（使われ方）が自然です。
-
-                            // Chart1とChart3のハイライトは以下のままで維持します。
-                            // Chart1の物質ノード: 前方のみ (使われ方を追跡)
-                            if (d.group === 'chart1') {
+                            if (chartNum === 1) {
+                                // chart1: 原材料なので前方のみを追跡
                                 findPath(d.id, 'forward');
-                            } 
-                            // Chart3, Chart5, ... の物質ノード: 後方のみ (原料を追跡)
-                            else if (chartNum % 2 === 1 && chartNum > 1) {
+                            } else if (chartNum % 2 === 1 && chartNum > 1) {
+                                // chart3, chart5, ... : 生成物なので後方のみを追跡
                                 findPath(d.id, 'backward');
                             }
                         }
@@ -474,10 +493,10 @@
                         
                         linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`))
                             .classed("highlight-link", true)
-                            .classed("generated", link => link.type === "generated")
-                            .classed("consumed", link => link.type === "consumed")
-                            .classed("direct", link => link.type === "direct")
-                            .classed("extinct-link", link => link.isExtinct);
+                            .classed("generated", link => link.type === "generated" && !link.isExtinct)
+                            .classed("consumed", link => link.type === "consumed" && !link.isExtinct)
+                            .classed("direct", link => link.type === "direct" && !link.isExtinct)
+                            .classed("extinct-link", link => link.isExtinct); // 紫のハイライトを適用
                     }
                 });
             
