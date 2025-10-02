@@ -410,4 +410,23 @@ const width = 1200;
                         linkElements.classed("faded", link => !relatedLinkIds.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`));
                         
                         linkElements.filter(link => relatedLinkIds.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`))
+                            .classed("highlight-link", true)
+                            // 💡 修正ポイント: link.typeが'consumed'の場合は水色
+                            .classed("generated", link => link.type === "generated")
+                            .classed("consumed", link => link.type === "consumed")
+                            .classed("direct", link => link.type === "direct")
+                            .classed("extinct-link", link => link.type === "extinct-link"); 
+                    }
+                });
+            
+            d3.select("body").on("click", function(event) {
+                if (!event.target.closest(".node")) {
+                    d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
+                    d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false);
+                }
+            });
+
+        }).catch(error => {
+            console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
+        });
          
