@@ -104,8 +104,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 actualPart = part.substring(1);
                 linkType = 'generated'; // 生成
             }
-            // 符号がない場合はそのまま続行し、下のロジックで判定
-
+            
             const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
 
             if (reactionMatch) {
@@ -118,10 +117,10 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 const reactionNode = nodeMap.get(reactionNodeId);
                 
                 if (reactionNode) {
-                    // Reaction to Product: ターゲット(currentNode)が生成/消費されるリンク
+                    // Reaction to Product
                     links.push({ source: reactionNode.id, target: currentNode.id, type: linkType, isExtinct });
                     
-                    // Reactants to Reaction: 反応物(sourceMaterials)が消費されるリンク
+                    // Reactants to Reaction
                     sourceMaterials.forEach(matId => {
                         // 反応物ノードは Reaction ノードのさらに一つ前のグループにある
                         const sourceGroupName = `chart${groupIndex - 2}`;
@@ -141,14 +140,15 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     });
                 }
             } else if (actualPart.match(/^(\d+[a-z]?)$/)) {
-                // 2. Direct Link: 反応を通さない物質間移動 (Chart3 -> Chart5 のようなリンク)
+                // 2. Direct Link: 反応を通さない物質間移動 (Chart1 -> Chart3, Chart3 -> Chart5 のようなリンク)
                 const sourceNumber = actualPart;
 
-                // 修正されたロジック: 一つ前の物質グループ (groupIndex - 2) のノードを探す
+                // 💡 修正点: 現在のノードが物質グループ (奇数グループ) であり、
+                // かつ、ソースが前の物質グループ (groupIndex - 2) であることを確認する。
                 const prevMaterialGroupIndex = groupIndex - 2;
                 
                 let sourceNode = null;
-                if (prevMaterialGroupIndex >= 1) {
+                if (groupIndex % 2 === 1 && prevMaterialGroupIndex >= 1) {
                     const sourceGroupName = `chart${prevMaterialGroupIndex}`;
                     const potentialId = `${sourceGroupName}-${sourceNumber}`;
                     sourceNode = nodeMap.get(potentialId);
@@ -210,7 +210,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 node.textY = center.y + textRadius * Math.sin(angle);
                 
                 const totalTextLength = (node.name ? node.name.length : 0);
-                const charWidth = 5; // 全角文字の幅を適当に推定
+                const charWidth = 5; 
                 const textHalfLength = totalTextLength * charWidth / 2;
                 const pointOffsetFromText = 5 + circleRadius;
                 const circleRadiusFromCenter = textRadius + textHalfLength + pointOffsetFromText;
@@ -240,7 +240,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             // ソース座標の決定
             if (sourceNode.isProcess) {
                 const textLength = (sourceNode.name ? sourceNode.name.length : 0);
-                sourceX = sourceNode.x + (textLength * 5) / 2; // プロセスノードの右端から出る
+                sourceX = sourceNode.x + (textLength * 5) / 2; 
                 sourceY = sourceNode.y;
             } else {
                 sourceX = sourceNode.circleX;
@@ -250,7 +250,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             // ターゲット座標の決定
             if (targetNode.isProcess) {
                 const textLength = (targetNode.name ? targetNode.name.length : 0);
-                targetX = targetNode.x - (textLength * 5) / 2; // プロセスノードの左端に入る
+                targetX = targetNode.x - (textLength * 5) / 2; 
                 targetY = targetNode.y;
             } else {
                 targetX = targetNode.circleX;
@@ -357,7 +357,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .enter().append("text")
         .attr("class", "group-label")
         .attr("x", 0)
-        // ノードグループのY座標より少し上に配置
         .attr("y", d => d[1].length > 0 ? d[1][0].y - 150 : 0) 
         .text(d => groupLabels[d[0]]);
 
@@ -387,6 +386,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 
                 // 再帰的にパスを探索する関数
                 const findPath = (nodeId, direction, isInitialCall = true) => {
+                    // isInitialCallでない場合、関連ノードを重複して処理しないようにチェック
                     if (relatedNodeIds.has(nodeId) && !isInitialCall) {
                         return;
                     }
@@ -420,17 +420,16 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 } else {
                     // 物質ノードの場合、順方向/逆方向のパスをたどる
                     const chartNum = parseInt(d.group.replace('chart', ''));
+                    const totalGroups = Object.keys(groupLabels).length;
                     
-                    // Chart1 (原材料) からは順方向のみ
                     if (chartNum === 1) {
+                        // Chart1 (原材料) からは順方向のみ
                         findPath(d.id, 'forward');
-                    } 
-                    // Chart5 のような最終物質からは逆方向のみ
-                    else if (chartNum % 2 === 1 && chartNum > 1) {
+                    } else if (chartNum === totalGroups && chartNum % 2 === 1) {
+                        // 最後の物質グループからは逆方向のみ
                         findPath(d.id, 'backward');
-                    }
-                    // Chart3 のような中間物質からは両方向をたどる
-                    else if (chartNum % 2 === 1 && chartNum > 1 && chartNum < Object.keys(groupLabels).length) {
+                    } else if (chartNum % 2 === 1) {
+                        // 中間物質（Chart3, Chart5など）からは両方向をたどる
                         findPath(d.id, 'forward');
                         findPath(d.id, 'backward');
                     }
