@@ -78,8 +78,8 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '');
         
         // 💡 リンクテキストを符号(+,-,×)の直前で分割する正規表現
-        // (R, M, 数字, ×, +, - のいずれかの文字が直前にあり、その前がカンマまたは文字列の最初である場合に分割)
-        const parts = cleanText.split(/,(?=[+-]?\d|[+-]?M\d|[+-]?R\d)|(?=×R\d)/g)
+        // M/Rを含むもの、または数字のみのリンクを捕捉
+        const parts = cleanText.split(/,(?=[+-]?\d+[a-z]?|[+-]?[MR]\d+[a-z]?)|(?=×\d+[a-z]?)|(?=×[MR]\d+[a-z]?)/g)
             .map(p => p.trim())
             .filter(p => p && p !== ',');
 
@@ -99,14 +99,13 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             } else if (part.startsWith('+')) {
                 actualPart = part.substring(1);
                 linkType = 'generated'; // 生成
-            } else if (actualPart.match(/^\d/)) {
-                // 符号がないが数字で始まる場合は直リンクまたは生成 (ここでは生成と見なす)
-                linkType = 'generated';
             }
+            // 符号がない場合はそのまま続行し、下のロジックで判定
 
             const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
 
             if (reactionMatch) {
+                // 1. Reaction Link: RまたはMを介したリンク
                 const reactionIdNumber = reactionMatch[1]; 
                 const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()).filter(s => s) : [];
                 
@@ -137,15 +136,18 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     });
                 }
             } else if (actualPart.match(/^(\d+[a-z]?)$/)) {
-                // Direct Link (反応を通さない物質間移動)
+                // 2. Direct Link: 反応を通さない物質間移動 (例: 5-77 エタノールの 5-75, 3-74)
+                
+                // 物質グループ(奇数)から物質グループ(奇数)へのリンクは、グループインデックスが 2 離れている (例: chart3 -> chart5)
                 const sourceGroupName = `chart${groupIndex - 2}`; 
                 const sourceNodeId = `${sourceGroupName}-${actualPart}`;
                 const sourceNode = nodeMap.get(sourceNodeId);
                 
                 if (sourceNode) {
-                     // 符号がない、または生成(+)の場合は'direct'または'generated'、ここでは'direct'とする
-                     if (linkType === 'generated') linkType = 'direct'; 
-                     links.push({ source: sourceNode.id, target: currentNode.id, type: linkType, isExtinct });
+                    // 符号がない、または生成(+)の場合は'direct'または'generated'。
+                    // 物質間移動は 'direct'とし、消費(-)または消滅(×)の場合はそれぞれ 'consumed', 'extinct-link' を優先。
+                    if (linkType === 'generated') linkType = 'direct'; 
+                    links.push({ source: sourceNode.id, target: currentNode.id, type: linkType, isExtinct });
                 }
             }
         });
@@ -390,6 +392,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     // 物質ノードの場合
                     const chartNum = parseInt(d.group.replace('chart', ''));
                     
+                    // Chart1はForwardのみ、Chart5などの最終物質はBackwardのみ
                     if (chartNum === 1) {
                         findPath(d.id, 'forward');
                     } else if (chartNum % 2 === 1 && chartNum > 1) {
