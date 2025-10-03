@@ -13,7 +13,7 @@ const groupLabels = {
     'chart2': 'ミキシング (反応)',
     'chart3': 'ミキシング後 (物質)',
     'chart4': '発酵 (反応)',
-    'chart5': '発酵後 (物質'),
+    'chart5': '発酵後 (物質)',
 };
 const groupColors = {
     'chart1': '#a8e6cf', 
