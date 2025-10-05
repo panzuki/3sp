@@ -34,18 +34,19 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 
     const nodes = [];
     const links = [];
-    // 💡 修正ポイント 1: nodeMapのキーを 'chartX-番号' に戻す
+    // ノードIDは d.番号 (例: 1-3, 3-4, M1) そのもの
     const nodeMap = new Map(); 
     const allData = validDatasets.flat();
     
     // 1. ノードの生成とデータマップの構築
     allData.forEach(d => {
+        // d.番号が空の場合はスキップ
         if (!d.番号) return;
         const groupIndex = validDatasets.findIndex(dataset => dataset.includes(d)) + 1;
         const groupName = `chart${groupIndex}`;
         
-        // 💡 修正ポイント 2: ノードIDを 'chartX-番号' に変更
-        const id = `${groupName}-${d.番号}`;
+        // 💡 修正ポイント 1: d.番号はグローバルIDであるため、そのままIDとして使用
+        const id = d.番号; 
         const isProcess = processGroups.has(groupName);
 
         const name = d['物質名'] || d['反応名'] || d['構成物質名'] || d.番号;
@@ -59,15 +60,12 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 
         const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, data: d, groupIndex };
         nodes.push(node);
-        nodeMap.set(id, node); // IDをグループ名付きでマップに登録
+        nodeMap.set(id, node); 
     });
     
     // 2. リンクの生成
     allData.forEach(d => {
-        // ターゲットノードIDも 'chartX-番号'
-        const groupIndex = validDatasets.findIndex(dataset => dataset.includes(d)) + 1;
-        const groupName = `chart${groupIndex}`;
-        const currentNodeId = `${groupName}-${d.番号}`; 
+        const currentNodeId = d.番号; 
         const currentNode = nodeMap.get(currentNodeId);
 
         if (!currentNode || !d.引き継ぎ番号) return;
@@ -75,7 +73,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '').trim();
         if (!cleanText) return;
 
-        // リンクの分割を包括的に行う
         const parts = cleanText.split(/,(?![^()]*\))|(?=[+\-×][MR]?\d+[a-z]?)/g).map(p => p.trim()).filter(p => p);
 
         parts.forEach(part => {
@@ -85,7 +82,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 
             let sourceNumber = actualPart; 
             let sourceNode = null;
-            let predictedSourceGroupName = null;
 
             // 1. 反応ノードの参照処理 (例: M1, R3)
             const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
@@ -94,18 +90,14 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()).filter(s => s) : [];
                 
                 // Reaction to Product
-                const reactionGroupName = `chart${groupIndex - 1}`; 
-                const reactionNodeId = `${reactionGroupName}-${reactionIdNumber}`; 
-                const reactionNode = nodeMap.get(reactionNodeId); // 完全一致検索
+                const reactionNode = nodeMap.get(reactionIdNumber); 
                 
                 if (reactionNode) {
                     links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
                     
                     // Reactants to Reaction
                     sourceMaterials.forEach(matId => {
-                        const sourceGroupName = `chart${groupIndex - 2}`;
-                        const sourceNodeId = `${sourceGroupName}-${matId}`;
-                        const sourceNode = nodeMap.get(sourceNodeId); // 完全一致検索
+                        const sourceNode = nodeMap.get(matId); // 💡 完全一致検索: matId は既にグローバルID (例: 1-3)
                         
                         if (sourceNode) {
                             const type = sourceNode.isExtinct ? 'extinct-link' : 'consumed';
@@ -116,33 +108,16 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 return; 
             } 
             
-            // 2. 物質ノードの直接参照処理 (例: 3, 3-1a)
-            if (sourceNumber.includes('-')) {
-                // 形式: 3-1, 5-11a (ハイフンあり)
-                const chartNumMatch = sourceNumber.match(/^(\d+)-/);
-                if (chartNumMatch) {
-                    // 予測Chartをハイフン左の番号で決定 (例: '3-1' -> chart3)
-                    predictedSourceGroupName = `chart${chartNumMatch[1]}`; 
-                }
-            } else if (sourceNumber.match(/^\d+[a-z]?$/i)) { 
-                // 形式: 1, 3, 100 (ハイフンなし)
-                // 予測Chartを Chart1 で決定 (ユーザー規則に忠実)
-                predictedSourceGroupName = 'chart1';
-            }
-
-            // リンクノードの検索と生成
-            if (predictedSourceGroupName) {
-                // 💡 修正ポイント 3: 完全一致のIDを組み立ててノードを検索
-                const sourceNodeId = `${predictedSourceGroupName}-${sourceNumber}`;
-                sourceNode = nodeMap.get(sourceNodeId); // 完全一致検索
-
-                // 参照元ChartのインデックスがターゲットChartのインデックスより大きい場合は無視 (未来へのリンク防止)
-                if (sourceNode && sourceNode.groupIndex >= currentNode.groupIndex) {
-                    sourceNode = null; 
-                }
-            }
+            // 2. 物質ノードの直接参照処理 (Direct Link)
+            // sourceNumber (例: 1-3, 3-4) をそのまま Source ID として検索
+            sourceNode = nodeMap.get(sourceNumber); // 💡 純粋な完全一致検索
 
             if (sourceNode) {
+                // データの論理的な整合性（未来へのリンク防止）のみ維持
+                if (sourceNode.groupIndex >= currentNode.groupIndex) {
+                     return;
+                }
+                
                 let finalType = linkType === 'direct' ? 'direct' : (isExtinct ? 'extinct-link' : linkType);
                 links.push({ source: sourceNode.id, target: currentNode.id, type: finalType, isExtinct });
             }
@@ -204,7 +179,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         }
     });
 
-    // 5. リンクの描画 (S字カーブのロジック維持)
+    // 5. リンクの描画 (ロジック維持)
     const linkElements = chartGroup.append("g")
         .attr("class", "links")
         .selectAll("path")
@@ -218,7 +193,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 
             let sourceX, sourceY, targetX, targetY;
 
-            // ノードの座標を微調整 (ロジック維持)
+            // ノードの座標を微調整
             if (sourceNode.isProcess) {
                 const textLength = (sourceNode.name ? sourceNode.name.length : 0);
                 sourceX = sourceNode.x + (textLength * 5) / 2 + 5; 
@@ -240,7 +215,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             const dx = targetX - sourceX;
             const dy = targetY - sourceY;
 
-            // 描画曲線ロジック (維持)
+            // 描画曲線ロジック
             if (Math.abs(dy) > 100) {
                 const cp1X = sourceX;
                 const cp1Y = sourceY + dy * 0.3; 
@@ -251,7 +226,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 // 離れたグループ間のリンク（スキップリンク）
                 if (Math.abs(sourceNode.groupIndex - targetNode.groupIndex) > 1) {
                     const midY = sourceY + dy / 2;
-                    // S字カーブの代わりに水平方向の膨らみを持つカーブを使用
                     return `M${sourceX},${sourceY}
                             C${sourceX + dx * 0.3}, ${midY},
                              ${targetX - dx * 0.3}, ${midY},
