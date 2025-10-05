@@ -45,7 +45,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         const groupIndex = validDatasets.findIndex(dataset => dataset.includes(d)) + 1;
         const groupName = `chart${groupIndex}`;
         
-        // 💡 修正ポイント 1: d.番号はグローバルIDであるため、そのままIDとして使用
+        // 💡 d.番号はグローバルIDであるため、そのままIDとして使用
         const id = d.番号; 
         const isProcess = processGroups.has(groupName);
 
@@ -97,7 +97,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     
                     // Reactants to Reaction
                     sourceMaterials.forEach(matId => {
-                        const sourceNode = nodeMap.get(matId); // 💡 完全一致検索: matId は既にグローバルID (例: 1-3)
+                        const sourceNode = nodeMap.get(matId); // 💡 完全一致検索
                         
                         if (sourceNode) {
                             const type = sourceNode.isExtinct ? 'extinct-link' : 'consumed';
@@ -109,14 +109,13 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             } 
             
             // 2. 物質ノードの直接参照処理 (Direct Link)
-            // sourceNumber (例: 1-3, 3-4) をそのまま Source ID として検索
-            sourceNode = nodeMap.get(sourceNumber); // 💡 純粋な完全一致検索
+            sourceNode = nodeMap.get(sourceNumber); 
 
             if (sourceNode) {
-                // データの論理的な整合性（未来へのリンク防止）のみ維持
-                if (sourceNode.groupIndex >= currentNode.groupIndex) {
-                     return;
-                }
+                // ****** 修正箇所: グループインデックスのチェックを削除し、リンクを強制的に生成します ******
+                // if (sourceNode.groupIndex >= currentNode.groupIndex) {
+                //      return;
+                // }
                 
                 let finalType = linkType === 'direct' ? 'direct' : (isExtinct ? 'extinct-link' : linkType);
                 links.push({ source: sourceNode.id, target: currentNode.id, type: finalType, isExtinct });
