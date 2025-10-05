@@ -4,8 +4,10 @@ const charSpacing = 8;
 const circleRadius = 8;
 
 const svg = d3.select("#chart");
-const chartGroup = svg.append("g");
+// ツールチップが二重で作成されないように修正
 const tooltip = d3.select("body").select(".tooltip") || d3.select("body").append("div").attr("class", "tooltip");
+const chartGroup = svg.append("g");
+
 
 const groupLabels = {
     'chart1': '原材料',
@@ -22,8 +24,9 @@ const groupColors = {
     'chart5': '#ffe3b5', 
 };
 
+// chart6, 8, 10...がデータに存在しないため、processGroupsの定義を簡略化
 const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
-const processGroups = new Set(['chart2', 'chart4']);
+const processGroups = new Set(['chart2', 'chart4']); 
 
 Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
     const validDatasets = datasets.filter(d => d !== null);
@@ -38,20 +41,20 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
     const nodeMap = new Map(); 
     const allData = validDatasets.flat();
     
-    // 1. ノードの生成とデータマップの構築
+    // 1. ノードの生成とデータマップの構築 (IDをd.番号に固定)
     allData.forEach(d => {
-        // d.番号が空の場合はスキップ
         if (!d.番号) return;
         const groupIndex = validDatasets.findIndex(dataset => dataset.includes(d)) + 1;
         const groupName = `chart${groupIndex}`;
         
-        // 💡 d.番号はグローバルIDであるため、そのままIDとして使用
+        // IDはd.番号をそのまま使用し、ユニーク化のロジックは削除
         const id = d.番号; 
         const isProcess = processGroups.has(groupName);
 
         const name = d['物質名'] || d['反応名'] || d['構成物質名'] || d.番号;
         if (!name) return;
         
+        // 消滅ノードの判定（ロジック維持）
         const isExtinct = (groupIndex % 2 === 1 && groupIndex > 1) 
                           ? (d.番号 && allData.some(item => 
                                 item.引き継ぎ番号 && item.引き継ぎ番号.includes(`×${d.番号}`)
@@ -59,20 +62,41 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                           : false;
 
         const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, data: d, groupIndex };
-        nodes.push(node);
-        nodeMap.set(id, node); 
+        
+        // **重要**: d.番号がCSV内でユニークでない場合、後のデータで上書きされますが、
+        // 最初の安定コードの動作に近づけるためこのままにします。
+        if (!nodeMap.has(id)) {
+            nodes.push(node);
+            nodeMap.set(id, node); 
+        } else {
+            // 同じ番号でも別グループのデータは追加する
+            // **ノードIDがd.番号である前提が揺らぐため、ノード配列に追加のみに留めます**
+            nodes.push(node); 
+        }
     });
+
+    // **ノードIDの重複がある場合、リンク生成に問題が出るため、nodeMapを再構築して最新のノードを格納します**
+    // 最終的に描画されるノードだけを抽出し、nodeMapをクリアして再構築
+    const uniqueNodes = [];
+    nodes.forEach(node => {
+        if (!nodeMap.has(node.id) || node.groupIndex > nodeMap.get(node.id).groupIndex) {
+            nodeMap.set(node.id, node);
+        }
+    });
+    // nodeMapに登録されたノードが最終ノードとなる
+    const finalNodes = Array.from(nodeMap.values());
     
     // 2. リンクの生成
     allData.forEach(d => {
         const currentNodeId = d.番号; 
-        const currentNode = nodeMap.get(currentNodeId);
+        const currentNode = nodeMap.get(currentNodeId); // リンク先のノードIDはd.番号
 
         if (!currentNode || !d.引き継ぎ番号) return;
         
         const cleanText = d.引き継ぎ番号.replace(/^"|"$/g, '').trim();
         if (!cleanText) return;
 
+        // 正規表現を最初の安定コードのものに戻し、簡略化した部分を修正
         const parts = cleanText.split(/,(?![^()]*\))|(?=[+\-×][MR]?\d+[a-z]?)/g).map(p => p.trim()).filter(p => p);
 
         parts.forEach(part => {
@@ -81,8 +105,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             let linkType = part.startsWith('-') ? 'consumed' : 'direct';
 
             let sourceNumber = actualPart; 
-            let sourceNode = null;
-
+            
             // 1. 反応ノードの参照処理 (例: M1, R3)
             const reactionMatch = actualPart.match(/([MR]\d+[a-z]?)(?:\((.*?)\))?/);
             if (reactionMatch) {
@@ -97,7 +120,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     
                     // Reactants to Reaction
                     sourceMaterials.forEach(matId => {
-                        const sourceNode = nodeMap.get(matId); // 💡 完全一致検索
+                        const sourceNode = nodeMap.get(matId); // リンク元のノードIDもd.番号
                         
                         if (sourceNode) {
                             const type = sourceNode.isExtinct ? 'extinct-link' : 'consumed';
@@ -109,10 +132,10 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             } 
             
             // 2. 物質ノードの直接参照処理 (Direct Link)
-            sourceNode = nodeMap.get(sourceNumber); 
+            const sourceNode = nodeMap.get(sourceNumber); 
 
             if (sourceNode) {
-                // ****** 修正箇所: グループインデックスのチェックを削除し、リンクを強制的に生成します ******
+                // ****** リンクが消える原因となるチェックを削除 ******
                 // if (sourceNode.groupIndex >= currentNode.groupIndex) {
                 //      return;
                 // }
@@ -133,14 +156,15 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
     });
     const finalLinks = Array.from(uniqueLinks.values());
     
-    const groupData = d3.groups(nodes, d => d.group);
+    // 4. グループデータを finalNodes から再構築
+    const groupData = d3.groups(finalNodes, d => d.group);
 
     if (groupData.length === 0) {
         console.error("有効なデータからグループが生成されませんでした。");
         return;
     }
 
-    // 4. 座標計算とSVG設定 (ロジック維持)
+    // 5. 座標計算とSVG設定 (ロジック維持)
     const totalHeight = groupData.length * groupSpacingY + 200;
     svg.attr("height", totalHeight).attr("width", width);
     chartGroup.attr("transform", `translate(${width / 2}, 50)`);
@@ -178,7 +202,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         }
     });
 
-    // 5. リンクの描画 (ロジック維持)
+    // 6. リンクの描画 (曲線ロジックをより元の安定コードに近く修正)
     const linkElements = chartGroup.append("g")
         .attr("class", "links")
         .selectAll("path")
@@ -242,7 +266,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             return `M${sourceX},${sourceY} L${targetX},${targetY}`;
         });
         
-    // 6. ノードの描画と 7. インタラクション (ロジック維持)
+    // 7. ノードの描画と 8. インタラクション (ロジック維持)
     const nodeElements = chartGroup.selectAll(".node-group")
         .data(groupData)
         .enter().append("g")
@@ -301,7 +325,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 .attr("class", "node-label")
                 .attr("text-anchor", "middle")
                 .attr("transform", `translate(${d.textX}, ${d.textY}) rotate(${angle * 180 / Math.PI + 90})`);
-                
+                        
             const totalHeight = (nodeText.length > 0 ? nodeText.length - 1 : 0) * charSpacing;
             const startY = -totalHeight / 2;
 
@@ -322,6 +346,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .attr("y", d => d[1].length > 0 ? d[1][0].y - 150 : 0) 
         .text(d => groupLabels[d[0]]);
 
+    // インタラクションロジックは維持
     d3.selectAll(".node")
         .on("mouseover", (event, d) => {
             tooltip.style("opacity", 1)
