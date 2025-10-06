@@ -28,7 +28,7 @@
         .link {
             fill: none;
             stroke: #999;
-            stroke-opacity: 0.6;
+            stroke-opacity: 0.3; /* デフォルトの不透明度を下げ、コントラストを強調 */
             stroke-width: 1.5px;
             transition: stroke-opacity 0.3s, stroke-width 0.3s;
         }
@@ -47,14 +47,12 @@
             stroke-width: 2px;
             transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s;
         }
-        /* 通常のノードホバー */
         .node:hover .node-circle {
             fill: #3b82f6;
             r: 8px;
         }
-        /* 消滅ノードのホバー */
         .extinct-node:hover .extinct-x {
-            font-size: 14px; /* ホバーで少し大きく */
+            font-size: 14px;
         }
 
         .node-label {
@@ -89,7 +87,7 @@
         }
 
         .faded {
-            opacity: 0.2 !important;
+            opacity: 0.05 !important; /* 非関連要素を強くフェード */
         }
         .highlight-node .node-circle {
             stroke: #333;
@@ -102,7 +100,7 @@
         }
         .highlight-link {
             stroke-opacity: 1 !important;
-            stroke-width: 2.5px !important;
+            stroke-width: 3.5px !important; /* リンクを太くして強調 */
         }
         .highlight-link.generated {
             stroke: gold !important;
@@ -114,7 +112,7 @@
             stroke: #333 !important;
         }
         .highlight-link.extinct-link {
-            stroke: #9400D3 !important; /* 紫色 */
+            stroke: #9400D3 !important;
             stroke-dasharray: none; 
         }
         
