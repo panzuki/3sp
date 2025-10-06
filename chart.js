@@ -59,7 +59,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                           ? (d.次工程への引き継ぎ && d.次工程への引き継ぎ.includes('×'))
                           : false;
 
-        const node = { id, name, group: groupName, number: d.번호, isProcess, isExtinct, data: d };
+        const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, data: d };
         nodes.push(node);
         nodeMap.set(id, node);
     });
