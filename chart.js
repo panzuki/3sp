@@ -55,12 +55,11 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         const name = d['物質名'] || d['反応名'] || d['構成物質名'] || d.番号;
         if (!name) return;
         
-        // CSVデータ処理: 奇数Chart（物質）かつChart3以降で、次工程への引き継ぎに'×'が含まれる場合、isExtinct: true
         const isExtinct = (groupIndex % 2 === 1 && groupIndex > 1) 
                           ? (d.次工程への引き継ぎ && d.次工程への引き継ぎ.includes('×'))
                           : false;
 
-        const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, data: d };
+        const node = { id, name, group: groupName, number: d.번호, isProcess, isExtinct, data: d };
         nodes.push(node);
         nodeMap.set(id, node);
     });
@@ -92,6 +91,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 
                 reactionNodes.forEach(reactionNode => {
                     currentNodes.forEach(currentNode => {
+                        // 反応からの生成リンク (target: currentNode)
                         if (reactionMatch[1].startsWith('+') || reactionMatch[1].match(/^[MR]\d/)) {
                             links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
                         }
@@ -101,6 +101,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                         const sourceNodes = nodes.filter(n => n.number === matId);
                         
                         sourceNodes.forEach(sourceNode => {
+                            // 物質から反応への消費リンク (source: sourceNode)
                             const sourceIsExtinct = sourceNode.isExtinct;
                             links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: sourceIsExtinct });
                         });
@@ -111,6 +112,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 
                 sourceNodes.forEach(sourceNode => {
                     currentNodes.forEach(currentNode => {
+                        // 直接的な引き継ぎリンク
                         links.push({ source: sourceNode.id, target: currentNode.id, type: 'direct', isExtinct });
                     });
                 });
@@ -290,7 +292,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .attr("y", (d, i) => i * groupSpacingY - 160)
         .text(d => groupLabels[d[0]]);
 
-    // 物質番号による全工程追跡ロジック（消滅経路もハイライトするよう修正）
+    // 物質番号による全工程追跡ロジックの再定義
     d3.selectAll(".node")
         .on("mouseover", (event, d) => {
             tooltip.style("opacity", 1)
@@ -306,7 +308,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 
             // 全てのリセット
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false);
-            d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false);
+            d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
             tooltip.style("opacity", 0);
 
@@ -326,15 +328,19 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     const sourceNode = nodeMap.get(link.source);
                     const targetNode = nodeMap.get(link.target);
                     
-                    // クリックされたノードに直接繋がるリンク
                     const isDirectlyConnected = link.source === d.id || link.target === d.id;
-                    // 同じ物質番号を持つノード同士を繋ぐリンク
                     const connectsSameNumber = sourceNode && targetNode && 
                                                sourceNode.number === targetNumber && 
                                                targetNode.number === targetNumber;
 
                     if (isDirectlyConnected || connectsSameNumber) {
                         const linkKey = `${link.source}-${link.target}-${link.type}-${link.isExtinct}`;
+                        
+                        // 直接引き継ぎ (type: 'direct') かつ消滅 ('×1-100' のようなケース) の場合はハイライト対象外
+                        if (link.type === 'direct' && link.isExtinct) {
+                            return;
+                        }
+
                         relatedLinkKeys.add(linkKey);
                         relatedNodeIds.add(link.source);
                         relatedNodeIds.add(link.target);
@@ -349,6 +355,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     .each(function(node) {
                         const element = d3.select(this);
                         if (node.isExtinct) {
+                            // 消滅ノード（次の工程で使われずに消滅するノード）
                             element.classed("highlight-extinct-node", true);
                             element.select(".extinct-x").text("×").style("font-size", "18px");
                         } else {
@@ -361,10 +368,15 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 
                 linkElements.filter(link => relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`))
                     .classed("highlight-link", true)
+                    
+                    // 通常のリンクハイライト (非消滅)
                     .classed("generated", link => link.type === "generated" && !link.isExtinct)
                     .classed("consumed", link => link.type === "consumed" && !link.isExtinct)
                     .classed("direct", link => link.type === "direct" && !link.isExtinct)
-                    .classed("highlight-extinct-link", link => link.isExtinct);
+                    
+                    // 消滅経路の特殊ハイライト
+                    .classed("highlight-extinct-link", link => link.isExtinct && link.type === "generated") // 生成（M4->3-13）は紫色
+                    .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct")); // 消費（1-100->M4）は水色
                     
                 tooltip.style("opacity", 1)
                     .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
@@ -376,7 +388,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
     d3.select("body").on("click", function(event) {
         if (!event.target.closest(".node")) {
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false);
-            d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false);
+            d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
             tooltip.style("opacity", 0);
         }
