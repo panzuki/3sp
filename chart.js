@@ -9,16 +9,18 @@ const tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
 const groupLabels = {
     'chart1': '原材料', 'chart2': 'ミキシング (反応)', 'chart3': 'ミキシング後 (物質)',
-    'chart4': '発酵 (反応)', 'chart5': '発酵後 (物質)', 'chart6': '分割・成形 (反応)',
-    'chart7': '成形後 (物質)', 'chart8': '二次発酵 (反応)', 'chart9': '二次発酵後 (物質)',
-    'chart10': '焼成 (反応)', 'chart11': '製品 (物質)',
+    'chart4': '発酵 (反応)', 'chart5': '発酵後 (物質)',
+    //'chart6': '分割・成形 (反応)',
+    //'chart7': '成形後 (物質)', 'chart8': '二次発酵 (反応)', 'chart9': '二次発酵後 (物質)',
+    //'chart10': '焼成 (反応)', 'chart11': '製品 (物質)',
 };
 
 const groupColors = {
     'chart1': '#a8e6cf', 'chart2': '#ff8b94', 'chart3': '#dcedc1',
-    'chart4': '#b59fff', 'chart5': '#ffe3b5', 'chart6': '#8be9fd',
-    'chart7': '#ff79c6', 'chart8': '#f1fa8c', 'chart9': '#50fa7b',
-    'chart10': '#ffb86c', 'chart11': '#bd93f9',
+    'chart4': '#b59fff', 'chart5': '#ffe3b5', 
+    //'chart6': '#8be9fd',
+    //'chart7': '#ff79c6', 'chart8': '#f1fa8c', 'chart9': '#50fa7b',
+    //'chart10': '#ffb86c', 'chart11': '#bd93f9',
 };
 
 const processGroups = new Set(['chart2', 'chart4', 'chart6', 'chart8', 'chart10']);
