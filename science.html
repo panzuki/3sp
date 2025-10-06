@@ -4,26 +4,134 @@
     <meta charset="UTF-8">
     <title>化学反応フローチャート</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; display: flex; justify-content: center; }
-        svg { display: block; margin: 20px auto; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-        .link { fill: none; stroke: #ccc; stroke-width: 1.5px; transition: stroke-width 0.3s, stroke 0.3s, opacity 0.3s; pointer-events: none; }
-        .link.faded { opacity: 0.1; }
-        .link.consumed { stroke: #e74c3c; stroke-width: 2.5px; } 
-        .link.generated { stroke: #2ecc71; stroke-width: 2.5px; } 
-        .link.direct { stroke: #3498db; stroke-width: 2.5px; }   
-        .link.extinct-link { stroke: #95a5a6; stroke-dasharray: 4 2; stroke-width: 1px;} 
-        .link.highlight-link { stroke-width: 4px; opacity: 1; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5)); }
-        .node-circle { stroke: #333; stroke-width: 1px; cursor: pointer; }
-        .node-click-area { fill: transparent; cursor: pointer; }
-        .node-label, .chart-node-label { font-size: 10px; text-anchor: middle; fill: #333; pointer-events: none; }
-        .chart-node-label { font-size: 12px; font-weight: bold; fill: #2c3e50; }
-        .node.faded { opacity: 0.1; }
-        .node-group rect { fill: #ecf0f1; stroke: #2c3e50; stroke-width: 1px; rx: 3px; ry: 3px; }
-        .group-label { font-size: 20px; font-weight: 700; fill: #34495e; text-anchor: middle; }
-        .extinct-node .node-circle, .extinct-node rect { fill: #ccc !important; stroke-dasharray: 2 1; }
-        .extinct-x { font-size: 16px; fill: #e74c3c; font-weight: bold; text-anchor: middle; alignment-baseline: middle; pointer-events: none; }
-        .tooltip { position: absolute; text-align: left; padding: 8px; font: 10px sans-serif; background: #fff; border: 1px solid #ddd; border-radius: 4px; pointer-events: none; opacity: 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 10; }
+     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* SVGコンテナ */
+        svg {
+            display: block;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* リンクの基本スタイル */
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1.5px;
+            transition: stroke-width 0.3s, stroke 0.3s, opacity 0.3s;
+            pointer-events: none; /* リンクを介したクリックを防止 */
+        }
+        
+        .link.faded {
+            opacity: 0.1;
+        }
+
+        /* リンクタイプごとの色分け */
+        .link.consumed { stroke: #e74c3c; stroke-width: 2.5px; } /* 消費 */
+        .link.generated { stroke: #2ecc71; stroke-width: 2.5px; } /* 生成 */
+        .link.direct { stroke: #3498db; stroke-width: 2.5px; }   /* 直接引き継ぎ */
+        .link.extinct-link { stroke: #95a5a6; stroke-dasharray: 4 2; stroke-width: 1px;} /* 消滅リンク */
+
+        .link.highlight-link {
+            stroke-width: 4px;
+            opacity: 1;
+            /* ハイライト時は、タイプごとの色を濃く表示 */
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+        }
+
+        /* ノードの基本スタイル */
+        .node-circle {
+            stroke: #333;
+            stroke-width: 1px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .node-click-area {
+            fill: transparent; /* クリック領域は透明に */
+            cursor: pointer;
+        }
+
+        .node-label, .chart-node-label {
+            font-size: 10px;
+            text-anchor: middle;
+            fill: #333;
+            pointer-events: none; /* テキスト自体ではクリックしない */
+        }
+        
+        .chart-node-label {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #2c3e50;
+        }
+
+        .node.faded {
+            opacity: 0.1;
+        }
+        
+        .node.highlight-node {
+            opacity: 1;
+        }
+        
+        .node:hover .node-circle {
+            transform: scale(1.5);
+        }
+        
+        /* プロセスノード（反応）のスタイル */
+        .node-group rect {
+            fill: #ecf0f1;
+            stroke: #2c3e50;
+            stroke-width: 1px;
+            rx: 3px;
+            ry: 3px;
+        }
+        
+        /* グループラベル（工程名） */
+        .group-label {
+            font-size: 20px;
+            font-weight: 700;
+            fill: #34495e;
+            text-anchor: middle;
+        }
+        
+        /* 消滅ノードのスタイル */
+        .extinct-node .node-circle,
+        .extinct-node rect {
+            fill: #ccc !important; 
+            stroke-dasharray: 2 1;
+        }
+        .extinct-x {
+            font-size: 16px;
+            fill: #e74c3c;
+            font-weight: bold;
+            text-anchor: middle;
+            alignment-baseline: middle;
+            pointer-events: none;
+        }
+
+        /* ツールチップ */
+        .tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 8px;
+            font: 10px sans-serif;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
