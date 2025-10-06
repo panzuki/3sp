@@ -112,20 +112,20 @@
             stroke: #333 !important;
         }
         
-        /* --- 消滅経路ハイライトの定義 --- */
+        /* --- 消滅経路ハイライトの定義 (修正適用箇所) --- */
         
         /* 反応から生成された消滅側（M4 -> 3-13 の生成側）: 紫 */
         .highlight-extinct-link {
-            stroke: #9400D3 !important; 
+            stroke: #9400D3 !important;  /* !important を追加 */
             stroke-width: 3.5px !important;
-            stroke-dasharray: none; 
+            stroke-dasharray: none !important; /* !important を追加し、点線を実線に戻す */
         }
 
         /* 物質が反応に投入された消滅側（1-100 -> M4 の消費側）: 水色 */
         .highlight-extinct-consumed {
-            stroke: #00BFFF !important; 
+            stroke: #00BFFF !important;  /* !important を追加 */
             stroke-width: 3.5px !important;
-            stroke-dasharray: none; 
+            stroke-dasharray: none !important; /* !important を追加し、点線を実線に戻す */
         }
         
         .highlight-extinct-node .extinct-x {
