@@ -28,7 +28,7 @@
         .link {
             fill: none;
             stroke: #999;
-            stroke-opacity: 0.3; /* デフォルトの不透明度を下げ、コントラストを強調 */
+            stroke-opacity: 0.3;
             stroke-width: 1.5px;
             transition: stroke-opacity 0.3s, stroke-width 0.3s;
         }
@@ -87,7 +87,7 @@
         }
 
         .faded {
-            opacity: 0.05 !important; /* 非関連要素を強くフェード */
+            opacity: 0.05 !important;
         }
         .highlight-node .node-circle {
             stroke: #333;
@@ -100,7 +100,7 @@
         }
         .highlight-link {
             stroke-opacity: 1 !important;
-            stroke-width: 3.5px !important; /* リンクを太くして強調 */
+            stroke-width: 3.5px !important;
         }
         .highlight-link.generated {
             stroke: gold !important;
@@ -111,11 +111,19 @@
         .highlight-link.direct {
             stroke: #333 !important;
         }
-        .highlight-link.extinct-link {
-            stroke: #9400D3 !important;
-            stroke-dasharray: none; 
+        
+        /* --- 消滅経路ハイライトの定義 --- */
+        .highlight-extinct-link {
+            stroke: #9400D3 !important; /* 紫色 */
+            stroke-width: 3.5px !important;
+            stroke-dasharray: none; /* 点線を実線に戻す */
         }
         
+        .highlight-extinct-node .extinct-x {
+            font-size: 18px !important; /* ×を大きく強調 */
+            fill: red !important; /* 赤色で強調 */
+        }
+
         .extinct-link {
             stroke-dasharray: 4, 2;
         }
