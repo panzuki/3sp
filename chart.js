@@ -23,7 +23,7 @@ const groupColors = {
     //'chart10': '#ffb86c', 'chart11': '#bd93f9',
 };
 
-const processGroups = new Set(['chart2', 'chart4', 'chart6', 'chart8', 'chart10']);
+const processGroups = new Set(['chart2', 'chart4']);
 const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
 
 Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
