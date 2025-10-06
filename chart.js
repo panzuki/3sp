@@ -9,23 +9,19 @@ const tooltip = d3.select("body").append("div").attr("class", "tooltip");
 
 const groupLabels = {
     'chart1': '原材料', 'chart2': 'ミキシング (反応)', 'chart3': 'ミキシング後 (物質)',
-    'chart4': '発酵 (反応)', 'chart5': '発酵後 (物質)', 
-    //'chart6': '分割・成形 (反応)',
-    //'chart7': '成形後 (物質)', 'chart8': '二次発酵 (反応)', 'chart9': '二次発酵後 (物質)',
-    //'chart10': '焼成 (反応)', 'chart11': '製品 (物質)',
+    'chart4': '発酵 (反応)', 'chart5': '発酵後 (物質)', 'chart6': '分割・成形 (反応)',
+    'chart7': '成形後 (物質)', 'chart8': '二次発酵 (反応)', 'chart9': '二次発酵後 (物質)',
+    'chart10': '焼成 (反応)', 'chart11': '製品 (物質)',
 };
 
 const groupColors = {
     'chart1': '#a8e6cf', 'chart2': '#ff8b94', 'chart3': '#dcedc1',
-    'chart4': '#b59fff', 'chart5': '#ffe3b5', 
-    //'chart6': '#8be9fd',
-    //'chart7': '#ff79c6', 'chart8': '#f1fa8c', 'chart9': '#50fa7b',
-    //'chart10': '#ffb86c', 'chart11': '#bd93f9',
+    'chart4': '#b59fff', 'chart5': '#ffe3b5', 'chart6': '#8be9fd',
+    'chart7': '#ff79c6', 'chart8': '#f1fa8c', 'chart9': '#50fa7b',
+    'chart10': '#ffb86c', 'chart11': '#bd93f9',
 };
 
-//const processGroups = new Set(['chart2', 'chart4', 'chart6', 'chart8', 'chart10']);
-const processGroups = new Set(['chart2', 'chart4']);
-
+const processGroups = new Set(['chart2', 'chart4', 'chart6', 'chart8', 'chart10']);
 const fileNames = Object.keys(groupLabels).map(key => `csv/${key}.csv`);
 
 Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets => {
@@ -289,18 +285,16 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .attr("y", (d, i) => i * groupSpacingY - 160)
         .text(d => groupLabels[d[0]]);
 
+    // クリックイベント処理 (ツールチップと全経路追跡)
     d3.selectAll(".node")
-        .on("mouseover", (event, d) => {
+        .on("click", (event, d) => {
+            const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
+
+            // ツールチップ表示 (クリックイベント内へ移動)
             tooltip.style("opacity", 1)
                 .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 20) + "px");
-        })
-        .on("mouseout", () => {
-            tooltip.style("opacity", 0);
-        })
-        .on("click", (event, d) => {
-            const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node");
 
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false);
@@ -354,10 +348,12 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             }
         });
     
+    // グラフ外をクリックした際のリセット処理
     d3.select("body").on("click", function(event) {
         if (!event.target.closest(".node")) {
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false);
+            tooltip.style("opacity", 0); // ツールチップも非表示
         }
     });
 
