@@ -28,7 +28,7 @@
         .link {
             fill: none;
             stroke: #999;
-            stroke-opacity: 0.3;
+            stroke-opacity: 0.6;
             stroke-width: 1.5px;
             transition: stroke-opacity 0.3s, stroke-width 0.3s;
         }
@@ -47,12 +47,14 @@
             stroke-width: 2px;
             transition: r 0.2s ease-in-out, fill 0.2s ease-in-out, opacity 0.3s;
         }
+        /* 通常のノードホバー */
         .node:hover .node-circle {
             fill: #3b82f6;
             r: 8px;
         }
+        /* 消滅ノードのホバー */
         .extinct-node:hover .extinct-x {
-            font-size: 14px;
+            font-size: 14px; /* ホバーで少し大きく */
         }
 
         .node-label {
@@ -87,7 +89,7 @@
         }
 
         .faded {
-            opacity: 0.05 !important;
+            opacity: 0.2 !important;
         }
         .highlight-node .node-circle {
             stroke: #333;
@@ -100,8 +102,9 @@
         }
         .highlight-link {
             stroke-opacity: 1 !important;
-            stroke-width: 3.5px !important;
+            stroke-width: 2.5px !important;
         }
+        /* 通常のハイライト色は、競合を避けるために詳細度を上げておく */
         .highlight-link.generated {
             stroke: gold !important;
         }
@@ -112,27 +115,28 @@
             stroke: #333 !important;
         }
         
-        /* --- 消滅経路ハイライトの定義 (修正適用箇所) --- */
+        /* --- 消滅経路の特殊ハイライトの定義 (紫色復活用) --- */
         
-        /* 反応から生成された消滅側（M4 -> 3-13 の生成側）: 紫 */
+        /* 反応から生成された消滅側（M4 -> 3-13 の生成側）: 紫を強制 */
         .highlight-extinct-link {
-            stroke: #9400D3 !important;  /* !important を追加 */
+            stroke: #9400D3 !important; /* 紫色を強制 */
             stroke-width: 3.5px !important;
-            stroke-dasharray: none !important; /* !important を追加し、点線を実線に戻す */
+            stroke-dasharray: none !important; 
         }
 
-        /* 物質が反応に投入された消滅側（1-100 -> M4 の消費側）: 水色 */
+        /* 物質が反応に投入された消滅側（1-100 -> M4 の消費側）: 水色を強制 */
         .highlight-extinct-consumed {
-            stroke: #00BFFF !important;  /* !important を追加 */
+            stroke: #00BFFF !important; /* 水色を強制 */
             stroke-width: 3.5px !important;
-            stroke-dasharray: none !important; /* !important を追加し、点線を実線に戻す */
+            stroke-dasharray: none !important; 
         }
         
+        /* 消滅ノードのハイライト */
         .highlight-extinct-node .extinct-x {
             font-size: 18px !important; 
             fill: red !important; 
         }
-
+        
         .extinct-link {
             stroke-dasharray: 4, 2;
         }
