@@ -64,7 +64,9 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         if (!name) return;
         
         const isExtinct = (groupIndex % 2 === 1 && groupIndex > 1) 
-                          ? (d.次工程への引き継ぎ && d.次工程への引き継ぎ.includes('×'))
+                          ? ( (d.次工程への引き継ぎ && d.次工程への引き継ぎ.includes('×')) || 
+                              (d.引き継ぎ番号 && d.引き継ぎ番号.trim().startsWith('×'))    
+                            )
                           : false;
 
         const isNew = (groupIndex % 2 === 1 && groupIndex > 1) 
