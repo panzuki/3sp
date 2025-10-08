@@ -100,6 +100,20 @@
             font-weight: bold;
             opacity: 1 !important;
         }
+
+               /* 1. 新規生成物質 (赤色太字) */
+        .highlight-text-new .node-label {
+            fill: #C0392B !important; /* 濃い赤 */
+            font-weight: 900 !important; /* 超太字 */
+        }
+        
+        /* 2. 消滅物質 (紫色太字) */
+        /* .highlight-extinct-node にもこのクラスを付与し、紫色の太字にする */
+        .highlight-text-extinct .node-label {
+            fill: #9400D3 !important; /* 紫色 */
+            font-weight: 900 !important; /* 超太字 */
+        }
+        
         .highlight-link {
             stroke-opacity: 1 !important;
             stroke-width: 2.5px !important;
