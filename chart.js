@@ -67,8 +67,11 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                           ? (d.次工程への引き継ぎ && d.次工程への引き継ぎ.includes('×'))
                           : false;
 
+        const isNew = (groupIndex % 2 === 1 && groupIndex > 1) 
+                      ? (d.引き継ぎ番号 && (d.引き継ぎ番号.match(/^\+?[MR]\d+/)))
+                      : false;
 
-        const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, data: d };
+        const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, isNew, data: d };
         nodes.push(node);
         nodeMap.set(id, node);
     });
@@ -305,7 +308,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
     d3.selectAll(".node")
         .on("mouseover", (event, d) => {
             tooltip.style("opacity", 1)
-                .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
+                .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}${d.isNew ? '<br>***新規生成***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 20) + "px");
         })
@@ -315,7 +318,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .on("click", (event, d) => {
             const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node") || d3.select(event.currentTarget).classed("highlight-extinct-node");
 
-            d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false);
+            d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false).classed("highlight-text-new", false).classed("highlight-text-extinct", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
             tooltip.style("opacity", 0);
@@ -379,9 +382,14 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 d3.selectAll(".node").filter(node => relatedNodeIds.has(node.id))
                     .each(function(node) {
                         const element = d3.select(this);
+                        
                         if (node.isExtinct) {
-                            element.classed("highlight-extinct-node", true);
+                            element.classed("highlight-extinct-node", true)
+                                   .classed("highlight-text-extinct", true);
                             element.select(".extinct-x").text("×").style("font-size", "18px");
+                        } else if (node.isNew) {
+                            element.classed("highlight-node", true)
+                                   .classed("highlight-text-new", true);
                         } else {
                             element.classed("highlight-node", true);
                         }
@@ -400,7 +408,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct")); 
                     
                 tooltip.style("opacity", 1)
-                    .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
+                    .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}${d.isNew ? '<br>***新規生成***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 20) + "px");
             }
@@ -408,7 +416,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
     
     d3.select("body").on("click", function(event) {
         if (!event.target.closest(".node")) {
-            d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false);
+            d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false).classed("highlight-text-new", false).classed("highlight-text-extinct", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
             tooltip.style("opacity", 0);
