@@ -111,10 +111,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                                 console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
                             }
                         });
-                });
-                    
-                    
-                    
                     sourceMaterials.forEach(matId => {
                         const sourceNodes = nodes.filter(n => n.number === matId);
                         
