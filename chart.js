@@ -406,8 +406,10 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     
                     .classed("generated", link => link.type === "generated" && !link.isExtinct)
                     .classed("consumed", link => link.type === "consumed" && !link.isExtinct)
-                    .classed("direct", link => link.type === "direct" && !link.isExtinct);
-                    
+                    .classed("direct", link => link.type === "direct" && !link.isExtinct);              
+
+
+                
                 tooltip.style("opacity", 1)
                     .html(`<strong>${d.name}</strong><br>番号: ${d.number}${d.isExtinct ? '<br>***消滅***' : ''}${d.isNew ? '<br>***新規生成***' : ''}<br><span style="font-size: 8px;">ID: ${d.id}</span>`)
                     .style("left", (event.pageX + 10) + "px")
