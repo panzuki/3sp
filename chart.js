@@ -107,6 +107,10 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     currentNodes.forEach(currentNode => {
                         if (reactionMatch[1].startsWith('+') || reactionMatch[1].match(/^[MR]\d/)) {
                             links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
+                            const linkData = { source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct };
+                            links.push(linkData);
+                            console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
+                        
                         }
                     });
                     
@@ -115,7 +119,9 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                         
                         sourceNodes.forEach(sourceNode => {
                             const sourceIsExtinct = sourceNode.isExtinct;
-                            links.push({ source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: sourceIsExtinct });
+                            const linkData = { source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: sourceIsExtinct };
+                            links.push(linkData);
+                            console.log(`Link: CONSUMED (M->R): ${sourceNode.number} -> ${reactionNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
                         });
                     });
                 });
@@ -403,12 +409,26 @@ linkElements.classed("faded", link => !relatedLinkKeys.has(`${link.source}-${lin
                 
                 linkElements.filter(link => relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`))
                     .classed("highlight-link", true)
-                    
+
+                    .classed("highlight-extinct-link", link => {
+                        const isExtinctGenerated = link.isExtinct && link.type === "generated";
+                        if (isExtinctGenerated) {
+                            console.log(`*** Highlight PURPLE (Extinct Generated) Applied: ${link.source} -> ${link.target} ***`);
+                        }
+                        return isExtinctGenerated;
+                    })
+                    .classed("highlight-extinct-consumed", link => {
+                        const isExtinctConsumed = link.isExtinct && (link.type === "consumed" || link.type === "direct");
+                        if (isExtinctConsumed) {
+                            console.log(`*** Highlight CYAN (Extinct Consumed) Applied: ${link.source} -> ${link.target} ***`);
+                        }
+                        return isExtinctConsumed;
+                    })
                     // --- 1. 消滅経路の特殊ハイライト (最優先) ---
                     // 生成物かつ消滅: 紫色
-                    .classed("highlight-extinct-link", link => link.isExtinct && link.type === "generated") 
+                    //.classed("highlight-extinct-link", link => link.isExtinct && link.type === "generated") 
                     // 消費物またはダイレクトパスかつ消滅: 水色
-                    .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct")) 
+                    //.classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct")) 
                     
                     // --- 2. 通常のハイライト (消滅ハイライトが適用されていない場合のみ適用) ---
                     // **変更点:** 消滅リンクの場合は、通常の generated/consumed/direct クラスを付与しない。
