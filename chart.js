@@ -73,7 +73,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                       ? (d.引き継ぎ番号 && (d.引き継ぎ番号.match(/^\+?[MR]\d+/)))
                       : false;
 
-        console.log(`Node: ${name} (${d.番号}), Group: ${groupName}, isExtinct: ${isExtinct}, isNew: ${isNew}`);
+        //console.log(`Node: ${name} (${d.番号}), Group: ${groupName}, isExtinct: ${isExtinct}, isNew: ${isNew}`);
         const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, isNew, data: d };
         nodes.push(node);
         nodeMap.set(id, node);
@@ -108,7 +108,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                                 const targetIsExtinct = currentNode.isExtinct;
                                 const linkData = { source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct: targetIsExtinct };
                                 links.push(linkData);
-                                console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
+                                //console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
                             }
                         });
                     sourceMaterials.forEach(matId => {
@@ -118,7 +118,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                             const sourceIsExtinct = sourceNode.isExtinct;
                             const linkData = { source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: sourceIsExtinct };
                             links.push(linkData);
-                            console.log(`Link: CONSUMED (M->R): ${sourceNode.number} -> ${reactionNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
+                            //console.log(`Link: CONSUMED (M->R): ${sourceNode.number} -> ${reactionNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
                         });
                     });
                 });
@@ -410,14 +410,14 @@ linkElements.classed("faded", link => !relatedLinkKeys.has(`${link.source}-${lin
                     .classed("highlight-extinct-link", link => {
                         const isExtinctGenerated = link.isExtinct && link.type === "generated";
                         if (isExtinctGenerated) {
-                            console.log(`*** Highlight PURPLE (Extinct Generated) Applied: ${link.source} -> ${link.target} ***`);
+                            //console.log(`*** Highlight PURPLE (Extinct Generated) Applied: ${link.source} -> ${link.target} ***`);
                         }
                         return isExtinctGenerated;
                     })
                     .classed("highlight-extinct-consumed", link => {
                         const isExtinctConsumed = link.isExtinct && (link.type === "consumed" || link.type === "direct");
                         if (isExtinctConsumed) {
-                            console.log(`*** Highlight CYAN (Extinct Consumed) Applied: ${link.source} -> ${link.target} ***`);
+                            //console.log(`*** Highlight CYAN (Extinct Consumed) Applied: ${link.source} -> ${link.target} ***`);
                         }
                         return isExtinctConsumed;
                     })
