@@ -102,16 +102,16 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 const sourceMaterials = reactionMatch[2] ? reactionMatch[2].split(',').map(s => s.trim()) : [];
                 
                 const reactionNodes = nodes.filter(n => n.number === reactionIdNumber);
-                
-                    reactionNodes.forEach(reactionNode => {
+                reactionNodes.forEach(reactionNode => {
                         currentNodes.forEach(currentNode => {
                             if (reactionMatch[1].startsWith('+') || reactionMatch[1].match(/^[MR]\d/)) {
                                 const targetIsExtinct = currentNode.isExtinct;
                                 const linkData = { source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct: targetIsExtinct };
                                 links.push(linkData);
                                 console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
-                            });
-                    });
+                            }
+                        });
+                });
                     
                     
                     
