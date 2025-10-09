@@ -103,16 +103,17 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 
                 const reactionNodes = nodes.filter(n => n.number === reactionIdNumber);
                 
-                reactionNodes.forEach(reactionNode => {
-                    currentNodes.forEach(currentNode => {
-                        if (reactionMatch[1].startsWith('+') || reactionMatch[1].match(/^[MR]\d/)) {
-                            links.push({ source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct });
-                            const linkData = { source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct };
-                            links.push(linkData);
-                            console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
-                        
-                        }
+                    reactionNodes.forEach(reactionNode => {
+                        currentNodes.forEach(currentNode => {
+                            if (reactionMatch[1].startsWith('+') || reactionMatch[1].match(/^[MR]\d/)) {
+                                const targetIsExtinct = currentNode.isExtinct;
+                                const linkData = { source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct: targetIsExtinct };
+                                links.push(linkData);
+                                console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
+                            });
                     });
+                    
+                    
                     
                     sourceMaterials.forEach(matId => {
                         const sourceNodes = nodes.filter(n => n.number === matId);
