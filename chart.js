@@ -398,13 +398,19 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     });
                 
 
-                linkElements.classed("faded", link => !relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`));
+linkElements.classed("faded", link => !relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`));
                 
                 linkElements.filter(link => relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`))
                     .classed("highlight-link", true)
-
+                    
+                    // --- 1. 消滅経路の特殊ハイライト (最優先) ---
+                    // 生成物かつ消滅: 紫色
                     .classed("highlight-extinct-link", link => link.isExtinct && link.type === "generated") 
-                    .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct"))                     
+                    // 消費物またはダイレクトパスかつ消滅: 水色
+                    .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct")) 
+                    
+                    // --- 2. 通常のハイライト (消滅ハイライトが適用されていない場合のみ適用) ---
+                    // **変更点:** 消滅リンクの場合は、通常の generated/consumed/direct クラスを付与しない。
                     .classed("generated", link => link.type === "generated" && !link.isExtinct)
                     .classed("consumed", link => link.type === "consumed" && !link.isExtinct)
                     .classed("direct", link => link.type === "direct" && !link.isExtinct);
