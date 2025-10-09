@@ -397,16 +397,18 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                         }
                     });
                 
+
                 linkElements.classed("faded", link => !relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`));
                 
                 linkElements.filter(link => relatedLinkKeys.has(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`))
                     .classed("highlight-link", true)
-                    .classed("highlight-extinct-link", link => link.isExtinct && link.type === "generated")
-                    .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct")) 
-                    
+
+                    .classed("highlight-extinct-link", link => link.isExtinct && link.type === "generated") 
+                    .classed("highlight-extinct-consumed", link => link.isExtinct && (link.type === "consumed" || link.type === "direct"))                     
                     .classed("generated", link => link.type === "generated" && !link.isExtinct)
                     .classed("consumed", link => link.type === "consumed" && !link.isExtinct)
-                    .classed("direct", link => link.type === "direct" && !link.isExtinct);              
+                    .classed("direct", link => link.type === "direct" && !link.isExtinct);
+          
 
 
                 
