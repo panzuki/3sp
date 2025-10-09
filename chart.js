@@ -73,6 +73,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                       ? (d.引き継ぎ番号 && (d.引き継ぎ番号.match(/^\+?[MR]\d+/)))
                       : false;
 
+        console.log(`Node: ${name} (${d.番号}), Group: ${groupName}, isExtinct: ${isExtinct}, isNew: ${isNew}`);
         const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, isNew, data: d };
         nodes.push(node);
         nodeMap.set(id, node);
