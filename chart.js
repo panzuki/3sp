@@ -356,6 +356,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             });
     };
     
+
     d3.selectAll(".node")
         .on("mouseover", (event, d) => {
             tooltip.style("opacity", 1)
@@ -379,11 +380,20 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 const relatedNodeIds = new Set();
                 const relatedLinkKeys = new Set();
                 
-                
-                findPath(d.id, relatedNodeIds, relatedLinkKeys, 'backward');
-                
-                
-                findPath(d.id, relatedNodeIds, relatedLinkKeys, 'forward');
+                if (d.isProcess) {
+                    // 処理ノードがクリックされた場合、直接接続されたノードとリンクのみをハイライトする
+                    relatedNodeIds.add(d.id);
+                    finalLinks.filter(link => link.source === d.id || link.target === d.id)
+                        .forEach(link => {
+                            relatedLinkKeys.add(`${link.source}-${link.target}-${link.type}-${link.isExtinct}`);
+                            relatedNodeIds.add(link.source);
+                            relatedNodeIds.add(link.target);
+                        });
+                } else {
+                    // 物質ノードがクリックされた場合、連鎖を追跡する
+                    findPath(d.id, relatedNodeIds, relatedLinkKeys, 'backward');
+                    findPath(d.id, relatedNodeIds, relatedLinkKeys, 'forward');
+                }
 
                 
 
@@ -445,4 +455,3 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 }).catch(error => {
 console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
 });
-
