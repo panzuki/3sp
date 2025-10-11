@@ -381,7 +381,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 const relatedLinkKeys = new Set();
                 
                 if (d.isProcess) {
-                    // 処理ノードがクリックされた場合、直接接続されたノードとリンクのみをハイライトする
+                    
                     relatedNodeIds.add(d.id);
                     finalLinks.filter(link => link.source === d.id || link.target === d.id)
                         .forEach(link => {
@@ -390,7 +390,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                             relatedNodeIds.add(link.target);
                         });
                 } else {
-                    // 物質ノードがクリックされた場合、連鎖を追跡する
+                    
                     findPath(d.id, relatedNodeIds, relatedLinkKeys, 'backward');
                     findPath(d.id, relatedNodeIds, relatedLinkKeys, 'forward');
                 }
@@ -404,14 +404,24 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                         const element = d3.select(this);
                         
                         if (node.isExtinct) {
+                            // 消滅ノード（×）とテキストをハイライト
                             element.classed("highlight-extinct-node", true)
                                    .classed("highlight-text-extinct", true);
                             element.select(".extinct-x").text("×").style("font-size", "18px");
+                            // ノード円が非表示の場合に備えてクリックエリアを強調
+                            element.select(".node-click-area").classed("highlight-node-area", true);
                         } else if (node.isNew) {
+                            // 新規生成ノードのテキストをハイライト
                             element.classed("highlight-node", true)
                                    .classed("highlight-text-new", true);
                         } else {
+                            // 通常のノードをハイライト
                             element.classed("highlight-node", true);
+                        }
+                        
+                        // プロセスノード以外のノード円を強制的に表示（ハイライトの視認性向上）
+                        if (!node.isProcess) {
+                            element.select(".node-circle").attr("r", circleRadius).style("opacity", 1);
                         }
                     });
                 
@@ -448,6 +458,8 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false).classed("highlight-text-new", false).classed("highlight-text-extinct", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
+            d3.selectAll(".node-click-area").classed("highlight-node-area", false); 
+            d3.selectAll(".node-circle").style("opacity", null); 
             tooltip.style("opacity", 0);
         }
     });
