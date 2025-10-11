@@ -73,7 +73,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                       ? (d.引き継ぎ番号 && (d.引き継ぎ番号.match(/^\+?[MR]\d+/)))
                       : false;
 
-        //console.log(`Node: ${name} (${d.番号}), Group: ${groupName}, isExtinct: ${isExtinct}, isNew: ${isNew}`);
         const node = { id, name, group: groupName, number: d.番号, isProcess, isExtinct, isNew, data: d };
         nodes.push(node);
         nodeMap.set(id, node);
@@ -108,7 +107,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                                 const targetIsExtinct = currentNode.isExtinct;
                                 const linkData = { source: reactionNode.id, target: currentNode.id, type: 'generated', isExtinct: targetIsExtinct };
                                 links.push(linkData);
-                                //console.log(`Link: GENERATED (R->M): ${reactionNode.number} -> ${currentNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
                             }
                         });
                     sourceMaterials.forEach(matId => {
@@ -118,7 +116,6 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                             const sourceIsExtinct = sourceNode.isExtinct;
                             const linkData = { source: sourceNode.id, target: reactionNode.id, type: 'consumed', isExtinct: sourceIsExtinct };
                             links.push(linkData);
-                            //console.log(`Link: CONSUMED (M->R): ${sourceNode.number} -> ${reactionNode.number}, isExtinct: ${linkData.isExtinct}, type: ${linkData.type}`);
                         });
                     });
                 });
@@ -311,59 +308,48 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .attr("y", (d, i) => i * groupSpacingY - 160)
         .text(d => groupLabels[d[0]]);
 
-    // =========================================================================
-    // ↓↓↓↓↓↓ 【★ ハイライトロジックの修正箇所：ここから ★】 ↓↓↓↓↓↓
-    // =========================================================================
-
-    /**
-     * クリックされたノードから、その物質の生成または消費の連鎖をたどる再帰関数
-     * @param {string} nodeId - 現在処理中のノードID
-     * @param {Set<string>} relatedNodeIds - ハイライト対象のノードIDを格納するSet
-     * @param {Set<string>} relatedLinkKeys - ハイライト対象のリンクKeyを格納するSet
-     * @param {string} direction - 'forward' (消費方向) または 'backward' (生成方向)
-     * @param {number} depth - 再帰の深さ（無限ループ防止用）
-     */
+    
     const findPath = (nodeId, relatedNodeIds, relatedLinkKeys, direction, depth = 0) => {
         const currentNode = nodeMap.get(nodeId); 
         if (!currentNode) return; 
 
-        // サイクル防止 & 二重チェック防止 (深度1以降)
+        
         if (relatedNodeIds.has(nodeId) && depth > 0) return; 
         relatedNodeIds.add(nodeId);
 
-        // 1. 現在のノードに接続されているリンクを全てチェック
+        
         finalLinks.filter(link => link.source === nodeId || link.target === nodeId)
             .forEach(link => {
                 const linkKey = `${link.source}-${link.target}-${link.type}-${link.isExtinct}`;
                 const otherNodeId = link.source === nodeId ? link.target : link.source;
                 
-                // リンクは常にハイライト対象に追加
+                
                 relatedLinkKeys.add(linkKey);
 
                 let shouldContinue = false;
 
-                // 2. 現在のノードタイプと追跡方向に基づいて、次のノードへ進むか判定
+                
                 if (!currentNode.isProcess) { 
-                    // A. 現在のノードが物質 (M) の場合
+                    
                     if (direction === 'forward' && (link.type === 'consumed' || link.type === 'direct') && link.source === nodeId) {
-                        // M -> R (消費): 次は反応ノードRへ進む
+                        
                         shouldContinue = true;
                     } else if (direction === 'backward' && link.type === 'generated' && link.target === nodeId) {
-                        // M <- R (生成): 次は反応ノードRへ進む
+                        
                         shouldContinue = true;
                     }
                 } else { 
-                    // B. 現在のノードが反応 (R) の場合
+                    
                     if (direction === 'forward' && link.type === 'generated' && link.source === nodeId) {
-                        // R -> M' (生成): 次は生成物質M'へ進む
+                        
                         shouldContinue = true;
                     } else if (direction === 'backward' && (link.type === 'consumed' || link.type === 'direct') && link.target === nodeId) {
-                        // M'' -> R (消費): 次は消費物質M''へ進む ( backwardなのでR <- M'' を辿る)
+                        
                         shouldContinue = true;
                     }
                 }
 
-                // 3. 許可された経路であれば再帰的に次のノードへ進む
+                
                 if (shouldContinue) {
                     findPath(otherNodeId, relatedNodeIds, relatedLinkKeys, direction, depth + 1);
                 }
@@ -383,7 +369,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
         .on("click", (event, d) => {
             const isAlreadyHighlighted = d3.select(event.currentTarget).classed("highlight-node") || d3.select(event.currentTarget).classed("highlight-extinct-node");
 
-            // ハイライト解除
+            
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false).classed("highlight-text-new", false).classed("highlight-text-extinct", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
@@ -393,13 +379,13 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                 const relatedNodeIds = new Set();
                 const relatedLinkKeys = new Set();
                 
-                // 1. クリックされたノードを起点に、生成方向 (Backward) に経路を探索
+                
                 findPath(d.id, relatedNodeIds, relatedLinkKeys, 'backward');
                 
-                // 2. クリックされたノードを起点に、消費方向 (Forward) に経路を探索
+                
                 findPath(d.id, relatedNodeIds, relatedLinkKeys, 'forward');
 
-                // --- ハイライトの適用 ---
+                
 
                 d3.selectAll(".node").classed("faded", node => !relatedNodeIds.has(node.id));
                 
@@ -432,7 +418,7 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                         const isExtinctConsumed = link.isExtinct && (link.type === "consumed" || link.type === "direct");
                         return isExtinctConsumed;
                     })
-                    // 通常のハイライト (消滅ハイライトが適用されていない場合のみ)
+                    
                     .classed("generated", link => link.type === "generated" && !link.isExtinct)
                     .classed("consumed", link => link.type === "consumed" && !link.isExtinct)
                     .classed("direct", link => link.type === "direct" && !link.isExtinct);
@@ -446,13 +432,9 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
                     .style("top", (event.pageY - 20) + "px");
             }
         });
-
-    // =========================================================================
-    // ↑↑↑↑↑↑ 【★ ハイライトロジックの修正箇所：ここまで ★】 ↑↑↑↑↑↑
-    // =========================================================================
     
     d3.select("body").on("click", function(event) {
-                if (!event.target.closest(".node")) {
+        if (!event.target.closest(".node")) {
             d3.selectAll(".node").classed("faded", false).classed("highlight-node", false).classed("highlight-extinct-node", false).classed("highlight-text-new", false).classed("highlight-text-extinct", false);
             d3.selectAll(".link").classed("faded", false).classed("highlight-link", false).classed("generated", false).classed("consumed", false).classed("direct", false).classed("extinct-link", false).classed("highlight-extinct-link", false).classed("highlight-extinct-consumed", false);
             d3.selectAll(".extinct-x").style("font-size", "12px");
@@ -463,3 +445,4 @@ Promise.all(fileNames.map(url => d3.csv(url).catch(() => null))).then(datasets =
 }).catch(error => {
 console.error("D3.jsの処理中に予期せぬエラーが発生しました。", error);
 });
+
