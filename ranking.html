@@ -334,6 +334,35 @@
       </div>
 
     </main>
+    
+    <div id="region-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                <h3 class="text-3xl leading-6 font-bold text-gray-900" id="modal-title">
+                  <span id="modal-region-name"></span> の全項目ランキング
+                </h3>
+                <div class="mt-4">
+                  <div id="modal-ranking-results" class="space-y-4">
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button type="button" id="close-modal-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+              閉じる
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <script>
       const GITHUB_API_URL = 'https://api.github.com/repos/panzuki/3sp/contents/tsv';
       
@@ -347,14 +376,18 @@
       const showAllButton = document.getElementById('show-all-button');
       const sourceInfoElement = document.getElementById('source-info');
       
-      // 新しいリストコンテナの定義
       const rank1to3List = document.getElementById('rank-1-3-list');
       const rank4to10List = document.getElementById('rank-4-10-list');
-      const below10List = document.getElementById('below-10-list'); // 11位以下
+      const below10List = document.getElementById('below-10-list');
       
-      // **【新規定義】** マスキング制御要素
       const maskingToggle = document.getElementById('masking-toggle');
-      let isMaskingEnabled = maskingToggle.checked; // 初期状態: 有効
+      let isMaskingEnabled = maskingToggle.checked;
+      
+      // **【新規定義】** ポップアップ関連要素
+      const regionModal = document.getElementById('region-modal');
+      const modalRegionName = document.getElementById('modal-region-name');
+      const modalRankingResults = document.getElementById('modal-ranking-results');
+      const closeModalButton = document.getElementById('close-modal-button');
 
       /**
        * ファイル名から拡張子を除いたテキストを表示
@@ -474,6 +507,90 @@
           showAllButton.classList.add('bg-red-500', 'hover:bg-red-600');
           showAllButton.classList.remove('bg-gray-500', 'cursor-default');
       }
+      
+      /**
+       * 指定地域の全項目ランキングをポップアップ表示する
+       */
+      function showRegionRanking(prefecture, originalRank) {
+          
+          // 1. 対象地域のデータを抽出
+          const regionData = rankingData.find(d => d.prefecture === prefecture);
+          if (!regionData) return;
+
+          // 2. 項目ごとのランキング結果を計算
+          const results = columnNames.map(column => {
+              const value = regionData[column];
+              
+              // 現在の項目 (column) でデータ全体をソート
+              const columnSortedData = [...rankingData]
+                  .filter(data => !(isNaN(data[column]) || data[column] === null))
+                  .sort((a, b) => {
+                      const valA = a[column];
+                      const valB = b[column];
+                      const sortOrder = document.querySelector('input[name="sort-order"]:checked').value;
+                      
+                      if (sortOrder === 'desc') {
+                          return valB - valA;
+                      } else {
+                          return valA - valB;
+                      }
+                  });
+              
+              // 対象地域の順位を特定
+              const rankIndex = columnSortedData.findIndex(d => d.prefecture === prefecture);
+              const rank = rankIndex !== -1 ? rankIndex + 1 : '圏外';
+              
+              return {
+                  item: column,
+                  value: value,
+                  rank: rank,
+                  isCurrent: column === itemSelect.value // 現在表示中のランキング項目か
+              };
+          }).sort((a, b) => {
+              // ポップアップ内では、現在のランキング項目を一番上に、それ以外は順位でソート
+              if (a.isCurrent !== b.isCurrent) {
+                  return a.isCurrent ? -1 : 1;
+              }
+              // 順位でソート（圏外は最後）
+              if (a.rank === '圏外' && b.rank !== '圏外') return 1;
+              if (a.rank !== '圏外' && b.rank === '圏外') return -1;
+              if (a.rank === '圏外' && b.rank === '圏外') return 0;
+              return a.rank - b.rank;
+          });
+
+          // 3. HTMLの生成
+          modalRegionName.textContent = prefecture;
+          modalRankingResults.innerHTML = ''; // クリア
+
+          results.forEach(res => {
+              const rankText = res.rank !== '圏外' ? `${res.rank}位` : '圏外';
+              const valueText = res.value !== null && !isNaN(res.value) ? res.value.toLocaleString() : 'N/A';
+              const highlightClass = res.isCurrent ? 'bg-red-50 border-l-4 border-red-600' : 'bg-gray-50';
+
+              const itemHtml = `
+                  <div class="flex justify-between items-center p-3 rounded-lg shadow-sm ${highlightClass}">
+                      <div class="text-left">
+                          <p class="text-xl font-semibold ${res.isCurrent ? 'text-red-700' : 'text-gray-800'}">${res.item}</p>
+                          <p class="text-sm text-gray-500">値: ${valueText}</p>
+                      </div>
+                      <div class="text-right">
+                          <p class="text-3xl font-extrabold ${res.isCurrent ? 'text-red-600' : 'text-gray-900'}">${rankText}</p>
+                      </div>
+                  </div>
+              `;
+              modalRankingResults.innerHTML += itemHtml;
+          });
+
+          // 4. モーダルを表示
+          regionModal.classList.remove('hidden');
+      }
+
+      /**
+       * ポップアップを閉じる
+       */
+      function closeModal() {
+          regionModal.classList.add('hidden');
+      }
 
       /**
        * ランキングをソートして表示を更新する
@@ -521,8 +638,7 @@
           
           const isTop10 = rank <= 10;
           
-          // **【修正点】** マスキング判定に isMaskingEnabled を追加
-          // マスキングが有効 AND (再マスキングが必要 AND 11位以下が一括解除されていない) 場合にマスキングを適用
+          // マスキング判定に isMaskingEnabled を追加
           let isMasked = isMaskingEnabled && reMask && !isBelow10Revealed;
           
           // 11位以下の場合は、ボタンの解除状態に合わせて isMasked を上書き
@@ -578,21 +694,48 @@
               below10List.appendChild(listItem);
           }
           
-          // クリックイベントの追加 (マスキングが有効な場合のみ)
+          // **【新規追加・修正】** クリックイベントの設定
+          
+          // 1位〜10位のアイテム
+          if (isTop10) {
+              // マスクが有効でない、または、現在マスクされていない場合、詳細ポップアップのリスナーを追加
+              if (!isMasked || !isMaskingEnabled) {
+                   listItem.addEventListener('click', (e) => {
+                       // マスク状態に関わらず、クリックでポップアップ表示
+                       if (!e.currentTarget.classList.contains('masked')) {
+                          showRegionRanking(prefecture, rank);
+                       }
+                   });
+                   listItem.style.cursor = 'pointer'; 
+              }
+          }
+
+          // マスキングが有効な場合 (10位以下を解除する機能)
           if (isMasked) {
             if (rank <= 10) {
+              // 1位〜10位：クリックでその項目だけ解除
               listItem.addEventListener('click', function revealSingleItem(e) {
                 if (e.currentTarget.classList.contains('masked')) {
                   e.currentTarget.classList.remove('masked');
-                  e.currentTarget.removeEventListener('click', revealSingleItem);
+                  e.currentTarget.removeEventListener('click', revealSingleItem); 
+                  
+                  // マスク解除後、詳細ポップアップのリスナーを**再設定**
+                  e.currentTarget.addEventListener('click', (e) => {
+                       if (!e.currentTarget.classList.contains('masked')) {
+                          showRegionRanking(prefecture, rank);
+                       }
+                  });
+                   e.currentTarget.style.cursor = 'pointer'; 
                 }
               });
+               listItem.style.cursor = 'pointer'; 
             } else {
-              listItem.addEventListener('click', function revealAllBelow10(e) {
-                if (e.currentTarget.classList.contains('masked')) {
-                  revealBelow10(true); 
-                }
-              });
+               // 11位以下：クリックで11位以下すべて解除
+               listItem.addEventListener('click', function revealAllBelow10(e) {
+                    if (e.currentTarget.classList.contains('masked')) {
+                        revealBelow10(true); 
+                    }
+                });
             }
           }
         });
@@ -600,9 +743,9 @@
         // 11位以下のボタン表示/非表示の制御
         if (hasBelow10) {
             if (isBelow10Revealed) {
-                revealBelow10(false); // 表示中ならボタンを非表示に
+                revealBelow10(false);
             } else {
-                showAllButton.classList.remove('hidden'); // マスク中ならボタンを表示に
+                showAllButton.classList.remove('hidden');
             }
         } else {
             showAllButton.classList.add('hidden');
@@ -643,11 +786,9 @@
         input.addEventListener('change', () => updateRanking(false));
       });
       
-      // **【新規追加】** マスキングトグルのイベントリスナー
       maskingToggle.addEventListener('change', (e) => {
           isMaskingEnabled = e.target.checked;
           
-          // マスキングの状態が切り替わったら、11位以下の解除状態をリセットし、再描画
           resetBelow10RevealState(); 
           updateRanking(true);
       });
@@ -656,6 +797,16 @@
         if (!showAllButton.classList.contains('active')) {
           revealBelow10(true);
         }
+      });
+
+      // **【新規追加】** モーダルを閉じるボタン
+      closeModalButton.addEventListener('click', closeModal);
+
+      // モーダルの背景をクリックで閉じる処理
+      regionModal.addEventListener('click', (e) => {
+          if (e.target === regionModal) {
+              closeModal();
+          }
       });
 
       // 初期化
