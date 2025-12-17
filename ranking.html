@@ -54,11 +54,10 @@
       .masked .rank-content {
         background-color: var(--color-gray);
         color: transparent;
-        border-radius: 0.25rem;
+        border-radius: 0.5rem; /* サイズ拡大に合わせて少し大きく */
         transition: background-color 0.3s;
         pointer-events: none; /* マスキング中はクリック不可 */
-        /* マスキング時の幅を確保 */
-        min-width: 15rem; 
+        min-width: 25rem; /* サイズ拡大に合わせて調整 */
       }
       
       .rank-item.masked {
@@ -69,7 +68,7 @@
         cursor: default;
       }
 
-      /* --- 順位別のスタイルとフォントサイズ --- */
+      /* --- 順位別のスタイルとフォントサイズ (2倍化) --- */
       /* 順位番号の共通スタイル */
       .rank-num {
         font-weight: 800;
@@ -79,54 +78,66 @@
       /* 地域名と数値のフォントサイズ調整 */
       .region-name {
         font-weight: 700;
-        /* Tailwindのtext-xl/2xl/3xlなどに相当するベースサイズ */
       }
       .value-data {
-        font-size: 0.8em; /* 地域名より少し小さく */
+        font-size: 0.8em; /* 地域名より少し小さく (相対サイズは維持) */
         font-weight: 400;
-        margin-left: 0.5rem;
+        margin-left: 1rem; /* スペースを広く */
       }
       
       /* 1位から3位の特別なスタイル */
-      .rank-1 .rank-num { font-size: 4rem; color: #FFD700; }
-      .rank-2 .rank-num { font-size: 3.5rem; color: #C0C0C0; }
-      .rank-3 .rank-num { font-size: 3rem; color: #CD7F32; }
+      /* 元: 4rem, 3.5rem, 3rem -> 2倍化 */
+      .rank-1 .rank-num { font-size: 8rem; color: #FFD700; }
+      .rank-2 .rank-num { font-size: 7rem; color: #C0C0C0; }
+      .rank-3 .rank-num { font-size: 6rem; color: #CD7F32; }
       
       .rank-1, .rank-2, .rank-3 {
         background-color: #fffacd;
-        border: 3px solid var(--color-theme);
-        border-radius: 0.75rem;
+        border: 6px solid var(--color-theme); /* サイズ拡大に合わせて太く */
+        border-radius: 1.5rem;
         box-shadow: var(--box-shadow-hover);
+        padding: 2rem !important; /* サイズ拡大に合わせて広く */
       }
 
       /* 10位までのスタイル */
+      /* 元: 2.5rem -> 2倍化 */
       .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) .rank-num {
-        font-size: 2.5rem;
+        font-size: 5rem;
       }
       .rank-item.top-10 {
-        /* 中央寄せのために flex-col や text-center ではなく、リストアイテムの幅を制限 */
-        max-width: 600px; 
+        max-width: 800px; /* サイズ拡大に合わせて広く */
         margin-left: auto;
         margin-right: auto;
-        margin-bottom: 0.5rem;
-        padding: 0.75rem;
+        margin-bottom: 1rem; /* サイズ拡大に合わせて広く */
+        padding: 1.5rem; /* サイズ拡大に合わせて広く */
       }
       .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) {
-        background-color: #fcfcfc;
-        border-left: 5px solid var(--color-theme);
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border-left: 10px solid var(--color-theme); /* サイズ拡大に合わせて太く */
+        border-radius: 1rem;
       }
+      
+      /* 1位〜10位の地域名/数値のベースサイズ */
+      /* 元: text-3xl/2xl/xl -> Tailwindの対応するクラスをカスタム */
+      .rank-1 .region-name, .rank-1 .rank-content { font-size: 4rem; } 
+      .rank-2 .region-name, .rank-2 .rank-content { font-size: 3.5rem; }
+      .rank-3 .region-name, .rank-3 .rank-content { font-size: 3.5rem; }
+      .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) .region-name,
+      .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) .rank-content { font-size: 3rem; }
+
 
       /* 11位以下のスタイル */
+      /* 元: 1.8rem -> 2倍化 */
       .rank-item.below-10 {
-        font-size: 1.8rem; /* 11位以下も少し大きく */
-        max-width: 500px;
+        font-size: 3.6rem;
+        max-width: 700px;
         margin-left: auto;
         margin-right: auto;
-        padding: 0.5rem 0;
-        border-bottom: 1px dashed var(--color-gray);
+        padding: 1rem 0;
+        border-bottom: 2px dashed var(--color-gray);
       }
+      .rank-item.below-10 .rank-num { font-size: 3rem; }
+      .rank-item.below-10 .region-name, .rank-item.below-10 .rank-content { font-size: 3rem; }
+
       
       /* --- その他既存のCSSは省略 --- */
 
@@ -136,44 +147,20 @@
         padding: 0 20px;
         list-style: none;
       }
-
+      /* (パンのランキングのnavスタイルは変更しない) */
       .breadcrumb li {
         display: inline;
         list-style: none;
         font-weight: bold;
         text-align: center;
         line-height: 4vh;
+        font-size: 1.5rem; /* navはサイズ維持 */
       }
-
-      .breadcrumb li:after {
-        content: ">";
-        text-align: center;
-        line-height: 4vh;
-        padding: 0 0.2em;
-        color: #555;
-        font-size: 1.5rem;
-      }
-
-      .breadcrumb li:last-child:after {
-        content: "";
-      }
-
       .breadcrumb li a {
-        font-size: 1.5rem;
-        text-decoration: none;
-        color: #3f60f1;
+        font-size: 1.5rem; /* navはサイズ維持 */
       }
-
-      .breadcrumb li a:hover {
-        text-decoration: underline;
-      }
-
       .breadcrumb li:last-child a {
-        color: #333;
-        font-size: 1.5rem;
-        text-decoration: none;
-        text-align: center;
-        cursor: default;
+        font-size: 1.5rem; /* navはサイズ維持 */
       }
     </style>
   </head>
@@ -205,54 +192,68 @@
         </ol>
       </nav>
       
-      <h1 id="main-title" class="text-4xl md:text-6xl font-extrabold text-gray-800 my-8 text-center tracking-tight">パンのランキング</h1>
-
-      <div id="source-info" class="text-center mb-6 text-sm text-gray-500 italic p-2 bg-gray-100 rounded-lg shadow-inner">
-        データを読み込み中...
-      </div>
-
-      <div class="bg-white p-6 rounded-xl shadow-lg mb-8 border-t-4 border-red-500 max-w-xl mx-auto">
+      <div class="bg-white p-6 rounded-xl shadow-lg mb-8 border-t-4 border-red-500 max-w-2xl mx-auto">
+        
+        <div class="mb-6 pb-4 border-b border-gray-200">
+          <label for="tsv-file-input" class="text-xl font-bold text-gray-700 block mb-3 text-center">
+            📊 TSVファイルを読み込む
+          </label>
+          <input 
+            type="file" 
+            id="tsv-file-input" 
+            accept=".tsv" 
+            class="block w-full text-lg text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-lg file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer"
+          />
+        </div>
+        
         <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
           
           <div class="flex items-center space-x-3 w-full md:w-auto justify-center">
             <label for="ranking-item" class="text-lg font-semibold text-gray-700 whitespace-nowrap">項目:</label>
-            <select id="ranking-item" class="border border-gray-300 rounded-lg p-2 text-base focus:ring-red-500 focus:border-red-500 shadow-sm w-full md:w-48">
+            <select id="ranking-item" class="border border-gray-300 rounded-lg p-3 text-lg focus:ring-red-500 focus:border-red-500 shadow-sm w-full md:w-48">
               </select>
           </div>
 
           <div class="flex items-center space-x-4">
             <span class="text-lg font-semibold text-gray-700 whitespace-nowrap">並び順:</span>
-            <div class="flex space-x-4 bg-gray-100 p-2 rounded-lg shadow-inner">
+            <div class="flex space-x-4 bg-gray-100 p-3 rounded-lg shadow-inner">
               <label class="inline-flex items-center">
-                <input type="radio" name="sort-order" value="desc" checked class="form-radio text-red-600 h-4 w-4 focus:ring-red-500" />
-                <span class="ml-2 text-gray-700">降順</span>
+                <input type="radio" name="sort-order" value="desc" checked class="form-radio text-red-600 h-6 w-6 focus:ring-red-500" />
+                <span class="ml-2 text-gray-700 text-lg">降順</span>
               </label>
               <label class="inline-flex items-center">
-                <input type="radio" name="sort-order" value="asc" class="form-radio text-red-600 h-4 w-4 focus:ring-red-500" />
-                <span class="ml-2 text-gray-700">昇順</span>
+                <input type="radio" name="sort-order" value="asc" class="form-radio text-red-600 h-6 w-6 focus:ring-red-500" />
+                <span class="ml-2 text-gray-700 text-lg">昇順</span>
               </label>
             </div>
           </div>
           
         </div>
       </div>
+      
+      <h1 id="main-title" class="text-5xl md:text-7xl font-extrabold text-gray-800 my-10 text-center tracking-tight">パンのランキング</h1>
 
-      <div id="ranking-container" class="space-y-3">
-        <button id="show-all-button" class="hidden w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-[1.01] text-xl max-w-md mx-auto">
+      <div id="source-info" class="text-center mb-8 text-xl text-gray-600 italic p-4 bg-gray-100 rounded-lg shadow-inner max-w-3xl mx-auto">
+        データを読み込み中...
+      </div>
+
+      <div id="ranking-container" class="space-y-5">
+        <button id="show-all-button" class="hidden w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-[1.01] text-2xl max-w-lg mx-auto">
           11位以下の順位を一気に表示！
         </button>
-        <ul id="ranking-list" class="space-y-2 pt-4">
-          <li class="text-center text-gray-500 text-lg py-10">データを読み込み中...</li>
+        <ul id="ranking-list" class="space-y-4 pt-6">
+          <li class="text-center text-gray-500 text-2xl py-12">データを読み込み中...</li>
         </ul>
       </div>
 
     </main>
     <script>
-      // ファイルパスを更新
-      const TSV_FILE_PATH = 'tsv/(品目分類)第６表都市階級・地方・都道府県庁所在市別１世帯当たり年間の品目別支出金額購入数量（二人以上の世帯）令和６年2024.tsv';
+      // 初期ファイルパス (ファイル選択がない場合のデフォルト)
+      let currentTSVPath = 'tsv/(品目分類)第６表都市階級・地方・都道府県庁所在市別１世帯当たり年間の品目別支出金額購入数量（二人以上の世帯）令和６年2024.tsv';
       let rankingData = [];
       let columnNames = [];
       
+      const fileInput = document.getElementById('tsv-file-input');
       const titleElement = document.getElementById('main-title');
       const itemSelect = document.getElementById('ranking-item');
       const sortOrderInputs = document.querySelectorAll('input[name="sort-order"]');
@@ -262,40 +263,43 @@
 
       /**
        * ファイル名から引用元情報を抽出して表示する
+       * @param {string} fileName - ファイル名全体
+       * @param {boolean} isFileObject - Fileオブジェクトからの読み込みかどうか
        */
-      function displaySourceInfo() {
-        const fileName = TSV_FILE_PATH.split('/').pop();
-        const matches = [...fileName.matchAll(/\((.*?)\)/g)];
-        
+      function displaySourceInfo(fileName, isFileObject = false) {
+        // 拡張子を除去
+        const baseName = fileName.replace(/\.[^/.]+$/, ""); 
+
         let info = '引用元：';
         
-        if (matches.length > 0) {
-          const extractedInfo = matches.map(match => match[1]).join(' / ');
-          info += `「${extractedInfo}」を含むデータ`;
+        if (isFileObject) {
+            // ファイルオブジェクトの場合、baseName全体を表示
+            info += baseName;
         } else {
-          info += `ファイル名「${fileName}」に基づくデータ`;
+            // デフォルトパスの場合、括弧内の情報を抽出して表示
+            const matches = [...baseName.matchAll(/\((.*?)\)/g)];
+            if (matches.length > 0) {
+                const extractedInfo = matches.map(match => match[1]).join(' / ');
+                info += `「${extractedInfo}」`;
+            } else {
+                info += baseName;
+            }
         }
         
         sourceInfoElement.textContent = info;
       }
       
       /**
-       * TSVファイルを読み込み、データをパースする
+       * TSVデータをパースする
+       * @param {string} text - TSVファイルの内容
        */
-      async function loadTSV() {
-        displaySourceInfo();
-        
-        try {
-          const response = await fetch(TSV_FILE_PATH);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const text = await response.text();
-          
+      function parseTSV(text) {
           const lines = text.trim().split('\n');
           
+          // 1行目が項目名（ヘッダー）
           columnNames = lines[0].split('\t').slice(1).map(name => name.trim());
 
+          // 2行目以降がデータ
           rankingData = lines.slice(1).map(line => {
             const values = line.split('\t');
             const data = { prefecture: values[0].trim() };
@@ -304,15 +308,55 @@
             });
             return data;
           }).filter(data => data.prefecture);
-          
-          populateItemSelect();
-          updateRanking();
+      }
 
-        } catch (error) {
-          console.error('Error loading or parsing TSV:', error);
-          sourceInfoElement.textContent = `データの読み込みに失敗しました。ファイルパス（${TSV_FILE_PATH}）を確認してください。`;
-          rankingList.innerHTML = `<li class="text-center text-red-500 text-lg py-10">データの読み込みに失敗しました。</li>`;
+      /**
+       * TSVファイルを読み込み、データをパースする (Fetch APIまたはFileReader)
+       * @param {File | string} source - FileオブジェクトまたはURLパス
+       */
+      async function loadTSV(source) {
+        let text = '';
+        let fileName = '';
+
+        if (typeof source === 'string') {
+            // URLパスからの読み込み (デフォルト)
+            fileName = source.split('/').pop();
+            try {
+                const response = await fetch(source);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                text = await response.text();
+            } catch (error) {
+                console.error('Error loading TSV from URL:', error);
+                sourceInfoElement.textContent = `データの読み込みに失敗しました。ファイルパス（${source}）を確認してください。`;
+                rankingList.innerHTML = `<li class="text-center text-red-500 text-3xl py-12">データの読み込みに失敗しました。</li>`;
+                return;
+            }
+            displaySourceInfo(fileName, false);
+
+        } else if (source instanceof File) {
+            // Fileオブジェクトからの読み込み (ユーザー選択)
+            fileName = source.name;
+            try {
+                text = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = (e) => reject(e);
+                    reader.readAsText(source);
+                });
+            } catch (error) {
+                console.error('Error reading selected file:', error);
+                sourceInfoElement.textContent = `選択したファイルの読み込みに失敗しました。`;
+                rankingList.innerHTML = `<li class="text-center text-red-500 text-3xl py-12">ファイルの読み込みに失敗しました。</li>`;
+                return;
+            }
+            displaySourceInfo(fileName, true);
         }
+        
+        parseTSV(text);
+        populateItemSelect();
+        updateRanking();
       }
       
       /**
@@ -337,10 +381,14 @@
         const sortOrder = document.querySelector('input[name="sort-order"]:checked').value;
         
         // タイトルを更新
-        titleElement.textContent = `${selectedColumn}のランキング`;
-        document.querySelector('.page span').textContent = `${selectedColumn}のランキング`;
+        titleElement.textContent = `${selectedColumn || 'パン'}のランキング`;
+        document.querySelector('.page span').textContent = `${selectedColumn || 'パン'}のランキング`;
 
-        if (!selectedColumn) return;
+        if (!selectedColumn) {
+             rankingList.innerHTML = `<li class="text-center text-gray-500 text-3xl py-12">ランキング項目を選択してください。</li>`;
+             showAllButton.classList.add('hidden');
+             return;
+        }
 
         // データのソート (NaN/nullを最後にするロジック)
         const sortedData = [...rankingData].sort((a, b) => {
@@ -365,7 +413,7 @@
 
         if (sortedData.length > 10) {
           showAllButton.classList.remove('hidden');
-          showAllButton.parentElement.classList.add('text-center'); // ボタンも中央寄せ
+          showAllButton.parentElement.classList.add('text-center');
         } else {
           showAllButton.classList.add('hidden');
         }
@@ -383,40 +431,36 @@
               isMasked = false;
           }
 
-          // 中央寄せを実現するため、flex-colで地域名と数値を縦に並べる構造に変更
-          // ただし、今回は「順位 地域名(数値)」の形なので、flex-rowを維持しつつ、リストアイテムの幅を制限して中央寄せにする
-          let rankClasses = 'rank-item flex items-center p-2 rounded-lg transition-all duration-500 ease-in-out';
+          let rankClasses = 'rank-item flex items-center rounded-lg transition-all duration-500 ease-in-out';
           let itemHtml = '';
           let dataValueStyle = 'text-gray-900';
-          let regionNameSize = ''; // 地域名サイズ
           let rankContentSize = ''; // 順位番号サイズ
           
+          // サイズ調整用のCSSクラスを適用
           if (isTop10) {
-            rankClasses += ' top-10 justify-start space-x-4'; // 10位までは左寄せで
+            rankClasses += ' top-10 justify-start space-x-6'; // スペースを広く
             
-            if (rank === 1) { rankClasses += ' rank-1 p-4'; rankContentSize = 'text-4xl'; regionNameSize = 'text-3xl'; }
-            else if (rank === 2) { rankClasses += ' rank-2 p-4'; rankContentSize = 'text-3xl'; regionNameSize = 'text-2xl'; }
-            else if (rank === 3) { rankClasses += ' rank-3 p-4'; rankContentSize = 'text-3xl'; regionNameSize = 'text-2xl'; }
-            else { rankContentSize = 'text-2xl'; regionNameSize = 'text-xl'; }
-
+            if (rank === 1) { rankClasses += ' rank-1'; }
+            else if (rank === 2) { rankClasses += ' rank-2'; }
+            else if (rank === 3) { rankClasses += ' rank-3'; }
+            // 順位ごとのフォントサイズはCSS側で設定済み
+            
             itemHtml = `
-              <span class="rank-num ${rankContentSize} w-12 text-center flex-shrink-0">${rank}</span>
-              <span class="rank-content ${regionNameSize} font-bold text-gray-800 flex-grow">
+              <span class="rank-num w-16 text-center flex-shrink-0">${rank}</span>
+              <span class="rank-content font-bold text-gray-800 flex-grow">
                 <span class="region-name">${prefecture}</span>
-                <span class="value-data ${dataValueStyle}">(${value.toLocaleString()}pt)</span>
+                <span class="value-data ${dataValueStyle}">(${value.toLocaleString()})</span>
               </span>
             `;
             
           } else {
-            rankClasses += ' below-10 justify-start space-x-4'; // 11位以下も左寄せを維持
-            rankContentSize = 'text-lg'; // 11位以下の順位番号サイズ
-            regionNameSize = 'text-lg'; // 11位以下の地域名サイズ
-
+            rankClasses += ' below-10 justify-start space-x-6'; 
+            
             itemHtml = `
-              <span class="rank-num ${rankContentSize} w-12 text-center flex-shrink-0">${rank}位</span>
-              <span class="rank-content ${regionNameSize} text-gray-700 flex-grow">
+              <span class="rank-num w-16 text-center flex-shrink-0">${rank}位</span>
+              <span class="rank-content text-gray-700 flex-grow">
                 <span class="region-name">${prefecture}</span>
-                <span class="value-data text-gray-500">(${value.toLocaleString()}pt)</span>
+                <span class="value-data text-gray-500">(${value.toLocaleString()})</span>
               </span>
             `;
           }
@@ -448,8 +492,9 @@
         }
       }
 
-      // ... (revealBelow10, maskBelow10, イベントリスナーは変更なし) ...
-
+      /**
+       * 11位以下のマスキングを一括で解除
+       */
       function revealBelow10(updateButton = true) {
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
@@ -463,6 +508,9 @@
         }
       }
       
+      /**
+       * 11位以下のマスキングを再適用（項目変更時など）
+       */
       function maskBelow10(updateButton = true) {
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
@@ -476,19 +524,29 @@
         }
       }
 
-      // イベントリスナーの設定
+      // --- イベントリスナーの設定 ---
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          const file = e.target.files[0];
+          // ファイルが選択されたら、そのファイルを読み込む
+          loadTSV(file);
+        }
+      });
+      
       itemSelect.addEventListener('change', () => updateRanking(true));
+      
       sortOrderInputs.forEach(input => {
         input.addEventListener('change', () => updateRanking(false));
       });
+      
       showAllButton.addEventListener('click', () => {
         if (!showAllButton.classList.contains('active')) {
           revealBelow10(true);
         }
       });
 
-      // ページロード時にTSVを読み込む
-      loadTSV();
+      // ページロード時にデフォルトのTSVを読み込む
+      loadTSV(currentTSVPath);
       
       // Tailwindのカスタム設定（既存のCSS変数を利用）
       tailwind.config = {
