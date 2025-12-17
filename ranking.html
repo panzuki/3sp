@@ -337,7 +337,7 @@
     
     <div id="region-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <div id="modal-overlay" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
@@ -388,6 +388,7 @@
       const modalRegionName = document.getElementById('modal-region-name');
       const modalRankingResults = document.getElementById('modal-ranking-results');
       const closeModalButton = document.getElementById('close-modal-button');
+      const modalOverlay = document.getElementById('modal-overlay');
 
       /**
        * ファイル名から拡張子を除いたテキストを表示
@@ -802,12 +803,16 @@
       // **【新規追加】** モーダルを閉じるボタン
       closeModalButton.addEventListener('click', closeModal);
 
-      // モーダルの背景をクリックで閉じる処理
-      regionModal.addEventListener('click', (e) => {
-          if (e.target === regionModal) {
-              closeModal();
-          }
-      });
+if (modalOverlay) { // 要素が存在するかチェック
+    modalOverlay.addEventListener('click', closeModal);
+} else {
+    // 既存の regionModal クリックも念のため残しておく
+    regionModal.addEventListener('click', (e) => {
+        if (e.target === regionModal) {
+            closeModal();
+        }
+    });
+}
 
       // 初期化
       initFileList();
