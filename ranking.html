@@ -512,79 +512,102 @@
       /**
        * 指定地域の全項目ランキングをポップアップ表示する
        */
-      function showRegionRanking(prefecture, originalRank) {
-          
-          // 1. 対象地域のデータを抽出
-          const regionData = rankingData.find(d => d.prefecture === prefecture);
-          if (!regionData) return;
+/**
+       * 指定地域の全項目ランキングをポップアップ表示する
+       */
+      function showRegionRanking(prefecture, originalRank) {
+          
+          // 1. 対象地域のデータを抽出 (変更なし)
+          const regionData = rankingData.find(d => d.prefecture === prefecture);
+          if (!regionData) return;
 
-          // 2. 項目ごとのランキング結果を計算
-          const results = columnNames.map(column => {
-              const value = regionData[column];
-              
-              // 現在の項目 (column) でデータ全体をソート
-              const columnSortedData = [...rankingData]
-                  .filter(data => !(isNaN(data[column]) || data[column] === null))
-                  .sort((a, b) => {
-                      const valA = a[column];
-                      const valB = b[column];
-                      const sortOrder = document.querySelector('input[name="sort-order"]:checked').value;
-                      
-                      if (sortOrder === 'desc') {
-                          return valB - valA;
-                      } else {
-                          return valA - valB;
-                      }
-                  });
-              
-              // 対象地域の順位を特定
-              const rankIndex = columnSortedData.findIndex(d => d.prefecture === prefecture);
-              const rank = rankIndex !== -1 ? rankIndex + 1 : '圏外';
-              
-              return {
-                  item: column,
-                  value: value,
-                  rank: rank,
-                  isCurrent: column === itemSelect.value // 現在表示中のランキング項目か
-              };
-          }).sort((a, b) => {
-              // ポップアップ内では、現在のランキング項目を一番上に、それ以外は順位でソート
-              if (a.isCurrent !== b.isCurrent) {
-                  return a.isCurrent ? -1 : 1;
-              }
-              // 順位でソート（圏外は最後）
-              if (a.rank === '圏外' && b.rank !== '圏外') return 1;
-              if (a.rank !== '圏外' && b.rank === '圏外') return -1;
-              if (a.rank === '圏外' && b.rank === '圏外') return 0;
-              return a.rank - b.rank;
-          });
+          // 2. 項目ごとのランキング結果を計算 (変更なし)
+          const results = columnNames.map(column => {
+              const value = regionData[column];
+              
+              // 現在の項目 (column) でデータ全体をソート
+              const columnSortedData = [...rankingData]
+                  .filter(data => !(isNaN(data[column]) || data[column] === null))
+                  .sort((a, b) => {
+                      const valA = a[column];
+                      const valB = b[column];
+                      const sortOrder = document.querySelector('input[name="sort-order"]:checked').value;
+                      
+                      if (sortOrder === 'desc') {
+                          return valB - valA;
+                      } else {
+                          return valA - valB;
+                      }
+                  });
+              
+              // 対象地域の順位を特定
+              const rankIndex = columnSortedData.findIndex(d => d.prefecture === prefecture);
+              const rank = rankIndex !== -1 ? rankIndex + 1 : '圏外';
+              
+              return {
+                  item: column,
+                  value: value,
+                  rank: rank,
+                  isCurrent: column === itemSelect.value // 現在表示中のランキング項目か
+              };
+          }).sort((a, b) => {
+              // ポップアップ内では、現在のランキング項目を一番上に、それ以外は順位でソート
+              if (a.isCurrent !== b.isCurrent) {
+                  return a.isCurrent ? -1 : 1;
+              }
+              // 順位でソート（圏外は最後）
+              if (a.rank === '圏外' && b.rank !== '圏外') return 1;
+              if (a.rank !== '圏外' && b.rank === '圏外') return -1;
+              if (a.rank === '圏外' && b.rank === '圏外') return 0;
+              return a.rank - b.rank;
+          });
 
-          // 3. HTMLの生成
-          modalRegionName.textContent = prefecture;
-          modalRankingResults.innerHTML = ''; // クリア
+          // 3. HTMLの生成
+          modalRegionName.textContent = prefecture;
+          
+          // --- 【A. 修正箇所: 2列グリッドのコンテナを設置】 ---
+          modalRankingResults.innerHTML = '<div class="grid grid-cols-2 gap-x-6 gap-y-4">'; 
+          const gridContainer = modalRankingResults.querySelector('.grid');
+          // ------------------------------------------
 
-          results.forEach(res => {
-              const rankText = res.rank !== '圏外' ? `${res.rank}位` : '圏外';
-              const valueText = res.value !== null && !isNaN(res.value) ? res.value.toLocaleString() : 'N/A';
-              const highlightClass = res.isCurrent ? 'bg-red-50 border-l-4 border-red-600' : 'bg-gray-50';
+          results.forEach(res => {
+              const rankText = res.rank !== '圏外' ? `${res.rank}位` : '圏外';
+              
+              // --- 【B. 修正箇所: 値の整形】 ---
+              // 値の整形（整数なら整数、小数点があれば小数点以下2桁まで表示）
+              let valueText = (res.value !== null && !isNaN(res.value))
+                            ? (Number.isInteger(res.value) ? res.value.toLocaleString() : res.value.toLocaleString(undefined, { maximumFractionDigits: 2 }))
+                            : 'N/A';
+              // ----------------------------------
+              
+              const highlightClass = res.isCurrent ? 'bg-red-100 border-red-600' : 'bg-white border-gray-200';
+              // 順位が1-3位の場合の特別ハイライト
+              const rankHighlightClass = (res.rank === 1) ? 'text-yellow-600' : (res.rank === 2) ? 'text-gray-500' : (res.rank === 3) ? 'text-amber-700' : 'text-gray-900';
 
-              const itemHtml = `
-                  <div class="flex justify-between items-center p-3 rounded-lg shadow-sm ${highlightClass}">
-                      <div class="text-left">
-                          <p class="text-xl font-semibold ${res.isCurrent ? 'text-red-700' : 'text-gray-800'}">${res.item}</p>
-                          <p class="text-sm text-gray-500">値: ${valueText}</p>
-                      </div>
-                      <div class="text-right">
-                          <p class="text-3xl font-extrabold ${res.isCurrent ? 'text-red-600' : 'text-gray-900'}">${rankText}</p>
-                      </div>
-                  </div>
-              `;
-              modalRankingResults.innerHTML += itemHtml;
-          });
+              // --- 【C. 修正箇所: ご要望の1列表記 + 大きな文字】 ---
+              const itemHtml = `
+                  <div class="p-4 border rounded-xl shadow-md flex flex-col justify-between ${highlightClass} transition-shadow duration-300 hover:shadow-lg">
+                                            <div class="text-left mb-2">
+                          <p class="text-lg font-medium text-gray-700 leading-tight">${res.item}</p>
+                          <p class="text-3xl font-bold text-gray-900 leading-none mt-1">
+                              (${valueText})
+                          </p>
+                      </div>
+                      
+                                            <div class="text-right mt-2">
+                          <p class="text-4xl font-extrabold ${rankHighlightClass}">
+                              ${rankText}
+                          </p>
+                      </div>
+                  </div>
+              `;
+              // modalRankingResults.innerHTML += itemHtml; // 元のコードを無効化
+              gridContainer.innerHTML += itemHtml; // グリッドコンテナに項目を追加
+          });
 
-          // 4. モーダルを表示
-          regionModal.classList.remove('hidden');
-      }
+          // 4. モーダルを表示
+          regionModal.classList.remove('hidden');
+      }
 
       /**
        * ポップアップを閉じる
