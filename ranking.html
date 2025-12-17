@@ -77,22 +77,6 @@
         color: transparent !important;
       }
       
-      /* 順位番号はマスキングをかけないように修正 */
-      /* **【修正点: 削除】** 元コードにあった順位番号を隠すためのCSSを削除 */
-      /*
-      .rank-item.masked .rank-num {
-          color: transparent !important;
-          background-color: var(--color-gray); 
-          border-radius: 0.5rem;
-      }
-      .rank-item.masked.rank-1 .rank-num,
-      .rank-item.masked.rank-2 .rank-num,
-      .rank-item.masked.rank-3 .rank-num {
-          background-color: #aaa; 
-          border-radius: 0.5rem;
-      }
-      */
-      
       /* マスキングされているアイテムはクリックできることを示す */
       .rank-item.masked {
         cursor: pointer;
@@ -106,7 +90,6 @@
       .rank-item.masked:hover .rank-content {
         background-color: #ccc; /* ホバーで少し色を濃く */
       }
-      /* 順位番号のホバー調整は不要になったため、以前のコードから削除 */
 
 
       /* --- 順位別のスタイルとフォントサイズ（倍増対応） --- */
@@ -352,16 +335,21 @@
           }).filter(data => data.prefecture);
 
           populateItemSelect();
+          // parse後、自動的にupdateRankingが走る
           updateRanking();
       }
 
       /**
        * 指定されたURLのTSVファイルを読み込む
+       * **【修正点】** ファイル読み込み時、マスキング状態をリセットする処理を追加
        */
       async function loadTSV(url, fileName) {
         displaySourceInfo(fileName);
         rankingList.innerHTML = `<li class="text-center text-gray-500 text-2xl py-10">データを読み込み中...</li>`;
         
+        // ファイルが変わったため、11位以下の解除状態をリセット
+        resetBelow10RevealState(); 
+
         try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -431,6 +419,18 @@
           itemSelect.appendChild(option);
         });
       }
+      
+      /**
+       * **【新規追加】** 11位以下の順位を一括解除した状態をリセットする
+       * ファイルや項目が切り替わった際に呼び出す
+       */
+      function resetBelow10RevealState() {
+          showAllButton.classList.remove('active');
+          showAllButton.textContent = '11位以下の順位を一気に表示！';
+          showAllButton.classList.add('bg-red-500', 'hover:bg-red-600');
+          showAllButton.classList.remove('bg-gray-500', 'cursor-default');
+          // updateRanking内でボタンの表示/非表示は再評価されるためここではhiddenは操作しない
+      }
 
       /**
        * ランキングをソートして表示を更新する
@@ -466,9 +466,10 @@
         
         rankingList.innerHTML = '';
 
+        const isBelow10Revealed = showAllButton.classList.contains('active');
+
         if (sortedData.length > 10) {
-          // マスキングが解除されていない場合のみボタンを表示
-          if (!showAllButton.classList.contains('active')) {
+          if (!isBelow10Revealed) {
             showAllButton.classList.remove('hidden');
           }
           showAllButton.parentElement.classList.add('text-center');
@@ -484,9 +485,12 @@
           
           const isTop10 = rank <= 10;
           
-          // 1位から全て、再描画時はマスキングする
-          // ただし、11位以下が一括解除されている状態なら、11位以下はマスキングしない
-          let isMasked = reMask && !showAllButton.classList.contains('active');
+          // 再マスキング指定があり、かつ11位以下が一括解除されていない場合、マスキングを適用
+          let isMasked = reMask && !isBelow10Revealed;
+          // 11位以下の場合は、ボタンの解除状態に合わせてisMaskedを上書き
+          if (rank > 10 && isBelow10Revealed) {
+              isMasked = false;
+          }
           
           let rankClasses = 'rank-item flex items-center p-2 rounded-lg transition-all duration-500 ease-in-out';
           let itemHtml = '';
@@ -511,11 +515,6 @@
           } else {
             // 11位以下 (below-10)
             rankClasses += ' below-10 justify-start space-x-6'; 
-            
-            // 11位以下が一括解除されている場合は、isMaskedを上書きして解除状態を維持
-            if (showAllButton.classList.contains('active')) {
-                isMasked = false;
-            }
 
             itemHtml = `
               <span class="rank-num w-24 text-center flex-shrink-0">${rank}位</span>
@@ -556,10 +555,11 @@
         });
         
         // 描画後、11位以下が一括解除状態ならボタンを非表示にする
-        if (showAllButton.classList.contains('active')) {
+        if (isBelow10Revealed) {
             revealBelow10(false);
-        } else if (reMask) {
-            maskBelow10(false);
+        } else if (sortedData.length > 10) {
+            // マスキングが適用され、11位以下の項目がある場合はボタンを表示
+            showAllButton.classList.remove('hidden');
         }
       }
 
@@ -567,7 +567,7 @@
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
           item.classList.remove('masked');
-          // 一括解除された場合、個別のリスナーも削除（再度クリックしても反応しないように、ノード再作成）
+          // 一括解除された場合、個別のリスナーを削除するためにノードを再作成
           const newItem = item.cloneNode(true);
           item.parentNode.replaceChild(newItem, item);
         });
@@ -579,33 +579,23 @@
             showAllButton.classList.add('hidden'); // 解除されたらボタンを非表示に
         }
       }
-      
-      function maskBelow10(updateButton = true) {
-        const below10Items = document.querySelectorAll('.rank-item.below-10');
-        below10Items.forEach(item => {
-          item.classList.add('masked');
-        });
-        if (updateButton) {
-            showAllButton.classList.remove('active');
-            showAllButton.textContent = '11位以下の順位を一気に表示！';
-            showAllButton.classList.add('bg-red-500', 'hover:bg-red-600');
-            showAllButton.classList.remove('bg-gray-500', 'cursor-default');
-            showAllButton.classList.remove('hidden'); // マスキングされたらボタンを表示に
-        }
-      }
 
       // イベントリスナー
       fileSelect.addEventListener('change', (e) => {
         const selectedUrl = e.target.value;
         const selectedText = e.target.options[e.target.selectedIndex].text; 
         if (selectedUrl) {
-            // ファイルが変わる際は、必ずマスキング状態をリセットするためにupdateRanking(true)を呼び出す
+            // ファイルが変わる際は、必ずマスキング状態をリセットし、再描画(reMask=true)
             loadTSV(selectedUrl, selectedText);
         }
       });
 
-      // 項目選択時 (reMask=true でマスキングを再適用)
-      itemSelect.addEventListener('change', () => updateRanking(true));
+      // 項目選択時 
+      // **【修正点】** 項目が変わる際も、マスキング状態をリセットする
+      itemSelect.addEventListener('change', () => {
+        resetBelow10RevealState(); // 11位以下の解除状態をリセット
+        updateRanking(true); // マスキングを再適用して更新
+      });
       
       // 並び順変更時 (reMask=false で現在のマスキング状態を維持)
       sortOrderInputs.forEach(input => {
