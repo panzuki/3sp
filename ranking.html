@@ -77,15 +77,21 @@
         color: transparent !important;
       }
       
-
-      
-      /* 1位〜3位のマスキング調整 (順位番号の背景調整) */
+      /* 順位番号はマスキングをかけないように修正 */
+      /* **【修正点: 削除】** 元コードにあった順位番号を隠すためのCSSを削除 */
+      /*
+      .rank-item.masked .rank-num {
+          color: transparent !important;
+          background-color: var(--color-gray); 
+          border-radius: 0.5rem;
+      }
       .rank-item.masked.rank-1 .rank-num,
       .rank-item.masked.rank-2 .rank-num,
       .rank-item.masked.rank-3 .rank-num {
-          background-color: #aaa; /* 金銀銅エリアの順位番号を暗めにマスキング */
+          background-color: #aaa; 
           border-radius: 0.5rem;
       }
+      */
       
       /* マスキングされているアイテムはクリックできることを示す */
       .rank-item.masked {
@@ -100,9 +106,7 @@
       .rank-item.masked:hover .rank-content {
         background-color: #ccc; /* ホバーで少し色を濃く */
       }
-      .rank-item.masked:hover .rank-num {
-        background-color: #aaa; /* 順位番号のホバー色も濃く */
-      }
+      /* 順位番号のホバー調整は不要になったため、以前のコードから削除 */
 
 
       /* --- 順位別のスタイルとフォントサイズ（倍増対応） --- */
@@ -480,7 +484,7 @@
           
           const isTop10 = rank <= 10;
           
-          // **【修正点】** 1位から全て、再描画時はマスキングする
+          // 1位から全て、再描画時はマスキングする
           // ただし、11位以下が一括解除されている状態なら、11位以下はマスキングしない
           let isMasked = reMask && !showAllButton.classList.contains('active');
           
@@ -529,7 +533,7 @@
           
           rankingList.appendChild(listItem);
           
-          // **【修正点】** クリックイベントの追加
+          // クリックイベントの追加
           if (isMasked) {
             if (rank <= 10) {
               // 1位〜10位：クリックでその項目だけ解除
