@@ -226,20 +226,14 @@
       
       <div class="bg-white p-6 rounded-xl shadow-lg mt-8 mb-4 border-t-4 border-red-500 max-w-2xl mx-auto">
         <div class="mb-6 pb-4 border-b border-gray-200">
-          <label for="file-upload" class="block text-lg font-bold text-gray-700 mb-2">① ファイルを選択 (任意)</label>
-          <input 
-            type="file" 
-            id="file-upload" 
-            accept=".tsv"
-            class="block w-full text-lg text-slate-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-red-50 file:text-red-700
-              hover:file:bg-red-100
-            "
-          />
-          <p class="text-sm text-gray-400 mt-1">※選択しない場合はデフォルトのデータが表示されます</p>
+          <label for="file-select" class="block text-lg font-bold text-gray-700 mb-2">① データを選択</label>
+          <select 
+            id="file-select" 
+            class="block w-full text-lg p-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 shadow-sm"
+          >
+            <option value="" disabled selected>ファイル一覧を読み込み中...</option>
+          </select>
+          <p class="text-sm text-gray-400 mt-1">※Github上のTSVファイル一覧から選択できます</p>
         </div>
 
         <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
@@ -282,13 +276,12 @@
 
     </main>
     <script>
-      // デフォルトのファイルパス
-      const DEFAULT_TSV_PATH = 'tsv/(品目分類)第６表都市階級・地方・都道府県庁所在市別１世帯当たり年間の品目別支出金額購入数量（二人以上の世帯）令和６年2024.tsv';
+      const GITHUB_API_URL = 'https://api.github.com/repos/panzuki/3sp/contents/tsv';
       
       let rankingData = [];
       let columnNames = [];
       
-      const fileInput = document.getElementById('file-upload');
+      const fileSelect = document.getElementById('file-select');
       const titleElement = document.getElementById('main-title');
       const itemSelect = document.getElementById('ranking-item');
       const sortOrderInputs = document.querySelectorAll('input[name="sort-order"]');
@@ -300,8 +293,9 @@
        * ファイル名から拡張子を除いたテキストを表示
        */
       function displaySourceInfo(fileName) {
-        // 最後のドット以降（拡張子）を削除
-        const displayName = fileName.replace(/\.[^/.]+$/, "");
+        // デコードして、最後のドット以降（拡張子）を削除
+        const decodedName = decodeURIComponent(fileName);
+        const displayName = decodedName.replace(/\.[^/.]+$/, "");
         sourceInfoElement.textContent = `引用元：${displayName}`;
       }
 
@@ -326,31 +320,16 @@
           populateItemSelect();
           updateRanking();
       }
-      
-      /**
-       * ローカルファイル読み込み処理
-       */
-      function loadLocalFile(file) {
-        displaySourceInfo(file.name);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          parseTSVData(e.target.result);
-        };
-        reader.onerror = () => {
-          alert('ファイルの読み込みに失敗しました');
-        };
-        reader.readAsText(file);
-      }
 
       /**
-       * デフォルト(サーバー上の)TSVファイルを読み込む
+       * 指定されたURLのTSVファイルを読み込む
        */
-      async function loadDefaultTSV() {
-        const fileName = DEFAULT_TSV_PATH.split('/').pop();
+      async function loadTSV(url, fileName) {
         displaySourceInfo(fileName);
+        rankingList.innerHTML = `<li class="text-center text-gray-500 text-2xl py-10">データを読み込み中...</li>`;
         
         try {
-          const response = await fetch(DEFAULT_TSV_PATH);
+          const response = await fetch(url);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -361,6 +340,48 @@
           console.error('Error loading TSV:', error);
           sourceInfoElement.textContent = `データの読み込みに失敗しました。`;
           rankingList.innerHTML = `<li class="text-center text-red-500 text-2xl py-10">データの読み込みに失敗しました。</li>`;
+        }
+      }
+
+      /**
+       * GitHub APIからファイル一覧を取得してプルダウンを作成
+       */
+      async function initFileList() {
+        try {
+          const response = await fetch(GITHUB_API_URL);
+          if (!response.ok) {
+            throw new Error('GitHub API Error');
+          }
+          const files = await response.json();
+          
+          // TSVファイルのみを抽出
+          const tsvFiles = files.filter(file => file.name.endsWith('.tsv'));
+
+          fileSelect.innerHTML = '';
+          
+          if (tsvFiles.length === 0) {
+             const option = document.createElement('option');
+             option.textContent = "TSVファイルが見つかりません";
+             fileSelect.appendChild(option);
+             return;
+          }
+
+          tsvFiles.forEach((file, index) => {
+            const option = document.createElement('option');
+            option.value = file.download_url; // RawファイルのURL
+            // 表示名は拡張子を除く
+            option.textContent = file.name.replace(/\.tsv$/, "");
+            fileSelect.appendChild(option);
+          });
+
+          // 最初のファイルを自動的に読み込む
+          if (tsvFiles.length > 0) {
+            loadTSV(tsvFiles[0].download_url, tsvFiles[0].name);
+          }
+
+        } catch (error) {
+          console.error('Failed to fetch file list:', error);
+          fileSelect.innerHTML = '<option disabled>ファイル一覧の取得に失敗しました</option>';
         }
       }
       
@@ -517,10 +538,12 @@
       }
 
       // イベントリスナー
-      fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          loadLocalFile(file);
+      // ファイル選択プルダウン変更時
+      fileSelect.addEventListener('change', (e) => {
+        const selectedUrl = e.target.value;
+        const selectedText = e.target.options[e.target.selectedIndex].text; // ファイル名（拡張子なし）
+        if (selectedUrl) {
+           loadTSV(selectedUrl, selectedText);
         }
       });
 
@@ -534,8 +557,8 @@
         }
       });
 
-      // 初期ロード
-      loadDefaultTSV();
+      // 初期化：GitHubからリストを取得
+      initFileList();
       
       tailwind.config = {
         theme: {
