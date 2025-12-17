@@ -301,6 +301,13 @@
             </div>
           </div>
         </div>
+        
+        <div class="mt-4 pt-4 border-t border-gray-200 flex justify-center">
+             <label class="inline-flex items-center p-2 bg-gray-50 rounded-lg cursor-pointer shadow-sm hover:bg-gray-100">
+                <input type="checkbox" id="masking-toggle" checked class="form-checkbox h-6 w-6 text-red-600 focus:ring-red-500 rounded" />
+                <span class="ml-3 text-lg font-semibold text-gray-700">マスキングを有効にする</span>
+             </label>
+        </div>
       </div>
       
       <h1 id="main-title" class="text-5xl md:text-7xl font-extrabold text-gray-800 my-8 text-center tracking-tight">パンのランキング</h1>
@@ -340,10 +347,14 @@
       const showAllButton = document.getElementById('show-all-button');
       const sourceInfoElement = document.getElementById('source-info');
       
-      // **【修正点】** 新しいリストコンテナの定義
+      // 新しいリストコンテナの定義
       const rank1to3List = document.getElementById('rank-1-3-list');
       const rank4to10List = document.getElementById('rank-4-10-list');
-      const below10List = document.getElementById('below-10-list'); // 11位以下は従来通り
+      const below10List = document.getElementById('below-10-list'); // 11位以下
+      
+      // **【新規定義】** マスキング制御要素
+      const maskingToggle = document.getElementById('masking-toggle');
+      let isMaskingEnabled = maskingToggle.checked; // 初期状態: 有効
 
       /**
        * ファイル名から拡張子を除いたテキストを表示
@@ -381,7 +392,6 @@
        */
       async function loadTSV(url, fileName) {
         displaySourceInfo(fileName);
-        // **【修正点】** 初期表示メッセージを11位以下のリストにのみ設定
         rank1to3List.innerHTML = '';
         rank4to10List.innerHTML = '';
         below10List.innerHTML = `<li class="text-center text-gray-500 text-2xl py-10">データを読み込み中...</li>`;
@@ -495,13 +505,12 @@
           }
         }).filter(data => !(isNaN(data[selectedColumn]) || data[selectedColumn] === null));
         
-        // **【修正点】** リストをクリア
+        // リストをクリア
         rank1to3List.innerHTML = '';
         rank4to10List.innerHTML = '';
         below10List.innerHTML = '';
 
         const isBelow10Revealed = showAllButton.classList.contains('active');
-        
         let hasBelow10 = false;
         
         // ランキングアイテムの描画
@@ -512,8 +521,11 @@
           
           const isTop10 = rank <= 10;
           
-          // 11位以下の一括解除状態を考慮
-          let isMasked = reMask && !isBelow10Revealed;
+          // **【修正点】** マスキング判定に isMaskingEnabled を追加
+          // マスキングが有効 AND (再マスキングが必要 AND 11位以下が一括解除されていない) 場合にマスキングを適用
+          let isMasked = isMaskingEnabled && reMask && !isBelow10Revealed;
+          
+          // 11位以下の場合は、ボタンの解除状態に合わせて isMasked を上書き
           if (rank > 10 && isBelow10Revealed) {
               isMasked = false;
           }
@@ -524,7 +536,7 @@
           let dataValueStyle = 'text-gray-900'; 
           
           if (isTop10) {
-            rankClasses += ' top-10 justify-start space-x-4'; // space-xを調整
+            rankClasses += ' top-10 justify-start space-x-4';
             
             if (rank === 1) { rankClasses += ' rank-1'; }
             else if (rank === 2) { rankClasses += ' rank-2'; }
@@ -557,7 +569,7 @@
           listItem.setAttribute('data-rank', rank);
           listItem.innerHTML = itemHtml;
           
-          // **【修正点】** 順位に応じてリストを振り分け
+          // 順位に応じてリストを振り分け
           if (rank <= 3) {
               rank1to3List.appendChild(listItem);
           } else if (rank <= 10) {
@@ -566,7 +578,7 @@
               below10List.appendChild(listItem);
           }
           
-          // クリックイベントの追加 (ロジックは変更なし)
+          // クリックイベントの追加 (マスキングが有効な場合のみ)
           if (isMasked) {
             if (rank <= 10) {
               listItem.addEventListener('click', function revealSingleItem(e) {
@@ -629,6 +641,15 @@
       
       sortOrderInputs.forEach(input => {
         input.addEventListener('change', () => updateRanking(false));
+      });
+      
+      // **【新規追加】** マスキングトグルのイベントリスナー
+      maskingToggle.addEventListener('change', (e) => {
+          isMaskingEnabled = e.target.checked;
+          
+          // マスキングの状態が切り替わったら、11位以下の解除状態をリセットし、再描画
+          resetBelow10RevealState(); 
+          updateRanking(true);
       });
       
       showAllButton.addEventListener('click', () => {
