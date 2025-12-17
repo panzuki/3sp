@@ -2,308 +2,550 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>パンの小ネタ</title>
+    <title>パンのランキング</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  <style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
       :root {
-    --easing: cubic-bezier(.2, 1, .2, 1);
-    --transition: .8s var(--easing);
-    --color-base: #f0f8ff;
-    --color-gray: #ddd;
-    --color-theme: #f5695f;
-    --color-theme-darken: #f12617;
-    --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
-    --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
-    --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
-    --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, .1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
-  }
-
-  html {
-  font-family: "Helvetica Neue",
-    Arial,
-    "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans",
-    Meiryo,
-    sans-serif;
-    font-size: 62.5%;
-    line-height: 1.8;
-    height: 100%;
-    word-break: break-word;
-    color: #333;
-    background-color: var(--color-base);
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  body {
-    font-size: 1.6rem;
-    padding: 20px;
-    margin: 0;
-  }
-
-  *,
-  *::before,
-  *::after {
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-  }
-
-  ::-moz-selection {
-    color: #fff;
-    background: var(--color-theme);
-  }
-
-  ::selection {
-    color: #fff;
-    background: var(--color-theme);
-  }
-      
-  img {
-    border: 0;
-    margin: 0;
-  }
-
-  figure {
-    margin: 0;
-  }
-
-  p {
-    margin: 0;
-    padding: 0;
-  }
-
-  a {
-    text-decoration: none;
-    color: #333;
-  }
-
-  ul,
-  ol {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: 1.6rem;
-    margin: 0;
-    padding: 0;
-  }
-
-  main {
-    display: block;
-  }
-      
-.breadcrumb {
-  height: 4vh;
-  margin: 0;
-  padding: 0 20px;
-  list-style: none;
-}
-
-.breadcrumb li {
-  display: inline; /*横に並ぶように*/
-  list-style: none;
-  font-weight: bold; /*太字*/
-  text-align: center;
-  line-height: 4vh;
-}
-
-.breadcrumb li:after {
-  /* >を表示*/
-  content: ">";
-  text-align: center;
-  line-height: 4vh;
-  padding: 0 0.2em;
-  color: #555;
-  font-size: 1.5rem;
-}
-
-.breadcrumb li:last-child:after {
-  content: "";
-}
-
-.breadcrumb li a {
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: #3f60f1; /*色*/
-}
-
-.breadcrumb li a:hover {
-  text-decoration: underline;
-}
-
-.breadcrumb li:last-child a {
-  color: #333;
-  font-size: 1.5rem;
-  text-decoration: none;
-  text-align: center;
-  cursor: default;
-}
-    
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
-    }
-    .thumb {
-      text-align: center;
-    }
-    .thumb img {
-      width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-    .thumb-title {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    /* モーダル用スタイル */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal iframe {
-      width: 90%;
-      height: 90%;
-      border: none;
-    }
-    .close-btn {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      font-size: 32px;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-   <main>
-          <nav class="breadcrumb">
-          <ol itemscope itemtype="http://schema.org/BreadcrumbList">
-            <li
-              itemprop="itemListElement"
-              itemscope
-              itemtype="http://schema.org/ListItem"
-            >
-              <a itemprop="item" href="https://panzuki.github.io/3sp/"
-                ><span itemprop="name">ホーム</span></a
-              >
-              <meta itemprop="position" content="1" />
-            </li>
-            <li
-              class="page"
-              itemprop="itemListElement"
-              itemscope
-              itemtype="http://schema.org/ListItem"
-            >
-              <a itemprop="item" href="" tabindex="-1"
-                ><span itemprop="name">パンの小ネタ</span></a
-              >
-              <meta itemprop="position" content="2" />
-            </li>
-          </ol>
-          </nav>
-  
-  <h1>パンの小ネタ</h1>
-  <div class="grid" id="slide-grid"></div>
-
-  <!-- モーダル表示部分 -->
-  <div class="modal" id="modal">
-    <div class="close-btn" id="closeBtn">✕</div>
-    <iframe id="slideFrame" allowfullscreen></iframe>
-  </div>
-   </main>
-  <script>
-    const slides = [
-      {
-        "title": "パンの日",
-        "id": "1Jx6P6pEMuqcurlXefEtw_odsTNbKUxeJZb-VxIMAgVo",
-        "pageid": "gc6f59039d_0_14"
-      },
-      {
-        "title": "パン食い競争",
-        "id": "1b0c12eKzODJTausJrrUikqG2-E-8FTHiCBQz44J6-38",
-        "pageid": "gc6fa3c898_0_28"
-      },
-      {
-        "title": "サワードゥセプテンバー",
-        "id": "1flq0cBxdbtV2Bf2cOkTAFARi47KozR5KHHAVHeWH6wg",
-        "pageid": ""
-      },
-      {
-        "title": "なぜパンと呼ぶ？",
-        "id": "1K0SPEiJsYL_h9lsJRz7vWuf3f-KtA_OGtXYCM_RWDcI",
-        "pageid": ""
-      },
-          {
-             "title": "トワイライトウォリアーズ",
-    "id": "1OMhfffauLpykaSVma-4R8lMQ21CzheZbLRhbQODFhA0",
-    "pageid": ""
-          },
-          {
-             "title": "世田谷パン祭り2025",
-    "id": "1acRuAj2Ft9Fe6T4Us2NNghu265-fLDqV-JYA2rDQNVo",
-    "pageid": ""
-          }
-    ];
-
-    const grid = document.getElementById('slide-grid');
-    const modal = document.getElementById('modal');
-    const slideFrame = document.getElementById('slideFrame');
-    const closeBtn = document.getElementById('closeBtn');
-
-    slides.forEach(slide => {
-      const thumbUrl = slide.pageid
-        ? `https://docs.google.com/presentation/d/${slide.id}/export/jpeg?pageid=${slide.pageid}`
-        : `https://docs.google.com/presentation/d/${slide.id}/export/jpeg`;
-      const embedUrl = slide.pageid
-        ? `https://docs.google.com/presentation/d/${slide.id}/embed?slide=id.${slide.pageid}&rm=minimal`
-        : `https://docs.google.com/presentation/d/${slide.id}/embed?rm=minimal`;
-
-      const div = document.createElement('div');
-      div.className = 'thumb';
-      div.innerHTML = `
-        <img src="${thumbUrl}" alt="${slide.title}">
-        <div class="thumb-title">${slide.title}</div>
-      `;
-      div.onclick = () => {
-        slideFrame.src = embedUrl;
-        modal.style.display = 'flex';
-      };
-      grid.appendChild(div);
-    });
-
-    closeBtn.onclick = () => {
-      modal.style.display = 'none';
-      slideFrame.src = '';
-    };
-
-    // モーダル外クリックで閉じる
-    modal.onclick = (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-        slideFrame.src = '';
+        --easing: cubic-bezier(.2, 1, .2, 1);
+        --transition: .8s var(--easing);
+        --color-base: #f0f8ff;
+        --color-gray: #ddd;
+        --color-theme: #f5695f; /* 赤系のテーマカラー */
+        --color-theme-darken: #f12617;
+        --box-shadow: .8rem .8rem 1.2rem rgba(0, 0, 0, .05), -.8rem -.8rem 1.2rem #fff;
+        --box-shadow-hover: 1rem 1rem 1.5rem rgba(0, 0, 0, .08), -1rem -1rem 1.5rem #fff;
+        --box-shadow-inset: inset .8rem .8rem 1.2rem rgba(0, 0, 0, .05), inset -.8rem -.8rem 1.2rem #fff;
+        --box-shadow-dark: .8rem .8rem 1.2rem rgba(0, 0, 0, 0.1), -.8rem -.8rem 1.2rem rgba(#fff,.2);
       }
-    };
-  </script>
-</body>
+
+      html {
+        font-family: "Helvetica Neue",
+          Arial,
+          "Hiragino Kaku Gothic ProN",
+          "Hiragino Sans",
+          Meiryo,
+          sans-serif;
+        font-size: 62.5%;
+        line-height: 1.8;
+        height: 100%;
+        word-break: break-word;
+        color: #333;
+        background-color: var(--color-base);
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-size: 1.6rem;
+        padding: 20px;
+        margin: 0;
+      }
+
+      main {
+        display: block;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      /* --- マスキング関連の調整 --- */
+      /* マスキングが適用されるコンテナ (地域名 + (数値)) */
+      .masked .rank-content {
+        background-color: var(--color-gray);
+        color: transparent; /* 文字色を透明に */
+        border-radius: 0.5rem;
+        transition: background-color 0.3s;
+        pointer-events: none; /* マスキング中はクリック不可 */
+        /* 文字サイズ倍増に合わせて幅も確保 */
+        min-width: 25rem; 
+      }
+
+      /* マスキング時は子要素（数値のspanなど）も強制的に透明にする */
+      .masked .rank-content * {
+        color: transparent !important;
+      }
+      
+      .rank-item.masked {
+        cursor: pointer;
+      }
+      
+      .rank-item:not(.masked) {
+        cursor: default;
+      }
+
+      /* --- 順位別のスタイルとフォントサイズ（倍増対応） --- */
+      
+      .rank-num {
+        font-weight: 800;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        line-height: 1;
+      }
+
+      /* 地域名と数値のフォントサイズ調整 */
+      .region-name {
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .value-data {
+        font-size: 0.8em; /* 地域名に対する相対サイズ */
+        font-weight: 400;
+        margin-left: 1rem;
+      }
+      
+      /* 1位から3位 (サイズを約2倍に) */
+      .rank-1 .rank-num { font-size: 8rem; color: #FFD700; }
+      .rank-2 .rank-num { font-size: 7rem; color: #C0C0C0; }
+      .rank-3 .rank-num { font-size: 6rem; color: #CD7F32; }
+      
+      /* コンテナ自体のパディングなども大きく */
+      .rank-1, .rank-2, .rank-3 {
+        background-color: #fffacd;
+        border: 5px solid var(--color-theme); /* 枠線も太く */
+        border-radius: 1.5rem;
+        box-shadow: var(--box-shadow-hover);
+        padding: 2rem !important; 
+      }
+      
+      /* 1位~3位のテキストサイズ */
+      .rank-1 .region-name { font-size: 5rem; }
+      .rank-2 .region-name { font-size: 4rem; }
+      .rank-3 .region-name { font-size: 4rem; }
+
+      /* 4位〜10位 */
+      .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) .rank-num {
+        font-size: 5rem; /* 2.5rem -> 5rem */
+      }
+      .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) .region-name {
+        font-size: 3.5rem; 
+      }
+
+      .rank-item.top-10 {
+        max-width: 800px; /* 幅も広げる */
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1rem;
+        padding: 1.5rem;
+      }
+      .rank-item.top-10:not(.rank-1):not(.rank-2):not(.rank-3) {
+        background-color: #fcfcfc;
+        border-left: 10px solid var(--color-theme); /* 線を太く */
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      }
+
+      /* 11位以下 */
+      .rank-item.below-10 {
+        font-size: 3.6rem; /* 1.8rem -> 3.6rem */
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1rem 0;
+        border-bottom: 2px dashed var(--color-gray);
+      }
+      .rank-item.below-10 .rank-num {
+         font-size: 3rem;
+      }
+      
+      /* --- その他既存のCSS --- */
+
+      .breadcrumb {
+        height: 4vh;
+        margin: 0;
+        padding: 0 20px;
+        list-style: none;
+      }
+
+      .breadcrumb li {
+        display: inline;
+        list-style: none;
+        font-weight: bold;
+        text-align: center;
+        line-height: 4vh;
+      }
+
+      .breadcrumb li:after {
+        content: ">";
+        text-align: center;
+        line-height: 4vh;
+        padding: 0 0.2em;
+        color: #555;
+        font-size: 1.5rem;
+      }
+
+      .breadcrumb li:last-child:after {
+        content: "";
+      }
+
+      .breadcrumb li a {
+        font-size: 1.5rem;
+        text-decoration: none;
+        color: #3f60f1;
+      }
+
+      .breadcrumb li a:hover {
+        text-decoration: underline;
+      }
+
+      .breadcrumb li:last-child a {
+        color: #333;
+        font-size: 1.5rem;
+        text-decoration: none;
+        text-align: center;
+        cursor: default;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="breadcrumb">
+        <ol itemscope itemtype="http://schema.org/BreadcrumbList">
+          <li
+            itemprop="itemListElement"
+            itemscope
+            itemtype="http://schema.org/ListItem"
+          >
+            <a itemprop="item" href="https://panzuki.github.io/3sp/"
+              ><span itemprop="name">ホーム</span></a
+            >
+            <meta itemprop="position" content="1" />
+          </li>
+          <li
+            class="page"
+            itemprop="itemListElement"
+            itemscope
+            itemtype="http://schema.org/ListItem"
+          >
+            <a itemprop="item" href="" tabindex="-1"
+              ><span itemprop="name">パンのランキング</span></a
+            >
+            <meta itemprop="position" content="2" />
+          </li>
+        </ol>
+      </nav>
+      
+      <div class="bg-white p-6 rounded-xl shadow-lg mt-8 mb-4 border-t-4 border-red-500 max-w-2xl mx-auto">
+        <div class="mb-6 pb-4 border-b border-gray-200">
+          <label for="file-upload" class="block text-lg font-bold text-gray-700 mb-2">① ファイルを選択 (任意)</label>
+          <input 
+            type="file" 
+            id="file-upload" 
+            accept=".tsv"
+            class="block w-full text-lg text-slate-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-red-50 file:text-red-700
+              hover:file:bg-red-100
+            "
+          />
+          <p class="text-sm text-gray-400 mt-1">※選択しない場合はデフォルトのデータが表示されます</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
+          <div class="flex items-center space-x-3 w-full md:w-auto justify-center">
+            <label for="ranking-item" class="text-lg font-semibold text-gray-700 whitespace-nowrap">② 項目:</label>
+            <select id="ranking-item" class="border border-gray-300 rounded-lg p-2 text-xl focus:ring-red-500 focus:border-red-500 shadow-sm w-full md:w-48">
+              </select>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <span class="text-lg font-semibold text-gray-700 whitespace-nowrap">③ 並び順:</span>
+            <div class="flex space-x-4 bg-gray-100 p-2 rounded-lg shadow-inner">
+              <label class="inline-flex items-center">
+                <input type="radio" name="sort-order" value="desc" checked class="form-radio text-red-600 h-5 w-5 focus:ring-red-500" />
+                <span class="ml-2 text-gray-700 text-lg">降順</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="sort-order" value="asc" class="form-radio text-red-600 h-5 w-5 focus:ring-red-500" />
+                <span class="ml-2 text-gray-700 text-lg">昇順</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <h1 id="main-title" class="text-5xl md:text-7xl font-extrabold text-gray-800 my-8 text-center tracking-tight">パンのランキング</h1>
+
+      <div id="source-info" class="text-center mb-6 text-lg text-gray-500 italic p-3 bg-gray-100 rounded-lg shadow-inner">
+        データを読み込み中...
+      </div>
+
+      <div id="ranking-container" class="space-y-3">
+        <button id="show-all-button" class="hidden w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-[1.01] text-2xl max-w-lg mx-auto">
+          11位以下の順位を一気に表示！
+        </button>
+        <ul id="ranking-list" class="space-y-4 pt-4">
+          <li class="text-center text-gray-500 text-2xl py-10">データを読み込み中...</li>
+        </ul>
+      </div>
+
+    </main>
+    <script>
+      // デフォルトのファイルパス
+      const DEFAULT_TSV_PATH = 'tsv/(品目分類)第６表都市階級・地方・都道府県庁所在市別１世帯当たり年間の品目別支出金額購入数量（二人以上の世帯）令和６年2024.tsv';
+      
+      let rankingData = [];
+      let columnNames = [];
+      
+      const fileInput = document.getElementById('file-upload');
+      const titleElement = document.getElementById('main-title');
+      const itemSelect = document.getElementById('ranking-item');
+      const sortOrderInputs = document.querySelectorAll('input[name="sort-order"]');
+      const rankingList = document.getElementById('ranking-list');
+      const showAllButton = document.getElementById('show-all-button');
+      const sourceInfoElement = document.getElementById('source-info');
+
+      /**
+       * ファイル名から拡張子を除いたテキストを表示
+       */
+      function displaySourceInfo(fileName) {
+        // 最後のドット以降（拡張子）を削除
+        const displayName = fileName.replace(/\.[^/.]+$/, "");
+        sourceInfoElement.textContent = `引用元：${displayName}`;
+      }
+
+      /**
+       * TSVテキストをパースしてデータを格納する共通関数
+       */
+      function parseTSVData(text) {
+          const lines = text.trim().split('\n');
+          if (lines.length < 2) return;
+
+          columnNames = lines[0].split('\t').slice(1).map(name => name.trim());
+
+          rankingData = lines.slice(1).map(line => {
+            const values = line.split('\t');
+            const data = { prefecture: values[0].trim() };
+            values.slice(1).forEach((val, index) => {
+              data[columnNames[index]] = parseFloat(val);
+            });
+            return data;
+          }).filter(data => data.prefecture);
+
+          populateItemSelect();
+          updateRanking();
+      }
+      
+      /**
+       * ローカルファイル読み込み処理
+       */
+      function loadLocalFile(file) {
+        displaySourceInfo(file.name);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          parseTSVData(e.target.result);
+        };
+        reader.onerror = () => {
+          alert('ファイルの読み込みに失敗しました');
+        };
+        reader.readAsText(file);
+      }
+
+      /**
+       * デフォルト(サーバー上の)TSVファイルを読み込む
+       */
+      async function loadDefaultTSV() {
+        const fileName = DEFAULT_TSV_PATH.split('/').pop();
+        displaySourceInfo(fileName);
+        
+        try {
+          const response = await fetch(DEFAULT_TSV_PATH);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const text = await response.text();
+          parseTSVData(text);
+
+        } catch (error) {
+          console.error('Error loading TSV:', error);
+          sourceInfoElement.textContent = `データの読み込みに失敗しました。`;
+          rankingList.innerHTML = `<li class="text-center text-red-500 text-2xl py-10">データの読み込みに失敗しました。</li>`;
+        }
+      }
+      
+      /**
+       * 項目選択プルダウンを生成
+       */
+      function populateItemSelect() {
+        itemSelect.innerHTML = '';
+        columnNames.forEach(column => {
+          const option = document.createElement('option');
+          option.value = column;
+          option.textContent = column;
+          itemSelect.appendChild(option);
+        });
+      }
+
+      /**
+       * ランキングをソートして表示を更新する
+       */
+      function updateRanking(reMask = true) {
+        const selectedColumn = itemSelect.value;
+        const sortOrder = document.querySelector('input[name="sort-order"]:checked').value;
+        
+        // タイトルを更新
+        const displayTitle = selectedColumn ? `${selectedColumn}のランキング` : 'パンのランキング';
+        titleElement.textContent = displayTitle;
+        document.querySelector('.page span').textContent = displayTitle;
+
+        if (!selectedColumn) return;
+
+        // データのソート
+        const sortedData = [...rankingData].sort((a, b) => {
+          const valA = a[selectedColumn];
+          const valB = b[selectedColumn];
+          
+          const isNaN_A = isNaN(valA) || valA === null;
+          const isNaN_B = isNaN(valB) || valB === null;
+
+          if (isNaN_A && isNaN_B) return 0;
+          if (isNaN_A) return 1;
+          if (isNaN_B) return -1;
+          
+          if (sortOrder === 'desc') {
+            return valB - valA;
+          } else {
+            return valA - valB;
+          }
+        }).filter(data => !(isNaN(data[selectedColumn]) || data[selectedColumn] === null));
+        
+        rankingList.innerHTML = '';
+
+        if (sortedData.length > 10) {
+          showAllButton.classList.remove('hidden');
+          showAllButton.parentElement.classList.add('text-center');
+        } else {
+          showAllButton.classList.add('hidden');
+        }
+        
+        // ランキングアイテムの描画
+        sortedData.forEach((data, index) => {
+          const rank = index + 1;
+          const value = data[selectedColumn];
+          const prefecture = data.prefecture;
+          
+          const isTop10 = rank <= 10;
+          let isMasked = reMask;
+
+          if (rank > 10 && showAllButton.classList.contains('active')) {
+              isMasked = false;
+          }
+
+          let rankClasses = 'rank-item flex items-center p-2 rounded-lg transition-all duration-500 ease-in-out';
+          let itemHtml = '';
+          
+          // 数値の色指定（通常時）
+          let dataValueStyle = 'text-gray-900'; 
+          
+          if (isTop10) {
+            rankClasses += ' top-10 justify-start space-x-6'; // 間隔を広げる
+            
+            if (rank === 1) { rankClasses += ' rank-1 p-4'; }
+            else if (rank === 2) { rankClasses += ' rank-2 p-4'; }
+            else if (rank === 3) { rankClasses += ' rank-3 p-4'; }
+
+            itemHtml = `
+              <span class="rank-num w-24 text-center flex-shrink-0">${rank}</span>
+              <span class="rank-content font-bold text-gray-800 flex-grow flex items-baseline">
+                <span class="region-name">${prefecture}</span>
+                <span class="value-data ${dataValueStyle}">(${value.toLocaleString()})</span>
+              </span>
+            `;
+            
+          } else {
+            rankClasses += ' below-10 justify-start space-x-6'; 
+            
+            itemHtml = `
+              <span class="rank-num w-24 text-center flex-shrink-0">${rank}位</span>
+              <span class="rank-content text-gray-700 flex-grow flex items-baseline">
+                <span class="region-name">${prefecture}</span>
+                <span class="value-data text-gray-500">(${value.toLocaleString()})</span>
+              </span>
+            `;
+          }
+
+          const listItem = document.createElement('li');
+          listItem.className = rankClasses + (isMasked ? ' masked' : '');
+          listItem.setAttribute('data-rank', rank);
+          listItem.innerHTML = itemHtml;
+          
+          rankingList.appendChild(listItem);
+          
+          // マスキング解除
+          if (isMasked && isTop10) {
+            listItem.addEventListener('click', function revealItem(e) {
+              if (e.target.closest('.rank-item.masked')) {
+                listItem.classList.remove('masked');
+                listItem.removeEventListener('click', revealItem);
+              }
+            });
+          }
+        });
+        
+        if (showAllButton.classList.contains('active')) {
+            revealBelow10(false);
+        } else if (reMask) {
+            maskBelow10(false);
+        }
+      }
+
+      function revealBelow10(updateButton = true) {
+        const below10Items = document.querySelectorAll('.rank-item.below-10');
+        below10Items.forEach(item => {
+          item.classList.remove('masked');
+        });
+        if (updateButton) {
+            showAllButton.classList.add('active');
+            showAllButton.textContent = '11位以下の順位は表示中です';
+            showAllButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+            showAllButton.classList.add('bg-gray-500', 'cursor-default');
+        }
+      }
+      
+      function maskBelow10(updateButton = true) {
+        const below10Items = document.querySelectorAll('.rank-item.below-10');
+        below10Items.forEach(item => {
+          item.classList.add('masked');
+        });
+        if (updateButton) {
+            showAllButton.classList.remove('active');
+            showAllButton.textContent = '11位以下の順位を一気に表示！';
+            showAllButton.classList.add('bg-red-500', 'hover:bg-red-600');
+            showAllButton.classList.remove('bg-gray-500', 'cursor-default');
+        }
+      }
+
+      // イベントリスナー
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          loadLocalFile(file);
+        }
+      });
+
+      itemSelect.addEventListener('change', () => updateRanking(true));
+      sortOrderInputs.forEach(input => {
+        input.addEventListener('change', () => updateRanking(false));
+      });
+      showAllButton.addEventListener('click', () => {
+        if (!showAllButton.classList.contains('active')) {
+          revealBelow10(true);
+        }
+      });
+
+      // 初期ロード
+      loadDefaultTSV();
+      
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'theme-red': 'var(--color-theme)',
+            },
+          }
+        }
+      }
+    </script>
+  </body>
 </html>
