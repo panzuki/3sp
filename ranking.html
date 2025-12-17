@@ -50,22 +50,46 @@
       }
 
       /* --- マスキング関連の調整 --- */
+      
       /* マスキングが適用されるコンテナ (地域名 + (数値)) */
       .masked .rank-content {
         background-color: var(--color-gray);
         color: transparent; /* 文字色を透明に */
         border-radius: 0.5rem;
         transition: background-color 0.3s;
-        /* ↓ 11位以下はクリックを有効にするため削除
-           pointer-events: none; 
-        */
         /* 文字サイズ倍増に合わせて幅も確保 */
         min-width: 25rem; 
+      }
+      /* 1位〜3位のように背景色がある要素に対するマスキングの調整 */
+      .rank-item.masked.rank-1 .rank-content,
+      .rank-item.masked.rank-2 .rank-content,
+      .rank-item.masked.rank-3 .rank-content {
+        background-color: var(--color-gray);
+      }
+      
+      /* 4位〜10位の要素に対するマスキングの調整 */
+      .rank-item.masked.top-10:not(.rank-1):not(.rank-2):not(.rank-3) .rank-content {
+          background-color: var(--color-gray);
       }
 
       /* マスキング時は子要素（数値のspanなど）も強制的に透明にする */
       .masked .rank-content * {
         color: transparent !important;
+      }
+      
+      /* 順位番号そのものもマスキング時は透明にする（1位〜10位は順位番号も派手なため） */
+      .rank-item.masked .rank-num {
+          color: transparent !important;
+          background-color: var(--color-gray); /* 順位番号のエリアもマスキング */
+          border-radius: 0.5rem;
+      }
+      
+      /* 1位〜3位のマスキング調整 (順位番号の背景調整) */
+      .rank-item.masked.rank-1 .rank-num,
+      .rank-item.masked.rank-2 .rank-num,
+      .rank-item.masked.rank-3 .rank-num {
+          background-color: #aaa; /* 金銀銅エリアの順位番号を暗めにマスキング */
+          border-radius: 0.5rem;
       }
       
       /* マスキングされているアイテムはクリックできることを示す */
@@ -77,9 +101,12 @@
         cursor: default;
       }
       
-      /* 11位以下のマスクされた要素は、ホバーで少しグレーを濃くしてクリックできることを強調 */
-      .rank-item.below-10.masked:hover .rank-content {
+      /* マスクされた要素は、ホバーで少しグレーを濃くしてクリックできることを強調 */
+      .rank-item.masked:hover .rank-content {
         background-color: #ccc; /* ホバーで少し色を濃く */
+      }
+      .rank-item.masked:hover .rank-num {
+        background-color: #aaa; /* 順位番号のホバー色も濃く */
       }
 
 
@@ -302,7 +329,6 @@
        * ファイル名から拡張子を除いたテキストを表示
        */
       function displaySourceInfo(fileName) {
-        // デコードして、最後のドット以降（拡張子）を削除
         const decodedName = decodeURIComponent(fileName);
         const displayName = decodedName.replace(/\.[^/.]+$/, "");
         sourceInfoElement.textContent = `引用元：${displayName}`;
@@ -459,17 +485,17 @@
           
           const isTop10 = rank <= 10;
           
-          // 11位以下は、reMaskがtrueまたは一括表示ボタンが非アクティブ（一括解除されていない）の場合にマスキング
-          let isMasked = reMask && rank > 10 && !showAllButton.classList.contains('active');
+          // **【修正点】** 1位から全て、再描画時はマスキングする
+          // ただし、11位以下が一括解除されている状態なら、11位以下はマスキングしない
+          let isMasked = reMask && !showAllButton.classList.contains('active');
           
           let rankClasses = 'rank-item flex items-center p-2 rounded-lg transition-all duration-500 ease-in-out';
           let itemHtml = '';
           
-          // 数値の色指定（通常時）
           let dataValueStyle = 'text-gray-900'; 
           
           if (isTop10) {
-            rankClasses += ' top-10 justify-start space-x-6'; // 間隔を広げる
+            rankClasses += ' top-10 justify-start space-x-6'; 
             
             if (rank === 1) { rankClasses += ' rank-1 p-4'; }
             else if (rank === 2) { rankClasses += ' rank-2 p-4'; }
@@ -484,8 +510,14 @@
             `;
             
           } else {
+            // 11位以下 (below-10)
             rankClasses += ' below-10 justify-start space-x-6'; 
             
+            // 11位以下が一括解除されている場合は、isMaskedを上書きして解除状態を維持
+            if (showAllButton.classList.contains('active')) {
+                isMasked = false;
+            }
+
             itemHtml = `
               <span class="rank-num w-24 text-center flex-shrink-0">${rank}位</span>
               <span class="rank-content text-gray-700 flex-grow flex items-baseline">
@@ -502,21 +534,29 @@
           
           rankingList.appendChild(listItem);
           
-          // **【修正点】** 11位以下でマスキングされている場合のみ、クリックイベントを追加
-          if (isMasked && rank > 10) {
-            // 11位以降の項目がクリックされたら、一括解除関数を呼び出す
-            listItem.addEventListener('click', function revealAllBelow10(e) {
-              if (e.currentTarget.classList.contains('masked')) {
-                // revealBelow10を呼び出し、11位以下すべてを解除
-                revealBelow10(true); 
-              }
-            });
-            // 個別の解除リスナーは不要になったため、以前のコードから変更
+          // **【修正点】** クリックイベントの追加
+          if (isMasked) {
+            if (rank <= 10) {
+              // 1位〜10位：クリックでその項目だけ解除
+              listItem.addEventListener('click', function revealSingleItem(e) {
+                if (e.currentTarget.classList.contains('masked')) {
+                  e.currentTarget.classList.remove('masked');
+                  e.currentTarget.removeEventListener('click', revealSingleItem); // 一度解除したらリスナーを削除
+                }
+              });
+            } else {
+              // 11位以下：クリックで11位以下すべて解除
+              listItem.addEventListener('click', function revealAllBelow10(e) {
+                if (e.currentTarget.classList.contains('masked')) {
+                  revealBelow10(true); 
+                }
+              });
+            }
           }
           
         });
         
-        // **【変更なし】** 一括表示ボタンの状態を更新
+        // 描画後、11位以下が一括解除状態ならボタンを非表示にする
         if (showAllButton.classList.contains('active')) {
             revealBelow10(false);
         } else if (reMask) {
@@ -524,13 +564,11 @@
         }
       }
 
-      // **【変更なし】**
       function revealBelow10(updateButton = true) {
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
           item.classList.remove('masked');
-          // 一括解除された場合、個別のリスナーも削除（再度クリックしても反応しないように）
-          // 新しい仕様では、クリックが全体解除に繋がるため、リスナーを削除する代わりに再作成（イベントリスナーを解除するため）
+          // 一括解除された場合、個別のリスナーも削除（再度クリックしても反応しないように、ノード再作成）
           const newItem = item.cloneNode(true);
           item.parentNode.replaceChild(newItem, item);
         });
@@ -543,7 +581,6 @@
         }
       }
       
-      // **【変更なし】**
       function maskBelow10(updateButton = true) {
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
@@ -559,10 +596,9 @@
       }
 
       // イベントリスナー
-      // ファイル選択プルダウン変更時
       fileSelect.addEventListener('change', (e) => {
         const selectedUrl = e.target.value;
-        const selectedText = e.target.options[e.target.selectedIndex].text; // ファイル名（拡張子なし）
+        const selectedText = e.target.options[e.target.selectedIndex].text; 
         if (selectedUrl) {
             // ファイルが変わる際は、必ずマスキング状態をリセットするためにupdateRanking(true)を呼び出す
             loadTSV(selectedUrl, selectedText);
