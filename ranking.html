@@ -56,7 +56,9 @@
         color: transparent; /* 文字色を透明に */
         border-radius: 0.5rem;
         transition: background-color 0.3s;
-        pointer-events: none; /* マスキング中はクリック不可 */
+        /* ↓ 11位以下はクリックを有効にするため削除
+           pointer-events: none; 
+        */
         /* 文字サイズ倍増に合わせて幅も確保 */
         min-width: 25rem; 
       }
@@ -66,6 +68,7 @@
         color: transparent !important;
       }
       
+      /* マスキングされているアイテムはクリックできることを示す */
       .rank-item.masked {
         cursor: pointer;
       }
@@ -73,6 +76,12 @@
       .rank-item:not(.masked) {
         cursor: default;
       }
+      
+      /* 11位以下のマスクされた要素は、ホバーで少しグレーを濃くしてクリックできることを強調 */
+      .rank-item.below-10.masked:hover .rank-content {
+        background-color: #ccc; /* ホバーで少し色を濃く */
+      }
+
 
       /* --- 順位別のスタイルとフォントサイズ（倍増対応） --- */
       
@@ -144,7 +153,7 @@
         border-bottom: 2px dashed var(--color-gray);
       }
       .rank-item.below-10 .rank-num {
-         font-size: 3rem;
+          font-size: 3rem;
       }
       
       /* --- その他既存のCSS --- */
@@ -447,12 +456,10 @@
           const prefecture = data.prefecture;
           
           const isTop10 = rank <= 10;
-          let isMasked = reMask;
-
-          if (rank > 10 && showAllButton.classList.contains('active')) {
-              isMasked = false;
-          }
-
+          
+          // 11位以下は、reMaskがtrueまたは一括表示ボタンが非アクティブ（一括解除されていない）の場合にマスキング
+          let isMasked = reMask && rank > 10 && !showAllButton.classList.contains('active');
+          
           let rankClasses = 'rank-item flex items-center p-2 rounded-lg transition-all duration-500 ease-in-out';
           let itemHtml = '';
           
@@ -474,6 +481,8 @@
               </span>
             `;
             
+            // 10位以内のアイテムはクリックでマスキング解除する機能は元々ありません（マスキング自体しないため）
+            
           } else {
             rankClasses += ' below-10 justify-start space-x-6'; 
             
@@ -493,17 +502,20 @@
           
           rankingList.appendChild(listItem);
           
-          // マスキング解除
-          if (isMasked && isTop10) {
+          // **【変更点】** 11位以下でマスキングされている場合のみ、クリックイベントを追加
+          if (isMasked && rank > 10) {
             listItem.addEventListener('click', function revealItem(e) {
-              if (e.target.closest('.rank-item.masked')) {
-                listItem.classList.remove('masked');
-                listItem.removeEventListener('click', revealItem);
+              // rank-contentエリアがクリックされたら解除
+              if (e.currentTarget.classList.contains('masked')) {
+                e.currentTarget.classList.remove('masked');
+                e.currentTarget.removeEventListener('click', revealItem); // 一度解除したらリスナーを削除
               }
             });
           }
+          // 元々あった1位〜10位のマスキング解除ロジックは削除（マスキング対象外のため）
         });
         
+        // **【変更なし】** 一括表示ボタンの状態を更新
         if (showAllButton.classList.contains('active')) {
             revealBelow10(false);
         } else if (reMask) {
@@ -515,6 +527,9 @@
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
           item.classList.remove('masked');
+          // 一括解除された場合、個別のリスナーも削除（再度クリックしても反応しないように）
+          const newItem = item.cloneNode(true);
+          item.parentNode.replaceChild(newItem, item);
         });
         if (updateButton) {
             showAllButton.classList.add('active');
@@ -543,7 +558,7 @@
         const selectedUrl = e.target.value;
         const selectedText = e.target.options[e.target.selectedIndex].text; // ファイル名（拡張子なし）
         if (selectedUrl) {
-           loadTSV(selectedUrl, selectedText);
+            loadTSV(selectedUrl, selectedText);
         }
       });
 
@@ -551,6 +566,7 @@
       sortOrderInputs.forEach(input => {
         input.addEventListener('change', () => updateRanking(false));
       });
+      // 一括表示ボタンの処理（変更なし）
       showAllButton.addEventListener('click', () => {
         if (!showAllButton.classList.contains('active')) {
           revealBelow10(true);
