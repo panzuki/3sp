@@ -417,7 +417,6 @@
         // タイトルを更新
         const displayTitle = selectedColumn ? `${selectedColumn}のランキング` : 'パンのランキング';
         titleElement.textContent = displayTitle;
-        //document.document.querySelector('.pa.e span').te = ontent = dis;
 
         if (!selectedColumn) return;
 
@@ -443,7 +442,10 @@
         rankingList.innerHTML = '';
 
         if (sortedData.length > 10) {
-          showAllButton.classList.remove('hidden');
+          // マスキングが解除されていない場合のみボタンを表示
+          if (!showAllButton.classList.contains('active')) {
+            showAllButton.classList.remove('hidden');
+          }
           showAllButton.parentElement.classList.add('text-center');
         } else {
           showAllButton.classList.add('hidden');
@@ -481,8 +483,6 @@
               </span>
             `;
             
-            // 10位以内のアイテムはクリックでマスキング解除する機能は元々ありません（マスキング自体しないため）
-            
           } else {
             rankClasses += ' below-10 justify-start space-x-6'; 
             
@@ -502,17 +502,18 @@
           
           rankingList.appendChild(listItem);
           
-          // **【変更点】** 11位以下でマスキングされている場合のみ、クリックイベントを追加
+          // **【修正点】** 11位以下でマスキングされている場合のみ、クリックイベントを追加
           if (isMasked && rank > 10) {
-            listItem.addEventListener('click', function revealItem(e) {
-              // rank-contentエリアがクリックされたら解除
+            // 11位以降の項目がクリックされたら、一括解除関数を呼び出す
+            listItem.addEventListener('click', function revealAllBelow10(e) {
               if (e.currentTarget.classList.contains('masked')) {
-                e.currentTarget.classList.remove('masked');
-                e.currentTarget.removeEventListener('click', revealItem); // 一度解除したらリスナーを削除
+                // revealBelow10を呼び出し、11位以下すべてを解除
+                revealBelow10(true); 
               }
             });
+            // 個別の解除リスナーは不要になったため、以前のコードから変更
           }
-          // 元々あった1位〜10位のマスキング解除ロジックは削除（マスキング対象外のため）
+          
         });
         
         // **【変更なし】** 一括表示ボタンの状態を更新
@@ -523,11 +524,13 @@
         }
       }
 
+      // **【変更なし】**
       function revealBelow10(updateButton = true) {
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
           item.classList.remove('masked');
           // 一括解除された場合、個別のリスナーも削除（再度クリックしても反応しないように）
+          // 新しい仕様では、クリックが全体解除に繋がるため、リスナーを削除する代わりに再作成（イベントリスナーを解除するため）
           const newItem = item.cloneNode(true);
           item.parentNode.replaceChild(newItem, item);
         });
@@ -536,9 +539,11 @@
             showAllButton.textContent = '11位以下の順位は表示中です';
             showAllButton.classList.remove('bg-red-500', 'hover:bg-red-600');
             showAllButton.classList.add('bg-gray-500', 'cursor-default');
+            showAllButton.classList.add('hidden'); // 解除されたらボタンを非表示に
         }
       }
       
+      // **【変更なし】**
       function maskBelow10(updateButton = true) {
         const below10Items = document.querySelectorAll('.rank-item.below-10');
         below10Items.forEach(item => {
@@ -549,6 +554,7 @@
             showAllButton.textContent = '11位以下の順位を一気に表示！';
             showAllButton.classList.add('bg-red-500', 'hover:bg-red-600');
             showAllButton.classList.remove('bg-gray-500', 'cursor-default');
+            showAllButton.classList.remove('hidden'); // マスキングされたらボタンを表示に
         }
       }
 
@@ -558,15 +564,20 @@
         const selectedUrl = e.target.value;
         const selectedText = e.target.options[e.target.selectedIndex].text; // ファイル名（拡張子なし）
         if (selectedUrl) {
+            // ファイルが変わる際は、必ずマスキング状態をリセットするためにupdateRanking(true)を呼び出す
             loadTSV(selectedUrl, selectedText);
         }
       });
 
+      // 項目選択時 (reMask=true でマスキングを再適用)
       itemSelect.addEventListener('change', () => updateRanking(true));
+      
+      // 並び順変更時 (reMask=false で現在のマスキング状態を維持)
       sortOrderInputs.forEach(input => {
         input.addEventListener('change', () => updateRanking(false));
       });
-      // 一括表示ボタンの処理（変更なし）
+      
+      // 一括表示ボタンの処理
       showAllButton.addEventListener('click', () => {
         if (!showAllButton.classList.contains('active')) {
           revealBelow10(true);
