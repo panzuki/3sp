@@ -1,4 +1,4 @@
-// ── bread for myself — app.js (3D & 完全トレース版) ──
+// ── bread for myself — app.js (3Dクリック補正＆完全版) ──
 // [分割 1 / 4]
 
 const STEP_COLORS = {
@@ -10,7 +10,7 @@ const STEP_COLORS = {
   shaping:        '#c853e8',
   proof:          '#e8b553',
   baking:         '#e85353',
-  final:          '#ffaa66'
+  final:          '#ff9f53'
 };
 
 const STEP_LABELS = {
@@ -25,7 +25,6 @@ const STEP_LABELS = {
   final: '最終生成物'
 };
 
-// 3D空間のZ軸（奥行き）の定義。工程が進むほど奥に配置
 const STEP_Z = {
   raw: 400,
   mixing: 300,
@@ -46,10 +45,9 @@ let selectedNode = null;
 let relatedNodesGlobal = new Set();
 let relatedEdgesGlobal = new Set();
 
-// Three.js 関連のグローバル変数
 let scene, camera, renderer, controls;
-let nodeMeshMap = new Map(); // id -> Mesh
-let edgeLineMap = new Map(); // edgeオブジェクト -> Line
+let nodeMeshMap = new Map();
+let edgeLineMap = new Map();
 let raycaster, mouse;
 
 // ─ Data loading ─
@@ -83,7 +81,6 @@ function initNav() {
   });
 }
 
-// ─ Step legend ─
 function initStepLegend() {
   const legend = document.getElementById('step-legend');
   if (!legend) return;
@@ -108,6 +105,8 @@ function initStepLegend() {
     legend.appendChild(item);
   });
 }
+
+
 // [分割 2 / 4]
 
 function filterByStep(step) {
@@ -118,12 +117,11 @@ function filterByStep(step) {
   updateGraphVisibility();
 }
 
-// 深さ優先探索(DFS)で、指定したノードから「双方向」にすべての接続を辿る
+// 起点から終点、終点から起点まで再帰的にすべてを繋ぐ関数
 function collectAllConnectedRecursive(startNodeId) {
   const visitedNodes = new Set();
   const visitedEdges = new Set();
   
-  // 1. 上流（入力側）へ辿る関数
   function traceUpstream(nodeId) {
     if (visitedNodes.has(nodeId)) return;
     visitedNodes.add(nodeId);
@@ -138,7 +136,6 @@ function collectAllConnectedRecursive(startNodeId) {
     });
   }
   
-  // 2. 下流（出力側）へ辿る関数
   function traceDownstream(nodeId) {
     if (visitedNodes.has(nodeId)) return;
     visitedNodes.add(nodeId);
@@ -153,24 +150,21 @@ function collectAllConnectedRecursive(startNodeId) {
     });
   }
   
-  // 双方向に探索を実行
   traceUpstream(startNodeId);
-  visitedNodes.delete(startNodeId); // 起点はリセットして両方で辿れるようにする
+  visitedNodes.delete(startNodeId);
   traceDownstream(startNodeId);
   
   return { nodes: visitedNodes, edges: visitedEdges };
 }
 
-// ── 3D GRAPH (Three.js) ──
+// ── 3D GRAPH ──
 function init3DGraph() {
   const container = document.getElementById('graph-area');
   if (!container) return;
   
-  // 既存のSVGキャンバスを削除、または非表示に
   const oldSvg = document.getElementById('graph-canvas');
   if (oldSvg) oldSvg.style.display = 'none';
   
-  // Three.js 用のレンダラーを作成
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -186,47 +180,46 @@ function init3DGraph() {
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   
-  // 環境光と平行光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
   scene.add(ambientLight);
   const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
   dirLight.position.set(200, 500, 300);
   scene.add(dirLight);
   
   raycaster = new THREE.Raycaster();
+  raycaster.params.Line.threshold = 3; // 判定の幅を持たせる
   mouse = new THREE.Vector2();
   
-  // データのマッピングと配置の計算
   calculateNodePositions();
-  
-  // 描画オブジェクトの生成
   create3DSceneObjects();
   
-  // イベントリスナー
   window.addEventListener('resize', onWindowResize);
-  renderer.domElement.addEventListener('click', onDocumentMouseDown);
+  
+  // クリックズレ対策：mousedownとmouseupの組み合わせで誤作動を防ぐ
+  let isDragging = false;
+  renderer.domElement.addEventListener('mousedown', () => { isDragging = false; });
+  renderer.domElement.addEventListener('mousemove', () => { isDragging = true; });
+  renderer.domElement.addEventListener('mouseup', (e) => {
+    if (!isDragging) onDocumentMouseDown(e);
+  });
   
   animate();
 }
 
 function calculateNodePositions() {
-  // ノードの初期Y座標とX座標を散らすためのマップ
   const stepCounters = {};
   
   DATA.nodes.forEach((n, i) => {
     const roles = n.reaction_roles || [];
     let step = 'raw';
-    if (roles.length > 0) {
-      step = roles[0].step || 'raw';
-    }
+    if (roles.length > 0) step = roles[0].step || 'raw';
     n.step = step;
     
     stepCounters[step] = (stepCounters[step] || 0) + 1;
     const count = stepCounters[step];
     
-    // 円状またはグリッド状に配置して平面化を防ぐ
-    const angle = count * 0.4;
-    const radius = 100 + (count * 5);
+    const angle = count * 0.5;
+    const radius = 120 + (count * 4);
     n.x = Math.cos(angle) * radius;
     n.y = Math.sin(angle) * radius;
     n.z = STEP_Z[step] || 0;
@@ -237,37 +230,37 @@ function calculateNodePositions() {
     stepCounters[step] = (stepCounters[step] || 0) + 1;
     const count = stepCounters[step];
     
-    // 反応ノードは中央付近に配置
     const angle = count * 0.6;
-    const radius = 30 + (count * 3);
+    const radius = 40 + (count * 3);
     r.x = Math.cos(angle) * radius;
     r.y = Math.sin(angle) * radius;
     r.z = STEP_Z[step] || 0;
     r._type = 'reaction';
   });
 }
+
+
 // [分割 3 / 4]
 
 function create3DSceneObjects() {
-  const sphereGeo = new THREE.SphereGeometry(1, 16, 16);
-  const diamondGeo = new THREE.ConeGeometry(6, 12, 4); // 反応はひし形(コーンを上下に合わせるか単体)
+  const sphereGeo = new THREE.SphereGeometry(1, 24, 24); // 解像度を上げて綺麗に
+  const diamondGeo = new THREE.ConeGeometry(7, 14, 4);
   
-  // 1. 物質（球体）と反応（コーン）の作成
   const createMesh = (d, isReaction) => {
     let material;
-    let size = 6;
+    let size = 7;
     
     if (isReaction) {
       const color = STEP_COLORS[d.step] || '#666';
       material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4 });
-      size = 8;
+      size = 1; // コーンはscaleではなく元サイズで
     } else {
       let color = '#2a4035';
       if (d.is_volatile) color = '#b5e853';
       else if (d.flavor_group) color = '#53e8b5';
       
       material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3 });
-      if (d.is_volatile) size = 9;
+      if (d.is_volatile) size = 11;
     }
     
     let mesh;
@@ -289,7 +282,6 @@ function create3DSceneObjects() {
   DATA.nodes.forEach(n => createMesh(n, false));
   DATA.reactions.forEach(r => createMesh(r, true));
   
-  // 2. エッジ（ライン）の作成
   DATA.edges.forEach(e => {
     const srcId = typeof e.source === 'object' ? e.source.id : e.source;
     const tgtId = typeof e.target === 'object' ? e.target.id : e.target;
@@ -307,7 +299,7 @@ function create3DSceneObjects() {
       if (e.is_extinct) color = '#553333';
       else if (e.type === 'product') color = '#2a5040';
       
-      const material = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.5, linewidth: 1 });
+      const material = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
       const line = new THREE.Line(geometry, material);
       
       scene.add(line);
@@ -321,20 +313,13 @@ function updateGraphVisibility() {
   
   nodeMeshMap.forEach((mesh, id) => {
     const d = mesh.userData.data;
-    const isReaction = mesh.userData.isReaction;
-    
     let visible = true;
     if (activeStep !== 'all' && d.step !== activeStep) visible = false;
-    if (activeVolatile === 'volatile' && !isReaction && !d.is_volatile) visible = false;
-    
-    if (searchQuery && !(d.name || '').toLowerCase().includes(searchQuery)) visible = false;
-    
     mesh.visible = visible;
     
-    // ハイライトロジックの適用
     if (selectedNode) {
       const isRelated = relatedNodesGlobal.has(id) || id === selectedNode.id;
-      mesh.material.opacity = isRelated ? 1.0 : 0.1;
+      mesh.material.opacity = isRelated ? 1.0 : 0.08;
       mesh.material.transparent = true;
     } else {
       mesh.material.opacity = 1.0;
@@ -345,11 +330,9 @@ function updateGraphVisibility() {
   edgeLineMap.forEach((line, e) => {
     if (selectedNode) {
       const isRelated = relatedEdgesGlobal.has(e);
-      line.material.opacity = isRelated ? 1.0 : 0.05;
-      line.material.linewidth = isRelated ? 2 : 1;
+      line.material.opacity = isRelated ? 1.0 : 0.02;
     } else {
-      line.material.opacity = 0.5;
-      line.material.linewidth = 1;
+      line.material.opacity = 0.4;
     }
   });
 }
@@ -357,6 +340,8 @@ function updateGraphVisibility() {
 function onDocumentMouseDown(event) {
   const container = document.getElementById('graph-area');
   const rect = container.getBoundingClientRect();
+  
+  // ズレ補正：クライアント座標から領域の位置を正確に引く
   mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
   
@@ -368,8 +353,6 @@ function onDocumentMouseDown(event) {
     const d = clickedMesh.userData.data;
     
     selectedNode = d;
-    
-    // 最初の食材から最後の物質まで全て辿る（双方向トレース）
     const traceResults = collectAllConnectedRecursive(d.id);
     relatedNodesGlobal = traceResults.nodes;
     relatedEdgesGlobal = traceResults.edges;
@@ -384,13 +367,14 @@ function onDocumentMouseDown(event) {
     updateGraphVisibility();
   }
 }
-// [分割 4 / 4]
 
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
 }
+
+// [分割 4 / 4]
 
 function onWindowResize() {
   const container = document.getElementById('graph-area');
@@ -399,13 +383,11 @@ function onWindowResize() {
   renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
-// ── 既存のUI更新系（そのまま維持） ──
-
 function updateDetailPanel(d) {
   const panel = document.getElementById('detail-panel');
   if (!panel) return;
   if (!d) {
-    panel.innerHTML = '<div class="detail-empty">ノードをクリックすると<br>詳細が表示されます。<br><br>ドラッグ：回転<br>ホイール：ズーム</div>';
+    panel.innerHTML = '<div class="detail-empty">球体をタップすると<br>詳細が表示されます。<br><br>ドラッグ：回転<br>ホイール：ズーム</div>';
     return;
   }
   
@@ -445,7 +427,6 @@ function renderSubstanceDetail(panel, d) {
       <div class="detail-name">${d.name}</div>
       ${d.formula ? `<div class="detail-formula">${d.formula}</div>` : ''}
       ${d.is_volatile ? '<div style="font-size:10px;color:var(--accent3);margin-bottom:6px;">★ 香気物質</div>' : ''}
-      ${d.notes && d.notes.length > 0 ? `<div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.6;">${d.notes[0]}</div>` : ''}
       ${snapshotHTML}
     </div>`;
 }
@@ -460,15 +441,41 @@ function renderReactionDetail(panel, d) {
       <div class="detail-name">${d.name}</div>
       <div style="margin-bottom:8px;"><span class="badge badge-step" style="background:${color};">${label}</span></div>
       ${d.equation ? `<div style="font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:8px;">${d.equation}</div>` : ''}
-      ${d.notes && d.notes.length > 0 ? `
-        <div class="detail-section">
-          <div class="detail-section-title">備考</div>
-          ${d.notes.map(n=>`<div style="font-size:10px;color:var(--text2);line-height:1.6;">${n}</div>`).join('')}
-        </div>` : ''}
     </div>`;
 }
 
-// ── 以下リストビューやパラメータなどの関数（従来と同等のダミーを維持、または元コードから移植してください）
-function initReactionsView() {}
-function initSubstancesView() {}
-function initParamsView() {}
+// ── UIタブ（リスト）の復元 ──
+function initReactionsView() {
+  const grid = document.getElementById('rxn-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  DATA.reactions.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'rxn-card';
+    card.innerHTML = `<div class="rxn-id">${r.id}</div><div class="rxn-name">${r.name}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function initSubstancesView() {
+  const tbody = document.getElementById('sub-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  DATA.nodes.slice(0, 100).forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${s.id}</td><td>${s.name}</td><td>${s.formula||'—'}</td><td>${s.is_volatile?'★':''}</td><td>${s.nutrition_cat||''}</td><td>—</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function initParamsView() {
+  const view = document.getElementById('params-view');
+  if (!view) return;
+  view.innerHTML = '';
+  DATA.params.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'param-card';
+    card.innerHTML = `<div class="param-name">${p.name}</div><div class="param-val-row">${p.value} ${p.unit}</div>`;
+    view.appendChild(card);
+  });
+}
