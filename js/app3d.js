@@ -1,82 +1,104 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js
+// bread for myself — app3d.js  (trace_v2)
 // Three.js r128 による 3D 製パン化学ネットワーク
+// 「工程追跡可能な因果グラフ」対応版
 // ══════════════════════════════════════════════════════════════
 
 // ─── 定数 ────────────────────────────────────────────────────
 const STEP_COLORS = {
-  raw:            0x6b7280,
-  mixing:         0x4a9eff,
-  fermentation_1: 0xa8e053,
-  dividing:       0x53b5e8,
-  bench:          0x53e8b5,
-  shaping:        0xc853e8,
-  proof:          0xe8b553,
-  baking:         0xe85353,
-  final:          0xff9f53,
+  ingredients:            0x6b7280,
+  raw:                    0x6b7280,
+  mixing:                 0x4a9eff,
+  fermentation_1:         0xa8e053,
+  dividing_bench_shaping: 0x53b5e8,
+  dividing:               0x53b5e8,
+  bench:                  0x53e8b5,
+  shaping:                0xc853e8,
+  proof:                  0xe8b553,
+  baking:                 0xe85353,
+  final:                  0xff9f53,
 };
 const STEP_COLORS_CSS = {
-  raw:            '#6b7280',
-  mixing:         '#4a9eff',
-  fermentation_1: '#a8e053',
-  dividing:       '#53b5e8',
-  bench:          '#53e8b5',
-  shaping:        '#c853e8',
-  proof:          '#e8b553',
-  baking:         '#e85353',
-  final:          '#ff9f53',
+  ingredients:            '#6b7280',
+  raw:                    '#6b7280',
+  mixing:                 '#4a9eff',
+  fermentation_1:         '#a8e053',
+  dividing_bench_shaping: '#53b5e8',
+  dividing:               '#53b5e8',
+  bench:                  '#53e8b5',
+  shaping:                '#c853e8',
+  proof:                  '#e8b553',
+  baking:                 '#e85353',
+  final:                  '#ff9f53',
 };
 const STEP_LABELS = {
-  raw:'原材料', mixing:'ミキシング', fermentation_1:'一次発酵',
-  dividing:'分割', bench:'ベンチ', shaping:'成形',
-  proof:'ホイロ', baking:'焼成', final:'最終生成物',
+  ingredients:            '原材料',
+  raw:                    '原材料',
+  mixing:                 'ミキシング',
+  fermentation_1:         '一次発酵',
+  dividing_bench_shaping: '分割・成形',
+  dividing:               '分割',
+  bench:                  'ベンチ',
+  shaping:                '成形',
+  proof:                  'ホイロ',
+  baking:                 '焼成',
+  final:                  '最終生成物',
 };
 
 // 工程順（Y軸 = 時間軸）
-const STEP_ORDER = ['raw','mixing','fermentation_1','dividing','bench','shaping','proof','baking','final'];
+const STEP_ORDER = ['ingredients','mixing','fermentation_1','dividing_bench_shaping','proof','baking'];
 
-// 各工程のY座標（上から下へ）
-const STEP_Y = {
-  raw:            200,
-  mixing:          70,
-  fermentation_1: -50,
-  dividing:      -140,
-  bench:         -220,
-  shaping:       -300,
-  proof:         -390,
-  baking:        -510,
-  final:         -640,
+// process_order → Y座標
+// node_type 別レイヤー分離: raw_material(top) → substance_instance → reaction
+const BASE_Y    = 220;  // ingredients Y
+const STAGE_GAP = 180;  // 工程間ギャップ
+
+function getStageY(processOrder) {
+  return BASE_Y - processOrder * STAGE_GAP;
+}
+
+// node_type ごとのY オフセット（同一工程内で分離）
+const TYPE_Y_OFFSET = {
+  raw_material:        0,
+  substance_instance: -55,
+  reaction:            0,   // 反応は中心
 };
 
-// 各工程のXZ半径（工程ごとに円柱状に配置）
-const STEP_RADIUS = {
-  raw: 280, mixing: 220, fermentation_1: 180,
-  dividing: 140, bench: 150, shaping: 140,
-  proof: 170, baking: 240, final: 200,
+// XZ 球半径（同工程内の配置用）
+const TYPE_RADIUS = {
+  raw_material:        420,
+  substance_instance:  320,
+  reaction:            220,
 };
 
 // ─── 状態 ────────────────────────────────────────────────────
 let DATA       = null;
-let SCENE_OBJ  = null;   // { scene, camera, renderer, controls, … }
-let allMeshes  = [];     // { mesh, node, type }
-let lineMeshes = [];     // { line, edge }
-let nodeMap    = {};     // id → allMeshes entry
+let SCENE_OBJ  = null;
+let allMeshes  = [];
+let lineMeshes = [];
+let nodeMap    = {};     // id → { mesh, node, type, stage }
 let selectedId = null;
-let traceSet   = null;   // null | Set of highlighted IDs
+let traceSet   = null;
 let autoRotate = false;
 let activeStep = 'all';
 let activeFilter = 'all';
 let searchQuery  = '';
 
-// Adjacency for full-chain tracing
-let childrenMap  = {};  // id → [id, …]
-let parentsMap   = {};  // id → [id, …]
+// 隣接マップ（BFS高速化）
+let childrenMap = {};
+let parentsMap  = {};
+
+// trace_index（JSON済み）
+let TRACE_INDEX = {};
 
 // ─── データ読み込み ──────────────────────────────────────────
 fetch('data/graph_data.json')
   .then(r => r.json())
   .then(d => {
     DATA = d;
+    TRACE_INDEX = d.trace_index || {};
+
+    // meta 表示（新フィールド対応）
     document.getElementById('stat-sub').textContent   = d.meta.substance_count;
     document.getElementById('stat-rxn').textContent   = d.meta.reaction_count;
     document.getElementById('stat-edge').textContent  = d.meta.edge_count;
@@ -90,15 +112,17 @@ fetch('data/graph_data.json')
     animate();
   });
 
-// ─── 隣接マップ（全チェーントレース用）─────────────────────
+// ─── 隣接マップ ───────────────────────────────────────────────
 function buildAdjacency() {
+  childrenMap = {};
+  parentsMap  = {};
   DATA.edges.forEach(e => {
     (childrenMap[e.source] = childrenMap[e.source] || []).push(e.target);
     (parentsMap[e.target]  = parentsMap[e.target]  || []).push(e.source);
   });
 }
 
-// BFS で全子孫
+// ─── BFS（全子孫）────────────────────────────────────────────
 function getAllDescendants(startId) {
   const visited = new Set();
   const queue = [startId];
@@ -111,7 +135,7 @@ function getAllDescendants(startId) {
   return visited;
 }
 
-// BFS で全祖先
+// ─── BFS（全祖先）────────────────────────────────────────────
 function getAllAncestors(startId) {
   const visited = new Set();
   const queue = [startId];
@@ -124,39 +148,53 @@ function getAllAncestors(startId) {
   return visited;
 }
 
-// ─── 物質バンド推定 ──────────────────────────────────────────
-function inferBand(n) {
-  // 生成している反応のステップ
-  const producedBy = DATA.edges
-    .filter(e => e.source !== n.id && e.target === n.id && e.type === 'product')
-    .map(e => {
-      const rxn = DATA.reactions.find(r => r.id === e.source);
-      return rxn ? rxn.step : null;
-    }).filter(Boolean);
+// ─── traceAll: 上下両方向 BFS ────────────────────────────────
+function traceAll(nodeId) {
+  const upstream   = getAllAncestors(nodeId);
+  const downstream = getAllDescendants(nodeId);
+  const combined   = new Set([...upstream, ...downstream]);
+  combined.add(nodeId);
+  return { upstream, downstream, combined };
+}
 
-  if (producedBy.length) {
-    for (const s of STEP_ORDER) if (producedBy.includes(s)) return s;
-  }
+// trace_index を使う高速版
+function traceAllFast(nodeId) {
+  // master_id or raw_id を使って trace_index 参照
+  const masterIdOf = getMasterId(nodeId);
+  const ti = TRACE_INDEX[masterIdOf] || TRACE_INDEX[nodeId] || null;
+  if (!ti) return traceAll(nodeId);  // fallback
 
-  const tsv = n.tsv_ids || [];
-  if (tsv.some(t => String(t).startsWith('11-'))) return 'final';
-  if (tsv.some(t => String(t).startsWith('9-')))  return 'proof';
-  if (tsv.some(t => String(t).startsWith('7-')))  return 'shaping';
-  if (tsv.some(t => String(t).startsWith('5-')))  return 'fermentation_1';
-  if (tsv.some(t => String(t).startsWith('3-')))  return 'mixing';
+  const combined = new Set([
+    ...ti.upstream,
+    ...ti.downstream,
+    ...ti.instances,
+    nodeId,
+  ]);
+  return {
+    upstream:   new Set(ti.upstream),
+    downstream: new Set(ti.downstream),
+    combined,
+  };
+}
 
-  const consumedBy = DATA.edges
-    .filter(e => e.source === n.id && e.type === 'substrate')
-    .map(e => {
-      const rxn = DATA.reactions.find(r => r.id === e.target);
-      return rxn ? rxn.step : null;
-    }).filter(Boolean);
+function getMasterId(nodeId) {
+  // SUB-0022@mixing → SUB-0022
+  if (nodeId.includes('@')) return nodeId.split('@')[0];
+  return nodeId;
+}
 
-  if (consumedBy.length) {
-    const idx = STEP_ORDER.indexOf(consumedBy[0]);
-    return STEP_ORDER[Math.max(0, idx - 1)];
-  }
-  return 'raw';
+// ─── 前後2ホップ ─────────────────────────────────────────────
+function getNeighbors2(id) {
+  const s = new Set([id]);
+  DATA.edges.forEach(e => {
+    if (e.source !== id && e.target !== id) return;
+    s.add(e.source); s.add(e.target);
+    const other = e.source === id ? e.target : e.source;
+    DATA.edges.forEach(e2 => {
+      if (e2.source === other || e2.target === other) { s.add(e2.source); s.add(e2.target); }
+    });
+  });
+  return s;
 }
 
 // ─── Three.js シーン初期化 ───────────────────────────────────
@@ -165,22 +203,18 @@ function initScene() {
   const W = window.innerWidth;
   const H = window.innerHeight;
 
-  // Scene
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x070a08);
-  scene.fog = new THREE.FogExp2(0x070a08, 0.0008);
+  scene.fog = new THREE.FogExp2(0x070a08, 0.0007);
 
-  // Camera
-  const camera = new THREE.PerspectiveCamera(50, W / H, 1, 8000);
-  camera.position.set(0, 200, 900);
+  const camera = new THREE.PerspectiveCamera(50, W / H, 1, 9000);
+  camera.position.set(0, 200, 1050);
 
-  // Renderer
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(W, H);
   renderer.shadowMap.enabled = false;
 
-  // Lights
   scene.add(new THREE.AmbientLight(0xffffff, 0.35));
   const dir1 = new THREE.DirectionalLight(0xa8e080, 1.1);
   dir1.position.set(300, 600, 400);
@@ -188,18 +222,12 @@ function initScene() {
   const dir2 = new THREE.DirectionalLight(0x4080ff, 0.5);
   dir2.position.set(-400, -200, -300);
   scene.add(dir2);
-  const point = new THREE.PointLight(0xe0b060, 0.6, 2000);
-  point.position.set(0, 300, 0);
-  scene.add(point);
+  scene.add(new THREE.PointLight(0xe0b060, 0.6, 2500));
 
-  // Orbit-like controls (manual implementation for r128 without OrbitControls import)
   const controls = createOrbitControls(camera, canvas);
-
-  // Raycaster
   const raycaster = new THREE.Raycaster();
   raycaster.params.Points.threshold = 5;
 
-  // Resize
   window.addEventListener('resize', () => {
     const W2 = window.innerWidth, H2 = window.innerHeight;
     camera.aspect = W2 / H2;
@@ -208,8 +236,6 @@ function initScene() {
   });
 
   SCENE_OBJ = { scene, camera, renderer, controls, raycaster };
-
-  // Click / hover
   canvas.addEventListener('click', onCanvasClick);
   canvas.addEventListener('mousemove', onCanvasHover);
 }
@@ -219,10 +245,9 @@ function createOrbitControls(camera, canvas) {
   const state = {
     isDragging: false, isRightDrag: false,
     prevX: 0, prevY: 0,
-    spherical: { theta: 0, phi: Math.PI / 3, radius: 900 },
+    spherical: { theta: 0, phi: Math.PI / 3, radius: 1050 },
     target: new THREE.Vector3(0, -200, 0),
   };
-
   function updateCamera() {
     const { theta, phi, radius } = state.spherical;
     const sinPhi = Math.sin(phi);
@@ -234,215 +259,242 @@ function createOrbitControls(camera, canvas) {
     camera.lookAt(state.target);
   }
   updateCamera();
-
   canvas.addEventListener('mousedown', e => {
-    state.isDragging   = true;
-    state.isRightDrag  = e.button === 2;
-    state.prevX = e.clientX;
-    state.prevY = e.clientY;
+    state.isDragging = true; state.isRightDrag = e.button === 2;
+    state.prevX = e.clientX; state.prevY = e.clientY;
   });
   canvas.addEventListener('contextmenu', e => e.preventDefault());
   window.addEventListener('mousemove', e => {
     if (!state.isDragging) return;
-    const dx = e.clientX - state.prevX;
-    const dy = e.clientY - state.prevY;
+    const dx = e.clientX - state.prevX, dy = e.clientY - state.prevY;
     state.prevX = e.clientX; state.prevY = e.clientY;
     if (state.isRightDrag) {
-      // Pan
-      const right = new THREE.Vector3();
-      const up    = new THREE.Vector3();
-      camera.getWorldDirection(new THREE.Vector3());
+      const right = new THREE.Vector3(), up = new THREE.Vector3();
       right.crossVectors(camera.getWorldDirection(new THREE.Vector3()), camera.up).normalize();
       up.copy(camera.up).normalize();
       state.target.addScaledVector(right, -dx * 0.8);
-      state.target.addScaledVector(up,     dy * 0.8);
+      state.target.addScaledVector(up, dy * 0.8);
     } else {
-      // Rotate
       state.spherical.theta -= dx * 0.005;
-      state.spherical.phi   = Math.max(0.1, Math.min(Math.PI - 0.1, state.spherical.phi + dy * 0.005));
+      state.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, state.spherical.phi + dy * 0.005));
     }
     updateCamera();
   });
   window.addEventListener('mouseup', () => { state.isDragging = false; });
   canvas.addEventListener('wheel', e => {
-    state.spherical.radius = Math.max(100, Math.min(3000, state.spherical.radius + e.deltaY * 0.5));
+    state.spherical.radius = Math.max(100, Math.min(4000, state.spherical.radius + e.deltaY * 0.5));
     updateCamera();
     e.preventDefault();
   }, { passive: false });
-
-  // Touch support
   let lastTouchDist = 0;
   canvas.addEventListener('touchstart', e => {
     if (e.touches.length === 1) {
       state.isDragging = true; state.isRightDrag = false;
       state.prevX = e.touches[0].clientX; state.prevY = e.touches[0].clientY;
     } else if (e.touches.length === 2) {
-      lastTouchDist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
+      lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
     }
   });
   canvas.addEventListener('touchmove', e => {
     e.preventDefault();
     if (e.touches.length === 1 && state.isDragging) {
-      const dx = e.touches[0].clientX - state.prevX;
-      const dy = e.touches[0].clientY - state.prevY;
+      const dx = e.touches[0].clientX - state.prevX, dy = e.touches[0].clientY - state.prevY;
       state.prevX = e.touches[0].clientX; state.prevY = e.touches[0].clientY;
       state.spherical.theta -= dx * 0.006;
-      state.spherical.phi   = Math.max(0.1, Math.min(Math.PI - 0.1, state.spherical.phi + dy * 0.006));
+      state.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, state.spherical.phi + dy * 0.006));
       updateCamera();
     } else if (e.touches.length === 2) {
-      const d = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      state.spherical.radius = Math.max(100, Math.min(3000, state.spherical.radius - (d - lastTouchDist) * 1.5));
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      state.spherical.radius = Math.max(100, Math.min(4000, state.spherical.radius - (d - lastTouchDist) * 1.5));
       lastTouchDist = d;
       updateCamera();
     }
   }, { passive: false });
   canvas.addEventListener('touchend', () => { state.isDragging = false; });
-
   return { state, updateCamera };
 }
 
 // ─── グラフ構築 ──────────────────────────────────────────────
 function buildGraph() {
   const { scene } = SCENE_OBJ;
+  allMeshes = []; lineMeshes = []; nodeMap = {};
 
-  allMeshes  = [];
-  lineMeshes = [];
-  nodeMap    = {};
-
-  // ── 工程リング表示（半透明の輪） ──────────────────────────
-  STEP_ORDER.forEach(step => {
-    const r = STEP_RADIUS[step] || 200;
-    const y = STEP_Y[step] || 0;
+  // ── 工程リング表示 ──────────────────────────────────────
+  STEP_ORDER.forEach((step, i) => {
+    const po    = i;  // process_order と対応
+    const y     = getStageY(po);
     const color = STEP_COLORS[step] || 0x444444;
-
-    // 薄い円柱リング
-    const ringGeo = new THREE.TorusGeometry(r, 1.5, 8, 64);
-    const ringMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.18 });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.y = y;
-    ring.rotation.x = Math.PI / 2;
-    scene.add(ring);
-
-    // 水平グリッド線（薄い）
-    const pts = [];
-    for (let i = 0; i <= 64; i++) {
-      const a = (i / 64) * Math.PI * 2;
-      pts.push(new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r));
+    // substance_instance 層リング
+    const r_inst = TYPE_RADIUS.substance_instance;
+    addRing(scene, r_inst, y + TYPE_Y_OFFSET.substance_instance, color, 0.15);
+    // reaction 層リング
+    if (step !== 'ingredients') {
+      const r_rxn = TYPE_RADIUS.reaction;
+      addRing(scene, r_rxn, y, color, 0.09);
     }
-    const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
-    const lineMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.08 });
-    scene.add(new THREE.Line(lineGeo, lineMat));
+    // raw_material 層リング（ingredientsのみ）
+    if (step === 'ingredients') {
+      addRing(scene, TYPE_RADIUS.raw_material, y, color, 0.18);
+    }
   });
 
   // 中央縦軸
   const axisGeo = new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(0, 300, 0),
-    new THREE.Vector3(0, -700, 0)
+    new THREE.Vector3(0, getStageY(STEP_ORDER.length - 1) - 100, 0)
   ]);
   scene.add(new THREE.Line(axisGeo, new THREE.LineBasicMaterial({ color: 0x334433, transparent: true, opacity: 0.3 })));
 
-  // ── 物質ノード（球） ────────────────────────────────────────
-  const bandCounts = {};
-  const assignedBands = {};
-  DATA.nodes.forEach(n => {
-    const band = inferBand(n);
-    assignedBands[n.id] = band;
-    bandCounts[band] = (bandCounts[band] || 0) + 1;
-  });
-  const bandIdx = {};
-
-  DATA.nodes.forEach(n => {
-    const band  = assignedBands[n.id];
-    const idx   = (bandIdx[band] = (bandIdx[band] || 0));
-    const total = bandCounts[band] || 1;
-    const r     = STEP_RADIUS[band] || 200;
-    const y     = STEP_Y[band] || 0;
-
-    // XZ: 均等に円弧配置＋わずかなランダムオフセット
-    const angle = (idx / total) * Math.PI * 2;
-    const rJitter = r + (seededRandom(n.id) - 0.5) * r * 0.3;
-    const x = Math.cos(angle) * rJitter;
-    const z = Math.sin(angle) * rJitter;
-    const yJitter = y + (seededRandom(n.id + 'y') - 0.5) * 40;
-
-    bandIdx[band]++;
-
-    const isVolatile = n.is_volatile;
-    const radius3d   = isVolatile ? 7 : n.reaction_roles?.length > 3 ? 6 : 4.5;
-    const color      = STEP_COLORS[band] || 0x4a8060;
-
-    // ── Phong sphere ──
-    const geo = new THREE.SphereGeometry(radius3d, 16, 12);
-    const mat = new THREE.MeshPhongMaterial({
-      color,
-      emissive: color,
-      emissiveIntensity: isVolatile ? 0.35 : 0.08,
-      shininess: isVolatile ? 90 : 40,
-      transparent: true,
-      opacity: 1,
-    });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, yJitter, z);
-    mesh.userData = { id: n.id, type: 'substance', node: n, band, originalColor: color };
-    scene.add(mesh);
-
-    // 香気物質：外周リング
-    if (isVolatile) {
-      const ringG = new THREE.TorusGeometry(radius3d + 4, 0.7, 6, 24);
-      const ringM = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.4 });
-      const ringMesh = new THREE.Mesh(ringG, ringM);
-      ringMesh.position.copy(mesh.position);
-      ringMesh.rotation.x = Math.random() * Math.PI;
-      scene.add(ringMesh);
-    }
-
-    const entry = { mesh, node: n, type: 'substance', band };
-    allMeshes.push(entry);
-    nodeMap[n.id] = entry;
-  });
-
-  // ── 反応ノード（八面体） ────────────────────────────────────
-  const rxnBandCounts = {};
-  DATA.reactions.forEach(r => rxnBandCounts[r.step] = (rxnBandCounts[r.step] || 0) + 1);
-  const rxnBandIdx = {};
-
-  DATA.reactions.forEach(r => {
-    const band  = r.step;
-    const idx   = (rxnBandIdx[band] = (rxnBandIdx[band] || 0));
-    const total = rxnBandCounts[band] || 1;
-    const radius3d = STEP_RADIUS[band] || 200;
-    const y     = STEP_Y[band] || 0;
-
-    // 反応は少し内側に配置
-    const angle = (idx / total) * Math.PI * 2 + Math.PI / total;
-    const rr    = radius3d * 0.55;
-    const x     = Math.cos(angle) * rr;
-    const z     = Math.sin(angle) * rr;
-    rxnBandIdx[band]++;
-
-    const color = STEP_COLORS[band] || 0x666666;
-    const geo   = new THREE.OctahedronGeometry(9, 0);
+  // ── raw_material ノード ─────────────────────────────────
+  const rawMats = DATA.raw_materials || [];
+  const rawCount = rawMats.length;
+  rawMats.forEach((rm, idx) => {
+    const angle = (idx / rawCount) * Math.PI * 2;
+    const r     = TYPE_RADIUS.raw_material;
+    const y     = getStageY(0) + TYPE_Y_OFFSET.raw_material;
+    const rj    = r + (seededRandom(rm.id) - 0.5) * r * 0.2;
+    const x     = Math.cos(angle) * rj;
+    const z     = Math.sin(angle) * rj;
+    const yj    = y + (seededRandom(rm.id + 'y') - 0.5) * 30;
+    const color = STEP_COLORS.ingredients;
+    // 六面体（ダイヤ型）で原材料を示す
+    const geo   = new THREE.OctahedronGeometry(11, 0);
     const mat   = new THREE.MeshPhongMaterial({
-      color, emissive: color, emissiveIntensity: 0.25,
-      shininess: 80, transparent: true, opacity: 1,
+      color, emissive: color, emissiveIntensity: 0.3, shininess: 60,
+      transparent: true, opacity: 1,
     });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, y, z);
-    mesh.userData = { id: r.id, type: 'reaction', node: r, band, originalColor: color };
+    mesh.position.set(x, yj, z);
+    mesh.userData = { id: rm.id, type: 'raw_material', node: rm, stage: 'ingredients', process_order: 0, originalColor: color };
     scene.add(mesh);
-
-    const entry = { mesh, node: r, type: 'reaction', band };
+    const entry = { mesh, node: rm, type: 'raw_material', stage: 'ingredients' };
     allMeshes.push(entry);
-    nodeMap[r.id] = entry;
+    nodeMap[rm.id] = entry;
   });
 
-  // ── エッジ（ライン） ─────────────────────────────────────
+  // ── substance_instance ノード ───────────────────────────
+  // stage × process_order ごとにグルーピングしてXZ配置
+  const instByStage = {};
+  (DATA.substance_instances || []).forEach(inst => {
+    const s = inst.stage || 'mixing';
+    (instByStage[s] = instByStage[s] || []).push(inst);
+  });
+
+  Object.entries(instByStage).forEach(([stage, insts]) => {
+    const po    = insts[0].process_order || 1;
+    const total = insts.length;
+    const y_base = getStageY(po) + TYPE_Y_OFFSET.substance_instance;
+    const r_base = TYPE_RADIUS.substance_instance;
+
+    insts.forEach((inst, idx) => {
+      const angle = (idx / total) * Math.PI * 2;
+      const rj    = r_base + (seededRandom(inst.id) - 0.5) * r_base * 0.3;
+      const x     = Math.cos(angle) * rj;
+      const z     = Math.sin(angle) * rj;
+      const yj    = y_base + (seededRandom(inst.id + 'y') - 0.5) * 35;
+
+      const color     = STEP_COLORS[stage] || 0x4a8060;
+      const isVolatile = inst.is_volatile;
+      const r3d       = isVolatile ? 7 : 4.5;
+
+      const geo = new THREE.SphereGeometry(r3d, 16, 12);
+      const mat = new THREE.MeshPhongMaterial({
+        color, emissive: color,
+        emissiveIntensity: isVolatile ? 0.35 : 0.08,
+        shininess: isVolatile ? 90 : 40,
+        transparent: true, opacity: 1,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(x, yj, z);
+      mesh.userData = {
+        id: inst.id, type: 'substance_instance',
+        node: inst, stage, process_order: inst.process_order,
+        originalColor: color,
+      };
+      scene.add(mesh);
+
+      if (isVolatile) {
+        const ringG = new THREE.TorusGeometry(r3d + 4, 0.7, 6, 24);
+        const ringM = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.4 });
+        const rm2   = new THREE.Mesh(ringG, ringM);
+        rm2.position.copy(mesh.position);
+        rm2.rotation.x = Math.random() * Math.PI;
+        scene.add(rm2);
+      }
+
+      const entry = { mesh, node: inst, type: 'substance_instance', stage };
+      allMeshes.push(entry);
+      nodeMap[inst.id] = entry;
+    });
+  });
+
+  // ── 旧 nodes (master-level substance) を補完 ──────────────
+  // substance_master には対応するインスタンスが存在する。
+  // 旧 UI（一覧クリックなど）で SUB-XXXX を参照するために nodeMap に追加
+  // ただし 3D ではインスタンスが表示される（mesh は first instance を使う）
+  (DATA.nodes || []).forEach(n => {
+    if (nodeMap[n.id]) return;  // すでに登録済みなら skip
+    // インスタンスが1つもない物質（stage_nodes = null）はダミー配置
+    const stageNodes = n.stage_nodes || [];
+    if (stageNodes.length > 0) {
+      // 最初のインスタンスのmeshを指す
+      const firstInstId = stageNodes[0].instance_id;
+      if (nodeMap[firstInstId]) {
+        nodeMap[n.id] = nodeMap[firstInstId];  // aliasとして登録
+      }
+    } else {
+      // stage_nodesなし → invisible dummy（選択可能にするため ghost を作る）
+      const color = STEP_COLORS['raw'];
+      const geo   = new THREE.SphereGeometry(3, 8, 6);
+      const mat   = new THREE.MeshPhongMaterial({
+        color, transparent: true, opacity: 0.0,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(0, BASE_Y, 0);
+      mesh.userData = { id: n.id, type: 'substance', node: n, stage: 'raw', originalColor: color };
+      scene.add(mesh);
+      nodeMap[n.id] = { mesh, node: n, type: 'substance', stage: 'raw' };
+      allMeshes.push(nodeMap[n.id]);
+    }
+  });
+
+  // ── 反応ノード（八面体） ─────────────────────────────────
+  const rxnByStage = {};
+  DATA.reactions.forEach(r => {
+    const s = r.stage || r.step || 'mixing';
+    (rxnByStage[s] = rxnByStage[s] || []).push(r);
+  });
+
+  Object.entries(rxnByStage).forEach(([stage, rxns]) => {
+    const po    = rxns[0].process_order || 1;
+    const total = rxns.length;
+    const y_base = getStageY(po);
+    const r_base = TYPE_RADIUS.reaction;
+
+    rxns.forEach((rxn, idx) => {
+      const angle = (idx / total) * Math.PI * 2 + Math.PI / total;
+      const rr    = r_base;
+      const x     = Math.cos(angle) * rr;
+      const z     = Math.sin(angle) * rr;
+
+      const color = STEP_COLORS[stage] || 0x666666;
+      const geo   = new THREE.OctahedronGeometry(9, 0);
+      const mat   = new THREE.MeshPhongMaterial({
+        color, emissive: color, emissiveIntensity: 0.25,
+        shininess: 80, transparent: true, opacity: 1,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(x, y_base, z);
+      mesh.userData = { id: rxn.id, type: 'reaction', node: rxn, stage, originalColor: color };
+      scene.add(mesh);
+
+      const entry = { mesh, node: rxn, type: 'reaction', stage };
+      allMeshes.push(entry);
+      nodeMap[rxn.id] = entry;
+    });
+  });
+
+  // ── エッジ（ライン） ────────────────────────────────────
   DATA.edges.forEach(e => {
     const srcEntry = nodeMap[e.source];
     const tgtEntry = nodeMap[e.target];
@@ -450,19 +502,33 @@ function buildGraph() {
 
     const srcPos = srcEntry.mesh.position;
     const tgtPos = tgtEntry.mesh.position;
+    const geo    = new THREE.BufferGeometry().setFromPoints([srcPos.clone(), tgtPos.clone()]);
 
-    const pts = [srcPos.clone(), tgtPos.clone()];
-    const geo  = new THREE.BufferGeometry().setFromPoints(pts);
+    // エッジタイプ別色
+    let col;
+    if (e.type === 'product')              col = 0x2a5540;
+    else if (e.type === 'stage_carry')     col = 0x334455;
+    else if (e.type === 'ingredient_to_instance') col = 0x6b5530;
+    else if (e.is_extinct)                 col = 0x553333;
+    else                                   col = 0x263832;
 
-    const col = e.is_extinct ? 0x553333 : e.type === 'product' ? 0x2a5540 : 0x263832;
-    const mat = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.35 });
+    const mat  = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.3 });
     const line = new THREE.Line(geo, mat);
     SCENE_OBJ.scene.add(line);
     lineMeshes.push({ line, edge: e, mat, originalColor: col });
   });
 }
 
-// ─── シード乱数（IDベースで再現性ある配置） ────────────────
+function addRing(scene, radius, y, color, opacity) {
+  const geo = new THREE.TorusGeometry(radius, 1.2, 8, 64);
+  const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity });
+  const ring = new THREE.Mesh(geo, mat);
+  ring.position.y = y;
+  ring.rotation.x = Math.PI / 2;
+  scene.add(ring);
+}
+
+// ─── シード乱数 ──────────────────────────────────────────────
 function seededRandom(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
@@ -472,12 +538,10 @@ function seededRandom(str) {
   return ((h >>> 0) / 0xFFFFFFFF);
 }
 
-// ─── クリック処理 ─────────────────────────────────────────
-let _clickMoved = false;
-let _mouseDownPos = { x: 0, y: 0 };
+// ─── クリック処理 ─────────────────────────────────────────────
+let _clickMoved = false, _mouseDownPos = { x: 0, y: 0 };
 document.getElementById('canvas').addEventListener('mousedown', e => {
-  _clickMoved = false;
-  _mouseDownPos = { x: e.clientX, y: e.clientY };
+  _clickMoved = false; _mouseDownPos = { x: e.clientX, y: e.clientY };
 });
 document.getElementById('canvas').addEventListener('mousemove', e => {
   if (Math.hypot(e.clientX - _mouseDownPos.x, e.clientY - _mouseDownPos.y) > 5) _clickMoved = true;
@@ -486,10 +550,7 @@ document.getElementById('canvas').addEventListener('mousemove', e => {
 function onCanvasClick(e) {
   if (_clickMoved) return;
   const hit = raycast(e);
-  if (!hit) {
-    clearSelection();
-    return;
-  }
+  if (!hit) { clearSelection(); return; }
   const { id, type, node } = hit.object.userData;
   selectNode(id, node, type);
 }
@@ -507,8 +568,7 @@ function onCanvasHover(e) {
     }
     document.getElementById('canvas').style.cursor = 'pointer';
   } else {
-    _hoveredId = null;
-    hideTooltip();
+    _hoveredId = null; hideTooltip();
     document.getElementById('canvas').style.cursor = 'default';
   }
 }
@@ -526,49 +586,40 @@ function raycast(e) {
   return hits.length ? hits[0] : null;
 }
 
-// ─── ノード選択 ───────────────────────────────────────────
+// ─── ノード選択 ───────────────────────────────────────────────
 function selectNode(id, node, type) {
   selectedId = id;
-
-  // トレース方向を決定
-  // raw / mixing → 下流トレース（全子孫）
-  // final / baking → 上流トレース（全祖先）
-  // それ以外 → 両方向（前後2ホップ）
   const entry = nodeMap[id];
-  const band  = entry?.band || 'raw';
-  let traceIds;
+  const stage = entry?.stage || node?.stage || 'mixing';
+  const po    = entry?.node?.process_order ?? node?.process_order ?? 1;
 
-  if (['raw', 'mixing'].includes(band)) {
-    // 下流（子孫）全体
-    traceIds = getAllDescendants(id);
-    showTraceBar(`▼ ${node.name || id} から下流 ${traceIds.size} ノードをトレース`);
-  } else if (['baking', 'final'].includes(band)) {
-    // 上流（祖先）全体
-    traceIds = getAllAncestors(id);
-    showTraceBar(`▲ ${node.name || id} の上流 ${traceIds.size} ノードをトレース`);
+  let traceIds, traceMsg;
+
+  if (type === 'raw_material') {
+    // 原材料 → 下流全体
+    const { downstream, combined } = traceAllFast(id);
+    traceIds = combined;
+    traceMsg  = `▼ ${node.name || id}（原材料）→ 下流 ${downstream.size} ノード`;
+  } else if (stage === 'baking' || stage === 'final') {
+    // 最終工程 → 上流全体
+    const { upstream, combined } = traceAllFast(id);
+    traceIds = combined;
+    traceMsg  = `▲ ${node.name || id}（焼成）← 上流 ${upstream.size} ノード`;
+  } else if (type === 'substance_instance' || type === 'substance') {
+    // 中間 → 両方向
+    const { upstream, downstream, combined } = traceAllFast(id);
+    traceIds = combined;
+    traceMsg  = `⇅ ${node.name || id}  ▲上流${upstream.size} ▼下流${downstream.size}`;
   } else {
-    // 前後2ホップ（反応経由）
+    // 反応 → 前後2ホップ
     traceIds = getNeighbors2(id);
-    showTraceBar(`◎ ${node.name || id} の関連 ${traceIds.size} ノード`);
+    traceMsg  = `◎ ${node.name || id}（反応）関連 ${traceIds.size} ノード`;
   }
 
   traceSet = traceIds;
   applyHighlight();
-  updateDetailPanel(node, type, band);
-}
-
-// 前後2ホップ
-function getNeighbors2(id) {
-  const s = new Set([id]);
-  DATA.edges.forEach(e => {
-    if (e.source !== id && e.target !== id) return;
-    s.add(e.source); s.add(e.target);
-    const other = e.source === id ? e.target : e.source;
-    DATA.edges.forEach(e2 => {
-      if (e2.source === other || e2.target === other) { s.add(e2.source); s.add(e2.target); }
-    });
-  });
-  return s;
+  showTraceBar(traceMsg);
+  updateDetailPanel(node, type, stage);
 }
 
 function clearSelection() {
@@ -578,9 +629,9 @@ function clearSelection() {
   updateDetailPanel(null);
 }
 
-// ─── ハイライト ───────────────────────────────────────────
+// ─── ハイライト ───────────────────────────────────────────────
 function applyHighlight() {
-  allMeshes.forEach(({ mesh, node }) => {
+  allMeshes.forEach(({ mesh }) => {
     const id  = mesh.userData.id;
     const col = mesh.userData.originalColor;
     const isSelected = id === selectedId;
@@ -588,11 +639,10 @@ function applyHighlight() {
     const visible    = isVisible(mesh.userData);
 
     if (!visible) {
-      mesh.material.opacity = 0.03;
+      mesh.material.opacity = 0.02;
       mesh.material.emissiveIntensity = 0;
       return;
     }
-
     if (!inTrace && traceSet) {
       mesh.material.opacity = 0.04;
       mesh.material.emissiveIntensity = 0;
@@ -601,12 +651,12 @@ function applyHighlight() {
       mesh.material.emissive.setHex(0xffffff);
       mesh.material.emissiveIntensity = 0.6;
       mesh.material.opacity = 1;
-      // スケールでパルス（選択時）
       mesh.scale.setScalar(1.5);
     } else {
       mesh.material.color.setHex(col);
       mesh.material.emissive.setHex(col);
-      mesh.material.emissiveIntensity = mesh.userData.type === 'substance' && mesh.userData.node?.is_volatile ? 0.35 : 0.12;
+      const isVol = mesh.userData.node?.is_volatile;
+      mesh.material.emissiveIntensity = isVol ? 0.35 : 0.12;
       mesh.material.opacity = 1;
       mesh.scale.setScalar(1);
     }
@@ -616,11 +666,17 @@ function applyHighlight() {
     const s = edge.source, t = edge.target;
     if (traceSet) {
       const both = traceSet.has(s) && traceSet.has(t);
-      mat.opacity  = both ? 0.9 : 0.02;
-      mat.color.setHex(both ? (edge.type === 'product' ? 0xa8e053 : 0x4a9eff) : originalColor);
-      line.material.linewidth = both ? 3 : 1;
+      mat.opacity = both ? 0.9 : 0.02;
+      if (both) {
+        if (edge.type === 'product')              mat.color.setHex(0xa8e053);
+        else if (edge.type === 'stage_carry')     mat.color.setHex(0x4488aa);
+        else if (edge.type === 'ingredient_to_instance') mat.color.setHex(0xffaa55);
+        else                                      mat.color.setHex(0x4a9eff);
+      } else {
+        mat.color.setHex(originalColor);
+      }
     } else {
-      mat.opacity = 0.3;
+      mat.opacity = 0.28;
       mat.color.setHex(originalColor);
     }
   });
@@ -629,22 +685,17 @@ function applyHighlight() {
 function isVisible(userData) {
   const id   = userData.id;
   const type = userData.type;
-  const band = userData.band;
+  const stage = userData.stage;
 
-  if (activeStep !== 'all' && type === 'reaction' && band !== activeStep) return false;
-  if (activeStep !== 'all' && type === 'substance') {
-    // その工程に属する反応につながっているか
-    const connected = DATA.edges.some(e => {
-      const rxn = DATA.reactions.find(r =>
-        (r.id === e.source || r.id === e.target) && r.step === activeStep
-      );
-      return rxn && (e.source === id || e.target === id);
-    });
-    if (!connected) return false;
+  if (activeStep !== 'all') {
+    // 工程フィルター
+    if (type === 'reaction' && stage !== activeStep) return false;
+    if ((type === 'substance_instance') && stage !== activeStep) return false;
+    if (type === 'raw_material' && activeStep !== 'ingredients') return false;
   }
 
-  if (activeFilter === 'volatile' && type === 'substance' && !userData.node?.is_volatile) return false;
-  if (activeFilter === 'reactions' && type === 'substance') return false;
+  if (activeFilter === 'volatile' && (type === 'substance_instance' || type === 'substance') && !userData.node?.is_volatile) return false;
+  if (activeFilter === 'reactions' && type !== 'reaction') return false;
 
   if (searchQuery) {
     const n = userData.node;
@@ -656,19 +707,15 @@ function isVisible(userData) {
   return true;
 }
 
-// ─── アニメーションループ ─────────────────────────────────
+// ─── アニメーションループ ─────────────────────────────────────
 let _frame = 0;
 function animate() {
   requestAnimationFrame(animate);
   _frame++;
-
-  // 自動回転
   if (autoRotate && SCENE_OBJ) {
     SCENE_OBJ.controls.state.spherical.theta += 0.003;
     SCENE_OBJ.controls.updateCamera();
   }
-
-  // 選択ノードパルス
   if (selectedId) {
     const entry = nodeMap[selectedId];
     if (entry) {
@@ -676,11 +723,10 @@ function animate() {
       entry.mesh.scale.setScalar(s);
     }
   }
-
   SCENE_OBJ.renderer.render(SCENE_OBJ.scene, SCENE_OBJ.camera);
 }
 
-// ─── トレースバー ─────────────────────────────────────────
+// ─── トレースバー ─────────────────────────────────────────────
 function showTraceBar(msg) {
   document.getElementById('trace-info').textContent = msg;
   document.getElementById('trace-bar').classList.add('visible');
@@ -688,12 +734,17 @@ function showTraceBar(msg) {
 function hideTraceBar() { document.getElementById('trace-bar').classList.remove('visible'); }
 document.getElementById('trace-close').addEventListener('click', clearSelection);
 
-// ─── ツールチップ ─────────────────────────────────────────
+// ─── ツールチップ ─────────────────────────────────────────────
 function showTooltip(e, node, type) {
   document.getElementById('tt-name').textContent = node?.name || node?.id || '?';
-  const sub = type === 'reaction'
-    ? `${STEP_LABELS[node?.step] || node?.step}  ·  ${(node?.equation || '').slice(0, 55)}`
-    : `${node?.formula || ''}  ${node?.is_volatile ? '[ 香気物質 ]' : ''}`;
+  let sub;
+  if (type === 'reaction') {
+    sub = `${STEP_LABELS[node?.stage || node?.step] || node?.step}  ·  ${(node?.equation || '').slice(0, 55)}`;
+  } else if (type === 'raw_material') {
+    sub = `原材料`;
+  } else {
+    sub = `${node?.formula || ''}  ${node?.is_volatile ? '[ 香気物質 ]' : ''}  ${node?.stage ? '[' + STEP_LABELS[node.stage] + ']' : ''}`;
+  }
   document.getElementById('tt-sub').textContent = sub.trim();
   document.getElementById('tooltip').style.opacity = '1';
   moveTooltip(e);
@@ -705,15 +756,17 @@ function moveTooltip(e) {
 }
 function hideTooltip() { document.getElementById('tooltip').style.opacity = '0'; }
 
-// ─── 詳細パネル ───────────────────────────────────────────
-function updateDetailPanel(node, type, band) {
+// ─── 詳細パネル ───────────────────────────────────────────────
+function updateDetailPanel(node, type, stage) {
   const panel = document.getElementById('detail-panel');
   if (!node) {
     panel.innerHTML = `<div class="detail-empty">
       球をクリックすると詳細表示。<br><br>
-      <b style="color:var(--text2)">トレース機能：</b><br>
-      原材料 → クリックで下流▼<br>
-      最終生成物 → クリックで上流▲<br><br>
+      <b style="color:var(--text2)">トレース機能（v2）：</b><br>
+      🔶 原材料クリック → 下流▼全経路<br>
+      🔵 物質インスタンス → ⇅上流+下流<br>
+      🔴 焼成物クリック → 上流▲全経路<br>
+      🔷 反応クリック → 前後2ホップ<br><br>
       <b style="color:var(--text2)">操作：</b><br>
       ドラッグ → 回転<br>
       ホイール → ズーム<br>
@@ -721,16 +774,41 @@ function updateDetailPanel(node, type, band) {
     </div>`;
     return;
   }
-  type === 'reaction' ? renderRxnDetail(panel, node, band) : renderSubDetail(panel, node, band);
+  if (type === 'reaction')      renderRxnDetail(panel, node, stage);
+  else if (type === 'raw_material') renderRawDetail(panel, node);
+  else                           renderSubDetail(panel, node, stage);
 }
 
-function renderSubDetail(panel, n, band) {
-  const sa     = n.snapshot || {};
+// ── 物質インスタンス詳細 ──────────────────────────────────────
+function renderSubDetail(panel, n, stage) {
+  // スナップショット: node が instance の場合は amount_g を使う
+  // node が master の場合は stage_nodes を使う
+  const bc = STEP_COLORS_CSS[stage] || '#4a8060';
+  const masterNode = (DATA.nodes || []).find(s => s.id === (n.master_id || n.id));
+  const sa   = masterNode?.snapshot || {};
   const stages = ['post_mixing_g','post_fermentation_1_g','post_dividing_bench_shaping_g','post_proof_g','post_baking_g'];
   const stageL = ['ミキシング後','発酵後','成形後','ホイロ後','焼成後'];
-  const vals   = stages.map(s => parseFloat(sa[s]) || 0);
-  const maxV   = Math.max(...vals, 0.001);
-  const bc     = STEP_COLORS_CSS[band] || '#4a8060';
+  const vals = stages.map(s => parseFloat(sa[s]) || 0);
+  const maxV = Math.max(...vals, 0.001);
+
+  // trace_index から上流/下流カウント
+  const masterId = n.master_id || n.id;
+  const ti = TRACE_INDEX[masterId] || {};
+  const upCount   = ti.upstream   ? ti.upstream.length   : (parentsMap[n.id]  || []).length;
+  const downCount = ti.downstream ? ti.downstream.length : (childrenMap[n.id] || []).length;
+
+  // 工程別インスタンス一覧
+  const myInstances = (DATA.substance_instances || []).filter(i => i.master_id === masterId);
+  const instHTML = myInstances.length ? `
+    <div class="detail-section">
+      <div class="detail-section-title">工程インスタンス</div>
+      ${myInstances.map(inst => `
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;font-size:10px;cursor:pointer"
+             onclick="selectNode('${inst.id}', DATA.substance_instances.find(i=>i.id==='${inst.id}'), 'substance_instance')">
+          <span style="color:${STEP_COLORS_CSS[inst.stage]||'#888'};min-width:70px">${STEP_LABELS[inst.stage]||inst.stage}</span>
+          <span style="color:var(--accent2)">${inst.amount_g != null ? inst.amount_g.toFixed(2) + 'g' : '—'}</span>
+        </div>`).join('')}
+    </div>` : '';
 
   const snapHTML = vals.some(v => v > 0) ? `
     <div class="detail-section">
@@ -748,28 +826,28 @@ function renderSubDetail(panel, n, band) {
       </div>
     </div>` : '';
 
-  const roles = n.reaction_roles || [];
-  const downCount = (childrenMap[n.id] || []).length;
-  const upCount   = (parentsMap[n.id] || []).length;
+  const roles = masterNode?.reaction_roles || [];
 
   panel.innerHTML = `<div class="detail-card">
     <div class="detail-id">${n.id}</div>
     <div class="detail-name">${n.name}</div>
     ${n.formula ? `<div class="detail-formula">${n.formula}</div>` : ''}
-    <span class="badge" style="background:${bc};color:#070a08">${STEP_LABELS[band] || band}</span>
+    <span class="badge" style="background:${bc};color:#070a08">${STEP_LABELS[stage] || stage}</span>
     ${n.is_volatile ? `<span style="font-size:9px;color:#e8b553;padding:2px 5px;border:1px solid #e8b553;border-radius:2px;margin-left:4px">★ 香気物質</span>` : ''}
-    <div style="margin-top:10px;display:flex;gap:10px">
+    ${n.node_type === 'substance_instance' ? `<span style="font-size:9px;color:var(--text3);padding:2px 5px;margin-left:4px">[インスタンス]</span>` : ''}
+    <div style="margin-top:10px;display:flex;gap:12px">
       <div style="font-size:10px;color:var(--text3)">上流 <span style="color:var(--accent2)">${upCount}</span></div>
       <div style="font-size:10px;color:var(--text3)">下流 <span style="color:var(--accent)">${downCount}</span></div>
     </div>
-    ${n.notes?.[0] ? `<div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.65;border-left:2px solid ${bc};padding-left:8px">${n.notes[0]}</div>` : ''}
+    ${n.note || n.notes?.[0] ? `<div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.65;border-left:2px solid ${bc};padding-left:8px">${n.note || n.notes?.[0]}</div>` : ''}
+    ${instHTML}
     ${snapHTML}
     ${roles.length ? `
     <div class="detail-section">
       <div class="detail-section-title">反応への関与 (${roles.length})</div>
       ${roles.slice(0,6).map(r=>`
         <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px;font-size:10px">
-          <span style="color:${STEP_COLORS_CSS[r.step]||'#53e8b5'};min-width:40px;font-weight:bold">${r.reaction_id}</span>
+          <span style="min-width:40px;font-weight:bold">${r.reaction_id}</span>
           <span style="color:${r.consumed?'#e85353':'#53e8b5'}">${r.consumed?'消費':'触媒'}</span>
         </div>`).join('')}
       ${roles.length>6?`<div style="font-size:9px;color:var(--text3)">+${roles.length-6}件</div>`:''}
@@ -777,9 +855,38 @@ function renderSubDetail(panel, n, band) {
   </div>`;
 }
 
-function renderRxnDetail(panel, r, band) {
-  const color = STEP_COLORS_CSS[r.step] || '#666';
+// ── 原材料詳細 ───────────────────────────────────────────────
+function renderRawDetail(panel, rm) {
+  const color = STEP_COLORS_CSS.ingredients;
+  // この原材料から始まるインスタンスを検索
+  const downEdges = DATA.edges.filter(e => e.source === rm.id && e.type === 'ingredient_to_instance');
+  const downInsts = downEdges.map(e => e.target).map(tid => {
+    const inst = (DATA.substance_instances || []).find(i => i.id === tid);
+    return inst;
+  }).filter(Boolean);
 
+  panel.innerHTML = `<div class="detail-card">
+    <div class="detail-id">${rm.id}</div>
+    <div class="detail-name">${rm.name}</div>
+    <span class="badge" style="background:${color};color:#070a08">原材料</span>
+    <div style="margin-top:10px;font-size:10px;color:var(--text3)">
+      下流物質 <span style="color:var(--accent)">${(TRACE_INDEX[rm.id]?.downstream || []).length}</span> ノード
+    </div>
+    ${downInsts.length ? `
+    <div class="detail-section">
+      <div class="detail-section-title">供給先物質 (${downInsts.length})</div>
+      ${downInsts.map(i => `
+        <div style="font-size:10px;color:${STEP_COLORS_CSS[i.stage]||'#888'};margin-bottom:3px;cursor:pointer"
+             onclick="selectNode('${i.id}', DATA.substance_instances.find(x=>x.id==='${i.id}'), 'substance_instance')">
+          ● ${i.name} <span style="color:var(--text3)">[${STEP_LABELS[i.stage]||i.stage}]</span>
+        </div>`).join('')}
+    </div>` : ''}
+  </div>`;
+}
+
+// ── 反応詳細 ──────────────────────────────────────────────────
+function renderRxnDetail(panel, r, stage) {
+  const color = STEP_COLORS_CSS[r.stage || r.step] || '#666';
   const subsList = DATA.edges
     .filter(e => e.target === r.id && e.type === 'substrate')
     .map(e => nodeMap[e.source]?.node).filter(Boolean);
@@ -787,16 +894,24 @@ function renderRxnDetail(panel, r, band) {
     .filter(e => e.source === r.id && e.type === 'product')
     .map(e => nodeMap[e.target]?.node).filter(Boolean);
 
+  const cond = r.conditions || {};
+  const condHTML = cond.temperature_C ? `
+    <div style="font-size:10px;color:var(--text3);margin-top:6px">
+      🌡 ${cond.temperature_C.min}–${cond.temperature_C.max}℃
+      ${cond.time_min ? `  ⏱ ${cond.time_min.min}–${cond.time_min.max}min` : ''}
+    </div>` : '';
+
   panel.innerHTML = `<div class="detail-card">
     <div class="detail-id">${r.id}</div>
     <div class="detail-name">${r.name}</div>
-    <span class="badge" style="background:${color};color:#070a08">${STEP_LABELS[r.step]||r.step}</span>
+    <span class="badge" style="background:${color};color:#070a08">${STEP_LABELS[r.stage||r.step]||r.stage}</span>
     ${r.equation ? `<div style="font-size:10px;color:var(--text2);line-height:1.65;margin:8px 0;border-left:2px solid ${color};padding-left:8px">${r.equation}</div>` : ''}
     ${r.equation_formula ? `<div class="detail-formula" style="font-size:9px;margin-bottom:8px">${r.equation_formula}</div>` : ''}
+    ${condHTML}
     ${subsList.length ? `
     <div class="detail-section">
       <div class="detail-section-title">▶ 基質 (${subsList.length})</div>
-      ${subsList.slice(0,6).map(s=>`<div style="font-size:10px;color:var(--text2);margin-bottom:2px">● ${s.name}</div>`).join('')}
+      ${subsList.slice(0,6).map(s=>`<div style="font-size:10px;color:var(--text2);margin-bottom:2px">● ${s.name}${s.stage ? ' <span style=color:var(--text3)>['+STEP_LABELS[s.stage]+']</span>' : ''}</div>`).join('')}
       ${subsList.length>6?`<div style="font-size:9px;color:var(--text3)">+${subsList.length-6}件</div>`:''}
     </div>` : ''}
     ${prodsList.length ? `
@@ -807,12 +922,11 @@ function renderRxnDetail(panel, r, band) {
   </div>`;
 }
 
-// ─── UI 初期化 ────────────────────────────────────────────
+// ─── UI 初期化 ────────────────────────────────────────────────
 function initUI() {
-  // step legend
   const legend = document.getElementById('step-legend');
   const stepCounts = {};
-  DATA.reactions.forEach(r => stepCounts[r.step] = (stepCounts[r.step]||0)+1);
+  DATA.reactions.forEach(r => stepCounts[r.stage || r.step] = (stepCounts[r.stage||r.step]||0)+1);
 
   const allItem = document.createElement('div');
   allItem.className = 'step-item active'; allItem.dataset.step = 'all';
@@ -820,7 +934,7 @@ function initUI() {
   allItem.addEventListener('click', () => { activeStep='all'; applyHighlight(); setStepActive('all'); });
   legend.appendChild(allItem);
 
-  STEP_ORDER.filter(s => s!=='raw'&&s!=='final').forEach(step => {
+  STEP_ORDER.forEach(step => {
     const item = document.createElement('div');
     item.className = 'step-item'; item.dataset.step = step;
     item.innerHTML = `<div class="step-dot" style="background:${STEP_COLORS_CSS[step]}"></div><span>${STEP_LABELS[step]}</span><span class="step-count">${stepCounts[step]||0}</span>`;
@@ -834,7 +948,6 @@ function initUI() {
     );
   }
 
-  // volatile filter
   document.querySelectorAll('.filter-btn').forEach(btn =>
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -844,24 +957,22 @@ function initUI() {
     })
   );
 
-  // search
   document.getElementById('search-input').addEventListener('input', e => {
     searchQuery = e.target.value.toLowerCase();
     applyHighlight();
   });
 
-  // controls
-  document.getElementById('btn-zoom-in').onclick  = () => {
+  document.getElementById('btn-zoom-in').onclick = () => {
     SCENE_OBJ.controls.state.spherical.radius = Math.max(100, SCENE_OBJ.controls.state.spherical.radius * 0.7);
     SCENE_OBJ.controls.updateCamera();
   };
   document.getElementById('btn-zoom-out').onclick = () => {
-    SCENE_OBJ.controls.state.spherical.radius = Math.min(3000, SCENE_OBJ.controls.state.spherical.radius * 1.4);
+    SCENE_OBJ.controls.state.spherical.radius = Math.min(4000, SCENE_OBJ.controls.state.spherical.radius * 1.4);
     SCENE_OBJ.controls.updateCamera();
   };
   document.getElementById('btn-reset').onclick = () => {
     const s = SCENE_OBJ.controls.state;
-    s.spherical = { theta: 0, phi: Math.PI/3, radius: 900 };
+    s.spherical = { theta: 0, phi: Math.PI/3, radius: 1050 };
     s.target.set(0, -200, 0);
     SCENE_OBJ.controls.updateCamera();
   };
@@ -872,9 +983,8 @@ function initUI() {
   };
 }
 
-// ─── ナビゲーション ───────────────────────────────────────
+// ─── ナビゲーション ───────────────────────────────────────────
 function initNav() {
-  // 反応一覧
   initReactionsView();
   initSubstancesView();
   initParamsView();
@@ -884,59 +994,58 @@ function initNav() {
       document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const view = btn.dataset.view;
-      // canvas/sidebar は常時表示（3Dグラフは背後に）
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       if (view !== 'graph') document.getElementById(view + '-view').classList.add('active');
     });
   });
 }
 
-// ── 反応一覧 ──────────────────────────────────────────────
+// ── 反応一覧 ──────────────────────────────────────────────────
 function initReactionsView() {
   const fd = document.getElementById('rxn-step-filter');
   const ab = document.createElement('button');
   ab.className='filter-btn active'; ab.textContent='全工程'; ab.dataset.step='all';
   fd.appendChild(ab);
-  STEP_ORDER.filter(s=>s!=='raw'&&s!=='final').forEach(step => {
+  STEP_ORDER.filter(s => s !== 'ingredients').forEach(step => {
     const b = document.createElement('button');
     b.className='filter-btn'; b.textContent=STEP_LABELS[step]; b.dataset.step=step;
     b.style.borderColor=STEP_COLORS_CSS[step];
     fd.appendChild(b);
   });
   let rxnStep='all';
-  fd.addEventListener('click',e=>{
-    if(!e.target.classList.contains('filter-btn'))return;
-    fd.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    e.target.classList.add('active'); rxnStep=e.target.dataset.step; renderRxnGrid();
+  fd.addEventListener('click', e => {
+    if (!e.target.classList.contains('filter-btn')) return;
+    fd.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active'); rxnStep = e.target.dataset.step; renderRxnGrid();
   });
-  document.getElementById('rxn-search').addEventListener('input',renderRxnGrid);
+  document.getElementById('rxn-search').addEventListener('input', renderRxnGrid);
 
-  function renderRxnGrid(){
-    const q=document.getElementById('rxn-search').value.toLowerCase();
-    const grid=document.getElementById('rxn-grid'); grid.innerHTML='';
+  function renderRxnGrid() {
+    const q = document.getElementById('rxn-search').value.toLowerCase();
+    const grid = document.getElementById('rxn-grid'); grid.innerHTML = '';
     DATA.reactions
-      .filter(r=>rxnStep==='all'||r.step===rxnStep)
-      .filter(r=>!q||(r.name||'').toLowerCase().includes(q)||r.id.toLowerCase().includes(q))
-      .forEach(r=>{
-        const color=STEP_COLORS_CSS[r.step]||'#666';
-        const subs=DATA.edges.filter(e=>e.target===r.id).length;
-        const prods=DATA.edges.filter(e=>e.source===r.id).length;
-        const card=document.createElement('div'); card.className='rxn-card';
-        card.style.borderLeftColor=color;
+      .filter(r => rxnStep==='all' || (r.stage||r.step) === rxnStep)
+      .filter(r => !q || (r.name||'').toLowerCase().includes(q) || r.id.toLowerCase().includes(q))
+      .forEach(r => {
+        const stg = r.stage || r.step;
+        const color = STEP_COLORS_CSS[stg] || '#666';
+        const subs  = DATA.edges.filter(e => e.target === r.id).length;
+        const prods = DATA.edges.filter(e => e.source === r.id).length;
+        const card  = document.createElement('div'); card.className='rxn-card';
+        card.style.borderLeftColor = color;
         card.innerHTML=`
-          <div><span class="rxn-step-badge" style="background:${color}">${STEP_LABELS[r.step]||r.step}</span></div>
+          <div><span class="rxn-step-badge" style="background:${color}">${STEP_LABELS[stg]||stg}</span></div>
           <div class="rxn-id">${r.id}</div>
           <div class="rxn-name">${r.name}</div>
           <div class="rxn-eq">${r.equation||''}</div>
           <div class="rxn-subs" style="margin-top:7px;font-size:9px">
             <span style="color:var(--text3)">基質 ${subs}</span> → <span style="color:${color}">生成物 ${prods}</span>
           </div>`;
-        card.addEventListener('click',()=>{
-          document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
           document.querySelector('.nav-tab[data-view="graph"]').classList.add('active');
-          document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-          const entry=nodeMap[r.id];
-          if(entry) selectNode(r.id, r, 'reaction');
+          document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+          selectNode(r.id, r, 'reaction');
         });
         grid.appendChild(card);
       });
@@ -944,51 +1053,61 @@ function initReactionsView() {
   renderRxnGrid();
 }
 
-// ── 物質一覧 ──────────────────────────────────────────────
-function initSubstancesView(){
-  document.getElementById('sub-search').addEventListener('input',e=>renderSubTable(e.target.value.toLowerCase()));
+// ── 物質一覧 ──────────────────────────────────────────────────
+function initSubstancesView() {
+  document.getElementById('sub-search').addEventListener('input', e => renderSubTable(e.target.value.toLowerCase()));
   renderSubTable('');
 }
-function renderSubTable(q){
-  const tbody=document.getElementById('sub-tbody');
-  const filtered=DATA.nodes.filter(s=>!q||(s.name||'').toLowerCase().includes(q)||(s.formula||'').toLowerCase().includes(q)||s.id.toLowerCase().includes(q));
-  document.getElementById('sub-count-label').textContent=`${filtered.length}/${DATA.nodes.length}件`;
-  tbody.innerHTML='';
-  filtered.slice(0,300).forEach(s=>{
-    const roles=(s.reaction_roles||[]).length;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td style="font-size:9px;color:var(--text3)">${s.id}</td>
+function renderSubTable(q) {
+  const tbody = document.getElementById('sub-tbody');
+  // substance_master を使う
+  const masterList = DATA.substance_master || DATA.nodes || [];
+  const filtered = masterList.filter(s =>
+    !q || (s.name||'').toLowerCase().includes(q) || (s.formula||'').toLowerCase().includes(q)
+       || (s.master_id||s.id||'').toLowerCase().includes(q)
+  );
+  document.getElementById('sub-count-label').textContent = `${filtered.length}/${masterList.length}件`;
+  tbody.innerHTML = '';
+  filtered.slice(0, 300).forEach(s => {
+    const id   = s.master_id || s.id;
+    const tr   = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-size:9px;color:var(--text3)">${id}</td>
       <td style="color:var(--text)">${s.name}</td>
       <td style="font-size:9px;color:var(--accent2)">${s.formula||'—'}</td>
       <td style="font-size:9px;color:#e8b553">${s.is_volatile?'★':'—'}</td>
       <td style="font-size:9px;color:var(--text3)">${s.nutrition_cat||'—'}</td>
-      <td style="font-size:9px;color:var(--accent2)">${roles>0?roles:'—'}</td>`;
-    tr.addEventListener('click',()=>{
-      document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+      <td style="font-size:9px;color:var(--accent2)">${s.snapshot_count||'—'}</td>`;
+    tr.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
       document.querySelector('.nav-tab[data-view="graph"]').classList.add('active');
-      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-      selectNode(s.id,s,'substance');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      // インスタンスがある場合は最初のインスタンスを選択
+      const ti = TRACE_INDEX[id];
+      const instId = ti?.instances?.[0] || id;
+      const instNode = (DATA.substance_instances||[]).find(i => i.id === instId)
+                    || (DATA.nodes||[]).find(n => n.id === id);
+      selectNode(instId, instNode, 'substance_instance');
     });
     tbody.appendChild(tr);
   });
-  if(filtered.length>300){
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td colspan="6" style="text-align:center;color:var(--text3);font-size:9px;padding:10px">+${filtered.length-300}件（検索で絞り込み）</td>`;
+  if (filtered.length > 300) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="6" style="text-align:center;color:var(--text3);font-size:9px;padding:10px">+${filtered.length-300}件（検索で絞り込み）</td>`;
     tbody.appendChild(tr);
   }
 }
 
-// ── パラメーター ──────────────────────────────────────────
-function initParamsView(){
-  const grid=document.getElementById('params-grid');
-  DATA.params.forEach(p=>{
-    const card=document.createElement('div'); card.className='param-card';
-    const isRange=typeof p.range?.min==='number'&&typeof p.range?.max==='number';
-    const min=isRange?p.range.min:0, max=isRange?p.range.max:100;
-    const val=typeof p.value==='number'?p.value:(min+max)/2;
-    const affects=(p.affects_reactions||[]).slice(0,5);
-    card.innerHTML=`
+// ── パラメーター ──────────────────────────────────────────────
+function initParamsView() {
+  const grid = document.getElementById('params-grid');
+  DATA.params.forEach(p => {
+    const card = document.createElement('div'); card.className = 'param-card';
+    const isRange = typeof p.range?.min === 'number' && typeof p.range?.max === 'number';
+    const min = isRange ? p.range.min : 0, max = isRange ? p.range.max : 100;
+    const val = typeof p.value === 'number' ? p.value : (min + max) / 2;
+    const affects = (p.affects_reactions || []).slice(0, 5);
+    card.innerHTML = `
       <div class="param-id">${p.param_id}</div>
       <div class="param-name">${p.name}</div>
       <div class="param-val-row"><span class="param-unit">${p.unit}</span><span class="param-val-display" id="pv-${p.param_id}">${typeof val==='number'?val.toFixed(1):val}</span></div>
@@ -998,9 +1117,9 @@ function initParamsView(){
         ${affects.map(a=>{const s=a.score||0,pct=s*100,c=s>.8?'#e85353':s>.5?'#e8b553':'#53e8b5';
           return `<div class="affect-row"><span class="affect-rxn">${a.reaction_id}</span><div class="affect-bar"><div class="affect-fill" style="width:${pct}%;background:${c}"></div></div><span class="affect-lbl">${a.sensitivity}</span></div>`;
         }).join('')}`:''}`;
-    if(isRange){
-      const sl=card.querySelector('.param-slider'),dp=card.querySelector(`#pv-${p.param_id}`);
-      sl.addEventListener('input',()=>dp.textContent=parseFloat(sl.value).toFixed(1));
+    if (isRange) {
+      const sl = card.querySelector('.param-slider'), dp = card.querySelector(`#pv-${p.param_id}`);
+      sl.addEventListener('input', () => dp.textContent = parseFloat(sl.value).toFixed(1));
     }
     grid.appendChild(card);
   });
