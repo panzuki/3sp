@@ -113,53 +113,70 @@ fetch('data/graph_data.json')
   });
 
 // ─── 隣接マップ ───────────────────────────────────────────────
+// childrenMap/parentsMap: 全エッジ（stage_carry含む）→ UI表示用
+// childrenStrict/parentsStrict: stage_carry 除外 → トレース因果計算用
+let childrenStrict = {};
+let parentsStrict  = {};
+
 function buildAdjacency() {
-  childrenMap = {};
-  parentsMap  = {};
+  childrenMap    = {};
+  parentsMap     = {};
+  childrenStrict = {};
+  parentsStrict  = {};
+
   DATA.edges.forEach(e => {
+    // 全エッジ（描画用）
     (childrenMap[e.source] = childrenMap[e.source] || []).push(e.target);
     (parentsMap[e.target]  = parentsMap[e.target]  || []).push(e.source);
+
+    // stage_carry を除いた因果エッジ（トレース用）
+    if (e.type !== 'stage_carry') {
+      (childrenStrict[e.source] = childrenStrict[e.source] || []).push(e.target);
+      (parentsStrict[e.target]  = parentsStrict[e.target]  || []).push(e.source);
+    }
   });
 }
 
-// ─── BFS（全子孫）────────────────────────────────────────────
-function getAllDescendants(startId) {
+// ─── BFS（全子孫）strict版 ───────────────────────────────────
+// stage_carry を辿らない → 原材料クリック時に全工程が全ハイライトされる問題を防ぐ
+function getAllDescendants(startId, strict = true) {
+  const cm = strict ? childrenStrict : childrenMap;
   const visited = new Set();
   const queue = [startId];
   while (queue.length) {
     const cur = queue.pop();
     if (visited.has(cur)) continue;
     visited.add(cur);
-    (childrenMap[cur] || []).forEach(c => { if (!visited.has(c)) queue.push(c); });
+    (cm[cur] || []).forEach(c => { if (!visited.has(c)) queue.push(c); });
   }
   return visited;
 }
 
-// ─── BFS（全祖先）────────────────────────────────────────────
-function getAllAncestors(startId) {
+// ─── BFS（全祖先）strict版 ───────────────────────────────────
+function getAllAncestors(startId, strict = true) {
+  const pm = strict ? parentsStrict : parentsMap;
   const visited = new Set();
   const queue = [startId];
   while (queue.length) {
     const cur = queue.pop();
     if (visited.has(cur)) continue;
     visited.add(cur);
-    (parentsMap[cur] || []).forEach(p => { if (!visited.has(p)) queue.push(p); });
+    (pm[cur] || []).forEach(p => { if (!visited.has(p)) queue.push(p); });
   }
   return visited;
 }
 
-// ─── traceAll: 上下両方向 BFS ────────────────────────────────
+// ─── traceAll: 上下両方向 BFS（strict） ──────────────────────
 function traceAll(nodeId) {
-  const upstream   = getAllAncestors(nodeId);
-  const downstream = getAllDescendants(nodeId);
+  const upstream   = getAllAncestors(nodeId, true);
+  const downstream = getAllDescendants(nodeId, true);
   const combined   = new Set([...upstream, ...downstream]);
   combined.add(nodeId);
   return { upstream, downstream, combined };
 }
 
-// trace_index を使う高速版
+// trace_index を使う高速版（JSON事前計算済み = strict BFS結果）
 function traceAllFast(nodeId) {
-  // master_id or raw_id を使って trace_index 参照
   const masterIdOf = getMasterId(nodeId);
   const ti = TRACE_INDEX[masterIdOf] || TRACE_INDEX[nodeId] || null;
   if (!ti) return traceAll(nodeId);  // fallback
@@ -167,7 +184,7 @@ function traceAllFast(nodeId) {
   const combined = new Set([
     ...ti.upstream,
     ...ti.downstream,
-    ...ti.instances,
+    ...(ti.instances || []),
     nodeId,
   ]);
   return {
@@ -229,6 +246,14 @@ function initScene() {
   raycaster.params.Points.threshold = 5;
 
   window.addEventListener('resize', () => {
+    const W2 = window.innerWidth, H2 = window.innerHeight;
+    camera.aspect = W2 / H2;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W2, H2);
+  });
+
+  // サイドバー開閉時にもリサイズイベントを発火
+  document.addEventListener('sidebar-changed', () => {
     const W2 = window.innerWidth, H2 = window.innerHeight;
     camera.aspect = W2 / H2;
     camera.updateProjectionMatrix();
@@ -591,34 +616,37 @@ function selectNode(id, node, type) {
   selectedId = id;
   const entry = nodeMap[id];
   const stage = entry?.stage || node?.stage || 'mixing';
-  const po    = entry?.node?.process_order ?? node?.process_order ?? 1;
 
-  let traceIds, traceMsg;
+  let traceIds, traceMsg, traceIcon = '🔍';
 
   if (type === 'raw_material') {
-    // 原材料 → 下流全体
+    // 原材料 → 下流全体（stage_carry 除外の厳格BFS）
     const { downstream, combined } = traceAllFast(id);
-    traceIds = combined;
-    traceMsg  = `▼ ${node.name || id}（原材料）→ 下流 ${downstream.size} ノード`;
+    traceIds  = combined;
+    traceMsg  = `${node.name || id}  →  下流 ${downstream.size} ノード`;
+    traceIcon = '🔶';
   } else if (stage === 'baking' || stage === 'final') {
-    // 最終工程 → 上流全体
+    // 焼成物 → 上流全体
     const { upstream, combined } = traceAllFast(id);
-    traceIds = combined;
-    traceMsg  = `▲ ${node.name || id}（焼成）← 上流 ${upstream.size} ノード`;
+    traceIds  = combined;
+    traceMsg  = `${node.name || id}  ←  上流 ${upstream.size} ノード`;
+    traceIcon = '🔴';
   } else if (type === 'substance_instance' || type === 'substance') {
-    // 中間 → 両方向
+    // 中間物質 → 両方向
     const { upstream, downstream, combined } = traceAllFast(id);
-    traceIds = combined;
-    traceMsg  = `⇅ ${node.name || id}  ▲上流${upstream.size} ▼下流${downstream.size}`;
+    traceIds  = combined;
+    traceMsg  = `${node.name || id}  |  ▲${upstream.size}  ▼${downstream.size}`;
+    traceIcon = '🔵';
   } else {
     // 反応 → 前後2ホップ
-    traceIds = getNeighbors2(id);
-    traceMsg  = `◎ ${node.name || id}（反応）関連 ${traceIds.size} ノード`;
+    traceIds  = getNeighbors2(id);
+    traceMsg  = `${node.name || id}  関連 ${traceIds.size} ノード`;
+    traceIcon = '🔷';
   }
 
   traceSet = traceIds;
   applyHighlight();
-  showTraceBar(traceMsg);
+  showTraceBar(traceMsg, traceIcon);
   updateDetailPanel(node, type, stage);
 }
 
@@ -727,7 +755,9 @@ function animate() {
 }
 
 // ─── トレースバー ─────────────────────────────────────────────
-function showTraceBar(msg) {
+function showTraceBar(msg, icon) {
+  const iconEl = document.getElementById('trace-icon');
+  if (iconEl && icon) iconEl.textContent = icon;
   document.getElementById('trace-info').textContent = msg;
   document.getElementById('trace-bar').classList.add('visible');
 }
