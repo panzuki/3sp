@@ -113,145 +113,85 @@ fetch('data/graph_data.json')
   });
 
 // ─── 隣接マップ ───────────────────────────────────────────────
-// edgeBySource: source → edges[]  （全エッジ, type別に参照できる）
-// edgeByTarget: target → edges[]
-// parentsStrict: stage_carry除外の upstream 用
-let edgeBySource = {};   // id → [edge, ...]
-let edgeByTarget = {};   // id → [edge, ...]
-let parentsStrict = {};  // id → [id, ...]  (stage_carry除外)
-let RXN_IDS      = new Set();   // reaction id の集合
-let UBIQ_INSTANCES = new Set(); // ユビキタス物質インスタンスID
+// childrenMap/parentsMap: 全エッジ（stage_carry含む）→ UI表示用
+// childrenStrict/parentsStrict: stage_carry 除外 → トレース因果計算用
+let childrenStrict = {};
+let parentsStrict  = {};
 
 function buildAdjacency() {
-  childrenMap  = {};
-  parentsMap   = {};
-  edgeBySource = {};
-  edgeByTarget = {};
-  parentsStrict = {};
+  childrenMap    = {};
+  parentsMap     = {};
+  childrenStrict = {};
+  parentsStrict  = {};
 
   DATA.edges.forEach(e => {
+    // 全エッジ（描画用）
     (childrenMap[e.source] = childrenMap[e.source] || []).push(e.target);
     (parentsMap[e.target]  = parentsMap[e.target]  || []).push(e.source);
-    (edgeBySource[e.source] = edgeBySource[e.source] || []).push(e);
-    (edgeByTarget[e.target] = edgeByTarget[e.target] || []).push(e);
+
+    // stage_carry を除いた因果エッジ（トレース用）
     if (e.type !== 'stage_carry') {
-      (parentsStrict[e.target] = parentsStrict[e.target] || []).push(e.source);
+      (childrenStrict[e.source] = childrenStrict[e.source] || []).push(e.target);
+      (parentsStrict[e.target]  = parentsStrict[e.target]  || []).push(e.source);
     }
   });
-
-  // reaction ID セット
-  RXN_IDS = new Set((DATA.reactions || []).map(r => r.id));
-
-  // ユビキタス物質を計算
-  // 5つ以上のRAWから ingredient_to_instance で直接供給される master_id をユビキタスとする
-  const masterRawCount = {};
-  DATA.edges.forEach(e => {
-    if (e.type === 'ingredient_to_instance') {
-      const masterId = e.target.includes('@') ? e.target.split('@')[0] : e.target;
-      if (!masterRawCount[masterId]) masterRawCount[masterId] = new Set();
-      masterRawCount[masterId].add(e.source);
-    }
-  });
-  const ubiqMasters = new Set(
-    Object.entries(masterRawCount)
-      .filter(([, srcs]) => srcs.size >= 5)
-      .map(([mid]) => mid)
-  );
-  UBIQ_INSTANCES = new Set();
-  (DATA.substance_instances || []).forEach(inst => {
-    if (ubiqMasters.has(inst.master_id)) UBIQ_INSTANCES.add(inst.id);
-  });
-  console.log(`[trace] ubiquitous masters: ${[...ubiqMasters].join(', ')}`);
-  console.log(`[trace] ubiquitous instances: ${UBIQ_INSTANCES.size}`);
 }
 
-// ─── 原材料専用の厳格トレース ────────────────────────────────
-// アルゴリズム:
-//   1. ingredient_to_instance エッジで直接供給されるインスタンスを起点に追加
-//      ユビキタス物質は traced に加えるが BFS展開はしない（広がりを止める）
-//   2. stage_carry: 同一物質の工程継承。ユビキタスでなければ追跡
-//   3. substrate: instance→reaction への遷移。reaction深さを管理し
-//      max_rxn_depth (=1) を超えたら止める
-//   4. product: reaction→instance。ユビキタスは追加しない
-//
-// max_rxn_depth=1 の意味: 直接供給物質が入る反応の生成物まで1段階だけ辿る
-// これ以上深く辿ると水・グルテン等を経由して全グラフに到達してしまう
-function traceIngredientStrict(rawId, maxRxnDepth = 1) {
-  const traced = new Set([rawId]);
-  const queue  = [];   // [nodeId, rxnDepth]
-
-  (edgeBySource[rawId] || []).forEach(e => {
-    if (e.type === 'ingredient_to_instance') {
-      traced.add(e.target);
-      if (!UBIQ_INSTANCES.has(e.target)) {
-        queue.push([e.target, 0]);
-      }
-    }
-  });
-
-  while (queue.length) {
-    const [current, rxnDepth] = queue.shift();
-    (edgeBySource[current] || []).forEach(e => {
-      const tgt = e.target;
-      if (traced.has(tgt)) return;
-
-      if (e.type === 'stage_carry') {
-        // 同一物質の工程継承
-        traced.add(tgt);
-        if (!UBIQ_INSTANCES.has(tgt)) queue.push([tgt, rxnDepth]);
-
-      } else if (e.type === 'substrate' && RXN_IDS.has(tgt)) {
-        // instance → reaction: 深さ制限内なら
-        if (rxnDepth < maxRxnDepth) {
-          traced.add(tgt);
-          queue.push([tgt, rxnDepth + 1]);
-        }
-
-      } else if (e.type === 'product' && RXN_IDS.has(current)) {
-        // reaction → instance product
-        if (!UBIQ_INSTANCES.has(tgt)) {
-          traced.add(tgt);
-          queue.push([tgt, rxnDepth]);
-        }
-      }
-    });
-  }
-  return traced;
-}
-
-// ─── BFS（全子孫）──────────────────────────────────────────────
-function getAllDescendants(startId) {
+// ─── BFS（全子孫）strict版 ───────────────────────────────────
+// stage_carry を辿らない → 原材料クリック時に全工程が全ハイライトされる問題を防ぐ
+function getAllDescendants(startId, strict = true) {
+  const cm = strict ? childrenStrict : childrenMap;
   const visited = new Set();
   const queue = [startId];
   while (queue.length) {
     const cur = queue.pop();
     if (visited.has(cur)) continue;
     visited.add(cur);
-    (childrenMap[cur] || []).forEach(c => { if (!visited.has(c)) queue.push(c); });
+    (cm[cur] || []).forEach(c => { if (!visited.has(c)) queue.push(c); });
   }
   return visited;
 }
 
-// ─── BFS（全祖先）──────────────────────────────────────────────
-function getAllAncestors(startId) {
+// ─── BFS（全祖先）strict版 ───────────────────────────────────
+function getAllAncestors(startId, strict = true) {
+  const pm = strict ? parentsStrict : parentsMap;
   const visited = new Set();
   const queue = [startId];
   while (queue.length) {
     const cur = queue.pop();
     if (visited.has(cur)) continue;
     visited.add(cur);
-    (parentsStrict[cur] || []).forEach(p => { if (!visited.has(p)) queue.push(p); });
+    (pm[cur] || []).forEach(p => { if (!visited.has(p)) queue.push(p); });
   }
   return visited;
 }
 
-// ─── 物質インスタンス用トレース（上下両方向, stage_carry除外upstream） ──
-function traceAllFast(nodeId) {
-  const upstream   = getAllAncestors(nodeId);
-  const downstream = getAllDescendants(nodeId);
+// ─── traceAll: 上下両方向 BFS（strict） ──────────────────────
+function traceAll(nodeId) {
+  const upstream   = getAllAncestors(nodeId, true);
+  const downstream = getAllDescendants(nodeId, true);
   const combined   = new Set([...upstream, ...downstream]);
   combined.add(nodeId);
   return { upstream, downstream, combined };
+}
+
+// trace_index を使う高速版（JSON事前計算済み = strict BFS結果）
+function traceAllFast(nodeId) {
+  const masterIdOf = getMasterId(nodeId);
+  const ti = TRACE_INDEX[masterIdOf] || TRACE_INDEX[nodeId] || null;
+  if (!ti) return traceAll(nodeId);  // fallback
+
+  const combined = new Set([
+    ...ti.upstream,
+    ...ti.downstream,
+    ...(ti.instances || []),
+    nodeId,
+  ]);
+  return {
+    upstream:   new Set(ti.upstream),
+    downstream: new Set(ti.downstream),
+    combined,
+  };
 }
 
 function getMasterId(nodeId) {
