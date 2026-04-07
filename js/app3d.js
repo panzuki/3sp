@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  (trace_v2)
+// bread for myself — app3d.js  (trace_v3)
 // Three.js r128 による 3D 製パン化学ネットワーク
 // 「工程追跡可能な因果グラフ」対応版
 // ══════════════════════════════════════════════════════════════
@@ -90,13 +90,36 @@ let parentsMap  = {};
 
 // trace_index（JSON済み）
 let TRACE_INDEX = {};
+let ALIAS_MAP = {};
 
 // ─── データ読み込み ──────────────────────────────────────────
-fetch('data/graph_data.json')
-  .then(r => r.json())
+async function loadGraphData() {
+  const candidates = [window.GRAPH_DATA_URL, 'data/graph_data.fixed.json', 'data/graph_data.json'].filter(Boolean);
+  let lastErr = null;
+  for (const url of candidates) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`${url}: ${r.status}`);
+      return await r.json();
+    } catch (err) {
+      lastErr = err;
+      console.warn('[graph] load failed:', url, err);
+    }
+  }
+  throw lastErr || new Error('graph data not found');
+}
+
+function buildAliasMap(d) {
+  ALIAS_MAP = {};
+  (d.substance_master || []).forEach(m => { if (m.alias_of) ALIAS_MAP[m.master_id] = m.alias_of; });
+  (d.nodes || []).forEach(n => { if (n.alias_of) ALIAS_MAP[n.id] = n.alias_of; });
+}
+
+loadGraphData()
   .then(d => {
     DATA = d;
     TRACE_INDEX = d.trace_index || {};
+    buildAliasMap(d);
 
     // meta 表示（新フィールド対応）
     document.getElementById('stat-sub').textContent   = d.meta.substance_count;
@@ -110,6 +133,9 @@ fetch('data/graph_data.json')
     initUI();
     initNav();
     animate();
+  })
+  .catch(err => {
+    console.error('[graph] fatal load error', err);
   });
 
 // ─── 隣接マップ ───────────────────────────────────────────────
@@ -163,6 +189,30 @@ function buildAdjacency() {
   });
   console.log(`[trace] ubiquitous masters: ${[...ubiqMasters].join(', ')}`);
   console.log(`[trace] ubiquitous instances: ${UBIQ_INSTANCES.size}`);
+}
+
+function canonicalMasterId(id) {
+  let cur = id;
+  const seen = new Set();
+  while (ALIAS_MAP[cur] && !seen.has(cur)) {
+    seen.add(cur);
+    cur = ALIAS_MAP[cur];
+  }
+  return cur;
+}
+
+function canonicalNodeId(nodeId) {
+  if (!nodeId) return nodeId;
+  if (nodeId.includes('@')) {
+    const [mid, stage] = nodeId.split('@');
+    return `${canonicalMasterId(mid)}@${stage}`;
+  }
+  return canonicalMasterId(nodeId);
+}
+
+function getTraceIndexEntry(id) {
+  const key = canonicalNodeId(id);
+  return TRACE_INDEX[key] || TRACE_INDEX[canonicalMasterId(id)] || TRACE_INDEX[id] || {};
 }
 
 // ─── 原材料専用の厳格トレース ────────────────────────────────
@@ -267,9 +317,9 @@ function traceAllFast(nodeId) {
 }
 
 function getMasterId(nodeId) {
-  // SUB-0022@mixing → SUB-0022
-  if (nodeId.includes('@')) return nodeId.split('@')[0];
-  return nodeId;
+  // SUB-0022@mixing → SUB-0022 （alias対応）
+  if (nodeId.includes('@')) return canonicalMasterId(nodeId.split('@')[0]);
+  return canonicalMasterId(nodeId);
 }
 
 // ─── 前後2ホップ ─────────────────────────────────────────────
@@ -693,8 +743,7 @@ function selectNode(id, node, type) {
 
   if (type === 'raw_material') {
     // 原材料 → 下流全体（stage_carry 除外の厳格BFS）
-    const { downstream, combined } = traceAllFast(id);
-  traceIds  = traceIngredientStrict(id, 99);   // ← 深さ制限を一旦広げる
+    traceIds  = traceIngredientStrict(id, 99);
   traceMsg  = `${node.name || id} → 原材料由来 ${traceIds.size} ノード`;
   traceIcon = '🔶';
   } else if (stage === 'baking' || stage === 'final') {
@@ -886,7 +935,8 @@ function renderSubDetail(panel, n, stage) {
   // スナップショット: node が instance の場合は amount_g を使う
   // node が master の場合は stage_nodes を使う
   const bc = STEP_COLORS_CSS[stage] || '#4a8060';
-  const masterNode = (DATA.nodes || []).find(s => s.id === (n.master_id || n.id));
+  const canonicalMaster = canonicalMasterId(n.master_id || n.id);
+  const masterNode = (DATA.nodes || []).find(s => s.id === canonicalMaster) || (DATA.nodes || []).find(s => s.id === (n.master_id || n.id));
   const sa   = masterNode?.snapshot || {};
   const stages = ['post_mixing_g','post_fermentation_1_g','post_dividing_bench_shaping_g','post_proof_g','post_baking_g'];
   const stageL = ['ミキシング後','発酵後','成形後','ホイロ後','焼成後'];
@@ -894,13 +944,13 @@ function renderSubDetail(panel, n, stage) {
   const maxV = Math.max(...vals, 0.001);
 
   // trace_index から上流/下流カウント
-  const masterId = n.master_id || n.id;
-  const ti = TRACE_INDEX[masterId] || {};
+  const masterId = canonicalMasterId(n.master_id || n.id);
+  const ti = getTraceIndexEntry(masterId);
   const upCount   = ti.upstream   ? ti.upstream.length   : (parentsMap[n.id]  || []).length;
   const downCount = ti.downstream ? ti.downstream.length : (childrenMap[n.id] || []).length;
 
   // 工程別インスタンス一覧
-  const myInstances = (DATA.substance_instances || []).filter(i => i.master_id === masterId);
+  const myInstances = (DATA.substance_instances || []).filter(i => canonicalMasterId(i.master_id) === masterId);
   const instHTML = myInstances.length ? `
     <div class="detail-section">
       <div class="detail-section-title">工程インスタンス</div>
@@ -941,6 +991,7 @@ function renderSubDetail(panel, n, stage) {
       <div style="font-size:10px;color:var(--text3)">上流 <span style="color:var(--accent2)">${upCount}</span></div>
       <div style="font-size:10px;color:var(--text3)">下流 <span style="color:var(--accent)">${downCount}</span></div>
     </div>
+    ${(n.alias_of || masterNode?.alias_of) ? `<div style="font-size:10px;color:#e8b553;margin-top:8px;line-height:1.6">旧ID / alias → ${n.alias_of || masterNode?.alias_of}</div>` : ''}
     ${n.note || n.notes?.[0] ? `<div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.65;border-left:2px solid ${bc};padding-left:8px">${n.note || n.notes?.[0]}</div>` : ''}
     ${instHTML}
     ${snapHTML}
@@ -972,7 +1023,7 @@ function renderRawDetail(panel, rm) {
     <div class="detail-name">${rm.name}</div>
     <span class="badge" style="background:${color};color:#070a08">原材料</span>
     <div style="margin-top:10px;font-size:10px;color:var(--text3)">
-      下流物質 <span style="color:var(--accent)">${(TRACE_INDEX[rm.id]?.downstream || []).length}</span> ノード
+      下流物質 <span style="color:var(--accent)">${Math.max(0, traceIngredientStrict(rm.id, 99).size - 1)}</span> ノード
     </div>
     ${downInsts.length ? `
     <div class="detail-section">
