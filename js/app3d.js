@@ -582,6 +582,7 @@ function buildGraph() {
   (DATA.nodes || []).forEach(n => {
     if (nodeMap[n.id]) return;  // すでに登録済みなら skip
     // インスタンスが1つもない物質（stage_nodes = null）はダミー配置
+    if (n.hidden) return;
     const stageNodes = n.stage_nodes || [];
     if (stageNodes.length > 0) {
       // 最初のインスタンスのmeshを指す
