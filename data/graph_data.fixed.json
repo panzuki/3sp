@@ -89,8 +89,7 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null,
-      "alias_of": "SUB-0008"
+      "last_stage": null
     },
     {
       "master_id": "SUB-0003",
