@@ -73,23 +73,10 @@
       "flavor_group": null,
       "flavor_sub": null,
       "nutrition_cat": "inorganic_or_water",
-      "traceable_from_ingredients": false,
+      "traceable_from_ingredients": true,
       "snapshot_count": 1,
       "first_stage": "mixing",
       "last_stage": "mixing"
-    },
-    {
-      "master_id": "SUB-0002",
-      "name": "イオン化ナトリウムイオン（SUB-0008の旧表記）",
-      "formula": "Na+",
-      "is_volatile": false,
-      "flavor_group": null,
-      "flavor_sub": null,
-      "nutrition_cat": "inorganic_or_water",
-      "traceable_from_ingredients": true,
-      "snapshot_count": 0,
-      "first_stage": null,
-      "last_stage": null
     },
     {
       "master_id": "SUB-0003",
@@ -115,7 +102,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0005",
@@ -141,7 +129,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0007",
@@ -206,7 +195,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0012",
@@ -245,7 +235,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0015",
@@ -258,7 +249,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0016",
@@ -284,7 +276,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0018",
@@ -310,7 +303,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0020",
@@ -323,7 +317,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0021",
@@ -362,7 +357,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0024",
@@ -375,7 +371,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0025",
@@ -414,7 +411,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0028",
@@ -427,7 +425,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0029",
@@ -440,7 +439,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0030",
@@ -453,7 +453,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0031",
@@ -466,7 +467,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0032",
@@ -479,7 +481,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0033",
@@ -492,7 +495,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0034",
@@ -505,7 +509,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0035",
@@ -518,7 +523,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0036",
@@ -531,7 +537,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0037",
@@ -544,7 +551,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0038",
@@ -557,7 +565,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0039",
@@ -570,7 +579,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0040",
@@ -583,7 +593,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0041",
@@ -596,7 +607,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0042",
@@ -661,7 +673,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0047",
@@ -739,7 +752,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0053",
@@ -752,7 +766,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0054",
@@ -765,7 +780,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0055",
@@ -791,7 +807,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0057",
@@ -817,7 +834,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0059",
@@ -830,7 +848,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0060",
@@ -869,7 +888,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0063",
@@ -882,7 +902,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0064",
@@ -895,7 +916,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0065",
@@ -921,7 +943,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0067",
@@ -934,7 +957,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0068",
@@ -1064,7 +1088,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0078",
@@ -1116,7 +1141,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0082",
@@ -1194,7 +1220,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0088",
@@ -1272,7 +1299,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0094",
@@ -1285,7 +1313,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0095",
@@ -1298,7 +1327,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0096",
@@ -1324,7 +1354,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0098",
@@ -1376,7 +1407,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0102",
@@ -1428,7 +1460,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0106",
@@ -1454,7 +1487,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0108",
@@ -1493,7 +1527,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0111",
@@ -1597,7 +1632,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0119",
@@ -1701,7 +1737,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0127",
@@ -1714,7 +1751,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0128",
@@ -1727,7 +1765,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0129",
@@ -1766,7 +1805,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0132",
@@ -1805,7 +1845,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0135",
@@ -1883,7 +1924,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0141",
@@ -1896,7 +1938,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0142",
@@ -1922,7 +1965,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0144",
@@ -1935,7 +1979,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0145",
@@ -1948,7 +1993,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0146",
@@ -1974,7 +2020,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0148",
@@ -2013,7 +2060,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0151",
@@ -2026,7 +2074,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0152",
@@ -2052,7 +2101,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0154",
@@ -2065,7 +2115,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0155",
@@ -2117,7 +2168,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0159",
@@ -2130,7 +2182,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0160",
@@ -2156,7 +2209,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0162",
@@ -2195,7 +2249,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0165",
@@ -2221,7 +2276,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0167",
@@ -2286,7 +2342,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0172",
@@ -2312,7 +2369,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0174",
@@ -2338,7 +2396,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0176",
@@ -2364,7 +2423,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0178",
@@ -2403,7 +2463,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0181",
@@ -2429,7 +2490,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0183",
@@ -2481,7 +2543,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0187",
@@ -2520,7 +2583,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0190",
@@ -2533,7 +2597,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0191",
@@ -2546,7 +2611,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0192",
@@ -2572,7 +2638,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0194",
@@ -2598,7 +2665,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0196",
@@ -2624,7 +2692,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0198",
@@ -2650,7 +2719,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0200",
@@ -2689,7 +2759,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0203",
@@ -2715,7 +2786,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0205",
@@ -2741,7 +2813,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0207",
@@ -2767,7 +2840,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0209",
@@ -2780,7 +2854,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0210",
@@ -2806,7 +2881,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0212",
@@ -2845,7 +2921,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0215",
@@ -2858,7 +2935,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0216",
@@ -2871,7 +2949,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0217",
@@ -2897,7 +2976,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0219",
@@ -2936,7 +3016,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0222",
@@ -2975,7 +3056,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0225",
@@ -2988,7 +3070,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0226",
@@ -3079,7 +3162,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0233",
@@ -3092,7 +3176,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0234",
@@ -3131,7 +3216,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0237",
@@ -3209,7 +3295,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0243",
@@ -3287,7 +3374,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0249",
@@ -3339,7 +3427,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0253",
@@ -3365,7 +3454,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0255",
@@ -3391,7 +3481,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0257",
@@ -3469,7 +3560,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0263",
@@ -3482,7 +3574,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0264",
@@ -3495,7 +3588,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0265",
@@ -3508,7 +3602,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0266",
@@ -3521,7 +3616,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0267",
@@ -3547,7 +3643,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0269",
@@ -3560,7 +3657,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0270",
@@ -3573,7 +3671,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0271",
@@ -3586,7 +3685,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0272",
@@ -3599,7 +3699,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0273",
@@ -3612,7 +3713,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0274",
@@ -3625,7 +3727,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0275",
@@ -3638,7 +3741,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0276",
@@ -3664,7 +3768,8 @@
       "traceable_from_ingredients": true,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0278",
@@ -3677,7 +3782,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0279",
@@ -3690,7 +3796,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0280",
@@ -3703,7 +3810,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0281",
@@ -3716,7 +3824,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0282",
@@ -3729,7 +3838,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0283",
@@ -3742,7 +3852,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0284",
@@ -3755,7 +3866,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0285",
@@ -3768,7 +3880,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0286",
@@ -3781,7 +3894,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0287",
@@ -3794,7 +3908,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     },
     {
       "master_id": "SUB-0288",
@@ -3833,7 +3948,8 @@
       "traceable_from_ingredients": false,
       "snapshot_count": 0,
       "first_stage": null,
-      "last_stage": null
+      "last_stage": null,
+      "hidden": true
     }
   ],
   "substance_instances": [
@@ -25905,7 +26021,8 @@
         "SUB-0288@fermentation_1",
         "SUB-0288@mixing",
         "SUB-0288@proof"
-      ]
+      ],
+      "instances": []
     },
     "RAW-追加水_軟水__30g": {
       "upstream": [],
@@ -26252,7 +26369,8 @@
         "SUB-0283",
         "SUB-0284",
         "SUB-0285"
-      ]
+      ],
+      "instances": []
     },
     "RAW-天然塩_6_g_": {
       "upstream": [],
@@ -26611,7 +26729,8 @@
         "SUB-0283",
         "SUB-0284",
         "SUB-0285"
-      ]
+      ],
+      "instances": []
     },
     "RAW-牛乳_無調整__180g": {
       "upstream": [],
@@ -27023,7 +27142,8 @@
         "SUB-0284",
         "SUB-0285",
         "SUB-0286"
-      ]
+      ],
+      "instances": []
     },
     "RAW-卵黄__30_g_": {
       "upstream": [],
@@ -27434,7 +27554,8 @@
         "SUB-0284",
         "SUB-0285",
         "SUB-0286"
-      ]
+      ],
+      "instances": []
     },
     "RAW-発酵バター__30_g_": {
       "upstream": [],
@@ -27846,7 +27967,8 @@
         "SUB-0284",
         "SUB-0285",
         "SUB-0286"
-      ]
+      ],
+      "instances": []
     },
     "RAW-強力粉_胚乳__300g": {
       "upstream": [],
@@ -28200,7 +28322,8 @@
         "SUB-0284",
         "SUB-0285",
         "SUB-0286"
-      ]
+      ],
+      "instances": []
     },
     "RAW-粉糖_30_g_": {
       "upstream": [],
@@ -28523,7 +28646,8 @@
         "SUB-0283",
         "SUB-0284",
         "SUB-0285"
-      ]
+      ],
+      "instances": []
     },
     "RAW-強力粉_ドライイースト共通": {
       "upstream": [],
@@ -28775,7 +28899,8 @@
         "SUB-0265",
         "SUB-0276@fermentation_1",
         "SUB-0283"
-      ]
+      ],
+      "instances": []
     },
     "SUB-0001": {
       "upstream": [
@@ -29034,268 +29159,6 @@
       ],
       "instances": [
         "SUB-0001@mixing"
-      ]
-    },
-    "SUB-0002": {
-      "upstream": [
-        "M4",
-        "RAW-卵黄__30_g_",
-        "RAW-天然塩_6_g_",
-        "RAW-牛乳_無調整__180g",
-        "RAW-発酵バター__30_g_",
-        "RAW-追加水_軟水__30g",
-        "SUB-0001@mixing"
-      ],
-      "downstream": [
-        "B1-1",
-        "F1",
-        "F15",
-        "F16",
-        "F20",
-        "F3",
-        "F4",
-        "F5",
-        "F7",
-        "F9",
-        "M1",
-        "M11",
-        "M12",
-        "M13",
-        "M14",
-        "M18",
-        "M2",
-        "M9a",
-        "P11",
-        "R2",
-        "R5",
-        "R6",
-        "S1-3",
-        "SUB-0008@baking",
-        "SUB-0008@dividing_bench_shaping",
-        "SUB-0008@fermentation_1",
-        "SUB-0008@proof",
-        "SUB-0009@fermentation_1",
-        "SUB-0009@mixing",
-        "SUB-0013@baking",
-        "SUB-0022@baking",
-        "SUB-0042@dividing_bench_shaping",
-        "SUB-0042@fermentation_1",
-        "SUB-0042@mixing",
-        "SUB-0042@proof",
-        "SUB-0043@fermentation_1",
-        "SUB-0043@mixing",
-        "SUB-0044@dividing_bench_shaping",
-        "SUB-0044@fermentation_1",
-        "SUB-0044@mixing",
-        "SUB-0044@proof",
-        "SUB-0045@baking",
-        "SUB-0047@fermentation_1",
-        "SUB-0047@mixing",
-        "SUB-0051@dividing_bench_shaping",
-        "SUB-0051@fermentation_1",
-        "SUB-0051@proof",
-        "SUB-0053",
-        "SUB-0061@dividing_bench_shaping",
-        "SUB-0061@fermentation_1",
-        "SUB-0061@mixing",
-        "SUB-0061@proof",
-        "SUB-0066",
-        "SUB-0069@baking",
-        "SUB-0075@baking",
-        "SUB-0076@dividing_bench_shaping",
-        "SUB-0076@fermentation_1",
-        "SUB-0076@mixing",
-        "SUB-0076@proof",
-        "SUB-0082@fermentation_1",
-        "SUB-0082@mixing",
-        "SUB-0087",
-        "SUB-0091@dividing_bench_shaping",
-        "SUB-0091@fermentation_1",
-        "SUB-0091@mixing",
-        "SUB-0091@proof",
-        "SUB-0092@dividing_bench_shaping",
-        "SUB-0092@fermentation_1",
-        "SUB-0092@mixing",
-        "SUB-0092@proof",
-        "SUB-0093",
-        "SUB-0095",
-        "SUB-0096@fermentation_1",
-        "SUB-0096@mixing",
-        "SUB-0101",
-        "SUB-0109@fermentation_1",
-        "SUB-0109@mixing",
-        "SUB-0110",
-        "SUB-0111@baking",
-        "SUB-0112@baking",
-        "SUB-0113@baking",
-        "SUB-0114@baking",
-        "SUB-0115@baking",
-        "SUB-0116@baking",
-        "SUB-0117@baking",
-        "SUB-0118",
-        "SUB-0119@baking",
-        "SUB-0120@baking",
-        "SUB-0121@baking",
-        "SUB-0122@baking",
-        "SUB-0124@dividing_bench_shaping",
-        "SUB-0124@proof",
-        "SUB-0125@baking",
-        "SUB-0125@dividing_bench_shaping",
-        "SUB-0125@fermentation_1",
-        "SUB-0125@mixing",
-        "SUB-0125@proof",
-        "SUB-0126",
-        "SUB-0127",
-        "SUB-0129@dividing_bench_shaping",
-        "SUB-0129@fermentation_1",
-        "SUB-0129@proof",
-        "SUB-0130@fermentation_1",
-        "SUB-0133@baking",
-        "SUB-0133@dividing_bench_shaping",
-        "SUB-0133@fermentation_1",
-        "SUB-0133@mixing",
-        "SUB-0133@proof",
-        "SUB-0148@baking",
-        "SUB-0149@baking",
-        "SUB-0156@baking",
-        "SUB-0156@dividing_bench_shaping",
-        "SUB-0156@fermentation_1",
-        "SUB-0156@mixing",
-        "SUB-0156@proof",
-        "SUB-0162@baking",
-        "SUB-0162@dividing_bench_shaping",
-        "SUB-0162@fermentation_1",
-        "SUB-0162@mixing",
-        "SUB-0162@proof",
-        "SUB-0163@baking",
-        "SUB-0163@dividing_bench_shaping",
-        "SUB-0163@fermentation_1",
-        "SUB-0163@mixing",
-        "SUB-0163@proof",
-        "SUB-0165@dividing_bench_shaping",
-        "SUB-0165@fermentation_1",
-        "SUB-0165@mixing",
-        "SUB-0165@proof",
-        "SUB-0167@fermentation_1",
-        "SUB-0167@mixing",
-        "SUB-0174@baking",
-        "SUB-0174@dividing_bench_shaping",
-        "SUB-0174@fermentation_1",
-        "SUB-0174@mixing",
-        "SUB-0174@proof",
-        "SUB-0176@fermentation_1",
-        "SUB-0176@mixing",
-        "SUB-0184@baking",
-        "SUB-0184@dividing_bench_shaping",
-        "SUB-0184@fermentation_1",
-        "SUB-0184@mixing",
-        "SUB-0184@proof",
-        "SUB-0190",
-        "SUB-0192@baking",
-        "SUB-0195",
-        "SUB-0196@baking",
-        "SUB-0200@proof",
-        "SUB-0207@baking",
-        "SUB-0216",
-        "SUB-0217@baking",
-        "SUB-0218",
-        "SUB-0228@baking",
-        "SUB-0228@dividing_bench_shaping",
-        "SUB-0228@fermentation_1",
-        "SUB-0228@mixing",
-        "SUB-0228@proof",
-        "SUB-0229@baking",
-        "SUB-0229@dividing_bench_shaping",
-        "SUB-0229@fermentation_1",
-        "SUB-0229@mixing",
-        "SUB-0229@proof",
-        "SUB-0230@baking",
-        "SUB-0230@dividing_bench_shaping",
-        "SUB-0230@fermentation_1",
-        "SUB-0230@mixing",
-        "SUB-0230@proof",
-        "SUB-0237@baking",
-        "SUB-0238@baking",
-        "SUB-0238@dividing_bench_shaping",
-        "SUB-0238@fermentation_1",
-        "SUB-0238@mixing",
-        "SUB-0238@proof",
-        "SUB-0239@baking",
-        "SUB-0239@dividing_bench_shaping",
-        "SUB-0239@fermentation_1",
-        "SUB-0239@mixing",
-        "SUB-0239@proof",
-        "SUB-0240@fermentation_1",
-        "SUB-0240@mixing",
-        "SUB-0241@baking",
-        "SUB-0241@dividing_bench_shaping",
-        "SUB-0241@fermentation_1",
-        "SUB-0241@mixing",
-        "SUB-0241@proof",
-        "SUB-0243@baking",
-        "SUB-0243@dividing_bench_shaping",
-        "SUB-0243@fermentation_1",
-        "SUB-0243@mixing",
-        "SUB-0243@proof",
-        "SUB-0244@baking",
-        "SUB-0244@dividing_bench_shaping",
-        "SUB-0244@fermentation_1",
-        "SUB-0244@mixing",
-        "SUB-0244@proof",
-        "SUB-0245@baking",
-        "SUB-0245@dividing_bench_shaping",
-        "SUB-0245@fermentation_1",
-        "SUB-0245@mixing",
-        "SUB-0245@proof",
-        "SUB-0246@baking",
-        "SUB-0246@dividing_bench_shaping",
-        "SUB-0246@fermentation_1",
-        "SUB-0246@mixing",
-        "SUB-0246@proof",
-        "SUB-0247@fermentation_1",
-        "SUB-0247@mixing",
-        "SUB-0248",
-        "SUB-0249@baking",
-        "SUB-0249@dividing_bench_shaping",
-        "SUB-0249@fermentation_1",
-        "SUB-0249@mixing",
-        "SUB-0249@proof",
-        "SUB-0251@baking",
-        "SUB-0251@dividing_bench_shaping",
-        "SUB-0251@fermentation_1",
-        "SUB-0251@mixing",
-        "SUB-0251@proof",
-        "SUB-0253@baking",
-        "SUB-0253@dividing_bench_shaping",
-        "SUB-0253@fermentation_1",
-        "SUB-0253@mixing",
-        "SUB-0253@proof",
-        "SUB-0257@baking",
-        "SUB-0257@dividing_bench_shaping",
-        "SUB-0257@fermentation_1",
-        "SUB-0257@mixing",
-        "SUB-0257@proof",
-        "SUB-0259@baking",
-        "SUB-0259@dividing_bench_shaping",
-        "SUB-0259@fermentation_1",
-        "SUB-0259@mixing",
-        "SUB-0259@proof",
-        "SUB-0261@baking",
-        "SUB-0261@dividing_bench_shaping",
-        "SUB-0261@fermentation_1",
-        "SUB-0261@mixing",
-        "SUB-0261@proof",
-        "SUB-0262",
-        "SUB-0265",
-        "SUB-0276@fermentation_1",
-        "SUB-0283"
-      ],
-      "instances": [
-        "SUB-0008@mixing",
-        "SUB-0008@fermentation_1",
-        "SUB-0008@dividing_bench_shaping",
-        "SUB-0008@proof",
-        "SUB-0008@baking"
       ]
     },
     "SUB-0003": {
@@ -60010,25 +59873,6 @@
       ]
     },
     {
-      "id": "SUB-0002",
-      "name": "イオン化ナトリウムイオン（SUB-0008の旧表記）",
-      "formula": "Na+",
-      "is_volatile": false,
-      "flavor_group": null,
-      "flavor_sub": null,
-      "nutrition_cat": "inorganic_or_water",
-      "tsv_ids": [],
-      "snapshot": {},
-      "notes": [
-        "reaction product candidate from M4",
-        "修正版: SUB-0002 は孤立ノードではなく SUB-0008 ナトリウムイオンの旧表記エイリアスとして扱う。"
-      ],
-      "reaction_roles": [],
-      "traceable_from_ingredients": true,
-      "stage_nodes": [],
-      "alias_of": "SUB-0008"
-    },
-    {
       "id": "SUB-0003",
       "name": "カリウムイオン",
       "formula": "K+",
@@ -60103,7 +59947,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0005",
@@ -60178,7 +60024,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0007",
@@ -60517,7 +60365,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0012",
@@ -60680,7 +60530,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0015",
@@ -60700,7 +60552,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0016",
@@ -60778,7 +60632,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0018",
@@ -60841,7 +60697,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0020",
@@ -60858,7 +60716,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0021",
@@ -61020,7 +60880,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0024",
@@ -61037,7 +60899,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0025",
@@ -61154,7 +61018,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0028",
@@ -61171,7 +61037,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0029",
@@ -61188,7 +61056,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0030",
@@ -61205,7 +61075,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0031",
@@ -61222,7 +61094,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0032",
@@ -61239,7 +61113,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0033",
@@ -61256,7 +61132,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0034",
@@ -61273,7 +61151,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0035",
@@ -61290,7 +61170,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0036",
@@ -61307,7 +61189,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0037",
@@ -61324,7 +61208,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0038",
@@ -61341,7 +61227,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0039",
@@ -61360,7 +61248,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0040",
@@ -61379,7 +61269,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0041",
@@ -61399,7 +61291,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0042",
@@ -61654,7 +61548,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0047",
@@ -61966,7 +61862,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0053",
@@ -61983,7 +61881,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0054",
@@ -62000,7 +61900,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0055",
@@ -62076,7 +61978,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0057",
@@ -62167,7 +62071,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0059",
@@ -62184,7 +62090,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0060",
@@ -62346,7 +62254,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0063",
@@ -62363,7 +62273,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0064",
@@ -62380,7 +62292,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0065",
@@ -62465,7 +62379,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0067",
@@ -62482,7 +62398,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0068",
@@ -62881,7 +62799,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0078",
@@ -63072,7 +62992,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0082",
@@ -63353,7 +63275,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0088",
@@ -63746,7 +63670,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0094",
@@ -63763,7 +63689,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0095",
@@ -63780,7 +63708,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0096",
@@ -63871,7 +63801,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0098",
@@ -64027,7 +63959,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0102",
@@ -64182,7 +64116,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0106",
@@ -64269,7 +64205,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0108",
@@ -64388,7 +64326,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0111",
@@ -64643,7 +64583,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0119",
@@ -64987,7 +64929,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0127",
@@ -65004,7 +64948,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0128",
@@ -65023,7 +64969,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0129",
@@ -65141,7 +65089,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0132",
@@ -65277,7 +65227,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0135",
@@ -65518,7 +65470,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0141",
@@ -65535,7 +65489,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0142",
@@ -65614,7 +65570,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0144",
@@ -65632,7 +65590,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0145",
@@ -65651,7 +65611,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0146",
@@ -65709,7 +65671,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0148",
@@ -65794,7 +65758,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0151",
@@ -65811,7 +65777,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0152",
@@ -65896,7 +65864,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0154",
@@ -65913,7 +65883,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0155",
@@ -66094,7 +66066,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0159",
@@ -66111,7 +66085,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0160",
@@ -66185,7 +66161,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0162",
@@ -66386,7 +66364,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0165",
@@ -66465,7 +66445,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0167",
@@ -66689,7 +66671,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0172",
@@ -66761,7 +66745,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0174",
@@ -66840,7 +66826,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0176",
@@ -66898,7 +66886,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0178",
@@ -67028,7 +67018,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0181",
@@ -67076,7 +67068,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0183",
@@ -67287,7 +67281,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0187",
@@ -67407,7 +67403,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0190",
@@ -67424,7 +67422,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0191",
@@ -67441,7 +67441,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0192",
@@ -67490,7 +67492,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0194",
@@ -67539,7 +67543,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0196",
@@ -67588,7 +67594,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0198",
@@ -67660,7 +67668,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0200",
@@ -67753,7 +67763,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0203",
@@ -67802,7 +67814,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0205",
@@ -67892,7 +67906,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0207",
@@ -67941,7 +67957,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0209",
@@ -67958,7 +67976,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0210",
@@ -68007,7 +68027,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0212",
@@ -68088,7 +68110,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0215",
@@ -68105,7 +68129,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0216",
@@ -68122,7 +68148,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0217",
@@ -68177,7 +68205,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0219",
@@ -68258,7 +68288,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0222",
@@ -68385,7 +68417,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0225",
@@ -68402,7 +68436,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0226",
@@ -68861,7 +68897,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0233",
@@ -68878,7 +68916,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0234",
@@ -69058,7 +69098,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0237",
@@ -69387,7 +69429,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0243",
@@ -69810,7 +69854,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0249",
@@ -70142,7 +70188,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0253",
@@ -70251,7 +70299,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0255",
@@ -70368,7 +70418,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0257",
@@ -70823,7 +70875,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0263",
@@ -70840,7 +70894,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0264",
@@ -70857,7 +70913,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0265",
@@ -70874,7 +70932,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0266",
@@ -70891,7 +70951,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0267",
@@ -70945,7 +71007,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0269",
@@ -70962,7 +71026,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0270",
@@ -70979,7 +71045,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0271",
@@ -70996,7 +71064,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0272",
@@ -71013,7 +71083,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0273",
@@ -71030,7 +71102,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0274",
@@ -71047,7 +71121,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0275",
@@ -71064,7 +71140,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "reaction_product_candidate_future"
     },
     {
       "id": "SUB-0276",
@@ -71128,7 +71206,9 @@
       "notes": [],
       "reaction_roles": [],
       "traceable_from_ingredients": true,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "traceable_future_expansion"
     },
     {
       "id": "SUB-0278",
@@ -71145,7 +71225,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0279",
@@ -71162,7 +71244,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0280",
@@ -71179,7 +71263,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0281",
@@ -71196,7 +71282,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0282",
@@ -71213,7 +71301,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0283",
@@ -71230,7 +71320,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0284",
@@ -71247,7 +71339,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0285",
@@ -71264,7 +71358,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0286",
@@ -71281,7 +71377,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0287",
@@ -71298,7 +71396,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     },
     {
       "id": "SUB-0288",
@@ -71425,7 +71525,9 @@
       ],
       "reaction_roles": [],
       "traceable_from_ingredients": false,
-      "stage_nodes": []
+      "stage_nodes": [],
+      "hidden": true,
+      "hidden_reason": "no_stage_nodes_has_edges"
     }
   ],
   "step_order": [
@@ -71438,20 +71540,27 @@
     "baking"
   ],
   "meta": {
-    "substance_count": 290,
+    "substance_count": 160,
     "reaction_count": 75,
     "edge_count": 884,
     "param_count": 14,
     "instance_count": 506,
     "raw_material_count": 9,
-    "trace_index_count": 805,
-    "schema_version": "trace_v2_fixed",
+    "trace_index_count": 804,
+    "schema_version": "trace_v2_cleaned",
     "corrections": [
       "J01: ingredient_to_instance edges rebuilt from authoritative merge map + valid mineral extras",
       "J02: natural salt now connects to NaCl carrier at mixing, enabling M4 trace",
       "J03: SUB-0002 converted into alias of SUB-0008",
       "J04: M4 stoichiometry corrected and spurious water product removed",
-      "J05: Na+/Cl- stage instances extended through baking; NaCl legacy carry removed after mixing"
-    ]
+      "J05: Na+/Cl- stage instances extended through baking; NaCl legacy carry removed after mixing",
+      "J06: SUB-0002 (alias_of=SUB-0008) removed — only alias deleted, not future-expansion nodes",
+      "J07: 129 nodes marked hidden=True (stage_nodes empty); kept in JSON for future expansion",
+      "J07a: hidden_reason=reaction_product_candidate_future — 23 nodes awaiting product edge wiring",
+      "J07b: hidden_reason=traceable_future_expansion — 39 nodes awaiting stage_nodes data (vitamins/minerals/lipids)",
+      "J07c: hidden_reason=no_stage_nodes_has_edges — 67 nodes with edges but no stage instance data",
+      "NOTE: app3d.js must skip ghost mesh creation when node.hidden===true"
+    ],
+    "hidden_node_count": 129
   }
 }
