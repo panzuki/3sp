@@ -73,7 +73,7 @@
       "flavor_group": null,
       "flavor_sub": null,
       "nutrition_cat": "inorganic_or_water",
-      "traceable_from_ingredients": true,
+      "traceable_from_ingredients": false,
       "snapshot_count": 1,
       "first_stage": "mixing",
       "last_stage": "mixing"
