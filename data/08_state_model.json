@@ -1,0 +1,98 @@
+{
+  "state_variables": [
+    "temperature_c",
+    "pH",
+    "water_activity",
+    "time_sec",
+    "co2_partial_pressure",
+    "ethanol_concentration_pct"
+  ],
+  "initial_state": {
+    "temperature_c": 24,
+    "pH": 6.0,
+    "water_activity": 0.95,
+    "time_sec": 0,
+    "co2_partial_pressure": 0.0004,
+    "ethanol_concentration_pct": 0.0
+  },
+  "time_axis": {
+    "type": "discrete_phase",
+    "description": "口腔内咀嚼・嚥下の知覚時間軸（T0〜T7）",
+    "phases": [
+      {
+        "id": "T0",
+        "time_sec": 0,
+        "label": "噛み始め"
+      },
+      {
+        "id": "T1",
+        "time_sec": 5,
+        "label": "初期放出"
+      },
+      {
+        "id": "T2",
+        "time_sec": 10,
+        "label": "ピーク前"
+      },
+      {
+        "id": "T3",
+        "time_sec": 20,
+        "label": "ピーク"
+      },
+      {
+        "id": "T4",
+        "time_sec": 40,
+        "label": "後味立ち上がり"
+      },
+      {
+        "id": "T5",
+        "time_sec": 80,
+        "label": "後味"
+      },
+      {
+        "id": "T6",
+        "time_sec": 160,
+        "label": "後味消退"
+      },
+      {
+        "id": "T7",
+        "time_sec": 320,
+        "label": "消退完了"
+      }
+    ]
+  },
+  "process_timeline": {
+    "steps": [
+      {
+        "process_id": "PROC-MIXING",
+        "stage": "mixing",
+        "start_sec": 0,
+        "end_sec": 600
+      },
+      {
+        "process_id": "PROC-FERMENT1",
+        "stage": "fermentation_1",
+        "start_sec": 600,
+        "end_sec": 5100
+      },
+      {
+        "process_id": "PROC-BENCH",
+        "stage": "dividing_bench_shaping",
+        "start_sec": 5100,
+        "end_sec": 6900
+      },
+      {
+        "process_id": "PROC-PROOF",
+        "stage": "proof",
+        "start_sec": 6900,
+        "end_sec": 9600
+      },
+      {
+        "process_id": "PROC-BAKE",
+        "stage": "baking",
+        "start_sec": 9600,
+        "end_sec": 11400
+      }
+    ]
+  }
+}

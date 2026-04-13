@@ -1,0 +1,246 @@
+{
+  "processes": [
+    {
+      "id": "PROC-MIXING",
+      "name": "ミキシング",
+      "name_ja": "ミキシング",
+      "order": 1,
+      "stage": "mixing",
+      "conditions": {
+        "temperature_c": 24,
+        "duration_sec": 600,
+        "mechanical_energy": "high"
+      },
+      "state_transition": {
+        "temperature_C": {
+          "type": "hold",
+          "value": 24
+        },
+        "pH": {
+          "type": "hold"
+        },
+        "water_activity": {
+          "type": "increase",
+          "delta": 0.02
+        },
+        "time": {
+          "type": "advance"
+        }
+      },
+      "triggers": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M6",
+        "M7",
+        "M8",
+        "M9a",
+        "M9b",
+        "M10",
+        "M11",
+        "M12",
+        "M13",
+        "M14",
+        "M15",
+        "M16",
+        "M18"
+      ],
+      "activates": []
+    },
+    {
+      "id": "PROC-FERMENT1",
+      "name": "一次発酵",
+      "name_ja": "一次発酵",
+      "order": 2,
+      "stage": "fermentation_1",
+      "conditions": {
+        "temperature_c": 26,
+        "duration_sec": 4500,
+        "humidity_percent": 75
+      },
+      "state_transition": {
+        "temperature_C": {
+          "type": "hold",
+          "value": 26
+        },
+        "pH": {
+          "type": "decrease",
+          "rate": -0.005
+        },
+        "time": {
+          "type": "advance"
+        }
+      },
+      "triggers": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7",
+        "R8",
+        "R9",
+        "R10",
+        "R11"
+      ],
+      "activates": [
+        "BIO-YEAST-001"
+      ]
+    },
+    {
+      "id": "PROC-BENCH",
+      "name": "分割・ベンチタイム・成形",
+      "name_ja": "分割・成形",
+      "order": 3,
+      "stage": "dividing_bench_shaping",
+      "conditions": {
+        "temperature_c": 25,
+        "duration_sec": 1800,
+        "humidity_percent": 60
+      },
+      "state_transition": {
+        "temperature_C": {
+          "type": "hold",
+          "value": 25
+        },
+        "water_activity": {
+          "type": "decrease",
+          "delta": -0.005
+        },
+        "time": {
+          "type": "advance"
+        }
+      },
+      "triggers": [
+        "S1-1",
+        "S1-2",
+        "S1-3",
+        "S1-4",
+        "B1-1",
+        "B1-2",
+        "B1-3",
+        "B1-4",
+        "B1-5",
+        "B1-6",
+        "B1-7",
+        "MD1-1",
+        "MD1-2",
+        "MD1-3",
+        "MD1-4",
+        "MD1-5"
+      ],
+      "activates": []
+    },
+    {
+      "id": "PROC-PROOF",
+      "name": "ホイロ",
+      "name_ja": "ホイロ（最終発酵）",
+      "order": 4,
+      "stage": "proof",
+      "conditions": {
+        "temperature_c": 38,
+        "duration_sec": 2700,
+        "humidity_percent": 75
+      },
+      "state_transition": {
+        "temperature_C": {
+          "type": "hold",
+          "value": 38
+        },
+        "pH": {
+          "type": "decrease",
+          "rate": -0.003
+        },
+        "water_activity": {
+          "type": "hold"
+        },
+        "time": {
+          "type": "advance"
+        }
+      },
+      "triggers": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8",
+        "P9",
+        "P10",
+        "P11"
+      ],
+      "activates": [
+        "BIO-YEAST-001"
+      ]
+    },
+    {
+      "id": "PROC-BAKE",
+      "name": "焼成",
+      "name_ja": "焼成",
+      "order": 5,
+      "stage": "baking",
+      "conditions": {
+        "temperature_curve": [
+          {
+            "time_sec": 0,
+            "temp_c": 180
+          },
+          {
+            "time_sec": 300,
+            "temp_c": 210
+          },
+          {
+            "time_sec": 1200,
+            "temp_c": 210
+          },
+          {
+            "time_sec": 1800,
+            "temp_c": 190
+          }
+        ],
+        "duration_sec": 1800,
+        "humidity_percent": 30
+      },
+      "state_transition": {
+        "temperature_C": {
+          "type": "curve",
+          "ref": "conditions.temperature_curve"
+        },
+        "water_activity": {
+          "type": "decrease",
+          "rate": -0.0003
+        },
+        "time": {
+          "type": "advance"
+        }
+      },
+      "triggers": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F19",
+        "F20"
+      ],
+      "activates": []
+    }
+  ]
+}

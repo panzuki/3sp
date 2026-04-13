@@ -1,0 +1,35 @@
+{
+  "tracked_nutrients": [
+    "energy_kcal",
+    "protein_g",
+    "fat_g",
+    "carbohydrate_g",
+    "dietary_fiber_g",
+    "sodium_mg",
+    "calcium_mg",
+    "iron_mg",
+    "vitamin_a_mg",
+    "vitamin_b2_mg",
+    "vitamin_d_mg",
+    "vitamin_e_mg",
+    "cholesterol_mg"
+  ],
+  "retention_factors": {
+    "PROC-BAKE": {
+      "vitamin_b2_mg": 0.85,
+      "vitamin_a_mg": 0.8,
+      "vitamin_d_mg": 0.9,
+      "vitamin_e_mg": 0.75
+    }
+  },
+  "category_nutrient_map": {
+    "starch": "carbohydrate_g",
+    "protein_gluten": "protein_g",
+    "protein_dairy": "protein_g",
+    "protein_egg": "protein_g",
+    "fatty_acid": "fat_g",
+    "sugar": "carbohydrate_g",
+    "mineral": "sodium_mg",
+    "vitamin": "vitamin_a_mg"
+  }
+}

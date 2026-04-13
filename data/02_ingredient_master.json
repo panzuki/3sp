@@ -1,0 +1,797 @@
+{
+  "ingredients": [
+    {
+      "id": "ING-FLOUR-001",
+      "name": "強力粉（胚乳）",
+      "name_ja": "強力粉（胚乳）",
+      "raw_id": "RAW-強力粉_胚乳__300g",
+      "amount_g": 300,
+      "composition": [
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 0.7662,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0042",
+          "amount_g": 96.0,
+          "ratio": 0.32,
+          "note": "アミロペクチン"
+        },
+        {
+          "substance_id": "SUB-0044",
+          "amount_g": 32.0,
+          "ratio": 0.1067,
+          "note": "アミロース"
+        },
+        {
+          "substance_id": "SUB-0092",
+          "amount_g": 18.0,
+          "ratio": 0.06,
+          "note": "グルテニン"
+        },
+        {
+          "substance_id": "SUB-0091",
+          "amount_g": 15.0,
+          "ratio": 0.05,
+          "note": "グリアジン"
+        },
+        {
+          "substance_id": "SUB-0088",
+          "amount_g": 3.0,
+          "ratio": 0.01,
+          "note": "アルブミン/グロブリン"
+        },
+        {
+          "substance_id": "SUB-0057",
+          "amount_g": 12.0,
+          "ratio": 0.04,
+          "note": "ペントサン"
+        },
+        {
+          "substance_id": "SUB-0050",
+          "amount_g": 12.0,
+          "ratio": 0.04,
+          "note": "セルロース"
+        },
+        {
+          "substance_id": "SUB-0258",
+          "amount_g": 3.0,
+          "ratio": 0.01,
+          "note": "リグニン"
+        },
+        {
+          "substance_id": "SUB-0156",
+          "amount_g": 0.3,
+          "ratio": 0.001,
+          "note": "遊離脂肪酸"
+        },
+        {
+          "substance_id": "SUB-0142",
+          "amount_g": 1.166,
+          "ratio": 0.0039,
+          "note": "リン脂質"
+        },
+        {
+          "substance_id": "SUB-0005",
+          "amount_g": 0.216,
+          "ratio": 0.0007,
+          "note": "カルシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0003",
+          "amount_g": 0.126,
+          "ratio": 0.0004,
+          "note": "カリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0010",
+          "amount_g": 0.018,
+          "ratio": 0.0001,
+          "note": "マグネシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0167",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "システイン"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.08,
+        "protein_fraction": 0.12,
+        "fat_fraction": 0.015,
+        "starch_fraction": 0.77,
+        "fiber_fraction": 0.04
+      },
+      "functional_properties": {
+        "gelatinization_temp_c": 60,
+        "water_absorption": 0.65,
+        "gluten_index": 95
+      }
+    },
+    {
+      "id": "ING-YEAST-001",
+      "name": "ドライイースト",
+      "name_ja": "ドライイースト",
+      "raw_id": "RAW-ドライイースト_3_g_",
+      "amount_g": 3,
+      "composition": [
+        {
+          "substance_id": "SUB-0003",
+          "amount_g": 0.126,
+          "ratio": 0.042,
+          "note": "カリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0010",
+          "amount_g": 0.018,
+          "ratio": 0.006,
+          "note": "マグネシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0012",
+          "amount_g": 0.171,
+          "ratio": 0.057,
+          "note": "リン酸イオン"
+        },
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 76.6167,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0078",
+          "amount_g": 0.9,
+          "ratio": 0.3,
+          "note": "酵母グリコーゲン"
+        },
+        {
+          "substance_id": "SUB-0079",
+          "amount_g": 0.15,
+          "ratio": 0.05,
+          "note": "酵母トレハロース"
+        },
+        {
+          "substance_id": "SUB-0160",
+          "amount_g": 0.18,
+          "ratio": 0.06,
+          "note": "酵母脂質"
+        },
+        {
+          "substance_id": "SUB-0080",
+          "amount_g": 0.2,
+          "ratio": 0.0667,
+          "note": "酵母細胞壁多糖"
+        },
+        {
+          "substance_id": "SUB-0288",
+          "amount_g": 0.21,
+          "ratio": 0.07,
+          "note": "酵母核酸"
+        },
+        {
+          "substance_id": "SUB-0089",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "インベルターゼ"
+        },
+        {
+          "substance_id": "SUB-0098",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "チマーゼ"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.08,
+        "protein_fraction": 0.4,
+        "fat_fraction": 0.06,
+        "starch_fraction": 0.3
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-WATER-001",
+      "name": "追加水（軟水）",
+      "name_ja": "追加水（軟水）",
+      "raw_id": "RAW-追加水_軟水__30g",
+      "amount_g": 30,
+      "composition": [
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 7.6617,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0008",
+          "amount_g": 2.407228,
+          "ratio": 0.0802,
+          "note": "ナトリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0016",
+          "amount_g": 3.549272,
+          "ratio": 0.1183,
+          "note": "塩化物イオン"
+        },
+        {
+          "substance_id": "SUB-0005",
+          "amount_g": 0.216,
+          "ratio": 0.0072,
+          "note": "カルシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0003",
+          "amount_g": 0.126,
+          "ratio": 0.0042,
+          "note": "カリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0010",
+          "amount_g": 0.018,
+          "ratio": 0.0006,
+          "note": "マグネシウムイオン"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 1.0
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-SALT-001",
+      "name": "天然塩",
+      "name_ja": "天然塩",
+      "raw_id": "RAW-天然塩_6_g_",
+      "amount_g": 6,
+      "composition": [
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 38.3083,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0222",
+          "amount_g": 0.021,
+          "ratio": 0.0035,
+          "note": "CaSO₄"
+        },
+        {
+          "substance_id": "SUB-0223",
+          "amount_g": 0.012,
+          "ratio": 0.002,
+          "note": "MgSO₄"
+        },
+        {
+          "substance_id": "SUB-0005",
+          "amount_g": 0.216,
+          "ratio": 0.036,
+          "note": "カルシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0003",
+          "amount_g": 0.126,
+          "ratio": 0.021,
+          "note": "カリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0010",
+          "amount_g": 0.018,
+          "ratio": 0.003,
+          "note": "マグネシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0001",
+          "amount_g": 5.85,
+          "ratio": 0.975,
+          "note": "NaCl"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.005,
+        "mineral_fraction": 0.995
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-MILK-001",
+      "name": "牛乳（無調整）",
+      "name_ja": "牛乳（無調整）",
+      "raw_id": "RAW-牛乳_無調整__180g",
+      "amount_g": 180,
+      "composition": [
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 1.2769,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0142",
+          "amount_g": 1.166,
+          "ratio": 0.0065,
+          "note": "リン脂質"
+        },
+        {
+          "substance_id": "SUB-0008",
+          "amount_g": 2.407228,
+          "ratio": 0.0134,
+          "note": "ナトリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0065",
+          "amount_g": 8.64,
+          "ratio": 0.048,
+          "note": "乳糖"
+        },
+        {
+          "substance_id": "SUB-0090",
+          "amount_g": 4.5,
+          "ratio": 0.025,
+          "note": "カゼイン"
+        },
+        {
+          "substance_id": "SUB-0086",
+          "amount_g": 1.44,
+          "ratio": 0.008,
+          "note": "β-ラクトグロブリン"
+        },
+        {
+          "substance_id": "SUB-0102",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "ラクトフェリン"
+        },
+        {
+          "substance_id": "SUB-0108",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "免疫グロブリン"
+        },
+        {
+          "substance_id": "SUB-0084",
+          "amount_g": 0.36,
+          "ratio": 0.002,
+          "note": "α-ラクトアルブミン"
+        },
+        {
+          "substance_id": "SUB-0250",
+          "amount_g": 1.8,
+          "ratio": 0.01,
+          "note": "パルミチン酸"
+        },
+        {
+          "substance_id": "SUB-0234",
+          "amount_g": 11.37,
+          "ratio": 0.0632,
+          "note": "オレイン酸"
+        },
+        {
+          "substance_id": "SUB-0255",
+          "amount_g": 3.78,
+          "ratio": 0.021,
+          "note": "ミリスチン酸"
+        },
+        {
+          "substance_id": "SUB-0007",
+          "amount_g": 4.17,
+          "ratio": 0.0232,
+          "note": "ステアリン酸"
+        },
+        {
+          "substance_id": "SUB-0005",
+          "amount_g": 0.216,
+          "ratio": 0.0012,
+          "note": "カルシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0012",
+          "amount_g": 0.171,
+          "ratio": 0.001,
+          "note": "リン酸イオン"
+        },
+        {
+          "substance_id": "SUB-0003",
+          "amount_g": 0.126,
+          "ratio": 0.0007,
+          "note": "カリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0010",
+          "amount_g": 0.018,
+          "ratio": 0.0001,
+          "note": "マグネシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0174",
+          "amount_g": 0.00036,
+          "ratio": 0.0,
+          "note": "ビタミンB2"
+        },
+        {
+          "substance_id": "SUB-0172",
+          "amount_g": 1.8e-06,
+          "ratio": 0.0,
+          "note": "ビタミンB12"
+        },
+        {
+          "substance_id": "SUB-0170",
+          "amount_g": 0.000585,
+          "ratio": 0.0,
+          "note": "ビタミンA"
+        },
+        {
+          "substance_id": "SUB-0185",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "乳酸"
+        },
+        {
+          "substance_id": "SUB-0187",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "乳酸菌・微生物残存"
+        },
+        {
+          "substance_id": "SUB-0103",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "リパーゼ"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.87,
+        "protein_fraction": 0.033,
+        "fat_fraction": 0.037,
+        "carb_fraction": 0.048
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-BUTTER-001",
+      "name": "発酵バター",
+      "name_ja": "発酵バター",
+      "raw_id": "RAW-発酵バター__30_g_",
+      "amount_g": 30,
+      "composition": [
+        {
+          "substance_id": "SUB-0005",
+          "amount_g": 0.216,
+          "ratio": 0.0072,
+          "note": "カルシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0008",
+          "amount_g": 2.407228,
+          "ratio": 0.0802,
+          "note": "ナトリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 7.6617,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0142",
+          "amount_g": 1.166,
+          "ratio": 0.0389,
+          "note": "リン脂質"
+        },
+        {
+          "substance_id": "SUB-0250",
+          "amount_g": 1.8,
+          "ratio": 0.06,
+          "note": "パルミチン酸"
+        },
+        {
+          "substance_id": "SUB-0234",
+          "amount_g": 11.37,
+          "ratio": 0.379,
+          "note": "オレイン酸"
+        },
+        {
+          "substance_id": "SUB-0255",
+          "amount_g": 3.78,
+          "ratio": 0.126,
+          "note": "ミリスチン酸"
+        },
+        {
+          "substance_id": "SUB-0007",
+          "amount_g": 4.17,
+          "ratio": 0.139,
+          "note": "ステアリン酸"
+        },
+        {
+          "substance_id": "SUB-0170",
+          "amount_g": 0.000585,
+          "ratio": 0.0,
+          "note": "ビタミンA"
+        },
+        {
+          "substance_id": "SUB-0185",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "乳酸"
+        },
+        {
+          "substance_id": "SUB-0260",
+          "amount_g": 1.65,
+          "ratio": 0.055,
+          "note": "リノール酸"
+        },
+        {
+          "substance_id": "SUB-0139",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "スフィンゴミエリン"
+        },
+        {
+          "substance_id": "SUB-0152",
+          "amount_g": 0.3,
+          "ratio": 0.01,
+          "note": "短鎖脂肪酸(酪酸等)"
+        },
+        {
+          "substance_id": "SUB-0138",
+          "amount_g": 0.42,
+          "ratio": 0.014,
+          "note": "コレステロール"
+        },
+        {
+          "substance_id": "SUB-0205",
+          "amount_g": 0.00015,
+          "ratio": 0.0,
+          "note": "ジアセチル"
+        },
+        {
+          "substance_id": "SUB-0198",
+          "amount_g": 0.00015,
+          "ratio": 0.0,
+          "note": "アセトイン"
+        },
+        {
+          "substance_id": "SUB-0188",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "酢酸"
+        },
+        {
+          "substance_id": "SUB-0178",
+          "amount_g": 0.00015,
+          "ratio": 0.0,
+          "note": "ビタミンD₃"
+        },
+        {
+          "substance_id": "SUB-0179",
+          "amount_g": 0.06024,
+          "ratio": 0.002,
+          "note": "ビタミンE"
+        },
+        {
+          "substance_id": "SUB-0183",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "ビタミンK₂"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.155,
+        "fat_fraction": 0.8,
+        "protein_fraction": 0.008
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-YOLK-001",
+      "name": "卵黄",
+      "name_ja": "卵黄",
+      "raw_id": "RAW-卵黄__30_g_",
+      "amount_g": 30,
+      "composition": [
+        {
+          "substance_id": "SUB-0003",
+          "amount_g": 0.126,
+          "ratio": 0.0042,
+          "note": "カリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0005",
+          "amount_g": 0.216,
+          "ratio": 0.0072,
+          "note": "カルシウムイオン"
+        },
+        {
+          "substance_id": "SUB-0008",
+          "amount_g": 2.407228,
+          "ratio": 0.0802,
+          "note": "ナトリウムイオン"
+        },
+        {
+          "substance_id": "SUB-0012",
+          "amount_g": 0.171,
+          "ratio": 0.0057,
+          "note": "リン酸イオン"
+        },
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 7.6617,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0142",
+          "amount_g": 1.166,
+          "ratio": 0.0389,
+          "note": "リン脂質"
+        },
+        {
+          "substance_id": "SUB-0250",
+          "amount_g": 1.8,
+          "ratio": 0.06,
+          "note": "パルミチン酸"
+        },
+        {
+          "substance_id": "SUB-0234",
+          "amount_g": 11.37,
+          "ratio": 0.379,
+          "note": "オレイン酸"
+        },
+        {
+          "substance_id": "SUB-0007",
+          "amount_g": 4.17,
+          "ratio": 0.139,
+          "note": "ステアリン酸"
+        },
+        {
+          "substance_id": "SUB-0170",
+          "amount_g": 0.000585,
+          "ratio": 0.0,
+          "note": "ビタミンA"
+        },
+        {
+          "substance_id": "SUB-0260",
+          "amount_g": 1.65,
+          "ratio": 0.055,
+          "note": "リノール酸"
+        },
+        {
+          "substance_id": "SUB-0138",
+          "amount_g": 0.42,
+          "ratio": 0.014,
+          "note": "コレステロール"
+        },
+        {
+          "substance_id": "SUB-0178",
+          "amount_g": 0.00015,
+          "ratio": 0.0,
+          "note": "ビタミンD₃"
+        },
+        {
+          "substance_id": "SUB-0179",
+          "amount_g": 0.06024,
+          "ratio": 0.002,
+          "note": "ビタミンE"
+        },
+        {
+          "substance_id": "SUB-0106",
+          "amount_g": 7.0,
+          "ratio": 0.2333,
+          "note": "リポビテリン等"
+        },
+        {
+          "substance_id": "SUB-0137",
+          "amount_g": 4.0,
+          "ratio": 0.1333,
+          "note": "LDL粒子"
+        },
+        {
+          "substance_id": "SUB-0136",
+          "amount_g": 0.5,
+          "ratio": 0.0167,
+          "note": "HDL粒子"
+        },
+        {
+          "substance_id": "SUB-0099",
+          "amount_g": 3.0,
+          "ratio": 0.1,
+          "note": "フォスビチン"
+        },
+        {
+          "substance_id": "SUB-0104",
+          "amount_g": 3.0,
+          "ratio": 0.1,
+          "note": "リベチン"
+        },
+        {
+          "substance_id": "SUB-0181",
+          "amount_g": null,
+          "ratio": 0.0,
+          "note": "ビタミンK₁"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.48,
+        "protein_fraction": 0.16,
+        "fat_fraction": 0.32,
+        "mineral_fraction": 0.018
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-SUGAR-001",
+      "name": "粉糖",
+      "name_ja": "粉糖",
+      "raw_id": "RAW-粉糖_30_g_",
+      "amount_g": 30,
+      "composition": [
+        {
+          "substance_id": "SUB-0022",
+          "amount_g": 229.85,
+          "ratio": 7.6617,
+          "note": "水"
+        },
+        {
+          "substance_id": "SUB-0049",
+          "amount_g": 29.97,
+          "ratio": 0.999,
+          "note": "スクロース"
+        },
+        {
+          "substance_id": "SUB-0074",
+          "amount_g": 0.015,
+          "ratio": 0.0005,
+          "note": "添加デンプン"
+        }
+      ],
+      "matrix_profile": {
+        "water_fraction": 0.0005,
+        "starch_fraction": 0.0005,
+        "sugar_fraction": 0.999
+      },
+      "functional_properties": {}
+    },
+    {
+      "id": "ING-COMMON-001",
+      "name": "強力粉・ドライイースト共通",
+      "name_ja": "強力粉・ドライイースト共通",
+      "raw_id": "RAW-強力粉_ドライイースト共通",
+      "amount_g": 0,
+      "composition": [
+        {
+          "substance_id": "SUB-0103",
+          "amount_g": null,
+          "ratio": 0,
+          "note": "リパーゼ"
+        },
+        {
+          "substance_id": "SUB-0083",
+          "amount_g": null,
+          "ratio": 0,
+          "note": "α-アミラーゼ"
+        },
+        {
+          "substance_id": "SUB-0085",
+          "amount_g": null,
+          "ratio": 0,
+          "note": "β-アミラーゼ"
+        },
+        {
+          "substance_id": "SUB-0100",
+          "amount_g": null,
+          "ratio": 0,
+          "note": "プロテアーゼ"
+        }
+      ],
+      "matrix_profile": {
+        "protein_fraction": 1.0
+      },
+      "functional_properties": {}
+    }
+  ]
+}

@@ -1,0 +1,2069 @@
+{
+  "reactions": [
+    {
+      "id": "M1",
+      "name": "デンプンの水和・膨潤",
+      "name_ja": "デンプンの水和・膨潤",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "小麦デンプン(アミロース/アミロペクチン) + 水 → 膨潤デンプン",
+      "equation_formula": "(C6H10O5)n + xH2O → (C6H10O5)n.xH2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M2",
+      "name": "グルテン形成",
+      "name_ja": "グルテン形成",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "グルテニン + グリアジン + 水 → グルテン網目",
+      "equation_formula": "Protein1 + Protein2 + H2O → Gluten network",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M3",
+      "name": "タンパク質の部分水和",
+      "name_ja": "タンパク質の部分水和",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "アルブミン・グロブリン + 水 → 水和タンパク質",
+      "equation_formula": "Protein + H2O → Protein.H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M4",
+      "name": "塩の電解作用",
+      "name_ja": "塩の電解作用",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "NaCl → Na⁺ + Cl⁻ （水中）",
+      "equation_formula": "NaCl → Na+ + Cl-",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M6",
+      "name": "イースト水和・活性化",
+      "name_ja": "イースト水和・活性化",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "乾燥酵母 + 水 → 水和酵母細胞",
+      "equation_formula": "Yeast(dry) + H2O → Yeast(hydrated)",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M7",
+      "name": "脂質乳化（卵黄レシチン+バター脂質+水）",
+      "name_ja": "脂質乳化（卵黄レシチン+バター脂質+水）",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "TAG + レシチン + 水 → 乳化脂質ミセル",
+      "equation_formula": "C55H98O6（例、トリオレイン） + Lecithin + H2O → Emulsion",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M8",
+      "name": "カルシウム・マグネシウム架橋",
+      "name_ja": "カルシウム・マグネシウム架橋",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "Ca²⁺/Mg²⁺ + ペントサン/タンパク質 → 架橋複合体",
+      "equation_formula": "Ca2+ + Polysaccharide → Cross-linked complex",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M9a",
+      "name": "αアミラーゼによるデンプン分解",
+      "name_ja": "αアミラーゼによるデンプン分解",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "α-アミラーゼ + デンプン → マルトース断片 + アミロペクチン断片",
+      "equation_formula": "Enz + (C6H10O5)n → Maltose + Amylopectin fragment",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M9b",
+      "name": "βアミラーゼによるデンプン分解",
+      "name_ja": "βアミラーゼによるデンプン分解",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "β-アミラーゼ + デンプン → マルトース",
+      "equation_formula": "Enz + (C6H10O5)n → Maltose",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M10",
+      "name": "ペントサンの水和",
+      "name_ja": "ペントサンの水和",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "ペントサン + 水 → 水和ペントサン",
+      "equation_formula": "Polysaccharide + H2O → Polysaccharide.H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M11",
+      "name": "タンパク質酸化（S–S架橋）",
+      "name_ja": "タンパク質酸化（S–S架橋）",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "グルテニン–SH + グルテニン–SH → S–S架橋",
+      "equation_formula": "2Protein-SH → Protein-S-S-Protein",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M12",
+      "name": "デンプン–脂肪酸複合体形成",
+      "name_ja": "デンプン–脂肪酸複合体形成",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "アミロース + 脂肪酸 → 複合体",
+      "equation_formula": "(C6H10O5)n + R-COOH → Complex",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M13",
+      "name": "Na⁺によるグルテン強化",
+      "name_ja": "Na⁺によるグルテン強化",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "Na⁺ + グルテン → 電荷遮蔽・網目締め",
+      "equation_formula": "Na+ + Protein network → Stabilized network",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M14",
+      "name": "タンパク質分解（プロテアーゼ作用）",
+      "name_ja": "タンパク質分解（プロテアーゼ作用）",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "グルテン前駆体 + プロテアーゼ → 可溶性ペプチド・遊離アミノ酸",
+      "equation_formula": "Protein precursor + Protease → Soluble peptides + Free amino acids",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M15",
+      "name": "メイラード前駆体形成",
+      "name_ja": "メイラード前駆体形成",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "還元糖 + アミノ酸 → アマドリ化合物",
+      "equation_formula": "R-CHO + R'-NH2 → Amadori product",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M16",
+      "name": "アスコルビン酸の酸化",
+      "name_ja": "アスコルビン酸の酸化",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "アスコルビン酸 + O₂ → デヒドロアスコルビン酸",
+      "equation_formula": "C6H8O6 + O2 → C6H6O6",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "M18",
+      "name": "システインによるグルテン網の調整",
+      "name_ja": "システインによるグルテン網の調整",
+      "stage": "mixing",
+      "process_order": 1,
+      "type": "chemical",
+      "equation": "グルテンジスルフィド結合 + システイン → グルテンチオール + シスチン",
+      "equation_formula": "Protein-S-S-Protein + 2 C3H7NO2S → 2 Protein-SH + (C3H6NO2S)2",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 28,
+          "optimal": 24
+        },
+        "time_min": {
+          "min": 8,
+          "max": 15,
+          "typical": 10
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R1",
+      "name": "スクロースの加水分解（インベルターゼ）",
+      "name_ja": "スクロースの加水分解（インベルターゼ）",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "ショ糖 (3-73) + H₂O —(インベルターゼ)→ グルコース + フルクトース",
+      "equation_formula": "C12H22O11 + H2O → 2 C6H12O6",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R2",
+      "name": "デンプンの酵素分解（α/β-アミラーゼ）",
+      "name_ja": "デンプンの酵素分解（α/β-アミラーゼ）",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "膨潤デンプン (3-2) —(α/β-アミラーゼ)→ マルトース + デキストリン",
+      "equation_formula": "(C6H10O5)n + n H2O → マルトース (C12H22O11) + デキストリン",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R3",
+      "name": "解糖〜アルコール発酵（酵母）",
+      "name_ja": "解糖〜アルコール発酵（酵母）",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "グルコース → 2 エタノール + 2 CO₂（酵母解糖系）",
+      "equation_formula": "C6H12O6 → 2 C2H5OH + 2 CO2",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R4",
+      "name": "CO₂の溶解と生地保持",
+      "name_ja": "CO₂の溶解と生地保持",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "CO₂（生成） ⇄ 気泡 + 溶存CO₂",
+      "equation_formula": "CO2(g) ⇄ CO2(aq)/泡",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R5",
+      "name": "酵母増殖（バイオマス合成）",
+      "name_ja": "酵母増殖（バイオマス合成）",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "消費糖 + N源 → 酵母バイオマス増加",
+      "equation_formula": "一般式（C,H,N含有）",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R6",
+      "name": "プロテアーゼによる蛋白分解",
+      "name_ja": "プロテアーゼによる蛋白分解",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "生地タンパク（グルテン等） —(プロテアーゼ)→ ペプチド + 遊離アミノ酸",
+      "equation_formula": "Protein → Peptide + AA",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R7",
+      "name": "有機酸（微量）生成／エステル化（揮発性）",
+      "name_ja": "有機酸（微量）生成／エステル化（揮発性）",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "一部代謝 → 酢酸・乳酸、エタノール＋酸 → エステル",
+      "equation_formula": "C6H12O6 → 酢酸/乳酸等、C2H5OH + R-COOH → R-COO-C2H5",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R8",
+      "name": "脂質分解（微量）／乳化安定",
+      "name_ja": "脂質分解（微量）／乳化安定",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "TAG —(リパーゼ)→ FFA + DAG（乳化体内）",
+      "equation_formula": "TG → FFA + DAG",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R9",
+      "name": "システインの酸化／シスチン生成",
+      "name_ja": "システインの酸化／シスチン生成",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "2 Cys-SH ⇄ Cys-S–S-Cys",
+      "equation_formula": "2 C3H7NO2S ⇄ C6H12N2O4S2",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R10",
+      "name": "初期メイラード（アマドリ生成）",
+      "name_ja": "初期メイラード（アマドリ生成）",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "還元糖 + アミノ酸 → シッフ塩基 → アマドリ化合物",
+      "equation_formula": "R-CHO + R'-NH2 → Amadori product",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "R11",
+      "name": "空気中への揮散",
+      "name_ja": "空気中への揮散",
+      "stage": "fermentation_1",
+      "process_order": 2,
+      "type": "chemical",
+      "equation": "省略",
+      "equation_formula": "省略",
+      "conditions": {
+        "temperature_C": {
+          "min": 20,
+          "max": 32,
+          "optimal": 26
+        },
+        "time_min": {
+          "min": 30,
+          "max": 180,
+          "typical": 75
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "S1-1",
+      "name": "機械的脱気（気泡破壊）",
+      "name_ja": "機械的脱気（気泡破壊）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "生地中のCO₂(泡) → 放出(大気)",
+      "equation_formula": "CO2(泡) → CO2(g)↑",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "S1-2",
+      "name": "溶存CO₂ の一部放出／pH緩和",
+      "name_ja": "溶存CO₂ の一部放出／pH緩和",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "溶存CO₂ + H₂O ⇄ H₂CO₃ ⇄ H⁺ + HCO₃⁻（一部放出で平衡変）",
+      "equation_formula": "CO2(aq) ⇄ H2CO3 ⇄ H+ + HCO3-",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "S1-3",
+      "name": "グルテンの機械的再配列 / 一部切断",
+      "name_ja": "グルテンの機械的再配列 / 一部切断",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "グルテン網（伸張・圧縮） → 再配列・部分的切断",
+      "equation_formula": "Protein_network (mechanical) → rearranged Protein_network + (微量)ペプチド",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "S1-4",
+      "name": "表面の水分移動（外側へ）",
+      "name_ja": "表面の水分移動（外側へ）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "生地内部水分 → 表面へ移行 → 一部蒸発",
+      "equation_formula": "H2O(in) → H2O(surface) → H2O(g)↑",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-1",
+      "name": "継続的なα/β-アミラーゼ活性",
+      "name_ja": "継続的なα/β-アミラーゼ活性",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "膨潤デンプン → マルトース + デキストリン",
+      "equation_formula": "(C6H10O5)n + n H2O -(α/β-amylase)→ マルトース + デキストリン",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-2",
+      "name": "プロテアーゼの緩やかな作用",
+      "name_ja": "プロテアーゼの緩やかな作用",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "グルテンタンパク → ペプチド + 遊離アミノ酸",
+      "equation_formula": "Protein -(protease)→ Peptide + AA",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-3",
+      "name": "シスチン/チオール酸化還元の再編（S–S／S–H動態）",
+      "name_ja": "シスチン/チオール酸化還元の再編（S–S／S–H動態）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "2 R–SH ⇄ R–S–S–R + 2 H⁺ + 2 e⁻（酸素界面で促進）",
+      "equation_formula": "R-SH ⇄ R-S-S-R",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-4",
+      "name": "酵母残存発酵（緩やか）",
+      "name_ja": "酵母残存発酵（緩やか）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "残存糖 → 少量のCO₂ + エタノール",
+      "equation_formula": "C6H12O6 → 2 C2H5OH + 2 CO2",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-5",
+      "name": "水和平衡の回復（グルテンのリラクゼーション）",
+      "name_ja": "水和平衡の回復（グルテンのリラクゼーション）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "粉中の親水性成分 + H₂O ⇄ より均一な水和",
+      "equation_formula": "Polymer + H2O ⇄ Polymer.H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-6",
+      "name": "揮発性成分の一部拡散／脱散",
+      "name_ja": "揮発性成分の一部拡散／脱散",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "溶存エタノール・揮発性化合物 → 空気へ",
+      "equation_formula": "R-Volatile(aq) → R-Volatile(g)↑",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "B1-7",
+      "name": "脂質の自氧化（ベンチ段階での進行）",
+      "name_ja": "脂質の自氧化（ベンチ段階での進行）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "不飽和脂肪酸 + O2 → 過酸化脂質 → 分解産物",
+      "equation_formula": "R-CH=CH-R + O2 → ROOH → R-CHO + R-CO-R'",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "MD1-1",
+      "name": "仕上げの機械的脱気 & 気泡再配分",
+      "name_ja": "仕上げの機械的脱気 & 気泡再配分",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "気泡 (局所大) → 破裂/再分配",
+      "equation_formula": "CO2(泡大型) → CO2(g)↑ + 小泡へ再配分",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "MD1-2",
+      "name": "表面の張力形成（タンパク／脂質の配向）",
+      "name_ja": "表面の張力形成（タンパク／脂質の配向）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "表面でタンパク・リン脂質が配向 → 強い表面皮膜",
+      "equation_formula": "Protein/Lipid → oriented film",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "MD1-3",
+      "name": "成形による局所的S–S再配列（締め）",
+      "name_ja": "成形による局所的S–S再配列（締め）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "グルテン網の伸張→トリミング→閉鎖 → S–S 再配列",
+      "equation_formula": "Protein-SH ⇄ Protein-S-S-Protein",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "MD1-4",
+      "name": "表面水分蒸発（手→表面）と薄膜化",
+      "name_ja": "表面水分蒸発（手→表面）と薄膜化",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "表面H₂O → 空気中へ",
+      "equation_formula": "H2O(surface) → H2O(g)↑",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "MD1-5",
+      "name": "最終的なガス圧バランス調整（オーブン内膨張の予備）",
+      "name_ja": "最終的なガス圧バランス調整（オーブン内膨張の予備）",
+      "stage": "dividing_bench_shaping",
+      "process_order": 3,
+      "type": "chemical",
+      "equation": "残存CO₂/溶存ガスの一時的再配分",
+      "equation_formula": "(CO2,Gas) distribution",
+      "conditions": {
+        "temperature_C": {
+          "min": 24,
+          "max": 26,
+          "optimal": 25
+        },
+        "humidity_pct": {
+          "typical": 60
+        },
+        "time_min": {
+          "min": 20,
+          "max": 30,
+          "typical": 25
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P1",
+      "name": "酵母の続行発酵（解糖→アルコール発酵）",
+      "name_ja": "酵母の続行発酵（解糖→アルコール発酵）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "グルコース／フルクトース（7-7,7-8,7-21） → 2 EtOH + 2 CO₂",
+      "equation_formula": "C6H12O6 → 2 C2H5OH + 2 CO2",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P2",
+      "name": "CO₂ の溶解・気泡安定化／拡散",
+      "name_ja": "CO₂ の溶解・気泡安定化／拡散",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "CO₂(g)/泡 ⇄ CO₂(aq)/泡保持",
+      "equation_formula": "CO2(g) ⇄ CO2(aq)",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P3",
+      "name": "酵母のエステル合成（副産物の変換）",
+      "name_ja": "酵母のエステル合成（副産物の変換）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "EtOH + R-COOH（微量） → R-COO–Et（エステル）",
+      "equation_formula": "C2H5OH + R-COOH → R-COO-C2H5 + H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P4",
+      "name": "α/β-アミラーゼの継続的作用（糖化）",
+      "name_ja": "α/β-アミラーゼの継続的作用（糖化）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "デンプン → マルトース + デキストリン",
+      "equation_formula": "(C6H10O5)n + n H2O → マルトース + デキストリン",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P5",
+      "name": "プロテアーゼ活動（タンパク分解の継続）",
+      "name_ja": "プロテアーゼ活動（タンパク分解の継続）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "グルテン等 → ペプチド + 遊離アミノ酸",
+      "equation_formula": "Protein → Peptide + AA",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P6",
+      "name": "S–S 結合の酸化/再配列（微気泡応力やO₂接触部位で）",
+      "name_ja": "S–S 結合の酸化/再配列（微気泡応力やO₂接触部位で）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "2 R–SH ⇄ R–S–S–R",
+      "equation_formula": "2 R-SH + ½ O2 → R-S-S-R + H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P7",
+      "name": "揮発物の蒸散（エタノール・一部エステル・ジアセチル等）",
+      "name_ja": "揮発物の蒸散（エタノール・一部エステル・ジアセチル等）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "EtOH(aq) → EtOH(g)↑",
+      "equation_formula": "C2H5OH(aq) → C2H5OH(g)",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P8",
+      "name": "酸の生成・微小発酵（乳酸/酢酸等）",
+      "name_ja": "酸の生成・微小発酵（乳酸/酢酸等）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "グルコース → 乳酸／酢酸（乳酸菌や酵母代謝副産物）",
+      "equation_formula": "C6H12O6 → 2 CH3CHOHCOOH（ホモ）等",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P9",
+      "name": "表面水和・蒸発バランス（ホイロケージでの蒸気）",
+      "name_ja": "表面水和・蒸発バランス（ホイロケージでの蒸気）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "生地表面H₂O ⇄ 空気H₂O（環境）",
+      "equation_formula": "H2O(surface) ⇄ H2O(g)",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P10",
+      "name": "2-AP前駆体の蓄積（ホイロ）",
+      "name_ja": "2-AP前駆体の蓄積（ホイロ）",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "プロリン等（アミノ酸） + 還元糖 → Maillard 前駆体",
+      "equation_formula": "Pro + R-CHO → Amadori/α-ジカルボニル前駆体",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "P11",
+      "name": "アスパラギン由来アクリルアミド前駆体生成",
+      "name_ja": "アスパラギン由来アクリルアミド前駆体生成",
+      "stage": "proof",
+      "process_order": 4,
+      "type": "chemical",
+      "equation": "アスパラギン + 還元糖 → アスパラギン由来中間体",
+      "equation_formula": "Asn + R-CHO → Asn-糖化中間体",
+      "conditions": {
+        "temperature_C": {
+          "min": 32,
+          "max": 42,
+          "optimal": 38
+        },
+        "humidity_pct": {
+          "min": 70,
+          "max": 85,
+          "typical": 75
+        },
+        "time_min": {
+          "min": 30,
+          "max": 90,
+          "typical": 45
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F1",
+      "name": "オーブンスプリング（気体膨張・蒸発による体積拡大）",
+      "name_ja": "オーブンスプリング（気体膨張・蒸発による体積拡大）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "生地中の溶存CO₂・気泡 + 熱 → 気泡膨張・H₂O蒸発",
+      "equation_formula": "CO2(aq/泡)+H2O + heat → larger bubbles + H2O(g)↑",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F2",
+      "name": "酵母死滅（熱により）・酵素（酵母酵素）の失活",
+      "name_ja": "酵母死滅（熱により）・酵素（酵母酵素）の失活",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "生きた酵母（代謝活性） —(≈50–60°C)→ 非活性",
+      "equation_formula": "生体（酵母） → 熱死・代謝停止",
+      "conditions": {
+        "temperature_C": {
+          "min": 50,
+          "max": 60,
+          "optimal": 55
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F3",
+      "name": "タンパク質の熱変性・凝固（グルテン、卵・乳タンパク）",
+      "name_ja": "タンパク質の熱変性・凝固（グルテン、卵・乳タンパク）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "可溶性/立体構造タンパク —(熱)→ 変性タンパク（凝固）",
+      "equation_formula": "Protein(native) + heat → Protein(denatured)",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F4",
+      "name": "デンプンの糊化（糊化・膨潤）／アミロースの流出",
+      "name_ja": "デンプンの糊化（糊化・膨潤）／アミロースの流出",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "膨潤デンプン + 熱 + 水 → 糊化ゲル（アミロース放出）",
+      "equation_formula": "(C6H10O5)n.xH2O + heat → gelatinized starch",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F5",
+      "name": "アミロース–脂肪酸複合体（V型複合体）形成",
+      "name_ja": "アミロース–脂肪酸複合体（V型複合体）形成",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "アミロース（部分） + 脂肪酸 → アミロース–脂質複合体",
+      "equation_formula": "Amylose + R-COOH → [Amylose.FA] (complex)",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F6",
+      "name": "α/β-アミラーゼの最終作用（短時間で糖を供給） → （その後失活）",
+      "name_ja": "α/β-アミラーゼの最終作用（短時間で糖を供給） → （その後失活）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "デンプン → マルトース/デキストリン（加熱で酵素失活）",
+      "equation_formula": "(C6H10O5)n → マルトース(C12H22O11) + デキストリン",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F7",
+      "name": "メイラード反応（還元糖 + アミノ酸 → 香気・色素）",
+      "name_ja": "メイラード反応（還元糖 + アミノ酸 → 香気・色素）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "還元糖 + 遊離アミノ酸 → シッフ塩基 → アマドリ転位 → α-ジカルボニル → メラノイジン + 香気化合物",
+      "equation_formula": "R-CHO + R'-NH2 → R-CH=N-R' → … → Melanoidins + aroma",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        },
+        "water_activity": {
+          "qualitative": "surface-limited / lower than crumb",
+          "estimated_range": "0.3-0.8"
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F8",
+      "name": "カラメル化（糖の熱分解）",
+      "name_ja": "カラメル化（糖の熱分解）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "スクロース／還元糖（表面） —(高温, 160°C以上)→ カラメル色素 + フレーバー分子",
+      "equation_formula": "C6H12O6 → 褐色化合物 + 小分子（H2O, CO2 等）",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        },
+        "water_activity": {
+          "qualitative": "surface-limited / lower than crumb",
+          "estimated_range": "0.3-0.8"
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F9",
+      "name": "ストレッカー分解（アミノ酸 → アルデヒド）",
+      "name_ja": "ストレッカー分解（アミノ酸 → アルデヒド）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "α-ジカルボニル + アミノ酸 → ストレッカーアルデヒド + CO₂ + NH₃",
+      "equation_formula": "R-NH2 + dicarbonyl → R-CHO + CO2 + NH3",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F10",
+      "name": "ピラジン類・ピラゾン類の生成（メイラード由来）",
+      "name_ja": "ピラジン類・ピラゾン類の生成（メイラード由来）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "α-ジカルボニル + アミン類 → ピラジン類",
+      "equation_formula": "dicarbonyl + NH-R → pyrazine derivatives",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F11",
+      "name": "硫黄化合物（メチオニン・システイン由来）生成",
+      "name_ja": "硫黄化合物（メチオニン・システイン由来）生成",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "S–アミノ酸（メチオニン、システイン） → H₂S, R–SH, ジメチルスルフィド等",
+      "equation_formula": "R-CH(NH2) -CH2-S-R → H2S/ R-SH/ DMS等",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F12",
+      "name": "脂質の熱分解・酸化（酸化分解によるアルデヒド・ケトン生成）",
+      "name_ja": "脂質の熱分解・酸化（酸化分解によるアルデヒド・ケトン生成）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "TG / FFA —(熱・酸素)→ FFA + 過酸化物 → 分解産物（アルデヒド・ケトン）",
+      "equation_formula": "R-COO-R' + O2/heat → R-COOH + R'-CHO + R'-CO-R''",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F13",
+      "name": "ジアセチル等の発酵由来芳香の揮散・熱的変換",
+      "name_ja": "ジアセチル等の発酵由来芳香の揮散・熱的変換",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "ジアセチル（C₄H₆O₂）・アセトイン 等 —(熱/揮散)→ 揮散または変換産物",
+      "equation_formula": "C4H6O2 → C4H6O2(g)↑ or decomposition",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F14",
+      "name": "メラノイジン（高分子褐色色素）生成（メイラード進行の最終物）",
+      "name_ja": "メラノイジン（高分子褐色色素）生成（メイラード進行の最終物）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "アマドリ/ジカルボニルの縮合重合 → メラノイジン",
+      "equation_formula": "小分子 → high-MW polymer (melanoidin)",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F15",
+      "name": "水分蒸発・重量減少（脱水）とクラスト形成",
+      "name_ja": "水分蒸発・重量減少（脱水）とクラスト形成",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "生地水分（表面→内） + 熱 → H₂O(g) 放出（表面の乾燥でクラスト化）",
+      "equation_formula": "H2O(l) + heat → H2O(g)↑",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F16",
+      "name": "2-アセチル-1-ピロリン（2-AP）生成（焼成）",
+      "name_ja": "2-アセチル-1-ピロリン（2-AP）生成（焼成）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "プロリン由来Maillard 前駆体 → 2-AP + CO2 + H2O",
+      "equation_formula": "(前駆体) → C8H9NO + CO2 + H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        },
+        "water_activity": {
+          "qualitative": "surface-limited / lower than crumb",
+          "estimated_range": "0.3-0.8"
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F17",
+      "name": "フルフラール生成（焼成・脱水）",
+      "name_ja": "フルフラール生成（焼成・脱水）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "ペントース → フルフラール + H2O",
+      "equation_formula": "C5H10O5 → C5H4O2 + 3 H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F18",
+      "name": "5-HMF生成（糖の脱水）",
+      "name_ja": "5-HMF生成（糖の脱水）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "ヘキソース → 5-HMF + H2O",
+      "equation_formula": "C6H12O6 → C6H6O3 + 3 H2O",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F19",
+      "name": "脂肪酸酸化→アルデヒド生成（焼成）",
+      "name_ja": "脂肪酸酸化→アルデヒド生成（焼成）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "脂肪酸（不飽和） + O2 + heat → 過酸化物 → 分解 → アルデヒド",
+      "equation_formula": "R-CH=CH-R + O2 → ROOH → R-CHO",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    },
+    {
+      "id": "F20",
+      "name": "アクリルアミド生成（焼成）",
+      "name_ja": "アクリルアミド生成（焼成）",
+      "stage": "baking",
+      "process_order": 5,
+      "type": "chemical",
+      "equation": "アスパラギン + 還元糖 —(高温)→ アクリルアミド + CO2",
+      "equation_formula": "Asn + R-CHO → C3H5NO + CO2",
+      "conditions": {
+        "temperature_C": {
+          "min": 160,
+          "max": 250,
+          "optimal": 190
+        },
+        "time_min": {
+          "min": 15,
+          "max": 60,
+          "typical": 30
+        }
+      },
+      "sensitivity_to_param": {
+        "temperature": 0.8,
+        "time": 0.5
+      }
+    }
+  ]
+}

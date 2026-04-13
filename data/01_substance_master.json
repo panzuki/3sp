@@ -1,0 +1,4278 @@
+{
+  "substances": [
+    {
+      "id": "SUB-0001",
+      "name": "NaCl",
+      "name_ja": "NaCl",
+      "formula": "NaCl",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 58.44,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0003",
+      "name": "カリウムイオン",
+      "name_ja": "カリウムイオン",
+      "formula": "K+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0004",
+      "name": "カルシウム(イオン相)",
+      "name_ja": "カルシウム(イオン相)",
+      "formula": "Ca2+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0005",
+      "name": "カルシウムイオン",
+      "name_ja": "カルシウムイオン",
+      "formula": "Ca2+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0006",
+      "name": "グルテンとペントサン等の水和均一化",
+      "name_ja": "グルテンとペントサン等の水和均一化",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0007",
+      "name": "ステアリン酸",
+      "name_ja": "ステアリン酸",
+      "formula": "C18H36O2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0008",
+      "name": "ナトリウムイオン",
+      "name_ja": "ナトリウムイオン",
+      "formula": "Na+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0009",
+      "name": "ナトリウムイオン強化グルテン網",
+      "name_ja": "ナトリウムイオン強化グルテン網",
+      "formula": "タンパク質ネットワーク",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0010",
+      "name": "マグネシウムイオン",
+      "name_ja": "マグネシウムイオン",
+      "formula": "Mg2+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0011",
+      "name": "リン(概算、主にリン酸塩)",
+      "name_ja": "リン(概算、主にリン酸塩)",
+      "formula": "P (as PO4)",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0012",
+      "name": "リン酸イオン",
+      "name_ja": "リン酸イオン",
+      "formula": "PO43-",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0013",
+      "name": "二酸化炭素",
+      "name_ja": "二酸化炭素",
+      "formula": "CO2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 44.01,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0014",
+      "name": "二酸化炭素(微量",
+      "name_ja": "二酸化炭素(微量",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0015",
+      "name": "亜鉛イオン",
+      "name_ja": "亜鉛イオン",
+      "formula": "Zn2+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0016",
+      "name": "塩化物イオン",
+      "name_ja": "塩化物イオン",
+      "formula": "Cl-",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0017",
+      "name": "微量元素(カリウムイオン, Zn²⁺, Fe³⁺ 等)",
+      "name_ja": "微量元素(カリウムイオン, Zn²⁺, Fe³⁺ 等)",
+      "formula": "K+, Zn2+, Fe3+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0018",
+      "name": "想定揮散二酸化炭素",
+      "name_ja": "想定揮散二酸化炭素",
+      "formula": "CO2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 44.01,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0019",
+      "name": "気中に放出された二酸化炭素",
+      "name_ja": "気中に放出された二酸化炭素",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0020",
+      "name": "気泡中二酸化炭素",
+      "name_ja": "気泡中二酸化炭素",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0021",
+      "name": "気泡二酸化炭素",
+      "name_ja": "気泡二酸化炭素",
+      "formula": "CO2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 44.01,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0022",
+      "name": "水",
+      "name_ja": "水",
+      "formula": "H2O",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 18.02,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0023",
+      "name": "水(結晶水/吸着水)",
+      "name_ja": "水(結晶水/吸着水)",
+      "formula": "H2O",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 18.02,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0024",
+      "name": "水和タンパク質",
+      "name_ja": "水和タンパク質",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0025",
+      "name": "水和ペントサン",
+      "name_ja": "水和ペントサン",
+      "formula": "(C5H8O4)n.H2O",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0026",
+      "name": "溶存二酸化炭素",
+      "name_ja": "溶存二酸化炭素",
+      "formula": "CO2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": 44.01,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0027",
+      "name": "溶存二酸化炭素 減少",
+      "name_ja": "溶存二酸化炭素 減少",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0028",
+      "name": "灰分(カリウムイオン)",
+      "name_ja": "灰分(カリウムイオン)",
+      "formula": "K+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0029",
+      "name": "灰分(カルシウムイオン)",
+      "name_ja": "灰分(カルシウムイオン)",
+      "formula": "Ca2+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0030",
+      "name": "灰分(マグネシウムイオン)",
+      "name_ja": "灰分(マグネシウムイオン)",
+      "formula": "Mg2+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0031",
+      "name": "炭酸水素イオン",
+      "name_ja": "炭酸水素イオン",
+      "formula": "HCO3-",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0032",
+      "name": "生地内保持二酸化炭素増",
+      "name_ja": "生地内保持二酸化炭素増",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0033",
+      "name": "硫酸イオン",
+      "name_ja": "硫酸イオン",
+      "formula": "SO42-",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0034",
+      "name": "硫酸カルシウム",
+      "name_ja": "硫酸カルシウム",
+      "formula": "CaSO4",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0035",
+      "name": "硫酸マグネシウム",
+      "name_ja": "硫酸マグネシウム",
+      "formula": "MgSO4",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0036",
+      "name": "蒸発水",
+      "name_ja": "蒸発水",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0037",
+      "name": "表面の相対水低下",
+      "name_ja": "表面の相対水低下",
+      "formula": null,
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0038",
+      "name": "貯蔵炭水化物(グリコーゲン)",
+      "name_ja": "貯蔵炭水化物(グリコーゲン)",
+      "formula": "(C6H10O5)n",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0039",
+      "name": "重炭酸カルシウム",
+      "name_ja": "重炭酸カルシウム",
+      "formula": "Ca(HCO3)2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0040",
+      "name": "重炭酸マグネシウム",
+      "name_ja": "重炭酸マグネシウム",
+      "formula": "Mg(HCO3)2",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0041",
+      "name": "鉄イオン",
+      "name_ja": "鉄イオン",
+      "formula": "Fe3+",
+      "category": "mineral",
+      "is_volatile": false,
+      "nutrition_cat": "inorganic_or_water",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0042",
+      "name": "アミロペクチン",
+      "name_ja": "アミロペクチン",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0043",
+      "name": "アミロペクチン断片",
+      "name_ja": "アミロペクチン断片",
+      "formula": "多糖断片",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0044",
+      "name": "アミロース",
+      "name_ja": "アミロース",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0045",
+      "name": "アミロース–脂肪酸複合体",
+      "name_ja": "アミロース–脂肪酸複合体",
+      "formula": "Complex",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0046",
+      "name": "アミロース–脂質複合体",
+      "name_ja": "アミロース–脂質複合体",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0047",
+      "name": "アミロース断片",
+      "name_ja": "アミロース断片",
+      "formula": "多糖断片",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0048",
+      "name": "グルコース",
+      "name_ja": "グルコース",
+      "formula": "C6H12O6",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 180.16,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0049",
+      "name": "スクロース",
+      "name_ja": "スクロース",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0050",
+      "name": "セルロース",
+      "name_ja": "セルロース",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0051",
+      "name": "デキストリン",
+      "name_ja": "デキストリン",
+      "formula": "多糖類",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0052",
+      "name": "デキストリン(短時間",
+      "name_ja": "デキストリン(短時間",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0053",
+      "name": "デンプン–脂質複合体",
+      "name_ja": "デンプン–脂質複合体",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0054",
+      "name": "トレハロース",
+      "name_ja": "トレハロース",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0055",
+      "name": "フルクトース",
+      "name_ja": "フルクトース",
+      "formula": "C6H12O6",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 180.16,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0056",
+      "name": "フルクトース(発酵基質",
+      "name_ja": "フルクトース(発酵基質",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0057",
+      "name": "ペントサン",
+      "name_ja": "ペントサン",
+      "formula": "(C5H8O4)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0058",
+      "name": "ペントサン(アラビノキシラン)",
+      "name_ja": "ペントサン(アラビノキシラン)",
+      "formula": "(C5H8O4)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0059",
+      "name": "ペントサン-ミネラル複合体",
+      "name_ja": "ペントサン-ミネラル複合体",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0060",
+      "name": "ペントサン–ミネラル複合体",
+      "name_ja": "ペントサン–ミネラル複合体",
+      "formula": "多糖類-イオン複合体",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0061",
+      "name": "マルトース",
+      "name_ja": "マルトース",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0062",
+      "name": "マルトース(発酵糖",
+      "name_ja": "マルトース(発酵糖",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0063",
+      "name": "マルトース増",
+      "name_ja": "マルトース増",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0064",
+      "name": "ラクトース(乳糖)",
+      "name_ja": "ラクトース(乳糖)",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0065",
+      "name": "乳糖",
+      "name_ja": "乳糖",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0066",
+      "name": "可溶アミロース",
+      "name_ja": "可溶アミロース",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0067",
+      "name": "微量添加デンプン(固結防止)",
+      "name_ja": "微量添加デンプン(固結防止)",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0068",
+      "name": "残存アミロペクチン",
+      "name_ja": "残存アミロペクチン",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0069",
+      "name": "残存アミロース",
+      "name_ja": "残存アミロース",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0070",
+      "name": "残存グルコース",
+      "name_ja": "残存グルコース",
+      "formula": "C6H12O6",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 180.16,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0071",
+      "name": "残存デキストリン",
+      "name_ja": "残存デキストリン",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0072",
+      "name": "残存フルクトース",
+      "name_ja": "残存フルクトース",
+      "formula": "C6H12O6",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 180.16,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0073",
+      "name": "残存マルトース",
+      "name_ja": "残存マルトース",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0074",
+      "name": "添加デンプン",
+      "name_ja": "添加デンプン",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0075",
+      "name": "糊化デンプン",
+      "name_ja": "糊化デンプン",
+      "formula": "(C6H10O5)n.xH2O",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0076",
+      "name": "膨潤デンプン",
+      "name_ja": "膨潤デンプン",
+      "formula": "(C6H10O5)n.xH2O",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0077",
+      "name": "還元糖（グルコース/フルクトース）",
+      "name_ja": "還元糖（グルコース/フルクトース）",
+      "formula": "C6H12O6",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 180.16,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0078",
+      "name": "酵母グリコーゲン",
+      "name_ja": "酵母グリコーゲン",
+      "formula": "(C6H10O5)n",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0079",
+      "name": "酵母トレハロース",
+      "name_ja": "酵母トレハロース",
+      "formula": "C12H22O11",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": 342.3,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0080",
+      "name": "酵母細胞壁多糖",
+      "name_ja": "酵母細胞壁多糖",
+      "formula": "多糖類",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0081",
+      "name": "酵母細胞壁多糖(マンナン/β-グルカン)",
+      "name_ja": "酵母細胞壁多糖(マンナン/β-グルカン)",
+      "formula": "多糖類",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "carbohydrate",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0082",
+      "name": "S-S結合強化グルテン網",
+      "name_ja": "S-S結合強化グルテン網",
+      "formula": "タンパク質ネットワーク",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0083",
+      "name": "α-アミラーゼ",
+      "name_ja": "α-アミラーゼ",
+      "formula": "Protein (enzyme)",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0084",
+      "name": "α-ラクトアルブミン",
+      "name_ja": "α-ラクトアルブミン",
+      "formula": "Protein (α-la)",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0085",
+      "name": "β-アミラーゼ",
+      "name_ja": "β-アミラーゼ",
+      "formula": "Protein (enzyme)",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0086",
+      "name": "β-ラクトグロブリン",
+      "name_ja": "β-ラクトグロブリン",
+      "formula": "Protein (β-lg)",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0087",
+      "name": "わずかなタンパク断片",
+      "name_ja": "わずかなタンパク断片",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0088",
+      "name": "アルブミン/グロブリン",
+      "name_ja": "アルブミン/グロブリン",
+      "formula": "タンパク質一般式 CxHyNzOwSv",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0089",
+      "name": "インベルターゼ",
+      "name_ja": "インベルターゼ",
+      "formula": "Protein (enzyme)",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0090",
+      "name": "カゼイン",
+      "name_ja": "カゼイン",
+      "formula": "Protein (casein)",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0091",
+      "name": "グリアジン",
+      "name_ja": "グリアジン",
+      "formula": "C200H320N50O60S2",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0092",
+      "name": "グルテニン",
+      "name_ja": "グルテニン",
+      "formula": "C1000H1600N260O310S10",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0093",
+      "name": "グルテンチオール",
+      "name_ja": "グルテンチオール",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0094",
+      "name": "グルテン架橋変化(S–S増加",
+      "name_ja": "グルテン架橋変化(S–S増加",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0095",
+      "name": "グルテン複合体",
+      "name_ja": "グルテン複合体",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0096",
+      "name": "システイン調整グルテン網",
+      "name_ja": "システイン調整グルテン網",
+      "formula": "タンパク質ネットワーク",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0097",
+      "name": "タンパク質(構造)",
+      "name_ja": "タンパク質(構造)",
+      "formula": "Protein",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0098",
+      "name": "チマーゼ",
+      "name_ja": "チマーゼ",
+      "formula": "Protein (enzyme)",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0099",
+      "name": "フォスビチン",
+      "name_ja": "フォスビチン",
+      "formula": "C2500H4000N650O1000P100",
+      "category": "protein_egg",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0100",
+      "name": "プロテアーゼ",
+      "name_ja": "プロテアーゼ",
+      "formula": "Protein (enzyme)",
+      "category": "enzyme",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0101",
+      "name": "ペプチド",
+      "name_ja": "ペプチド",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0102",
+      "name": "ラクトフェリン",
+      "name_ja": "ラクトフェリン",
+      "formula": "タンパク質",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0103",
+      "name": "リパーゼ",
+      "name_ja": "リパーゼ",
+      "formula": "Protein (enzyme)",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0104",
+      "name": "リベチン",
+      "name_ja": "リベチン",
+      "formula": "タンパク質一般式",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0105",
+      "name": "リベチン(血清型タンパク)",
+      "name_ja": "リベチン(血清型タンパク)",
+      "formula": "Protein (livetin)",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0106",
+      "name": "リポビテリン等",
+      "name_ja": "リポビテリン等",
+      "formula": "C4000H6400N1100O1200S50 (モデル)",
+      "category": "protein_egg",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0107",
+      "name": "低密度リポタンパク質(LDL)",
+      "name_ja": "低密度リポタンパク質(LDL)",
+      "formula": "複合体",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0108",
+      "name": "免疫グロブリン",
+      "name_ja": "免疫グロブリン",
+      "formula": "タンパク質",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0109",
+      "name": "初期グルテン網",
+      "name_ja": "初期グルテン網",
+      "formula": "タンパク質ネットワーク",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0110",
+      "name": "可溶性ペプチド",
+      "name_ja": "可溶性ペプチド",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0111",
+      "name": "固定化グルテン網",
+      "name_ja": "固定化グルテン網",
+      "formula": "Protein network",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0112",
+      "name": "変性α-ラクトアルブミン",
+      "name_ja": "変性α-ラクトアルブミン",
+      "formula": "Protein",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0113",
+      "name": "変性β-ラクトグロブリン",
+      "name_ja": "変性β-ラクトグロブリン",
+      "formula": "Protein",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0114",
+      "name": "変性アルブミン/グロブリン",
+      "name_ja": "変性アルブミン/グロブリン",
+      "formula": "Protein",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0115",
+      "name": "変性カゼイン",
+      "name_ja": "変性カゼイン",
+      "formula": "Protein",
+      "category": "protein_dairy",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0116",
+      "name": "変性グリアジン",
+      "name_ja": "変性グリアジン",
+      "formula": "Protein",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0117",
+      "name": "変性グルテニン",
+      "name_ja": "変性グルテニン",
+      "formula": "Protein",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0118",
+      "name": "変性タンパク",
+      "name_ja": "変性タンパク",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0119",
+      "name": "変性フォスビチン",
+      "name_ja": "変性フォスビチン",
+      "formula": "Protein",
+      "category": "protein_egg",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0120",
+      "name": "変性リベチン",
+      "name_ja": "変性リベチン",
+      "formula": "Protein",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0121",
+      "name": "変性リポビテリン等",
+      "name_ja": "変性リポビテリン等",
+      "formula": "Protein",
+      "category": "protein_egg",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0122",
+      "name": "変性酵母タンパク質",
+      "name_ja": "変性酵母タンパク質",
+      "formula": "Protein",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0123",
+      "name": "失活酵素群",
+      "name_ja": "失活酵素群",
+      "formula": "Protein",
+      "category": "enzyme",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0124",
+      "name": "強化グルテン網",
+      "name_ja": "強化グルテン網",
+      "formula": "Protein network",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0125",
+      "name": "短鎖ペプチド群",
+      "name_ja": "短鎖ペプチド群",
+      "formula": "低分子ペプチド",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0126",
+      "name": "遊離アミノ酸",
+      "name_ja": "遊離アミノ酸",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0127",
+      "name": "遊離アミノ酸(メイラード前駆",
+      "name_ja": "遊離アミノ酸(メイラード前駆",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0128",
+      "name": "遊離アミノ酸(リジン, プロリン等)",
+      "name_ja": "遊離アミノ酸(リジン, プロリン等)",
+      "formula": "多様",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0129",
+      "name": "酵母タンパク質",
+      "name_ja": "酵母タンパク質",
+      "formula": "タンパク質一般式",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0130",
+      "name": "酵母バイオマス",
+      "name_ja": "酵母バイオマス",
+      "formula": "一般式",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0131",
+      "name": "酵母バイオマス(新生タンパク等",
+      "name_ja": "酵母バイオマス(新生タンパク等",
+      "formula": null,
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0132",
+      "name": "酵素群",
+      "name_ja": "酵素群",
+      "formula": "Protein",
+      "category": "enzyme",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0133",
+      "name": "酸化グルテン複合体",
+      "name_ja": "酸化グルテン複合体",
+      "formula": "タンパク質-S-S-タンパク質",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0134",
+      "name": "高密度リポタンパク質(HDL)",
+      "name_ja": "高密度リポタンパク質(HDL)",
+      "formula": "複合体",
+      "category": "protein_gluten",
+      "is_volatile": false,
+      "nutrition_cat": "protein_or_enzyme",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0135",
+      "name": "DAG(ジアシルグリセロール)",
+      "name_ja": "DAG(ジアシルグリセロール)",
+      "formula": "C3H8O5",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0136",
+      "name": "HDL粒子",
+      "name_ja": "HDL粒子",
+      "formula": "複合体（タンパク質＋脂質）",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0137",
+      "name": "LDL粒子",
+      "name_ja": "LDL粒子",
+      "formula": "複合体（リポビテリン＋脂質）",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0138",
+      "name": "コレステロール",
+      "name_ja": "コレステロール",
+      "formula": "C27H46O",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0139",
+      "name": "スフィンゴミエリン",
+      "name_ja": "スフィンゴミエリン",
+      "formula": "C38H78N2O6P",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0140",
+      "name": "トリグリセリド(総脂質)",
+      "name_ja": "トリグリセリド(総脂質)",
+      "formula": "C55H98O6 (代表)",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0141",
+      "name": "トリグリセリド（総脂質）",
+      "name_ja": "トリグリセリド（総脂質）",
+      "formula": "C55H98O6 (代表式)",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0142",
+      "name": "リン脂質",
+      "name_ja": "リン脂質",
+      "formula": "C42H80NO8P",
+      "category": "phospholipid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0143",
+      "name": "リン脂質(ホスファチジルコリン等)",
+      "name_ja": "リン脂質(ホスファチジルコリン等)",
+      "formula": "C42H80NO8P (PL)",
+      "category": "phospholipid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0144",
+      "name": "リン脂質(レシチン)",
+      "name_ja": "リン脂質(レシチン)",
+      "formula": "C42H80NO8P",
+      "category": "phospholipid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0145",
+      "name": "レシチン(ホスファチジルコリン)",
+      "name_ja": "レシチン(ホスファチジルコリン)",
+      "formula": "C42H80NO8P",
+      "category": "phospholipid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0146",
+      "name": "乳化脂質ミセル",
+      "name_ja": "乳化脂質ミセル",
+      "formula": "乳化脂質複合体",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0147",
+      "name": "乳化脂質粒子",
+      "name_ja": "乳化脂質粒子",
+      "formula": null,
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0148",
+      "name": "変性HDL粒子",
+      "name_ja": "変性HDL粒子",
+      "formula": "複合体",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0149",
+      "name": "変性LDL粒子",
+      "name_ja": "変性LDL粒子",
+      "formula": "複合体",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0150",
+      "name": "微量脂質(トリグリセリド)",
+      "name_ja": "微量脂質(トリグリセリド)",
+      "formula": "C55H98O6（例：トリオレイン）",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0151",
+      "name": "短鎖脂肪酸(酪酸等 C4:0)",
+      "name_ja": "短鎖脂肪酸(酪酸等 C4:0)",
+      "formula": "C4H8O2",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": 88.11,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0152",
+      "name": "短鎖脂肪酸(酪酸等)",
+      "name_ja": "短鎖脂肪酸(酪酸等)",
+      "formula": "C4H8O2",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": 88.11,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0153",
+      "name": "総脂質(乳脂肪)",
+      "name_ja": "総脂質(乳脂肪)",
+      "formula": "TAG (fat)",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0154",
+      "name": "脂質(リン脂質等)",
+      "name_ja": "脂質(リン脂質等)",
+      "formula": "多様",
+      "category": "phospholipid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0155",
+      "name": "脂質酸化分解物",
+      "name_ja": "脂質酸化分解物",
+      "formula": "アルデヒド・ケトン類",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0156",
+      "name": "遊離脂肪酸",
+      "name_ja": "遊離脂肪酸",
+      "formula": "C18H32O2",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0157",
+      "name": "遊離脂肪酸(FFA)",
+      "name_ja": "遊離脂肪酸(FFA)",
+      "formula": "R-COOH",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0158",
+      "name": "遊離脂肪酸(FFA)微増",
+      "name_ja": "遊離脂肪酸(FFA)微増",
+      "formula": null,
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0159",
+      "name": "遊離脂肪酸(リノール酸など)",
+      "name_ja": "遊離脂肪酸(リノール酸など)",
+      "formula": "C18H32O2",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0160",
+      "name": "酵母脂質",
+      "name_ja": "酵母脂質",
+      "formula": "多様",
+      "category": "fatty_acid",
+      "is_volatile": false,
+      "nutrition_cat": "lipid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0161",
+      "name": "アスコルビン酸(ビタミンC)",
+      "name_ja": "アスコルビン酸(ビタミンC)",
+      "formula": "C6H8O6",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0162",
+      "name": "アスパラギン",
+      "name_ja": "アスパラギン",
+      "formula": "C4H8N2O3",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0163",
+      "name": "アスパラギン酸",
+      "name_ja": "アスパラギン酸",
+      "formula": "C4H7NO4",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0164",
+      "name": "エステル類(酢酸エチル等",
+      "name_ja": "エステル類(酢酸エチル等",
+      "formula": null,
+      "category": "volatile_ester",
+      "is_volatile": true,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.02,
+        "compound_class": "ester",
+        "descriptors": [
+          "fruity",
+          "sweet"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0165",
+      "name": "シスチン",
+      "name_ja": "シスチン",
+      "formula": "(C3H6NO2S)2",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0166",
+      "name": "シスチン(架橋",
+      "name_ja": "シスチン(架橋",
+      "formula": null,
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0167",
+      "name": "システイン",
+      "name_ja": "システイン",
+      "formula": "C3H7NO2S",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0168",
+      "name": "システイン(遊離)",
+      "name_ja": "システイン(遊離)",
+      "formula": "C3H7NO2S",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0169",
+      "name": "デヒドロアスコルビン酸",
+      "name_ja": "デヒドロアスコルビン酸",
+      "formula": "C6H6O6",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0170",
+      "name": "ビタミンA",
+      "name_ja": "ビタミンA",
+      "formula": "C36H60O2",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0171",
+      "name": "ビタミンA(レチノイド、概)",
+      "name_ja": "ビタミンA(レチノイド、概)",
+      "formula": "C20H30O",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0172",
+      "name": "ビタミンB12",
+      "name_ja": "ビタミンB12",
+      "formula": "C63H88CoN14O14P",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0173",
+      "name": "ビタミンB12(コバラミン)",
+      "name_ja": "ビタミンB12(コバラミン)",
+      "formula": "C63H88CoN14O14P",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0174",
+      "name": "ビタミンB2",
+      "name_ja": "ビタミンB2",
+      "formula": "C17H20N4O6",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0175",
+      "name": "ビタミンB2(リボフラビン)",
+      "name_ja": "ビタミンB2(リボフラビン)",
+      "formula": "C17H20N4O6",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0176",
+      "name": "ビタミンB₁(チアミン)",
+      "name_ja": "ビタミンB₁(チアミン)",
+      "formula": "C12H17N4OS",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0177",
+      "name": "ビタミンD3",
+      "name_ja": "ビタミンD3",
+      "formula": "C27H44O",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0178",
+      "name": "ビタミンD₃",
+      "name_ja": "ビタミンD₃",
+      "formula": "C27H44O",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0179",
+      "name": "ビタミンE",
+      "name_ja": "ビタミンE",
+      "formula": "C29H50O2",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0180",
+      "name": "ビタミンK2",
+      "name_ja": "ビタミンK2",
+      "formula": "C41H56O2",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0181",
+      "name": "ビタミンK₁",
+      "name_ja": "ビタミンK₁",
+      "formula": "C31H46O2",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0182",
+      "name": "ビタミンK₁ (フィロキノン)",
+      "name_ja": "ビタミンK₁ (フィロキノン)",
+      "formula": "C31H46O2",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0183",
+      "name": "ビタミンK₂",
+      "name_ja": "ビタミンK₂",
+      "formula": "C41H56O2",
+      "category": "vitamin",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0184",
+      "name": "プロリン",
+      "name_ja": "プロリン",
+      "formula": "C5H9NO2",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0185",
+      "name": "乳酸",
+      "name_ja": "乳酸",
+      "formula": "C3H6O3",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0186",
+      "name": "乳酸(微量、発酵痕)",
+      "name_ja": "乳酸(微量、発酵痕)",
+      "formula": "C3H6O3",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0187",
+      "name": "乳酸菌・微生物残存",
+      "name_ja": "乳酸菌・微生物残存",
+      "formula": "-",
+      "category": "organic_acid",
+      "is_volatile": false,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0188",
+      "name": "酢酸",
+      "name_ja": "酢酸",
+      "formula": "C2H4O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "raw_ingredient",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0189",
+      "name": "酢酸(微量",
+      "name_ja": "酢酸(微量",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "vitamin_or_organic_acid_or_amino_acid",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0190",
+      "name": "2-AP",
+      "name_ja": "2-AP",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0191",
+      "name": "2-AP前駆体(非揮発",
+      "name_ja": "2-AP前駆体(非揮発",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0192",
+      "name": "2-アセチル-1-ピロリン(2-AP)",
+      "name_ja": "2-アセチル-1-ピロリン(2-AP)",
+      "formula": "C8H9NO",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 135.16,
+        "volatility_class": "high",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0193",
+      "name": "5-HMF",
+      "name_ja": "5-HMF",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0194",
+      "name": "5-ヒドロキシメチルフルフラール(5-HMF)",
+      "name_ja": "5-ヒドロキシメチルフルフラール(5-HMF)",
+      "formula": "C6H6O3",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 126.11,
+        "volatility_class": "mid",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0195",
+      "name": "アクリルアミド",
+      "name_ja": "アクリルアミド",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0196",
+      "name": "アクリルアミド(Acrylamide)",
+      "name_ja": "アクリルアミド(Acrylamide)",
+      "formula": "C3H5NO",
+      "category": "volatile_aldehyde",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 71.08,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0197",
+      "name": "アクリルアミド前駆体",
+      "name_ja": "アクリルアミド前駆体",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0198",
+      "name": "アセトイン",
+      "name_ja": "アセトイン",
+      "formula": "C4H8O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 88.11,
+        "volatility_class": "mid",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0199",
+      "name": "アセトイン(芳香)",
+      "name_ja": "アセトイン(芳香)",
+      "formula": "C4H8O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 88.11,
+        "volatility_class": "mid",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "raw_ingredient",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0200",
+      "name": "アマドリ化合物(2-AP前駆体含む)",
+      "name_ja": "アマドリ化合物(2-AP前駆体含む)",
+      "formula": "R'-NH-CH2-CH(OH)-R / Amadori intermediate",
+      "category": "volatile_aldehyde",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0201",
+      "name": "アルデヒド(例：ヘキサナール)",
+      "name_ja": "アルデヒド(例：ヘキサナール)",
+      "formula": "R-CHO",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0202",
+      "name": "アルデヒド等(例：ヘキサナール",
+      "name_ja": "アルデヒド等(例：ヘキサナール",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0203",
+      "name": "エステル類",
+      "name_ja": "エステル類",
+      "formula": "R-COO-R'",
+      "category": "volatile_ester",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.02,
+        "compound_class": "ester",
+        "descriptors": [
+          "fruity",
+          "sweet"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0204",
+      "name": "エステル類(揮発性香気",
+      "name_ja": "エステル類(揮発性香気",
+      "formula": null,
+      "category": "volatile_ester",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.02,
+        "compound_class": "ester",
+        "descriptors": [
+          "fruity",
+          "sweet"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0205",
+      "name": "ジアセチル",
+      "name_ja": "ジアセチル",
+      "formula": "C4H6O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 86.09,
+        "volatility_class": "high",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0206",
+      "name": "ジアセチル(芳香)",
+      "name_ja": "ジアセチル(芳香)",
+      "formula": "C4H6O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 86.09,
+        "volatility_class": "high",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "raw_ingredient",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0207",
+      "name": "ストレッカーアルデヒド",
+      "name_ja": "ストレッカーアルデヒド",
+      "formula": "R-CHO",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0208",
+      "name": "ストレッカーアルデヒド(例えば フェニルアセトアルデヒド等",
+      "name_ja": "ストレッカーアルデヒド(例えば フェニルアセトアルデヒド等",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0209",
+      "name": "ピラジン",
+      "name_ja": "ピラジン",
+      "formula": null,
+      "category": "volatile_pyrazine",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.005,
+        "compound_class": "volatile_pyrazine",
+        "descriptors": [
+          "roasted",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0210",
+      "name": "ピラジン類",
+      "name_ja": "ピラジン類",
+      "formula": "Pyrazines",
+      "category": "volatile_pyrazine",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 80.09,
+        "volatility_class": "mid",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.005,
+        "compound_class": "volatile_pyrazine",
+        "descriptors": [
+          "roasted",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0211",
+      "name": "フルフラール",
+      "name_ja": "フルフラール",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0212",
+      "name": "フルフラール(Furfural)",
+      "name_ja": "フルフラール(Furfural)",
+      "formula": "C5H4O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 96.08,
+        "volatility_class": "mid",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0213",
+      "name": "ヘキサナール(Hexanal)",
+      "name_ja": "ヘキサナール(Hexanal)",
+      "formula": "C6H12O",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 100.16,
+        "volatility_class": "high",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0214",
+      "name": "ヘキサナール等(アルデヒド",
+      "name_ja": "ヘキサナール等(アルデヒド",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0215",
+      "name": "ヘキサナール等のアルデヒド",
+      "name_ja": "ヘキサナール等のアルデヒド",
+      "formula": null,
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "high"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0216",
+      "name": "メラノイジン(褐色色素",
+      "name_ja": "メラノイジン(褐色色素",
+      "formula": null,
+      "category": "melanoidin",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0217",
+      "name": "メラノイジン色素",
+      "name_ja": "メラノイジン色素",
+      "formula": "高分子褐色色素",
+      "category": "melanoidin",
+      "is_volatile": false,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0218",
+      "name": "多数の揮発性香気(ピラジン等",
+      "name_ja": "多数の揮発性香気(ピラジン等",
+      "formula": null,
+      "category": "volatile_pyrazine",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.005,
+        "compound_class": "volatile_pyrazine",
+        "descriptors": [
+          "roasted",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0219",
+      "name": "残存ジアセチル",
+      "name_ja": "残存ジアセチル",
+      "formula": "C4H6O2",
+      "category": "volatile_aldehyde",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": 86.09,
+        "volatility_class": "high",
+        "logP": 0.73,
+        "logP_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.01,
+        "compound_class": "volatile_aldehyde",
+        "descriptors": [
+          "green",
+          "nutty"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0220",
+      "name": "硫黄化合物(揮発性)",
+      "name_ja": "硫黄化合物(揮発性)",
+      "formula": "H2S, CH3SH, DMS等",
+      "category": "volatile_sulfur",
+      "is_volatile": true,
+      "nutrition_cat": "aroma_or_maillard",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "mid"
+      },
+      "source": "reaction_product",
+      "sensory": {
+        "odor_threshold_ppm": 0.001,
+        "compound_class": "volatile_sulfur",
+        "descriptors": [
+          "sulfur",
+          "bread"
+        ]
+      }
+    },
+    {
+      "id": "SUB-0221",
+      "name": "Amadori化合物(前駆体",
+      "name_ja": "Amadori化合物(前駆体",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0222",
+      "name": "CaSO₄",
+      "name_ja": "CaSO₄",
+      "formula": "CaSO4",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0223",
+      "name": "MgSO₄",
+      "name_ja": "MgSO₄",
+      "formula": "MgSO4",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0224",
+      "name": "S–S 架橋の増減(網目強度変化",
+      "name_ja": "S–S 架橋の増減(網目強度変化",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0225",
+      "name": "pH がわずかに上昇",
+      "name_ja": "pH がわずかに上昇",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0226",
+      "name": "アマドリ化合物",
+      "name_ja": "アマドリ化合物",
+      "formula": "R'-NH-CH2-CH(OH)-R",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0227",
+      "name": "アマドリ化合物等(反応後)",
+      "name_ja": "アマドリ化合物等(反応後)",
+      "formula": "-",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0228",
+      "name": "アラニン",
+      "name_ja": "アラニン",
+      "formula": "C3H7NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0229",
+      "name": "イソロイシン",
+      "name_ja": "イソロイシン",
+      "formula": "C6H13NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0230",
+      "name": "イノシン酸",
+      "name_ja": "イノシン酸",
+      "formula": "C10H12N4O8P",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0231",
+      "name": "エタノール",
+      "name_ja": "エタノール",
+      "formula": "C2H5OH",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": 46.07,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0232",
+      "name": "エタノール(可揮発",
+      "name_ja": "エタノール(可揮発",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0233",
+      "name": "エタノール(極微量",
+      "name_ja": "エタノール(極微量",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0234",
+      "name": "オレイン酸",
+      "name_ja": "オレイン酸",
+      "formula": "C18H34O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0235",
+      "name": "カラメル化合物",
+      "name_ja": "カラメル化合物",
+      "formula": "褐色低分子",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0236",
+      "name": "カラメル化合物(芳香成分",
+      "name_ja": "カラメル化合物(芳香成分",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0237",
+      "name": "クラスト乾燥層",
+      "name_ja": "クラスト乾燥層",
+      "formula": "-",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0238",
+      "name": "グアニル酸",
+      "name_ja": "グアニル酸",
+      "formula": "C10H12N5O8P",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0239",
+      "name": "グリシン",
+      "name_ja": "グリシン",
+      "formula": "C2H5NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0240",
+      "name": "グルタチオン",
+      "name_ja": "グルタチオン",
+      "formula": "C10H17N3O6S",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0241",
+      "name": "グルタミン酸",
+      "name_ja": "グルタミン酸",
+      "formula": "C5H9NO4",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0242",
+      "name": "ケトン",
+      "name_ja": "ケトン",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0243",
+      "name": "セリン",
+      "name_ja": "セリン",
+      "formula": "C3H7NO3",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0244",
+      "name": "チロシン",
+      "name_ja": "チロシン",
+      "formula": "C9H11NO3",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0245",
+      "name": "トリプトファン",
+      "name_ja": "トリプトファン",
+      "formula": "C11H12N2O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0246",
+      "name": "トレオニン",
+      "name_ja": "トレオニン",
+      "formula": "C4H9NO3",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0247",
+      "name": "ナイアシン",
+      "name_ja": "ナイアシン",
+      "formula": "C6H5NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0248",
+      "name": "ネットワークの局所的再配列",
+      "name_ja": "ネットワークの局所的再配列",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0249",
+      "name": "バリン",
+      "name_ja": "バリン",
+      "formula": "C5H11NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0250",
+      "name": "パルミチン酸",
+      "name_ja": "パルミチン酸",
+      "formula": "C16H32O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0251",
+      "name": "ヒスチジン",
+      "name_ja": "ヒスチジン",
+      "formula": "C6H9N3O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0252",
+      "name": "ピラゾン等",
+      "name_ja": "ピラゾン等",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0253",
+      "name": "フェニルアラニン",
+      "name_ja": "フェニルアラニン",
+      "formula": "C9H11NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0254",
+      "name": "フェノール類・ポリフェノール",
+      "name_ja": "フェノール類・ポリフェノール",
+      "formula": "C6H6O（代表式）",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0255",
+      "name": "ミリスチン酸",
+      "name_ja": "ミリスチン酸",
+      "formula": "C14H28O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0256",
+      "name": "メイラード前駆体",
+      "name_ja": "メイラード前駆体",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0257",
+      "name": "メチオニン",
+      "name_ja": "メチオニン",
+      "formula": "C5H11NO2S",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0258",
+      "name": "リグニン",
+      "name_ja": "リグニン",
+      "formula": "C9H10O2-C10H12O3（平均式）",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0259",
+      "name": "リジン",
+      "name_ja": "リジン",
+      "formula": "C6H14N2O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0260",
+      "name": "リノール酸",
+      "name_ja": "リノール酸",
+      "formula": "C18H32O2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0261",
+      "name": "ロイシン",
+      "name_ja": "ロイシン",
+      "formula": "C6H13NO2",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0262",
+      "name": "乾燥クラスト",
+      "name_ja": "乾燥クラスト",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0263",
+      "name": "以後",
+      "name_ja": "以後",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0264",
+      "name": "体積増",
+      "name_ja": "体積増",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0265",
+      "name": "凝集体",
+      "name_ja": "凝集体",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0266",
+      "name": "塩化ナトリウム",
+      "name_ja": "塩化ナトリウム",
+      "formula": "NaCl",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": 58.44,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0267",
+      "name": "微量ミネラル",
+      "name_ja": "微量ミネラル",
+      "formula": "-",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0268",
+      "name": "揮散",
+      "name_ja": "揮散",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0269",
+      "name": "揮発性成分の減少",
+      "name_ja": "揮発性成分の減少",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0270",
+      "name": "揮発性減少(空気へ",
+      "name_ja": "揮発性減少(空気へ",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0271",
+      "name": "揮発性芳香分子(残存",
+      "name_ja": "揮発性芳香分子(残存",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0272",
+      "name": "放出",
+      "name_ja": "放出",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0273",
+      "name": "核酸 (RNA, DNA)",
+      "name_ja": "核酸 (RNA, DNA)",
+      "formula": "-",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0274",
+      "name": "残存ガスの配置最適化",
+      "name_ja": "残存ガスの配置最適化",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0275",
+      "name": "活性化酵母",
+      "name_ja": "活性化酵母",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0276",
+      "name": "活性化酵母細胞",
+      "name_ja": "活性化酵母細胞",
+      "formula": "酵母細胞",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0277",
+      "name": "灰分(P：フィチン酸塩として存在)",
+      "name_ja": "灰分(P：フィチン酸塩として存在)",
+      "formula": "C6H6O24P6（フィチン酸）",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "raw_ingredient"
+    },
+    {
+      "id": "SUB-0278",
+      "name": "生成量：µg〜mgオーダー",
+      "name_ja": "生成量：µg〜mgオーダー",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0279",
+      "name": "生物的発酵停止",
+      "name_ja": "生物的発酵停止",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0280",
+      "name": "短鎖酸",
+      "name_ja": "短鎖酸",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0281",
+      "name": "粒度の小さい均質泡",
+      "name_ja": "粒度の小さい均質泡",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0282",
+      "name": "網目の局所強化(断面密度増",
+      "name_ja": "網目の局所強化(断面密度増",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0283",
+      "name": "蒸気(ガス",
+      "name_ja": "蒸気(ガス",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0284",
+      "name": "表面の一時的乾燥",
+      "name_ja": "表面の一時的乾燥",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0285",
+      "name": "表面の湿潤維持または乾燥",
+      "name_ja": "表面の湿潤維持または乾燥",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0286",
+      "name": "表面張力を持つ“皮”",
+      "name_ja": "表面張力を持つ“皮”",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0287",
+      "name": "遊離AA",
+      "name_ja": "遊離AA",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0288",
+      "name": "酵母核酸",
+      "name_ja": "酵母核酸",
+      "formula": "-",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0289",
+      "name": "酵母灰分",
+      "name_ja": "酵母灰分",
+      "formula": "-",
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    },
+    {
+      "id": "SUB-0290",
+      "name": "黒褐色〜茶色の高分子",
+      "name_ja": "黒褐色〜茶色の高分子",
+      "formula": null,
+      "category": "starch",
+      "is_volatile": false,
+      "nutrition_cat": "complex_or_network",
+      "physical": {
+        "molecular_weight": null,
+        "volatility_class": "low"
+      },
+      "source": "reaction_product"
+    }
+  ]
+}

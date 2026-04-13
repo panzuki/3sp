@@ -1,0 +1,270 @@
+{
+  "dimensions": {
+    "taste": [
+      "sweet",
+      "umami",
+      "salt",
+      "sour",
+      "bitter"
+    ],
+    "aroma": [
+      "fruity",
+      "roasted",
+      "buttery",
+      "sulfur",
+      "caramel",
+      "yeasty",
+      "green"
+    ],
+    "texture": [
+      "softness",
+      "chewiness",
+      "crispness",
+      "moistness"
+    ],
+    "appearance": [
+      "crust_color",
+      "crumb_color",
+      "cell_uniformity"
+    ]
+  },
+  "substance_sensory_mapping": [
+    {
+      "substance_id": "SUB-0205",
+      "effects": {
+        "aroma": {
+          "buttery": 1.0
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0206",
+      "effects": {
+        "aroma": {
+          "buttery": 0.9
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0192",
+      "effects": {
+        "aroma": {
+          "roasted": 1.0,
+          "yeasty": 0.5
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0210",
+      "effects": {
+        "aroma": {
+          "roasted": 0.9
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0207",
+      "effects": {
+        "aroma": {
+          "roasted": 0.7,
+          "nutty": 0.5
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0213",
+      "effects": {
+        "aroma": {
+          "green": 0.8
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0220",
+      "effects": {
+        "aroma": {
+          "sulfur": 1.0,
+          "bread": 0.8
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0049",
+      "effects": {
+        "taste": {
+          "sweet": 1.0
+        }
+      }
+    },
+    {
+      "substance_id": "SUB-0001",
+      "effects": {
+        "taste": {
+          "salt": 1.0
+        }
+      }
+    }
+  ],
+  "aroma_profiles": [
+    {
+      "compound_class": "ester",
+      "description": "エステル類（フルーティ）",
+      "T": [
+        0.2,
+        0.8,
+        1.0,
+        0.7,
+        0.5,
+        0.3,
+        0.1,
+        0.05
+      ]
+    },
+    {
+      "compound_class": "maillard",
+      "description": "メイラード生成物（ロースト）",
+      "T": [
+        0.0,
+        0.1,
+        0.4,
+        0.8,
+        1.0,
+        0.9,
+        0.6,
+        0.3
+      ]
+    },
+    {
+      "compound_class": "volatile_aldehyde",
+      "description": "アルデヒド類（グリーン〜ナッツ）",
+      "T": [
+        0.5,
+        1.0,
+        0.8,
+        0.6,
+        0.4,
+        0.2,
+        0.1,
+        0.05
+      ]
+    },
+    {
+      "compound_class": "volatile_sulfur",
+      "description": "硫黄化合物（パンらしさ）",
+      "T": [
+        0.1,
+        0.5,
+        0.9,
+        1.0,
+        0.8,
+        0.5,
+        0.2,
+        0.1
+      ]
+    },
+    {
+      "compound_class": "volatile_pyrazine",
+      "description": "ピラジン類（ロースト・ナッツ）",
+      "T": [
+        0.0,
+        0.2,
+        0.6,
+        1.0,
+        0.9,
+        0.7,
+        0.4,
+        0.2
+      ]
+    },
+    {
+      "compound_class": "organic_acid",
+      "description": "有機酸（酸味・発酵感）",
+      "T": [
+        0.3,
+        0.6,
+        0.8,
+        1.0,
+        0.9,
+        0.8,
+        0.6,
+        0.4
+      ]
+    },
+    {
+      "compound_class": "fatty_acid_volatile",
+      "description": "脂肪酸由来揮発物（バター様）",
+      "T": [
+        0.1,
+        0.4,
+        0.7,
+        1.0,
+        0.9,
+        0.7,
+        0.5,
+        0.3
+      ]
+    }
+  ],
+  "interaction_models": [
+    {
+      "id": "INT-001",
+      "type": "synergy",
+      "pair": [
+        "ester",
+        "maillard"
+      ],
+      "factor": 1.3,
+      "note": "フルーティ×ロースト相乗"
+    },
+    {
+      "id": "INT-002",
+      "type": "masking",
+      "pair": [
+        "organic_acid",
+        "ester"
+      ],
+      "factor": 0.7,
+      "note": "酸によるエステルのマスキング"
+    },
+    {
+      "id": "INT-003",
+      "type": "suppression",
+      "pair": [
+        "bitter",
+        "sweet"
+      ],
+      "factor": 0.6,
+      "note": "甘味による苦味抑制"
+    },
+    {
+      "id": "INT-004",
+      "type": "contrast",
+      "pair": [
+        "maillard",
+        "ester"
+      ],
+      "factor": 1.2,
+      "note": "ロースト×フルーティのコントラスト"
+    },
+    {
+      "id": "INT-005",
+      "type": "synergy",
+      "pair": [
+        "volatile_sulfur",
+        "maillard"
+      ],
+      "factor": 1.4,
+      "note": "パンらしい香り複合体の相乗"
+    },
+    {
+      "id": "INT-006",
+      "type": "masking",
+      "pair": [
+        "volatile_sulfur",
+        "fatty_acid_volatile"
+      ],
+      "factor": 0.8,
+      "note": "脂肪系香による硫黄臭のマスキング"
+    }
+  ]
+}
