@@ -65,6 +65,11 @@ let SCENE_OBJ = null;
 let allMeshes = [], lineMeshes = [], nodeMap = {};
 let selectedId = null, traceSet = null, traceUpSet = null, traceDnSet = null;
 let autoRotate = false, activeStep = 'all', activeFilter = 'all', searchQuery = '';
+// ─── ナビゲーション履歴 ───────────────────────────────────────
+// traceOrigin: トレース開始時のスナップショット（空タップで戻す）
+// navStack: サイドバー内の表示履歴（戻るボタンで遡る）
+let traceOrigin = null;  // { id, node, type, traceSet, traceUpSet, traceDnSet, msg, icon }
+let navStack    = [];    // [{ id, node, type, stage }]
 let fwdMap = {}, bwdMap = {};   // 意味フローの隣接マップ（traceable only）
 let fwdAll = {}, bwdAll = {};   // 全エッジの隣接マップ（表示用）
 let SUB_MASTER_MAP = {};
@@ -508,8 +513,36 @@ document.addEventListener('DOMContentLoaded',()=>{
 function onCanvasClick(e) {
   if(_cm) return;
   const hit=raycast(e);
-  if(!hit) { clearSel(); return; }
-  selectNode(hit.object.userData.id, hit.object.userData.node, hit.object.userData.type);
+
+  if(!hit) {
+    // 空タップ：トレース中なら origin に戻す、なければ全解除
+    if(traceOrigin) {
+      _restoreTraceOrigin();
+    } else {
+      clearSel();
+    }
+    return;
+  }
+
+  const { id, node, type } = hit.object.userData;
+
+  // ── トレース中の再タップ処理 ──────────────────────────────
+  if(traceSet && traceSet.has(id)) {
+    // ハイライト範囲内ノード → selectedId だけ変えてサイドバー更新
+    // トレース（ハイライト）は維持、navStack には積まない
+    selectedId = id;
+    const entry = nodeMap[id];
+    const stage = entry?.stage || node?.stage || 'mixing';
+    applyHighlight();
+    updateDetail(node, type, stage);
+    // ツールチップは非表示に
+    hideTT();
+    return;
+  }
+
+  // ── 新規トレース開始 ─────────────────────────────────────
+  navStack = [];  // 新トレース開始でスタックリセット
+  selectNode(id, node, type);
 }
 let _hov=null;
 function onCanvasHover(e) {
@@ -537,45 +570,64 @@ function selectNode(id,node,type) {
   let traceIds, msg, icon='🔍';
 
   if(type==='raw_material') {
-    // 原材料 → COMP経由で下流全体
     const dn=traceDown(id);
     traceIds=dn; traceUpSet=new Set([id]); traceDnSet=dn;
     msg=`${node?.name||id} → 下流 ${dn.size-1} ノード`; icon='🔶';
 
   } else if(type==='ingredient_component') {
-    // 成分 → 下流のみ（自分の原材料への逆引きも追加）
     const dn=traceDown(id);
     const up=new Set([id, node?.raw_parent||''].filter(Boolean));
     traceIds=new Set([...dn,...up]); traceUpSet=up; traceDnSet=dn;
     msg=`${node?.name||id} 成分 → 下流 ${dn.size} ノード`; icon='🟡';
 
   } else if(stage==='baking'||stage==='final') {
-    // 焼成物 → 上流全体（来歴追跡）
     const up=traceUp(id);
     traceIds=up; traceUpSet=up; traceDnSet=new Set([id]);
     msg=`${node?.name||id} ← 来歴 ${up.size-1} ノード`; icon='🔴';
 
   } else if(type==='substance_instance'||type==='substance') {
-    // 中間物質 → 上下両方向
     const {upstream,downstream,combined}=traceBoth(id);
     traceIds=combined; traceUpSet=upstream; traceDnSet=downstream;
     msg=`${node?.name||id}  ▲来歴${upstream.size-1}  ▼行先${downstream.size-1}`; icon='🔵';
 
   } else {
-    // 反応ノード → 直接接続ノードのみ
     traceIds=rxnNeighbors(id);
     traceUpSet=new Set(); traceDnSet=new Set();
     msg=`${node?.name||id}  関連 ${traceIds.size} ノード`; icon='🔷';
   }
 
   traceSet=traceIds;
+
+  // トレース起点スナップショットを保存
+  traceOrigin={ id, node, type, stage,
+    traceSet: new Set(traceIds),
+    traceUpSet: traceUpSet ? new Set(traceUpSet) : null,
+    traceDnSet: traceDnSet ? new Set(traceDnSet) : null,
+    msg, icon };
+  navStack=[];  // 新トレース開始でスタックリセット
+
   applyHighlight();
   showTraceBar(msg,icon);
   updateDetail(node,type,stage);
 }
 
+// トレース起点に戻す（空タップ時）
+function _restoreTraceOrigin() {
+  if(!traceOrigin) return;
+  const o=traceOrigin;
+  selectedId  = o.id;
+  traceSet    = new Set(o.traceSet);
+  traceUpSet  = o.traceUpSet ? new Set(o.traceUpSet) : null;
+  traceDnSet  = o.traceDnSet ? new Set(o.traceDnSet) : null;
+  navStack    = [];
+  applyHighlight();
+  showTraceBar(o.msg, o.icon);
+  updateDetail(o.node, o.type, o.stage);
+}
+
 function clearSel() {
   selectedId=null; traceSet=null; traceUpSet=null; traceDnSet=null;
+  traceOrigin=null; navStack=[];
   hideTraceBar(); applyHighlight(); updateDetail(null);
 }
 
@@ -614,9 +666,11 @@ function moveTT(e) {
 function hideTT() { document.getElementById('tooltip').style.opacity='0'; }
 
 // ─── 詳細パネル ───────────────────────────────────────────────
-function updateDetail(node,type,stage) {
+function updateDetail(node, type, stage, pushNav) {
+  // pushNav=true のとき、前の状態を navStack に積む
   const panel=document.getElementById('detail-panel');
   if(!node) {
+    navStack=[];
     panel.innerHTML=`<div class="detail-empty">
       球をクリックすると詳細表示<br><br>
       <b style="color:var(--text2)">意味フロートレース</b><br>
@@ -636,6 +690,61 @@ function updateDetail(node,type,stage) {
   else if(type==='raw_material')     detailRaw(panel,node);
   else if(type==='ingredient_component') detailComp(panel,node);
   else                               detailSub(panel,node,stage);
+}
+
+// ── 戻るボタン HTML ──────────────────────────────────────────
+function _backBtnHTML(label='← 戻る') {
+  return `<button onclick="_navBack()" style="
+    background:transparent; border:1px solid var(--border); color:var(--text3);
+    font-family:'Space Mono',monospace; font-size:9px; padding:4px 10px;
+    cursor:pointer; border-radius:2px; margin-bottom:10px; display:flex;
+    align-items:center; gap:5px; transition:all .15s;"
+    onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+    onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">
+    ${label}
+  </button>`;
+}
+
+// ナビゲーション：スタックから前の表示に戻る
+function _navBack() {
+  if(!navStack.length) return;
+  const prev = navStack.pop();
+  selectedId = prev.id;
+  // highlight は traceOrigin を維持（再計算しない）
+  if(traceOrigin) {
+    traceSet    = new Set(traceOrigin.traceSet);
+    traceUpSet  = traceOrigin.traceUpSet ? new Set(traceOrigin.traceUpSet) : null;
+    traceDnSet  = traceOrigin.traceDnSet ? new Set(traceOrigin.traceDnSet) : null;
+  }
+  applyHighlight();
+  updateDetail(prev.node, prev.type, prev.stage);  // push しない
+}
+
+// ── サイドバーから物質詳細に遷移（原材料詳細から）──────────
+function _navToSubFromRaw(instId, rawId) {
+  // 現在表示中の原材料ノードをスタックに積む
+  const rm = (GR.raw_materials||[]).find(r=>r.id===rawId);
+  if(!rm) return;
+  navStack.push({ id: rawId, node: rm, type: 'raw_material', stage: 'ingredients' });
+  _showInstDetail(instId);
+}
+
+// ── 物質インスタンスIDから詳細表示 ─────────────────────────
+function _showInstDetail(instId) {
+  const inst = (GR.substance_instances||[]).find(i=>i.id===instId)
+             || (GR.nodes||[]).find(n=>n.id===instId);
+  if(!inst) return;
+  selectedId = instId;
+  const stage = inst.stage || (inst.stage_nodes?.[0]?.stage) || 'mixing';
+  applyHighlight();
+  const panel = document.getElementById('detail-panel');
+  detailSub(panel, inst, stage);
+}
+
+// ── サイドバーから物質詳細に遷移（汎用）────────────────────
+function _navToSub(instId, fromNode, fromType, fromStage) {
+  navStack.push({ id: fromNode?.id||fromNode, node: fromNode, type: fromType, stage: fromStage });
+  _showInstDetail(instId);
 }
 
 // ── ingredient_component 詳細 ───────────────────────────────
@@ -733,8 +842,10 @@ function detailSub(panel,n,stage) {
     </div></div>`:'';
 
   const roles=(masterNode?.reaction_roles||[]);
+  const hasBack = navStack.length > 0;
 
   panel.innerHTML=`<div class="detail-card">
+    ${hasBack ? _backBtnHTML() : ''}
     <div class="detail-id">${n.id}</div>
     <div class="detail-name">${n.name}</div>
     ${n.formula?`<div class="detail-formula">${n.formula}</div>`:''}
@@ -769,8 +880,10 @@ function detailRaw(panel,rm) {
   const col=STEP_COLORS_CSS.ingredients;
   const myComps=(GR.ingredient_components||[]).filter(c=>c.raw_parent===rm.id);
   const dnCount=traceDown(rm.id).size-1;
+  const hasBack = navStack.length > 0;
 
   panel.innerHTML=`<div class="detail-card">
+    ${hasBack ? _backBtnHTML() : ''}
     <div class="detail-id">${rm.id}</div>
     <div class="detail-name">${rm.name}</div>
     <span class="badge" style="background:${col};color:#070a08">原材料</span>
@@ -780,12 +893,20 @@ function detailRaw(panel,rm) {
     </div>
     ${myComps.length?`<div class="detail-section">
       <div class="detail-section-title">成分一覧 (${myComps.length})</div>
-      ${myComps.map(c=>`<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;font-size:10px;cursor:pointer"
-        onclick="selectNode('${c.id}',(GR.ingredient_components||[]).find(x=>x.id==='${c.id}'),'ingredient_component')">
-        <div style="width:6px;height:6px;background:#9b6e3a;flex-shrink:0"></div>
-        <span style="color:#c89050;min-width:100px">${c.name||c.substance_ref}</span>
-        ${c.state?.mass_g!=null?`<span style="color:var(--accent2);margin-left:auto">${c.state.mass_g.toFixed(3)}g</span>`:''}
-      </div>`).join('')}
+      ${myComps.map(c=>{
+        const instId = c.substance_ref + '@mixing';
+        const hasInst = (GR.substance_instances||[]).some(i=>i.id===instId);
+        const targetId = hasInst ? instId : c.substance_ref;
+        return `<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;font-size:10px;cursor:pointer"
+          onclick="_navToSubFromRaw('${targetId}','${rm.id}')"
+          onmouseover="this.style.background='rgba(255,255,255,.07)'"
+          onmouseout="this.style.background=''"
+          style="padding:3px 4px;border-radius:2px;transition:background .12s">
+          <div style="width:6px;height:6px;background:#9b6e3a;flex-shrink:0"></div>
+          <span style="color:#c89050;min-width:100px">${c.name||c.substance_ref}</span>
+          ${c.state?.mass_g!=null?`<span style="color:var(--accent2);margin-left:auto">${c.state.mass_g.toFixed(3)}g</span>`:''}
+        </div>`;
+      }).join('')}
     </div>`:''}
   </div>`;
 }
