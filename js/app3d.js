@@ -1,8 +1,9 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v6.0  Semantic Flow
-// 仕様: bread_simulation_json_spec v1 + semantic_flow_v3
-// データ: data/14_graph_runtime.json (semantic_flow_v3)
+// bread for myself — app3d.js  v7.0  Snapshot Flow
+// 仕様: bread_simulation_json_spec v2.0 + snapshot_flow_v1
+// データ: data/14_graph_runtime.json (snapshot_flow_v1)
 // Three.js r128
+// 改修: Snapshot二層構造 + タイムラインフィルター + 完全時間整合トレース
 // ══════════════════════════════════════════════════════════════
 
 // ─── 工程カラー ──────────────────────────────────────────────
@@ -65,6 +66,10 @@ let SCENE_OBJ = null;
 let allMeshes = [], lineMeshes = [], nodeMap = {};
 let selectedId = null, traceSet = null, traceUpSet = null, traceDnSet = null;
 let autoRotate = false, activeStep = 'all', activeFilter = 'all', searchQuery = '';
+// ─── Snapshot（v2.0）─────────────────────────────────────────
+// activeSnapshot: 'all' | 'SNAP-001' | ... — タイムラインフィルター
+let activeSnapshot = 'all';
+let SNAP_MAP = {};   // id → snapshot object
 // ─── ナビゲーション履歴 ───────────────────────────────────────
 // traceOrigin: トレース開始時のスナップショット（空タップで戻す）
 // navStack: サイドバー内の表示履歴（戻るボタンで遡る）
@@ -92,6 +97,8 @@ async function loadAll() {
 }
 
 loadAll().then(() => {
+  // Snapshot マップ初期化（v2.0）
+  (GR.snapshots||[]).forEach(s => { SNAP_MAP[s.id]=s; });
   buildAdjacency();
   initScene();
   buildGraph();
@@ -466,12 +473,49 @@ function applyHighlight() {
         else if(edge.type==='mass_flow')     mat.color.setHex(0x4488cc);  // 青：質量流
         else                                 mat.color.setHex(0x666666);
       } else mat.color.setHex(originalColor);
-    } else { mat.opacity=baseOpacity; mat.color.setHex(originalColor); }
+    } else {
+      // Snapshotフィルター時：対象Snapshot内のエッジを強調
+      if(activeSnapshot !== 'all') {
+        const snap = SNAP_MAP[activeSnapshot];
+        const snapStage = snap?.stage;
+        const edgeStage = edge.stage || (edge.source?.includes('@') ? edge.source.split('@')[1] : '');
+        const inSnap = edgeStage === snapStage
+          || edge.snapshot_ref === activeSnapshot
+          || (edge.source_snapshot === activeSnapshot || edge.target_snapshot === activeSnapshot);
+        if(inSnap) {
+          mat.opacity = baseOpacity * 2.2;
+          mat.color.setHex(originalColor);
+        } else {
+          mat.opacity = 0.03;
+          mat.color.setHex(originalColor);
+        }
+      } else {
+        mat.opacity=baseOpacity; mat.color.setHex(originalColor);
+      }
+    }
   });
 }
 
 function isVisible(ud) {
   const {id,type,stage}=ud;
+
+  // ── Snapshotフィルター（v2.0）────────────────────────────
+  if(activeSnapshot !== 'all') {
+    const snap = SNAP_MAP[activeSnapshot];
+    if(snap) {
+      const snapStage = snap.stage;
+      if(type==='reaction') {
+        const rxnSnap = ud.node?.snapshot_ref || ud.node?.stage || ud.node?.step;
+        if(rxnSnap !== activeSnapshot && (ud.node?.stage||ud.node?.step) !== snapStage) return false;
+      } else if(type==='substance_instance') {
+        if(stage !== snapStage) return false;
+      } else if(type==='ingredient_component' || type==='raw_material') {
+        // 原材料・成分分解は「全Snapshot」で常時表示（起点のため）
+        // activeSnapshotが最初のSNAP-001の場合だけ表示
+      }
+    }
+  }
+
   if(activeStep!=='all') {
     const s = stage||'';
     if(type==='reaction'           &&s!==activeStep) return false;
@@ -843,14 +887,20 @@ function detailSub(panel,n,stage) {
 
   const roles=(masterNode?.reaction_roles||[]);
   const hasBack = navStack.length > 0;
+  // Snapshot情報（v2.0）
+  const mySnapRef = n.snapshot_ref || n.snap_id || '';
+  const snapBadgeHTML = snapBadge(mySnapRef);
 
   panel.innerHTML=`<div class="detail-card">
     ${hasBack ? _backBtnHTML() : ''}
     <div class="detail-id">${n.id}</div>
     <div class="detail-name">${n.name}</div>
     ${n.formula?`<div class="detail-formula">${n.formula}</div>`:''}
-    <span class="badge" style="background:${bc};color:#070a08">${STEP_LABELS[stage]||stage}</span>
-    ${n.is_volatile?`<span style="font-size:9px;color:#e8b553;padding:2px 6px;border:1px solid #e8b553;border-radius:2px;margin-left:4px">★ 香気</span>`:''}
+    <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:4px">
+      <span class="badge" style="background:${bc};color:#070a08">${STEP_LABELS[stage]||stage}</span>
+      ${snapBadgeHTML}
+      ${n.is_volatile?`<span style="font-size:9px;color:#e8b553;padding:2px 6px;border:1px solid #e8b553;border-radius:2px">★ 香気</span>`:''}
+    </div>
     <div style="margin-top:10px;display:flex;gap:16px">
       <div style="font-size:10px;color:var(--text3)">▲来歴 <span style="color:var(--accent2)">${upC}</span></div>
       <div style="font-size:10px;color:var(--text3)">▼行先 <span style="color:var(--accent)">${dnC}</span></div>
@@ -859,13 +909,18 @@ function detailSub(panel,n,stage) {
       原材料由来: ${myComps.map(c=>`<span style="color:#9b6e3a">${c.raw_parent}</span>`).join(', ')}
     </div>`:''}
     ${physHTML}${flowHTML}
-    <div class="detail-section"><div class="detail-section-title">工程インスタンス</div>${
-      myInsts.map(inst=>`<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;font-size:10px;cursor:pointer"
-        onclick="selectNode('${inst.id}',(GR.substance_instances||[]).find(x=>x.id==='${inst.id}'),'substance_instance')">
-        <div style="width:7px;height:7px;border-radius:50%;background:${STEP_COLORS_CSS[inst.stage]||'#888'};flex-shrink:0"></div>
-        <span style="color:${STEP_COLORS_CSS[inst.stage]||'#888'};min-width:72px">${STEP_LABELS[inst.stage]||inst.stage}</span>
-        <span style="color:var(--accent2)">${inst.amount_g!=null?inst.amount_g.toFixed(3)+'g':'—'}</span>
-      </div>`).join('')}
+    <div class="detail-section"><div class="detail-section-title">工程タイムライン</div>${
+      myInsts.map(inst=>{
+        const iSnap = SNAP_MAP[inst.snapshot_ref||inst.snap_id||''];
+        return `<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;font-size:10px;cursor:pointer;padding:2px 4px;border-radius:2px;transition:background .12s"
+          onclick="selectNode('${inst.id}',(GR.substance_instances||[]).find(x=>x.id==='${inst.id}'),'substance_instance')"
+          onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background=''">
+          <div style="width:7px;height:7px;border-radius:50%;background:${STEP_COLORS_CSS[inst.stage]||'#888'};flex-shrink:0"></div>
+          <span style="color:${STEP_COLORS_CSS[inst.stage]||'#888'};min-width:72px">${STEP_LABELS[inst.stage]||inst.stage}</span>
+          ${iSnap?`<span style="font-size:8px;color:${iSnap.color};border:1px solid ${iSnap.color};padding:0 4px;border-radius:1px">${iSnap.id}</span>`:''}
+          <span style="color:var(--accent2);margin-left:auto">${inst.amount_g!=null?inst.amount_g.toFixed(3)+'g':'—'}</span>
+        </div>`;
+      }).join('')}
     </div>
     ${snapHTML}
     ${roles.length?`<div class="detail-section"><div class="detail-section-title">反応への関与</div>${
@@ -935,7 +990,10 @@ function detailRxn(panel,r,stage) {
 
   panel.innerHTML=`<div class="detail-card">
     <div class="detail-id">${r.id}</div><div class="detail-name">${r.name}</div>
-    <span class="badge" style="background:${col};color:#070a08">${STEP_LABELS[r.stage||r.step]||r.stage}</span>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:4px">
+      <span class="badge" style="background:${col};color:#070a08">${STEP_LABELS[r.stage||r.step]||r.stage}</span>
+      ${snapBadge(r.snapshot_ref||'')}
+    </div>
     ${r.equation?`<div style="font-size:10px;color:var(--text2);line-height:1.65;margin:8px 0;border-left:2px solid ${col};padding-left:8px">${r.equation}</div>`:''}
     ${r.equation_formula?`<div class="detail-formula" style="font-size:9px">${r.equation_formula}</div>`:''}
     ${condHTML}${sensHTML}
@@ -974,6 +1032,9 @@ function initUI() {
 
   function setStepActive(step) { document.querySelectorAll('.step-item').forEach(i=>i.classList.toggle('active',i.dataset.step===step)); }
 
+  // ── Snapshotタイムライン（v2.0）──────────────────────────
+  initSnapshotTimeline();
+
   document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active'); activeFilter=btn.dataset.filter; applyHighlight();
@@ -992,6 +1053,89 @@ function initUI() {
     const btn=document.getElementById('btn-rotate');
     btn.style.color=autoRotate?'var(--accent)':''; btn.style.borderColor=autoRotate?'var(--accent)':'';
   };
+}
+
+// ─── Snapshotタイムライン（v2.0）─────────────────────────────
+function initSnapshotTimeline() {
+  const container = document.getElementById('snapshot-timeline');
+  if (!container) return;
+
+  const snaps = GR.snapshots || [];
+  if (!snaps.length) { container.style.display='none'; return; }
+
+  container.innerHTML = '';
+
+  // 「全」ボタン
+  const allBtn = document.createElement('button');
+  allBtn.className = 'snap-btn active';
+  allBtn.dataset.snapId = 'all';
+  allBtn.innerHTML = `<span class="snap-btn-label">全</span>`;
+  allBtn.title = '全工程を表示';
+  allBtn.addEventListener('click', () => setActiveSnapshot('all'));
+  container.appendChild(allBtn);
+
+  // 区切り線
+  const sep0 = document.createElement('div');
+  sep0.className = 'snap-sep';
+  container.appendChild(sep0);
+
+  snaps.forEach((snap, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'snap-btn';
+    btn.dataset.snapId = snap.id;
+
+    // インスタンス数カウント
+    const instCount = (GR.substance_instances||[]).filter(i => i.snapshot_ref === snap.id).length;
+    const rxnCount  = (GR.reactions||[]).filter(r => r.snapshot_ref === snap.id).length;
+
+    btn.innerHTML = `
+      <span class="snap-btn-num">${idx+1}</span>
+      <span class="snap-btn-label">${snap.label_ja||snap.label}</span>
+      <span class="snap-btn-count">${instCount}</span>`;
+    btn.title = `${snap.label}  |  物質 ${instCount}  反応 ${rxnCount}`;
+    btn.style.setProperty('--snap-color', snap.color||'#888');
+    btn.addEventListener('click', () => setActiveSnapshot(snap.id));
+    container.appendChild(btn);
+
+    // Snapshot間の矢印（最後以外）
+    if (idx < snaps.length - 1) {
+      const arr = document.createElement('div');
+      arr.className = 'snap-arrow';
+      arr.innerHTML = '›';
+      container.appendChild(arr);
+    }
+  });
+}
+
+function setActiveSnapshot(snapId) {
+  activeSnapshot = snapId;
+  // step-legendと同期: snapshotが指定されたらstepも合わせる
+  if (snapId !== 'all') {
+    const snap = SNAP_MAP[snapId];
+    if (snap) {
+      activeStep = snap.stage;
+      document.querySelectorAll('.step-item').forEach(i =>
+        i.classList.toggle('active', i.dataset.step === snap.stage));
+    }
+  } else {
+    activeStep = 'all';
+    document.querySelectorAll('.step-item').forEach(i =>
+      i.classList.toggle('active', i.dataset.step === 'all'));
+  }
+  // ボタンUI更新
+  document.querySelectorAll('.snap-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.snapId === snapId));
+  applyHighlight();
+  // 現在選択中トレースを再適用
+  if (selectedId && traceSet) applyHighlight();
+}
+
+// Snapshotバッジ生成（詳細パネル用）
+function snapBadge(snapRef) {
+  if (!snapRef) return '';
+  const snap = SNAP_MAP[snapRef];
+  if (!snap) return '';
+  return `<span class="snap-badge" style="--snap-color:${snap.color||'#888'}">${snap.label_ja||snap.label}</span>`;
 }
 
 // ─── ナビゲーション ───────────────────────────────────────────
