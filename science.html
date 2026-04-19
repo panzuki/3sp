@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>bread for myself — 3D 製パン化学ネットワーク</title>
+<title>bread for myself — 3D 製パン化学ネットワーク v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -476,19 +476,18 @@ body.sb-open #snapshot-timeline-wrap {
   </div>
   <div id="detail-panel">
     <div class="detail-empty">
-      球をクリックすると詳細表示。<br><br>
-      <b style="color:var(--text2)">Snapshot Flow（v2.0）：</b><br>
-      下部タイムラインで工程を選択<br>
-      物質は各Snapshotに独立して存在<br><br>
-      <b style="color:var(--text2)">トレース機能：</b><br>
-      🔶 原材料 → 下流▼全因果<br>
-      🔵 物質インスタンス → ⇅両方向<br>
-      🔴 焼成物 → 上流▲全因果<br>
-      🔷 反応 → 前後2ホップ<br><br>
-      <b style="color:var(--text2)">操作：</b><br>
-      ドラッグ → 回転<br>
-      ホイール → ズーム<br>
-      右ドラッグ → パン
+      ノードをクリックすると詳細表示<br><br>
+      <b style="color:var(--text2)">完全トレース（v3.0）</b><br>
+      🔶 原材料 → ▼下流全経路<br>
+      🔵 物質 → ▲▼双方向<br>
+      🔴 焼成物 → ▲来歴<br>
+      🔷 反応 → 入力・出力・経路<br><br>
+      <b style="color:var(--text2)">エッジ色</b><br>
+      <span style="color:#ff8844">■</span> input（物質→反応）<br>
+      <span style="color:#44ccdd">■</span> output（反応→物質）<br>
+      <span style="color:#88aaff">■</span> mass_flow（時間連続）<br><br>
+      <b style="color:var(--text2)">操作</b><br>
+      ドラッグ→回転 / ホイール→ズーム<br>右ドラッグ→パン
     </div>
   </div>
 </div>
