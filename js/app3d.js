@@ -1,12 +1,12 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v8.0  Complete Trace
+// bread for myself — app3d.js  v8.1  Trace + Snapshot Filter + Unreaction
 // 仕様: 完全トレース版 §10  (Snapshot×Substance×Reaction ノードグラフ)
-// データ: 14_graph_runtime.json  schema v3.0-trace
+// データ: 14_graph_runtime.json  schema v3.2-trace-unreaction
 // Three.js r128
 //
 // アーキテクチャ:
 //   nodes[] + edges[]  のグラフをそのまま描画
-//   TRACEABLE = ["mass_flow", "input", "output"]
+//   TRACEABLE = ["ingredient_input", "input", "output"] (+ mass_flow fallback)
 //   reaction もグラフノード → trace() で統一処理
 // ══════════════════════════════════════════════════════════════
 
@@ -49,8 +49,9 @@ const STAGE_GAP =  200;
 function getStageY(po) { return BASE_Y - po * STAGE_GAP; }
 
 // ─── トレース設定（§10.3）────────────────────────────────────
-// input/output/mass_flow のみがトレース対象
-const TRACEABLE_TYPES = new Set(['mass_flow','input','output']);
+// ingredient_input / input / output を主対象にトレース
+// 旧データ互換のため mass_flow も残す
+const TRACEABLE_TYPES = new Set(['ingredient_input','input','output','mass_flow']);
 
 // ─── グローバル状態 ───────────────────────────────────────────
 let GR = null, SM = null;
@@ -159,6 +160,11 @@ function sr(str) {
   h=(h^(h>>>16))*0x45d9f3b|0; h=(h^(h>>>16))*0x45d9f3b|0; h=h^(h>>>16);
   return (h>>>0)/0xFFFFFFFF;
 }
+function tintHex(hex, t=.28) {
+  const c = new THREE.Color(hex);
+  c.lerp(new THREE.Color(0xffffff), t);
+  return c.getHex();
+}
 
 // ─── Three.js シーン ─────────────────────────────────────────
 function initScene() {
@@ -266,7 +272,7 @@ function buildGraph() {
   scene.add(new THREE.Line(axG,new THREE.LineBasicMaterial({color:0x1a3322,transparent:true,opacity:.4})));
 
   // ─── ノードを type 別に配置 ─────────────────────────────────
-  const byType = {raw_material:[], ingredient_component:[], substance_instance:[], reaction:[]};
+  const byType = {raw_material:[], ingredient_component:[], substance_instance:[], reaction:[], unreaction:[]};
   (GR.nodes||[]).forEach(n => {
     const t = n.type || 'substance_instance';
     (byType[t] = byType[t]||[]).push(n);
@@ -283,13 +289,14 @@ function buildGraph() {
       let geo;
       if (shape === 'sphere')      geo = new THREE.SphereGeometry(size,16,10);
       else if (shape === 'octa')   geo = new THREE.OctahedronGeometry(size,0);
+      else if (shape === 'tetra')  geo = new THREE.TetrahedronGeometry(size,0);
       else                         geo = new THREE.SphereGeometry(size,8,6);
 
       const isVol = !!n.is_volatile;
       const mat = new THREE.MeshPhongMaterial({
         color: col, emissive: col,
-        emissiveIntensity: isVol ? .45 : (n.type==='reaction' ? .30 : .10),
-        shininess: n.type==='reaction' ? 90 : 45,
+        emissiveIntensity: isVol ? .45 : ((n.type==='reaction'||n.type==='unreaction') ? .32 : .10),
+        shininess: (n.type==='reaction'||n.type==='unreaction') ? 90 : 45,
         transparent: true, opacity: n.orphan ? 0.35 : 1
       });
       const mesh = new THREE.Mesh(geo, mat);
@@ -392,13 +399,32 @@ function buildGraph() {
     );
   });
 
+  // unreaction（snapshot間の未反応継承、各工程中心付近に配置）
+  const unrxByStage = {};
+  (byType.unreaction||[]).forEach(n=>{
+    const s=n.stage||'mixing'; (unrxByStage[s]=unrxByStage[s]||[]).push(n);
+  });
+  Object.entries(unrxByStage).forEach(([stage,items])=>{
+    placeNodes(items,
+      (n,i,total)=>{
+        const po=STAGE_PO[stage]??1;
+        const a=(i/Math.max(total,1))*Math.PI*2 + Math.PI/6;
+        const r=78 + ((i%6)-2.5)*6 + (sr(n.id)-.5)*10;
+        return {x:Math.cos(a)*r, y:getStageY(po)+8+(sr(n.id+'y')-.5)*18, z:Math.sin(a)*r};
+      },
+      ()=>tintHex(STEP_COLORS[stage]||0x666666, .34),
+      ()=>6,
+      ()=>'tetra'
+    );
+  });
+
   // ─── エッジ描画 ─────────────────────────────────────────────
-  // §10.9 色分け: mass_flow=黄, input=橙, output=水色, ingredient_input=暗灰
+  // §10.9 色分け: ingredient_input=茶灰, input=橙, output=水色, mass_flow=青（旧互換）
   const EDGE_STYLE = {
-    mass_flow:        {col:0x4466aa, opacity:.20},
-    input:            {col:0xff8844, opacity:.30},
-    output:           {col:0x44ccdd, opacity:.30},
-    ingredient_input: {col:0x334433, opacity:.12},
+    mass_flow:        {col:0x88aaff, opacity:.18},
+    input:            {col:0xff8844, opacity:.34},
+    output:           {col:0x44ccdd, opacity:.34},
+    ingredient_input: {col:0x8b6a3e, opacity:.28},
   };
 
   (GR.edges||[]).forEach(e=>{
@@ -419,6 +445,19 @@ function addRing(scene,radius,y,color,opacity) {
   const mesh=new THREE.Mesh(new THREE.TorusGeometry(radius,1.2,8,72),
     new THREE.MeshBasicMaterial({color,transparent:true,opacity}));
   mesh.position.y=y; mesh.rotation.x=Math.PI/2; scene.add(mesh);
+}
+
+function isEdgeVisible(edge) {
+  const se=nodeMap[edge.source], te=nodeMap[edge.target];
+  if(!se||!te) return false;
+  const srcVis=isVisible(se.mesh.userData);
+  const tgtVis=isVisible(te.mesh.userData);
+  if(!srcVis||!tgtVis) return false;
+  if(activeSnapshot==='all') return true;
+  if(edge.snapshot===activeSnapshot||edge.from_snapshot===activeSnapshot||edge.to_snapshot===activeSnapshot) return true;
+  const snap=SNAP_MAP[activeSnapshot];
+  if(!snap) return true;
+  return se.mesh.userData.stage===snap.stage||te.mesh.userData.stage===snap.stage;
 }
 
 // ─── §10.6 ハイライト ────────────────────────────────────────
@@ -443,7 +482,7 @@ function applyHighlight() {
       if(inTr && traceSet) {
         const inUp = traceUpSet && traceUpSet.has(ud.id);
         const inDn = traceDnSet && traceDnSet.has(ud.id);
-        if(ud.type==='reaction') ei = .55;
+        if(ud.type==='reaction'||ud.type==='unreaction') ei = .55;
         else if(inUp&&inDn) ei = isVol?.60:.28;
         else if(inUp)       ei = isVol?.55:.24;
         else if(inDn)       ei = isVol?.65:.32;
@@ -456,25 +495,26 @@ function applyHighlight() {
   });
 
   lineMeshes.forEach(({edge,mat,originalColor,baseOpacity})=>{
+    const edgeVisible = isEdgeVisible(edge);
     if(traceSet) {
-      const both=traceSet.has(edge.source)&&traceSet.has(edge.target);
-      mat.opacity=both?.92:.015;
+      const both=edgeVisible&&traceSet.has(edge.source)&&traceSet.has(edge.target);
+      mat.opacity=both?.92:.012;
       if(both){
-        if(edge.type==='input')       mat.color.setHex(0xff8844);
-        else if(edge.type==='output') mat.color.setHex(0x44ccdd);
-        else if(edge.type==='mass_flow') mat.color.setHex(0x88aaff);
-        else                          mat.color.setHex(0x888888);
+        if(edge.type==='input')             mat.color.setHex(0xff8844);
+        else if(edge.type==='output')       mat.color.setHex(0x44ccdd);
+        else if(edge.type==='ingredient_input') mat.color.setHex(0xc89a63);
+        else if(edge.type==='mass_flow')    mat.color.setHex(0x88aaff);
+        else                                mat.color.setHex(0x888888);
       } else mat.color.setHex(originalColor);
     } else {
-      if(activeSnapshot!=='all') {
-        const snap=SNAP_MAP[activeSnapshot];
-        const inSnap = snap && (edge.snapshot===activeSnapshot ||
-                                edge.from_snapshot===activeSnapshot ||
-                                edge.to_snapshot===activeSnapshot);
-        mat.opacity = inSnap ? baseOpacity*2.5 : 0.03;
-        mat.color.setHex(originalColor);
+      mat.color.setHex(originalColor);
+      if(!edgeVisible) {
+        mat.opacity=0.01;
+      } else if(activeSnapshot!=='all') {
+        const inSnap = edge.snapshot===activeSnapshot || edge.from_snapshot===activeSnapshot || edge.to_snapshot===activeSnapshot;
+        mat.opacity = inSnap ? Math.min(.95, baseOpacity*2.2) : Math.max(.05, baseOpacity*.8);
       } else {
-        mat.opacity=baseOpacity; mat.color.setHex(originalColor);
+        mat.opacity=baseOpacity;
       }
     }
   });
@@ -489,21 +529,25 @@ function isVisible(ud) {
     if(snap) {
       if(type==='substance_instance' && stage!==snap.stage) return false;
       if(type==='reaction'           && stage!==snap.stage) return false;
+      if(type==='unreaction'         && stage!==snap.stage) return false;
     }
   }
 
   if(activeStep!=='all') {
-    if(type==='reaction'           && stage!==activeStep) return false;
-    if(type==='substance_instance' && stage!==activeStep) return false;
-    if(type==='raw_material'       && activeStep!=='ingredients') return false;
+    if(type==='reaction'            && stage!==activeStep) return false;
+    if(type==='unreaction'          && stage!==activeStep) return false;
+    if(type==='substance_instance'  && stage!==activeStep) return false;
+    if(type==='raw_material'        && activeStep!=='ingredients') return false;
     if(type==='ingredient_component'&&activeStep!=='ingredient_component'&&activeStep!=='ingredients') return false;
   }
   if(activeFilter==='volatile'&&type==='substance_instance'&&!ud.node?.is_volatile) return false;
-  if(activeFilter==='reactions'&&type!=='reaction') return false;
+  if(activeFilter==='reactions'&&type!=='reaction'&&type!=='unreaction') return false;
   if(searchQuery) {
     const n=ud.node;
     const hit=(n?.name||'').toLowerCase().includes(searchQuery)
            ||(n?.formula||'').toLowerCase().includes(searchQuery)
+           ||(n?.equation||'').toLowerCase().includes(searchQuery)
+           ||(n?.substance_ref||'').toLowerCase().includes(searchQuery)
            ||(id||'').toLowerCase().includes(searchQuery);
     if(!hit) return false;
   }
@@ -576,10 +620,16 @@ function selectNode(id,node,type) {
   let icon='🔍', msg='';
   if(type==='raw_material') {
     icon='🔶'; msg=`${node?.name||id}  ▼下流 ${combined.size-1} ノード`;
+  } else if(type==='ingredient_component') {
+    icon='🟤'; msg=`${node?.name||id}  ▲${upstream.size-1}  ▼${downstream.size-1}`;
   } else if(type==='reaction') {
     const ins  = (bwdMap[id]||[]).filter(e=>e.type==='input').length;
     const outs = (fwdMap[id]||[]).filter(e=>e.type==='output').length;
     icon='🔷'; msg=`${node?.name||id}  入力 ${ins}  出力 ${outs}  経路 ${combined.size-1}`;
+  } else if(type==='unreaction') {
+    const ins  = (bwdMap[id]||[]).filter(e=>e.type==='input').length;
+    const outs = (fwdMap[id]||[]).filter(e=>e.type==='output').length;
+    icon='🟣'; msg=`${node?.name||id}  未反応継承  入力 ${ins}  出力 ${outs}`;
   } else if(node?.stage==='baking') {
     icon='🔴'; msg=`${node?.name||id}  ▲来歴 ${upstream.size-1}`;
   } else {
@@ -624,6 +674,8 @@ function showTT(e,node,type) {
   let sub='';
   if(type==='reaction') {
     sub=`反応 [${STEP_LABELS[node.stage]||node.stage||''}]${node.orphan?' ⚪ 孤立':''}`;
+  } else if(type==='unreaction') {
+    sub=`未反応継承 [${STEP_LABELS[node.stage]||node.stage||''}] → ${STEP_LABELS[node.next_stage]||node.next_stage||''}`;
   } else if(type==='raw_material') {
     sub=`原材料`;
   } else if(type==='ingredient_component') {
@@ -650,21 +702,23 @@ function updateDetail(node,type) {
     navStack=[];
     panel.innerHTML=`<div class="detail-empty">
       ノードをクリックすると詳細表示<br><br>
-      <b style="color:var(--text2)">完全トレース（v3.0）</b><br>
+      <b style="color:var(--text2)">完全トレース（v3.2）</b><br>
       🔶 原材料 → ▼下流全経路<br>
+      🟤 成分ノード → ▲▼双方向<br>
       🔵 物質 → ▲▼双方向<br>
-      🔴 焼成物 → ▲来歴<br>
+      🟣 未反応継承 → 次 snapshot への橋渡し<br>
       🔷 反応 → 入力・出力・経路<br><br>
       <b style="color:var(--text2)">エッジ色</b><br>
-      <span style="color:#ff8844">■</span> input（物質→反応）<br>
-      <span style="color:#44ccdd">■</span> output（反応→物質）<br>
-      <span style="color:#88aaff">■</span> mass_flow（時間連続）<br><br>
+      <span style="color:#8b6a3e">■</span> ingredient_input（原材料→成分→物質）<br>
+      <span style="color:#ff8844">■</span> input（物質→反応 / 物質→未反応継承）<br>
+      <span style="color:#44ccdd">■</span> output（反応/未反応継承→物質）<br><br>
       <b style="color:var(--text2)">操作</b><br>
       ドラッグ→回転 / ホイール→ズーム<br>右ドラッグ→パン
     </div>`;
     return;
   }
   if(type==='reaction')              detailRxn(panel,node);
+  else if(type==='unreaction')       detailUnreaction(panel,node);
   else if(type==='raw_material')     detailRaw(panel,node);
   else if(type==='ingredient_component') detailComp(panel,node);
   else                               detailSub(panel,node);
@@ -696,6 +750,18 @@ function snapBadge(snap_id) {
 }
 
 // ─── §11.4 物質インスタンス詳細 ──────────────────────────────
+function edgeBadgeColor(type, dir='in') {
+  if(type==='ingredient_input') return '#8b6a3e';
+  if(type==='mass_flow') return '#88aaff';
+  if(type==='output') return '#44ccdd';
+  return dir==='in' ? '#ff8844' : '#44ccdd';
+}
+
+function edgeArrow(type, dir='in') {
+  if(type==='mass_flow') return dir==='in' ? '←' : '→';
+  return dir==='in' ? '⬅' : '➡';
+}
+
 function detailSub(panel,n) {
   const stage=n.stage||'mixing';
   const bc=STEP_COLORS_CSS[stage]||'#4a8060';
@@ -713,9 +779,9 @@ function detailSub(panel,n) {
 
   const inHTML = inEdges.slice(0,5).map(e=>{
     const src=nodeMap[e.source]; if(!src) return '';
-    const col=e.type==='mass_flow'?'#88aaff':'#ff8844';
+    const col=edgeBadgeColor(e.type,'in');
     return `<div style="font-size:9px;color:var(--text3);margin-bottom:2px">
-      <span style="color:${col}">${e.type==='mass_flow'?'←':'⬅'}</span>
+      <span style="color:${col}">${edgeArrow(e.type,'in')}</span>
       ${makeLink(e.source, src.node?.name||e.source.slice(0,20))}
       <span style="color:var(--text3);font-size:8px">[${e.reaction||e.type}]</span>
     </div>`;
@@ -723,9 +789,9 @@ function detailSub(panel,n) {
 
   const outHTML = outEdges.slice(0,5).map(e=>{
     const tgt=nodeMap[e.target]; if(!tgt) return '';
-    const col=e.type==='mass_flow'?'#88aaff':'#44ccdd';
+    const col=edgeBadgeColor(e.type,'out');
     return `<div style="font-size:9px;color:var(--text3);margin-bottom:2px">
-      <span style="color:${col}">${e.type==='mass_flow'?'→':'➡'}</span>
+      <span style="color:${col}">${edgeArrow(e.type,'out')}</span>
       ${makeLink(e.target, tgt.node?.name||e.target.slice(0,20))}
       <span style="color:var(--text3);font-size:8px">[${e.reaction||e.type}]</span>
     </div>`;
@@ -766,6 +832,43 @@ function detailSub(panel,n) {
 }
 
 // ─── §11.4 反応詳細（getReactionIO 仕様書通り）──────────────
+function detailUnreaction(panel,n) {
+  const col=STEP_COLORS_CSS[n.stage]||'#777';
+  const hasBack=navStack.length>0;
+  const snapBadgeHTML=snapBadge(n.snapshot);
+  const inputs=(bwdMap[n.id]||[]).filter(e=>e.type==='input'||e.type==='ingredient_input');
+  const outputs=(fwdMap[n.id]||[]).filter(e=>e.type==='output');
+  const makeLine=(edge,dir='in')=>{
+    const peerId=dir==='in'?edge.source:edge.target;
+    const peer=nodeMap[peerId]?.node;
+    if(!peer) return '';
+    return `<div style="font-size:10px;color:var(--text2);margin-bottom:4px">
+      <span style="color:${edgeBadgeColor(edge.type,dir)}">${edgeArrow(edge.type,dir)}</span>
+      <span style="cursor:pointer;color:var(--accent2)" onclick="_jumpTo('${peerId}')">${peer.name||peerId}</span>
+      <span style="color:var(--text3);font-size:8px">[${edge.type}]</span>
+    </div>`;
+  };
+  panel.innerHTML=`<div class="detail-card">
+    ${hasBack?_backBtnHTML():''}
+    <div class="detail-id">${n.id}</div>
+    <div class="detail-name">${n.name||'未反応継承'}</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
+      <span class="badge" style="background:${col};color:#070a08">未反応継承</span>
+      ${snapBadgeHTML}
+      ${n.synthetic?`<span style="font-size:8px;color:#bfa6ff;padding:1px 5px;border:1px solid #7f68b2;border-radius:2px">synthetic</span>`:''}
+    </div>
+    ${n.equation?`<div style="font-size:10px;color:var(--text2);margin:8px 0;border-left:2px solid ${col};padding-left:8px;line-height:1.6">${n.equation}</div>`:''}
+    <div style="font-size:10px;color:var(--text3);line-height:1.8">
+      substance_ref: <span style="color:var(--accent2)">${n.substance_ref||'—'}</span><br>
+      次 snapshot: <span style="color:var(--accent)">${n.next_snapshot||'—'}</span><br>
+      次工程: <span style="color:var(--accent)">${STEP_LABELS[n.next_stage]||n.next_stage||'—'}</span><br>
+      continuity: <span style="color:var(--text2)">${n.continuity||'—'}</span>
+    </div>
+    ${inputs.length?`<div class="detail-section"><div class="detail-section-title">入力 (${inputs.length})</div>${inputs.slice(0,8).map(e=>makeLine(e,'in')).join('')}${inputs.length>8?`<div style="font-size:8px;color:var(--text3)">他 ${inputs.length-8} 件</div>`:''}</div>`:''}
+    ${outputs.length?`<div class="detail-section"><div class="detail-section-title">出力 (${outputs.length})</div>${outputs.slice(0,8).map(e=>makeLine(e,'out')).join('')}${outputs.length>8?`<div style="font-size:8px;color:var(--text3)">他 ${outputs.length-8} 件</div>`:''}</div>`:''}
+  </div>`;
+}
+
 function detailRxn(panel,r) {
   const col=STEP_COLORS_CSS[r.stage]||'#666';
   const hasBack=navStack.length>0;
@@ -887,12 +990,13 @@ function initSnapshotTimeline() {
   snaps.forEach((snap,idx)=>{
     const instCnt=(GR.nodes||[]).filter(n=>n.type==='substance_instance'&&n.snapshot===snap.id).length;
     const rxnCnt =(GR.nodes||[]).filter(n=>n.type==='reaction'&&n.snapshot===snap.id).length;
+    const unrxCnt=(GR.nodes||[]).filter(n=>n.type==='unreaction'&&n.snapshot===snap.id).length;
     const btn=document.createElement('button');
     btn.className='snap-btn'; btn.dataset.snapId=snap.id;
     btn.innerHTML=`<span class="snap-btn-num" style="color:${snap.color}">${idx+1}</span>
       <span class="snap-btn-label">${snap.label_ja}</span>
       <span class="snap-btn-count">${instCnt}</span>`;
-    btn.title=`${snap.label} | 物質${instCnt} 反応${rxnCnt}`;
+    btn.title=`${snap.label} | 物質${instCnt} 反応${rxnCnt} 継承${unrxCnt}`;
     btn.style.setProperty('--snap-color',snap.color||'#888');
     btn.addEventListener('click',()=>setActiveSnapshot(snap.id));
     container.appendChild(btn);
