@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>bread for myself — 3D 製パン化学ネットワーク v3.2</title>
+<title>bread for myself — 3D 製パン化学ネットワーク v3.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -199,6 +199,7 @@ body.sb-open .view.active { left: var(--sidebar-w); }
 .snap-bar-fill { height: 100%; border-radius: 2px; transition: width .3s; }
 .snap-bar-val { color: var(--text2); min-width: 44px; text-align: right; }
 .badge { display: inline-block; font-size: 8px; padding: 2px 6px; border-radius: 2px; margin: 2px 0; }
+.badge.unr { background: #888; color: #fff; }
 
 /* ═══════════════════════════════════════════════════
    TRACE BAR
@@ -471,18 +472,21 @@ body.sb-open #snapshot-timeline-wrap {
     <h3>Snapshot（状態確定点）</h3>
     <div id="snap-info" style="font-size:9px;color:var(--text3);line-height:1.8">
       下部タイムラインで工程を選択<br>
-      <span style="color:var(--accent2)">数字</span>＝物質数（title に反応 / 未反応継承数を表示）
+      <span style="color:var(--accent2)">数字</span>＝物質数（title に反応 / UNR 数を表示）
     </div>
   </div>
   <div id="detail-panel">
     <div class="detail-empty">
       ノードをクリックすると詳細表示<br><br>
-      <b style="color:var(--text2)">完全トレース（v3.2）</b><br>
+      <b style="color:var(--text2)">完全トレース（v3.3）</b><br>
       🔶 原材料 → ▼下流全経路<br>
       🟤 成分ノード → ▲▼双方向<br>
       🔵 物質 → ▲▼双方向<br>
-      🟣 未反応継承 → 次 snapshot への橋渡し<br>
+      🟣 <span class="badge unr">UNR</span> 変化なし / 未解析<br>
       🔷 反応 → 入力・出力・経路<br><br>
+      <table style="margin-top:6px;border-collapse:collapse;font-size:9px;color:var(--text2)">
+        <tr><td style="padding:1px 8px 1px 0;color:#bbb">unreaction</td><td>変化なし / 未解析</td></tr>
+      </table><br>
       <b style="color:var(--text2)">エッジ色</b><br>
       <span style="color:#8b6a3e">■</span> ingredient_input（原材料→成分→物質）<br>
       <span style="color:#ff8844">■</span> input（物質→反応 / 物質→未反応継承）<br>
