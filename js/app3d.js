@@ -1,7 +1,7 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v8.1  Trace + Snapshot Filter + Unreaction
-// 仕様: 完全トレース版 §10  (Snapshot×Substance×Reaction ノードグラフ)
-// データ: 14_graph_runtime.json  schema v3.2-trace-unreaction
+// bread for myself — app3d.js  v8.3  Trace + Snapshot Filter + UNR-HUB
+// 仕様: UNRハブ統合版  (各工程に UNR ハブ1ノード、トレース暴走抑制)
+// データ: 14_graph_runtime.json  schema v3.3-unreaction-hub
 // Three.js r128
 //
 // アーキテクチャ:
@@ -129,27 +129,48 @@ function buildAdjacency() {
   });
 }
 
-// ─── §10.4 トレースロジック（仕様書通り）────────────────────
+// ─── §10.4 トレースロジック ───────────────────────────────────
+// UNRハブノード（node-UNR-HUB-*）はトレース経路の「通過点」として扱う。
+// ただしUNRハブ自体を起点にした場合は全入出力を表示する。
+// UNRハブ経由でトレースが他物質全体に波及しないよう、
+// ハブを経由するトレースは「同一物質チェーンのみ」に制限する。
+
+function isUNRHub(nodeId) {
+  return typeof nodeId === 'string' && nodeId.startsWith('node-UNR-HUB-');
+}
+
 function trace(nodeId) {
   const visited = new Set();
   const upSet   = new Set();
   const dnSet   = new Set();
 
-  function dfs(n, dir) {
+  // 起点がUNRハブかどうか
+  const startIsHub = isUNRHub(nodeId);
+
+  function dfs(n, dir, depth) {
+    if (depth > 200) return; // 安全上限
     visited.add(n);
     if (dir === 'upstream')   upSet.add(n);
     if (dir === 'downstream') dnSet.add(n);
+
+    // UNRハブを経由するとき: 起点がハブでない場合は、ハブの先への伝播を抑制
+    // ハブ自身はvisitedに含めるが、ハブの接続ノード全体には伝播しない
+    const currentIsHub = isUNRHub(n);
+    if (currentIsHub && !startIsHub && n !== nodeId) {
+      // ハブノードはトレースセットに含めるが、そこから先は展開しない
+      return;
+    }
 
     const edges = (dir === 'upstream') ? (bwdMap[n]||[]) : (fwdMap[n]||[]);
     for (const e of edges) {
       if (!TRACEABLE_TYPES.has(e.type)) continue;
       const next = (dir === 'upstream') ? e.source : e.target;
-      if (!visited.has(next)) dfs(next, dir);
+      if (!visited.has(next)) dfs(next, dir, depth + 1);
     }
   }
 
-  dfs(nodeId, 'upstream');
-  dfs(nodeId, 'downstream');
+  dfs(nodeId, 'upstream', 0);
+  dfs(nodeId, 'downstream', 0);
 
   return { combined: visited, upstream: upSet, downstream: dnSet };
 }
@@ -399,7 +420,8 @@ function buildGraph() {
     );
   });
 
-  // unreaction（snapshot間の未反応継承、各工程中心付近に配置）
+  // unreaction ハブノード（各工程に1つ、化学反応群の中央に配置）
+  // node-UNR-HUB-SNAP-00N 形式: 全ての「変化なし」物質エッジが集約・分岐するハブ
   const unrxByStage = {};
   (byType.unreaction||[]).forEach(n=>{
     const s=n.stage||'mixing'; (unrxByStage[s]=unrxByStage[s]||[]).push(n);
@@ -408,12 +430,11 @@ function buildGraph() {
     placeNodes(items,
       (n,i,total)=>{
         const po=STAGE_PO[stage]??1;
-        const a=(i/Math.max(total,1))*Math.PI*2 + Math.PI/6;
-        const r=78 + ((i%6)-2.5)*6 + (sr(n.id)-.5)*10;
-        return {x:Math.cos(a)*r, y:getStageY(po)+8+(sr(n.id+'y')-.5)*18, z:Math.sin(a)*r};
+        // 各工程の化学反応クラスタ中央（原点付近）に配置
+        return {x:0, y:getStageY(po), z:0};
       },
-      ()=>tintHex(STEP_COLORS[stage]||0x666666, .34),
-      ()=>6,
+      ()=>0x999999,
+      ()=>14,   // ハブは大きく
       ()=>'tetra'
     );
   });
@@ -541,7 +562,7 @@ function isVisible(ud) {
     if(type==='ingredient_component'&&activeStep!=='ingredient_component'&&activeStep!=='ingredients') return false;
   }
   if(activeFilter==='volatile'&&type==='substance_instance'&&!ud.node?.is_volatile) return false;
-  if(activeFilter==='reactions'&&type!=='reaction'&&type!=='unreaction') return false;
+  if(activeFilter==='reactions'&&type!=='reaction') return false;
   if(searchQuery) {
     const n=ud.node;
     const hit=(n?.name||'').toLowerCase().includes(searchQuery)
@@ -629,7 +650,15 @@ function selectNode(id,node,type) {
   } else if(type==='unreaction') {
     const ins  = (bwdMap[id]||[]).filter(e=>e.type==='input').length;
     const outs = (fwdMap[id]||[]).filter(e=>e.type==='output').length;
-    icon='🟣'; msg=`${node?.name||id}  未反応継承  入力 ${ins}  出力 ${outs}`;
+    const isHub = node?.hub === true || id.startsWith('node-UNR-HUB-');
+    const stageLabel = STEP_LABELS[node?.stage] || node?.stage || '';
+    const nextLabel  = STEP_LABELS[node?.next_stage] || node?.next_stage || '';
+    if (isHub) {
+      icon='🟣';
+      msg=`UNR ハブ [${stageLabel}→${nextLabel}]  集約 ${ins} 物質  ※ハブ経由の波及は抑制`;
+    } else {
+      icon='🟣'; msg=`${node?.name||id}  UNR 変化なし  入力 ${ins}  出力 ${outs}`;
+    }
   } else if(node?.stage==='baking') {
     icon='🔴'; msg=`${node?.name||id}  ▲来歴 ${upstream.size-1}`;
   } else {
@@ -675,7 +704,7 @@ function showTT(e,node,type) {
   if(type==='reaction') {
     sub=`反応 [${STEP_LABELS[node.stage]||node.stage||''}]${node.orphan?' ⚪ 孤立':''}`;
   } else if(type==='unreaction') {
-    sub=`未反応継承 [${STEP_LABELS[node.stage]||node.stage||''}] → ${STEP_LABELS[node.next_stage]||node.next_stage||''}`;
+    sub=`UNR / 変化なし・未解析 [${STEP_LABELS[node.stage]||node.stage||''}] → ${STEP_LABELS[node.next_stage]||node.next_stage||''}`;
   } else if(type==='raw_material') {
     sub=`原材料`;
   } else if(type==='ingredient_component') {
@@ -702,16 +731,18 @@ function updateDetail(node,type) {
     navStack=[];
     panel.innerHTML=`<div class="detail-empty">
       ノードをクリックすると詳細表示<br><br>
-      <b style="color:var(--text2)">完全トレース（v3.2）</b><br>
+      <b style="color:var(--text2)">トレース（v8.3 UNR-HUB）</b><br>
       🔶 原材料 → ▼下流全経路<br>
       🟤 成分ノード → ▲▼双方向<br>
       🔵 物質 → ▲▼双方向<br>
-      🟣 未反応継承 → 次 snapshot への橋渡し<br>
-      🔷 反応 → 入力・出力・経路<br><br>
+      🔷 反応ノード → 入力・出力・経路<br>
+      🟣 UNR ハブ → 工程ごとに1つ<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;変化なし物質を集約・次工程へ分岐<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;※ 選択時は隣接物質のみ表示<br><br>
       <b style="color:var(--text2)">エッジ色</b><br>
       <span style="color:#8b6a3e">■</span> ingredient_input（原材料→成分→物質）<br>
-      <span style="color:#ff8844">■</span> input（物質→反応 / 物質→未反応継承）<br>
-      <span style="color:#44ccdd">■</span> output（反応/未反応継承→物質）<br><br>
+      <span style="color:#ff8844">■</span> input（物質→反応 / 物質→UNRハブ）<br>
+      <span style="color:#44ccdd">■</span> output（反応 / UNRハブ→物質）<br><br>
       <b style="color:var(--text2)">操作</b><br>
       ドラッグ→回転 / ホイール→ズーム<br>右ドラッグ→パン
     </div>`;
@@ -831,11 +862,12 @@ function detailSub(panel,n) {
   </div>`;
 }
 
-// ─── §11.4 反応詳細（getReactionIO 仕様書通り）──────────────
+// ─── §11.4 UNRハブ詳細 ───────────────────────────────────────
 function detailUnreaction(panel,n) {
   const col=STEP_COLORS_CSS[n.stage]||'#777';
   const hasBack=navStack.length>0;
   const snapBadgeHTML=snapBadge(n.snapshot);
+  const isHub = n.hub === true || (n.id||'').startsWith('node-UNR-HUB-');
   const inputs=(bwdMap[n.id]||[]).filter(e=>e.type==='input'||e.type==='ingredient_input');
   const outputs=(fwdMap[n.id]||[]).filter(e=>e.type==='output');
   const makeLine=(edge,dir='in')=>{
@@ -851,21 +883,24 @@ function detailUnreaction(panel,n) {
   panel.innerHTML=`<div class="detail-card">
     ${hasBack?_backBtnHTML():''}
     <div class="detail-id">${n.id}</div>
-    <div class="detail-name">${n.name||'未反応継承'}</div>
+    <div class="detail-name">${isHub?`🔗 変化なし ハブ（${STEP_LABELS[n.stage]||n.stage} → ${STEP_LABELS[n.next_stage]||n.next_stage}）`:(n.name||'未反応継承')}</div>
     <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
-      <span class="badge" style="background:${col};color:#070a08">未反応継承</span>
+      <span class="badge unr">UNR${isHub?' HUB':''}</span>
       ${snapBadgeHTML}
-      ${n.synthetic?`<span style="font-size:8px;color:#bfa6ff;padding:1px 5px;border:1px solid #7f68b2;border-radius:2px">synthetic</span>`:''}
     </div>
-    ${n.equation?`<div style="font-size:10px;color:var(--text2);margin:8px 0;border-left:2px solid ${col};padding-left:8px;line-height:1.6">${n.equation}</div>`:''}
-    <div style="font-size:10px;color:var(--text3);line-height:1.8">
-      substance_ref: <span style="color:var(--accent2)">${n.substance_ref||'—'}</span><br>
+    ${isHub?`<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.8;padding:8px;border:1px solid #333;border-radius:4px;background:rgba(255,255,255,.03)">
+      このハブノードは<b style="color:var(--text2)">${inputs.length}物質</b>の「変化なし」継承を集約します。<br>
+      各物質ノードのエッジがここに集まり、次工程（<span style="color:var(--accent)">${STEP_LABELS[n.next_stage]||n.next_stage}</span>）の
+      同一物質ノードへ分岐していきます。<br>
+      <span style="color:var(--text3);font-size:9px">※ トレース時はハブ経由の他物質への波及は表示されません</span>
+    </div>`:''}
+    <div style="font-size:10px;color:var(--text3);line-height:1.8;margin-top:8px">
+      ${!isHub?`substance_ref: <span style="color:var(--accent2)">${n.substance_ref||'—'}</span><br>`:''}
       次 snapshot: <span style="color:var(--accent)">${n.next_snapshot||'—'}</span><br>
-      次工程: <span style="color:var(--accent)">${STEP_LABELS[n.next_stage]||n.next_stage||'—'}</span><br>
-      continuity: <span style="color:var(--text2)">${n.continuity||'—'}</span>
+      次工程: <span style="color:var(--accent)">${STEP_LABELS[n.next_stage]||n.next_stage||'—'}</span>
     </div>
-    ${inputs.length?`<div class="detail-section"><div class="detail-section-title">入力 (${inputs.length})</div>${inputs.slice(0,8).map(e=>makeLine(e,'in')).join('')}${inputs.length>8?`<div style="font-size:8px;color:var(--text3)">他 ${inputs.length-8} 件</div>`:''}</div>`:''}
-    ${outputs.length?`<div class="detail-section"><div class="detail-section-title">出力 (${outputs.length})</div>${outputs.slice(0,8).map(e=>makeLine(e,'out')).join('')}${outputs.length>8?`<div style="font-size:8px;color:var(--text3)">他 ${outputs.length-8} 件</div>`:''}</div>`:''}
+    ${inputs.length?`<div class="detail-section"><div class="detail-section-title">入力物質 (${inputs.length})</div>${inputs.slice(0,10).map(e=>makeLine(e,'in')).join('')}${inputs.length>10?`<div style="font-size:8px;color:var(--text3)">他 ${inputs.length-10} 件</div>`:''}</div>`:''}
+    ${outputs.length?`<div class="detail-section"><div class="detail-section-title">出力先物質 (${outputs.length})</div>${outputs.slice(0,10).map(e=>makeLine(e,'out')).join('')}${outputs.length>10?`<div style="font-size:8px;color:var(--text3)">他 ${outputs.length-10} 件</div>`:''}</div>`:''}
   </div>`;
 }
 
