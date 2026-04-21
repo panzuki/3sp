@@ -1,7 +1,7 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v8.2  Trace + Snapshot Filter + UNR v3.3
+// bread for myself — app3d.js  v8.1  Trace + Snapshot Filter + Unreaction
 // 仕様: 完全トレース版 §10  (Snapshot×Substance×Reaction ノードグラフ)
-// データ: 14_graph_runtime.json  schema v3.3-trace-unreaction
+// データ: 14_graph_runtime.json  schema v3.2-trace-unreaction
 // Three.js r128
 //
 // アーキテクチャ:
@@ -412,7 +412,7 @@ function buildGraph() {
         const r=78 + ((i%6)-2.5)*6 + (sr(n.id)-.5)*10;
         return {x:Math.cos(a)*r, y:getStageY(po)+8+(sr(n.id+'y')-.5)*18, z:Math.sin(a)*r};
       },
-      ()=>0x777777,
+      ()=>tintHex(STEP_COLORS[stage]||0x666666, .34),
       ()=>6,
       ()=>'tetra'
     );
@@ -541,7 +541,7 @@ function isVisible(ud) {
     if(type==='ingredient_component'&&activeStep!=='ingredient_component'&&activeStep!=='ingredients') return false;
   }
   if(activeFilter==='volatile'&&type==='substance_instance'&&!ud.node?.is_volatile) return false;
-  if(activeFilter==='reactions'&&type!=='reaction') return false;
+  if(activeFilter==='reactions'&&type!=='reaction'&&type!=='unreaction') return false;
   if(searchQuery) {
     const n=ud.node;
     const hit=(n?.name||'').toLowerCase().includes(searchQuery)
@@ -629,7 +629,7 @@ function selectNode(id,node,type) {
   } else if(type==='unreaction') {
     const ins  = (bwdMap[id]||[]).filter(e=>e.type==='input').length;
     const outs = (fwdMap[id]||[]).filter(e=>e.type==='output').length;
-    icon='🟣'; msg=`${node?.name||id}  UNR 変化なし / 未解析  入力 ${ins}  出力 ${outs}`;
+    icon='🟣'; msg=`${node?.name||id}  未反応継承  入力 ${ins}  出力 ${outs}`;
   } else if(node?.stage==='baking') {
     icon='🔴'; msg=`${node?.name||id}  ▲来歴 ${upstream.size-1}`;
   } else {
@@ -675,7 +675,7 @@ function showTT(e,node,type) {
   if(type==='reaction') {
     sub=`反応 [${STEP_LABELS[node.stage]||node.stage||''}]${node.orphan?' ⚪ 孤立':''}`;
   } else if(type==='unreaction') {
-    sub=`UNR / 変化なし・未解析 [${STEP_LABELS[node.stage]||node.stage||''}] → ${STEP_LABELS[node.next_stage]||node.next_stage||''}`;
+    sub=`未反応継承 [${STEP_LABELS[node.stage]||node.stage||''}] → ${STEP_LABELS[node.next_stage]||node.next_stage||''}`;
   } else if(type==='raw_material') {
     sub=`原材料`;
   } else if(type==='ingredient_component') {
@@ -702,15 +702,12 @@ function updateDetail(node,type) {
     navStack=[];
     panel.innerHTML=`<div class="detail-empty">
       ノードをクリックすると詳細表示<br><br>
-      <b style="color:var(--text2)">完全トレース（v3.3）</b><br>
+      <b style="color:var(--text2)">完全トレース（v3.2）</b><br>
       🔶 原材料 → ▼下流全経路<br>
       🟤 成分ノード → ▲▼双方向<br>
       🔵 物質 → ▲▼双方向<br>
-      🟣 UNR → 変化なし / 未解析 の継承<br>
+      🟣 未反応継承 → 次 snapshot への橋渡し<br>
       🔷 反応 → 入力・出力・経路<br><br>
-      <table style="margin-top:6px;border-collapse:collapse;font-size:9px;color:var(--text2)">
-        <tr><td style="padding:1px 8px 1px 0;color:#bbb">unreaction</td><td>変化なし / 未解析</td></tr>
-      </table><br>
       <b style="color:var(--text2)">エッジ色</b><br>
       <span style="color:#8b6a3e">■</span> ingredient_input（原材料→成分→物質）<br>
       <span style="color:#ff8844">■</span> input（物質→反応 / 物質→未反応継承）<br>
@@ -856,7 +853,7 @@ function detailUnreaction(panel,n) {
     <div class="detail-id">${n.id}</div>
     <div class="detail-name">${n.name||'未反応継承'}</div>
     <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
-      <span class="badge unr">UNR</span>
+      <span class="badge" style="background:${col};color:#070a08">未反応継承</span>
       ${snapBadgeHTML}
       ${n.synthetic?`<span style="font-size:8px;color:#bfa6ff;padding:1px 5px;border:1px solid #7f68b2;border-radius:2px">synthetic</span>`:''}
     </div>
@@ -865,8 +862,7 @@ function detailUnreaction(panel,n) {
       substance_ref: <span style="color:var(--accent2)">${n.substance_ref||'—'}</span><br>
       次 snapshot: <span style="color:var(--accent)">${n.next_snapshot||'—'}</span><br>
       次工程: <span style="color:var(--accent)">${STEP_LABELS[n.next_stage]||n.next_stage||'—'}</span><br>
-      continuity: <span style="color:var(--text2)">${n.continuity||'—'}</span><br>
-      種別: <span style="color:var(--text2)">変化なし / 未解析</span>
+      continuity: <span style="color:var(--text2)">${n.continuity||'—'}</span>
     </div>
     ${inputs.length?`<div class="detail-section"><div class="detail-section-title">入力 (${inputs.length})</div>${inputs.slice(0,8).map(e=>makeLine(e,'in')).join('')}${inputs.length>8?`<div style="font-size:8px;color:var(--text3)">他 ${inputs.length-8} 件</div>`:''}</div>`:''}
     ${outputs.length?`<div class="detail-section"><div class="detail-section-title">出力 (${outputs.length})</div>${outputs.slice(0,8).map(e=>makeLine(e,'out')).join('')}${outputs.length>8?`<div style="font-size:8px;color:var(--text3)">他 ${outputs.length-8} 件</div>`:''}</div>`:''}
