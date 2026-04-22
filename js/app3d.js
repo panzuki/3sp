@@ -1,6 +1,9 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v8.3  Trace + Snapshot Filter + UNR-HUB
-// 仕様: UNRハブ統合版  (各工程に UNR ハブ1ノード、トレース暴走抑制)
+// bread for myself — app3d.js  v8.4  Trace ingChain fix
+// 仕様: トレース暴走完全修正版
+//   - ingredient_input は下流方向のみ（RAW→COMP→SUBで打ち止め）
+//   - 上流トレースで ingredient_input を辿らない（RAW汚染防止）
+//   - UNRハブは substance_instance 起点では展開停止
 // データ: 14_graph_runtime.json  schema v3.3-unreaction-hub
 // Three.js r128
 //
@@ -129,14 +132,34 @@ function buildAdjacency() {
   });
 }
 
-// ─── §10.4 トレースロジック ───────────────────────────────────
-// UNRハブノード（node-UNR-HUB-*）はトレース経路の「通過点」として扱う。
-// ただしUNRハブ自体を起点にした場合は全入出力を表示する。
-// UNRハブ経由でトレースが他物質全体に波及しないよう、
-// ハブを経由するトレースは「同一物質チェーンのみ」に制限する。
+// ─── §10.4 トレースロジック v8.4 ──────────────────────────────
+//
+// 【根本原因の修正】
+// 旧版の問題: ingredient_input エッジが TRACEABLE に含まれていたため、
+//   物質(SUB) → 上流 → COMP → RAW → 下流 → RAWの全COMP → 全物質
+//   という経路で無関係な物質まで全てトレースされていた。
+//
+// 【修正方針】
+//   (A) ingredient_input は「下流専用」: 上流トレースでは辿らない
+//       → RAW→COMP→SUB の一方通行を保証
+//   (B) RAW/COMP 起点: ingredient_input 下流のみ展開（上流なし）
+//   (C) substance_instance 起点: input/output のみ辿る（ingredient_input は無視）
+//   (D) UNRハブ: substance_instance 起点ではハブ自体を表示するが展開停止
+//       → ハブ経由で他の289物質に波及しない
+//
+// 【エッジ通過ルール】
+//   上流方向: input・output・mass_flow のみ（ingredient_input は辿らない）
+//   下流方向: RAW/COMP起点 → ingredient_input のみ
+//             SUB/RXN起点  → input・output・mass_flow のみ
+// ──────────────────────────────────────────────────────────────
 
 function isUNRHub(nodeId) {
   return typeof nodeId === 'string' && nodeId.startsWith('node-UNR-HUB-');
+}
+
+function getNodeType(nodeId) {
+  const entry = nodeMap[nodeId];
+  return entry ? (entry.node?.type || entry.type || '') : '';
 }
 
 function trace(nodeId) {
@@ -144,33 +167,66 @@ function trace(nodeId) {
   const upSet   = new Set();
   const dnSet   = new Set();
 
-  // 起点がUNRハブかどうか
+  const startType  = getNodeType(nodeId);
   const startIsHub = isUNRHub(nodeId);
+  const startIsIngredient = (startType === 'raw_material' || startType === 'ingredient_component');
 
-  function dfs(n, dir, depth) {
-    if (depth > 200) return; // 安全上限
-    visited.add(n);
-    if (dir === 'upstream')   upSet.add(n);
-    if (dir === 'downstream') dnSet.add(n);
+  // ── 上流トレース ──────────────────────────────────────────────
+  // ingredient_input は上流方向に辿らない（RAW汚染を防ぐ）
+  // UNRハブに到達したらそこで停止（ハブは表示するが展開しない）
+  function dfsUp(n, depth) {
+    if (depth > 300 || visited.has(n)) return;
+    visited.add(n); upSet.add(n);
 
-    // UNRハブを経由するとき: 起点がハブでない場合は、ハブの先への伝播を抑制
-    // ハブ自身はvisitedに含めるが、ハブの接続ノード全体には伝播しない
-    const currentIsHub = isUNRHub(n);
-    if (currentIsHub && !startIsHub && n !== nodeId) {
-      // ハブノードはトレースセットに含めるが、そこから先は展開しない
-      return;
-    }
+    if (isUNRHub(n) && !startIsHub) return; // ハブで停止
 
-    const edges = (dir === 'upstream') ? (bwdMap[n]||[]) : (fwdMap[n]||[]);
-    for (const e of edges) {
-      if (!TRACEABLE_TYPES.has(e.type)) continue;
-      const next = (dir === 'upstream') ? e.source : e.target;
-      if (!visited.has(next)) dfs(next, dir, depth + 1);
+    for (const e of (bwdMap[n]||[])) {
+      if (e.type === 'ingredient_input') continue; // 上流では ingredient_input を辿らない
+      if (e.type !== 'input' && e.type !== 'output' && e.type !== 'mass_flow') continue;
+      if (!visited.has(e.source)) dfsUp(e.source, depth + 1);
     }
   }
 
-  dfs(nodeId, 'upstream', 0);
-  dfs(nodeId, 'downstream', 0);
+  // ── 下流トレース ──────────────────────────────────────────────
+  // RAW/COMP 起点:
+  //   ingredient_input チェーンのみ辿る（RAW→COMP→SUB で停止）
+  //   SUBノードに到達した時点でそこで打ち止め（reactionへは展開しない）
+  // SUB/RXN 起点:
+  //   input・output・mass_flow のみ（ingredient_input は辿らない）
+  //   UNRハブに到達したら停止
+  function dfsDn(n, depth, ingChain) {
+    if (depth > 300 || visited.has(n)) return;
+    visited.add(n); dnSet.add(n);
+
+    const ntype = getNodeType(n);
+    const isIngNode = (ntype === 'raw_material' || ntype === 'ingredient_component');
+
+    // RAW/COMP 起点 (ingChain=true): SUBに到達したら展開を終了
+    if (ingChain && ntype === 'substance_instance') return;
+
+    // SUB/RXN 起点: UNRハブで停止
+    if (!ingChain && isUNRHub(n) && !startIsHub) return;
+
+    for (const e of (fwdMap[n]||[])) {
+      if (ingChain) {
+        // ingredient_input チェーンのみ追う
+        if (e.type !== 'ingredient_input') continue;
+      } else {
+        // input/output/mass_flow のみ（ingredient_input は辿らない）
+        if (e.type !== 'input' && e.type !== 'output' && e.type !== 'mass_flow') continue;
+      }
+      if (!visited.has(e.target)) dfsDn(e.target, depth + 1, ingChain);
+    }
+  }
+
+  if (startIsIngredient) {
+    // RAW/COMP 起点: ingredient_input チェーンのみ下流展開（SUBで打ち止め）
+    dfsDn(nodeId, 0, true);
+    visited.add(nodeId); upSet.add(nodeId); // 自分自身は上流セットに
+  } else {
+    dfsUp(nodeId, 0);
+    dfsDn(nodeId, 0, false);
+  }
 
   return { combined: visited, upstream: upSet, downstream: dnSet };
 }
@@ -642,7 +698,8 @@ function selectNode(id,node,type) {
   if(type==='raw_material') {
     icon='🔶'; msg=`${node?.name||id}  ▼下流 ${combined.size-1} ノード`;
   } else if(type==='ingredient_component') {
-    icon='🟤'; msg=`${node?.name||id}  ▲${upstream.size-1}  ▼${downstream.size-1}`;
+    // COMP起点は下流のみ辿る（ingredient_input チェーン）
+    icon='🟤'; msg=`${node?.name||id}  ▼下流 ${downstream.size-1} ノード（成分→物質）`;
   } else if(type==='reaction') {
     const ins  = (bwdMap[id]||[]).filter(e=>e.type==='input').length;
     const outs = (fwdMap[id]||[]).filter(e=>e.type==='output').length;
