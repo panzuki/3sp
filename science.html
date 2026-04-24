@@ -700,6 +700,13 @@ body.sb-open #snapshot-timeline-wrap {
 
 <script>
 (function () {
+  // UI状態をDOMの外で保持 → renderGraph/applyHighlightが走っても値が残る
+  const uiState = {
+    temperature: 24,
+    time: 0,
+    moisture: 0.95
+  };
+
   function setupFlowControls() {
     const temp = document.getElementById('sim-temp');
     const time = document.getElementById('sim-time');
@@ -711,6 +718,11 @@ body.sb-open #snapshot-timeline-wrap {
     const moistureVal = document.getElementById('sim-moisture-val');
     const status = document.getElementById('sim-status-card');
     if (!temp || !time || !moisture) return;
+
+    // 保存済み状態を復元
+    temp.value     = uiState.temperature;
+    time.value     = uiState.time;
+    moisture.value = uiState.moisture;
 
     function buildOverrides() {
       return {
@@ -729,6 +741,10 @@ body.sb-open #snapshot-timeline-wrap {
     }
 
     function applyRuntime() {
+      // uiStateに保存（再描画後に復元される）
+      uiState.temperature = Number(temp.value);
+      uiState.time        = Number(time.value);
+      uiState.moisture    = Number(moisture.value);
       renderLabels();
       const fn = window.applyBreadSimulationStep || window.simulateStep;
       if (typeof fn !== 'function') {
@@ -760,9 +776,9 @@ body.sb-open #snapshot-timeline-wrap {
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupFlowControls);
   else setupFlowControls();
-})();
+})()
 </script>
 
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<!-- Cloudflare beacon removed: GitHub Pages does not allow POST requests (405) -->
 </body>
 </html>
