@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>bread for myself — 3D 製パン化学ネットワーク v3.3</title>
+<title>bread for myself — 3D 製パン化学ネットワーク v3.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -199,7 +199,6 @@ body.sb-open .view.active { left: var(--sidebar-w); }
 .snap-bar-fill { height: 100%; border-radius: 2px; transition: width .3s; }
 .snap-bar-val { color: var(--text2); min-width: 44px; text-align: right; }
 .badge { display: inline-block; font-size: 8px; padding: 2px 6px; border-radius: 2px; margin: 2px 0; }
-.badge.unr { background: #888; color: #fff; }
 
 /* ═══════════════════════════════════════════════════
    TRACE BAR
@@ -422,75 +421,6 @@ body.sb-open #snapshot-timeline-wrap {
   .snap-btn-label { font-size: 8px; }
   #snapshot-timeline { padding: 4px 6px; }
 }
-
-/* === flow simulation controls ========================================== */
-.sim-panel {
-  margin: 14px 0 10px;
-  padding: 12px 12px 10px;
-  border: 1px solid rgba(168,224,83,.18);
-  background: linear-gradient(180deg, rgba(83,181,232,.08), rgba(7,10,8,.55));
-  border-radius: 8px;
-}
-.sim-panel h3 {
-  margin: 0 0 10px;
-  font-size: 11px;
-  letter-spacing: .14em;
-  color: var(--accent2);
-}
-.sim-panel p {
-  margin: 0 0 10px;
-  font-size: 9px;
-  color: var(--text3);
-  line-height: 1.7;
-}
-.sim-row {
-  display: grid;
-  grid-template-columns: 64px 1fr 52px;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.sim-row label {
-  font-size: 9px;
-  color: var(--text2);
-}
-.sim-row input[type="range"] {
-  width: 100%;
-}
-.sim-value {
-  text-align: right;
-  font-size: 9px;
-  color: var(--accent);
-  font-family: 'Space Mono', monospace;
-}
-.sim-actions {
-  display:flex;
-  gap:8px;
-  margin-top:8px;
-}
-.sim-actions button {
-  flex:1;
-  background: rgba(255,255,255,.04);
-  color: var(--text2);
-  border: 1px solid var(--border);
-  padding: 7px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 10px;
-}
-.sim-actions button:hover {
-  border-color: var(--accent2);
-  color: var(--accent2);
-}
-#sim-status-card {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(255,255,255,.08);
-  font-size: 9px;
-  color: var(--text3);
-  line-height: 1.7;
-}
-
 </style>
 </head>
 <body class="sb-open">
@@ -541,21 +471,18 @@ body.sb-open #snapshot-timeline-wrap {
     <h3>Snapshot（状態確定点）</h3>
     <div id="snap-info" style="font-size:9px;color:var(--text3);line-height:1.8">
       下部タイムラインで工程を選択<br>
-      <span style="color:var(--accent2)">数字</span>＝物質数（title に反応 / UNR 数を表示）
+      <span style="color:var(--accent2)">数字</span>＝物質数（title に反応 / 未反応継承数を表示）
     </div>
   </div>
   <div id="detail-panel">
     <div class="detail-empty">
       ノードをクリックすると詳細表示<br><br>
-      <b style="color:var(--text2)">完全トレース（v3.3）</b><br>
+      <b style="color:var(--text2)">完全トレース（v3.2）</b><br>
       🔶 原材料 → ▼下流全経路<br>
       🟤 成分ノード → ▲▼双方向<br>
       🔵 物質 → ▲▼双方向<br>
-      🟣 <span class="badge unr">UNR</span> 変化なし / 未解析<br>
+      🟣 未反応継承 → 次 snapshot への橋渡し<br>
       🔷 反応 → 入力・出力・経路<br><br>
-      <table style="margin-top:6px;border-collapse:collapse;font-size:9px;color:var(--text2)">
-        <tr><td style="padding:1px 8px 1px 0;color:#bbb">unreaction</td><td>変化なし / 未解析</td></tr>
-      </table><br>
       <b style="color:var(--text2)">エッジ色</b><br>
       <span style="color:#8b6a3e">■</span> ingredient_input（原材料→成分→物質）<br>
       <span style="color:#ff8844">■</span> input（物質→反応 / 物質→未反応継承）<br>
@@ -565,33 +492,6 @@ body.sb-open #snapshot-timeline-wrap {
     </div>
   </div>
 </div>
-
-
-  <div class="sim-panel" id="sim-panel">
-    <h3>PHYSICAL SIMULATION</h3>
-    <p>温度・時間・水分を変えると、flow quantity とエッジ太さをその場で再計算します。</p>
-    <div class="sim-row">
-      <label for="sim-temp">温度</label>
-      <input id="sim-temp" type="range" min="18" max="230" step="1" value="24">
-      <div class="sim-value" id="sim-temp-val">24℃</div>
-    </div>
-    <div class="sim-row">
-      <label for="sim-time">時間</label>
-      <input id="sim-time" type="range" min="0" max="13500" step="30" value="0">
-      <div class="sim-value" id="sim-time-val">0s</div>
-    </div>
-    <div class="sim-row">
-      <label for="sim-moisture">水分</label>
-      <input id="sim-moisture" type="range" min="0.20" max="1.00" step="0.01" value="0.95">
-      <div class="sim-value" id="sim-moisture-val">0.95 aw</div>
-    </div>
-    <div class="sim-actions">
-      <button type="button" id="sim-apply">simulateStep()</button>
-      <button type="button" id="sim-reset">reset</button>
-    </div>
-    <div id="sim-status-card">runtime 待機中…</div>
-  </div>
-
 
 <!-- Snapshot Timeline Bar (v2.0) -->
 <div id="snapshot-timeline-wrap">
@@ -650,7 +550,6 @@ body.sb-open #snapshot-timeline-wrap {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/flow_engine.js"></script>
 <script src="js/app3d.js"></script>
 
 <!-- サイドバー開閉スクリプト -->
@@ -697,88 +596,6 @@ body.sb-open #snapshot-timeline-wrap {
   overlay.addEventListener('click', closeSidebar);
 })();
 </script>
-
-<script>
-(function () {
-  // UI状態をDOMの外で保持 → renderGraph/applyHighlightが走っても値が残る
-  const uiState = {
-    temperature: 24,
-    time: 0,
-    moisture: 0.95
-  };
-
-  function setupFlowControls() {
-    const temp = document.getElementById('sim-temp');
-    const time = document.getElementById('sim-time');
-    const moisture = document.getElementById('sim-moisture');
-    const applyBtn = document.getElementById('sim-apply');
-    const resetBtn = document.getElementById('sim-reset');
-    const tempVal = document.getElementById('sim-temp-val');
-    const timeVal = document.getElementById('sim-time-val');
-    const moistureVal = document.getElementById('sim-moisture-val');
-    const status = document.getElementById('sim-status-card');
-    if (!temp || !time || !moisture) return;
-
-    // 保存済み状態を復元
-    temp.value     = uiState.temperature;
-    time.value     = uiState.time;
-    moisture.value = uiState.moisture;
-
-    function buildOverrides() {
-      return {
-        temperature_c: Number(temp.value),
-        temperature: Number(temp.value),
-        time_sec: Number(time.value),
-        water_activity: Number(moisture.value),
-        hydration_delta: Math.round((Number(moisture.value) - 0.95) * 100)
-      };
-    }
-
-    function renderLabels() {
-      tempVal.textContent = `${Number(temp.value).toFixed(0)}℃`;
-      timeVal.textContent = `${Number(time.value).toFixed(0)}s`;
-      moistureVal.textContent = `${Number(moisture.value).toFixed(2)} aw`;
-    }
-
-    function applyRuntime() {
-      // uiStateに保存（再描画後に復元される）
-      uiState.temperature = Number(temp.value);
-      uiState.time        = Number(time.value);
-      uiState.moisture    = Number(moisture.value);
-      renderLabels();
-      const fn = window.applyBreadSimulationStep || window.simulateStep;
-      if (typeof fn !== 'function') {
-        status.textContent = 'simulation engine 読み込み待ち…';
-        return;
-      }
-      const runtime = fn(buildOverrides()) || null;
-      const env = runtime?.current_environment || buildOverrides();
-      const snap = runtime?.current_snapshot ? ` / ${runtime.current_snapshot}` : '';
-      status.innerHTML = `温度 ${Number(env.temperature_c ?? env.temperature ?? 24).toFixed(1)}℃<br>時間 ${Math.round(Number(env.time_sec || 0))} s<br>水分活性 ${Number(env.water_activity ?? 0.95).toFixed(3)}${snap}`;
-    }
-
-    temp.addEventListener('input', applyRuntime);
-    time.addEventListener('input', applyRuntime);
-    moisture.addEventListener('input', applyRuntime);
-    if (applyBtn) applyBtn.addEventListener('click', applyRuntime);
-    if (resetBtn) resetBtn.addEventListener('click', function () {
-      temp.value = 24;
-      time.value = 0;
-      moisture.value = 0.95;
-      applyRuntime();
-    });
-    window.addEventListener('bread-flow-runtime', function (event) {
-      const env = event.detail?.environment || {};
-      status.innerHTML = `温度 ${Number(env.temperature_c ?? env.temperature ?? 24).toFixed(1)}℃<br>時間 ${Math.round(Number(env.time_sec || 0))} s<br>水分活性 ${Number(env.water_activity ?? 0.95).toFixed(3)}`;
-    });
-    applyRuntime();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupFlowControls);
-  else setupFlowControls();
-})()
-</script>
-
-<!-- Cloudflare beacon removed: GitHub Pages does not allow POST requests (405) -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
