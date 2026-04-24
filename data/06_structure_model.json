@@ -1,0 +1,110 @@
+{
+  "structure_states": [
+    {
+      "id": "STRUCT-DOUGH",
+      "process_id": "PROC-MIXING",
+      "state": {
+        "porosity": 0.02,
+        "cell_size_distribution": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gluten_network_strength": 0.52,
+        "water_distribution": "uniform",
+        "elastic_modulus_pa": 5000
+      }
+    },
+    {
+      "id": "STRUCT-FERMENTED",
+      "process_id": "PROC-FERMENT1",
+      "state": {
+        "porosity": 0.35,
+        "cell_size_distribution": [
+          0.05,
+          0.3,
+          0.5,
+          0.15
+        ],
+        "gluten_network_strength": 0.7,
+        "water_distribution": "uniform",
+        "elastic_modulus_pa": 3000
+      }
+    },
+    {
+      "id": "STRUCT-BENCHED",
+      "process_id": "PROC-BENCH",
+      "state": {
+        "porosity": 0.42,
+        "cell_size_distribution": [
+          0.08,
+          0.38,
+          0.4,
+          0.14
+        ],
+        "gluten_network_strength": 0.72,
+        "water_distribution": "slightly_gradient",
+        "elastic_modulus_pa": 2600
+      }
+    },
+    {
+      "id": "STRUCT-PROOFED",
+      "process_id": "PROC-PROOF",
+      "state": {
+        "porosity": 0.6,
+        "cell_size_distribution": [
+          0.1,
+          0.5,
+          0.3,
+          0.1
+        ],
+        "gluten_network_strength": 0.75,
+        "water_distribution": "uniform",
+        "crust_factor": 0.0,
+        "elastic_modulus_pa": 2000
+      }
+    },
+    {
+      "id": "STRUCT-BAKED",
+      "process_id": "PROC-BAKE",
+      "state": {
+        "porosity": 0.75,
+        "cell_size_distribution": [
+          0.05,
+          0.25,
+          0.5,
+          0.2
+        ],
+        "cell_opening": 0.6,
+        "gluten_network_strength": 1.0,
+        "water_distribution": "gradient",
+        "crust_factor": 0.85,
+        "crust_thickness_mm": 2.0,
+        "retrogradation": 0.0,
+        "elastic_modulus_pa": 800
+      }
+    }
+  ],
+  "evolution_rules": [
+    {
+      "trigger": "R3",
+      "effect": {
+        "porosity": "+FN_CO2_POROSITY"
+      }
+    },
+    {
+      "trigger": "P3",
+      "effect": {
+        "porosity": "+FN_CO2_POROSITY"
+      }
+    },
+    {
+      "trigger": "PROC-BAKE",
+      "effect": {
+        "crust_factor": "+FN_CRUST_GROWTH",
+        "retrogradation": "+0.0"
+      }
+    }
+  ]
+}

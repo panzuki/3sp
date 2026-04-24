@@ -1,0 +1,78 @@
+{
+  "models": [
+    {
+      "id": "TRANS-PARTITION",
+      "type": "partition",
+      "description": "水相・脂肪相・気相への分配",
+      "function": "FN_PARTITION",
+      "inputs": [
+        "logP",
+        "matrix_profile.fat_fraction",
+        "matrix_profile.water_fraction"
+      ],
+      "outputs": [
+        "free_fraction"
+      ]
+    },
+    {
+      "id": "TRANS-RELEASE",
+      "type": "release",
+      "description": "口腔内・加熱時の香気放出プロファイル",
+      "function": "FN_RELEASE",
+      "inputs": [
+        "time_phase",
+        "volatility_class",
+        "matrix_binding_strength",
+        "temperature_c"
+      ],
+      "outputs": [
+        "release_rate"
+      ]
+    },
+    {
+      "id": "TRANS-WATER",
+      "type": "moisture_migration",
+      "description": "焼成中の水分移動（クラスト形成）",
+      "function": "FN_MOISTURE_MIGRATION",
+      "inputs": [
+        "temperature_c",
+        "water_activity",
+        "structure_id"
+      ],
+      "outputs": [
+        "moisture_gradient"
+      ]
+    },
+    {
+      "id": "TRANS-HEAT",
+      "type": "heat_transfer",
+      "description": "工程ごとの熱移動と中心温度追従",
+      "function": "FN_HEAT_TRANSFER",
+      "inputs": [
+        "temperature_c",
+        "humidity_percent",
+        "structure_id"
+      ],
+      "outputs": [
+        "core_temperature_c"
+      ]
+    }
+  ],
+  "release_model": {
+    "components": [
+      "phase_time_profile",
+      "volatility_factor",
+      "matrix_binding",
+      "temperature_factor",
+      "structure_porosity"
+    ],
+    "function": "FN_RELEASE",
+    "expression_ref": "09_function_library.json#FN_RELEASE"
+  },
+  "binding_classes": {
+    "starch_bound": 0.8,
+    "protein_bound": 0.6,
+    "fat_bound": 0.4,
+    "free": 0.0
+  }
+}

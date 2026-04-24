@@ -1,0 +1,295 @@
+{
+  "functions": [
+    {
+      "id": "FN_OAV",
+      "name": "Odor Activity Value",
+      "expression": "C_i / odor_threshold",
+      "variables": {
+        "C_i": "濃度（mg/kg）",
+        "odor_threshold": "臭気閾値"
+      },
+      "output": "無次元数"
+    },
+    {
+      "id": "FN_FAD",
+      "name": "Flavor Activity Descriptor",
+      "expression": "log10(P_T) + log10(MW / (R * T * Sw)) - log10(Tw) - log10(1 + LogP)",
+      "variables": {
+        "P_T": "蒸気圧",
+        "MW": "分子量",
+        "R": "気体定数",
+        "T": "絶対温度",
+        "Sw": "水への溶解度",
+        "Tw": "口腔内水分量",
+        "LogP": "疎水性係数"
+      },
+      "output": "FAD スコア"
+    },
+    {
+      "id": "FN_PARTITION",
+      "name": "マトリクス分配係数",
+      "expression": "water_fraction * K_water + fat_fraction * K_fat + (1 - water_fraction - fat_fraction) * K_other",
+      "variables": {
+        "water_fraction": "水分率",
+        "fat_fraction": "脂肪率",
+        "K_water": "水相分配係数",
+        "K_fat": "脂肪相分配係数",
+        "K_other": "その他相分配係数"
+      },
+      "output": "free_fraction"
+    },
+    {
+      "id": "FN_FREE",
+      "name": "遊離分率",
+      "expression": "matrix_factor * structure_factor * serving_factor",
+      "variables": {
+        "matrix_factor": "FN_PARTITIONの出力",
+        "structure_factor": "構造因子",
+        "serving_factor": "提供条件因子"
+      },
+      "output": "有効遊離分率"
+    },
+    {
+      "id": "FN_RELEASE",
+      "name": "時間依存放出プロファイル",
+      "expression": "time_profile[T_index] * volatility_factor * (1 - binding_strength) * temperature_factor",
+      "variables": {
+        "time_profile[T_index]": "香気プロファイル",
+        "volatility_factor": "揮発係数",
+        "binding_strength": "結合強度",
+        "temperature_factor": "温度補正"
+      },
+      "output": "放出率"
+    },
+    {
+      "id": "FN_INTERACTION",
+      "name": "感覚相互作用係数",
+      "expression": "product(synergy_factors) * product(contrast_factors) * product(masking_factors) * product(suppression_factors)",
+      "variables": {
+        "synergy_factors": "相乗因子",
+        "contrast_factors": "コントラスト因子",
+        "masking_factors": "マスキング因子",
+        "suppression_factors": "抑制因子"
+      },
+      "output": "相互作用補正係数"
+    },
+    {
+      "id": "FN_FLAVOR_INTENSITY",
+      "name": "最終フレーバー強度",
+      "expression": "FAD * OAV * FREE * RELEASE * INTERACTION",
+      "variables": {
+        "FAD": "FN_FAD",
+        "OAV": "FN_OAV",
+        "FREE": "FN_FREE",
+        "RELEASE": "FN_RELEASE",
+        "INTERACTION": "FN_INTERACTION"
+      },
+      "output": "フレーバー強度スコア"
+    },
+    {
+      "id": "FN_T_SCORE",
+      "name": "知覚強度変換",
+      "expression": "log10(1 + FlavorIntensity) ^ 0.49",
+      "variables": {
+        "FlavorIntensity": "FN_FLAVOR_INTENSITYの出力"
+      },
+      "output": "知覚スコア"
+    },
+    {
+      "id": "FN_FERMENT_RATE",
+      "name": "発酵速度",
+      "expression": "Vmax * S / (Km + S) * temp_factor * (1 - ethanol_inhibition)",
+      "variables": {
+        "Vmax": "最大速度",
+        "S": "基質濃度",
+        "Km": "ミカエリス定数",
+        "temp_factor": "温度因子",
+        "ethanol_inhibition": "エタノール阻害"
+      },
+      "output": "消費速度（g/h）"
+    },
+    {
+      "id": "FN_MAILLARD_YIELD",
+      "name": "メイラード反応収率",
+      "expression": "k_m * exp(-Ea_m / (R*T)) * C_sugar * C_amino * (1 - aw)",
+      "variables": {
+        "k_m": "速度定数",
+        "Ea_m": "活性化エネルギー",
+        "C_sugar": "還元糖濃度",
+        "C_amino": "アミノ酸濃度",
+        "aw": "水分活性"
+      },
+      "output": "生成量（g/step）"
+    },
+    {
+      "id": "FN_AMYLASE_RATE",
+      "name": "アミラーゼ活性速度",
+      "expression": "Vmax_a * S_starch / (Km_a + S_starch) * temp_factor_a",
+      "variables": {
+        "Vmax_a": "最大速度",
+        "S_starch": "デンプン濃度",
+        "Km_a": "ミカエリス定数",
+        "temp_factor_a": "温度因子"
+      },
+      "output": "マルトース生成速度（g/h）"
+    },
+    {
+      "id": "FN_AMYLASE_YIELD",
+      "name": "アミラーゼ収率",
+      "expression": "0.5 * hydrolysis_ratio * available_starch",
+      "variables": {
+        "hydrolysis_ratio": "加水分解率",
+        "available_starch": "利用可能デンプン量"
+      },
+      "output": "糖生成量"
+    },
+    {
+      "id": "FN_CO2_POROSITY",
+      "name": "CO2生成による多孔率変化",
+      "expression": "CO2_retained_g / (dough_density * molar_volume_co2)",
+      "variables": {
+        "CO2_retained_g": "保持CO2量",
+        "dough_density": "生地密度",
+        "molar_volume_co2": "CO2モル体積"
+      },
+      "output": "多孔率増分"
+    },
+    {
+      "id": "FN_GLUTEN_STRENGTH",
+      "name": "グルテンネットワーク強度",
+      "expression": "mixing_factor * oxidation_factor * hydration_factor",
+      "variables": {
+        "mixing_factor": "混捏補正",
+        "oxidation_factor": "酸化補正",
+        "hydration_factor": "加水補正"
+      },
+      "output": "ネットワーク強度"
+    },
+    {
+      "id": "FN_INVERTASE_ACTIVITY",
+      "name": "インベルターゼ活性",
+      "expression": "base_activity * sucrose_factor * temp_factor",
+      "variables": {
+        "base_activity": "基礎活性",
+        "sucrose_factor": "スクロース依存",
+        "temp_factor": "温度依存"
+      },
+      "output": "加水分解速度"
+    },
+    {
+      "id": "FN_ZYMASE_ACTIVITY",
+      "name": "チマーゼ活性",
+      "expression": "base_activity * glucose_factor * temp_factor",
+      "variables": {
+        "base_activity": "基礎活性",
+        "glucose_factor": "グルコース依存",
+        "temp_factor": "温度依存"
+      },
+      "output": "発酵速度"
+    },
+    {
+      "id": "FN_ESTER_SYNTH_RATE",
+      "name": "エステル合成速度",
+      "expression": "base_rate * ethanol_factor * temp_factor * stress_factor",
+      "variables": {
+        "base_rate": "基礎速度",
+        "ethanol_factor": "エタノール依存",
+        "temp_factor": "温度依存",
+        "stress_factor": "酵母ストレス因子"
+      },
+      "output": "エステル生成速度"
+    },
+    {
+      "id": "FN_YEAST_GROWTH",
+      "name": "酵母増殖",
+      "expression": "mu_max * nutrient_factor * temp_factor * pH_factor",
+      "variables": {
+        "mu_max": "最大比増殖速度",
+        "nutrient_factor": "栄養因子",
+        "temp_factor": "温度因子",
+        "pH_factor": "pH因子"
+      },
+      "output": "増殖係数"
+    },
+    {
+      "id": "FN_PROTEASE_RATE",
+      "name": "プロテアーゼ速度",
+      "expression": "Vmax_p * protein / (Km_p + protein) * temp_factor_p",
+      "variables": {
+        "Vmax_p": "最大速度",
+        "protein": "基質タンパク濃度",
+        "Km_p": "ミカエリス定数",
+        "temp_factor_p": "温度因子"
+      },
+      "output": "ペプチド生成速度"
+    },
+    {
+      "id": "FN_LIPASE_RATE",
+      "name": "リパーゼ速度",
+      "expression": "Vmax_l * lipid / (Km_l + lipid) * temp_factor_l",
+      "variables": {
+        "Vmax_l": "最大速度",
+        "lipid": "脂質濃度",
+        "Km_l": "ミカエリス定数",
+        "temp_factor_l": "温度因子"
+      },
+      "output": "FFA生成速度"
+    },
+    {
+      "id": "FN_CRUST_GROWTH",
+      "name": "クラスト成長",
+      "expression": "heat_flux * evaporation_rate * time_factor",
+      "variables": {
+        "heat_flux": "熱流束",
+        "evaporation_rate": "蒸発速度",
+        "time_factor": "時間因子"
+      },
+      "output": "クラスト係数増分"
+    },
+    {
+      "id": "FN_MOISTURE_MIGRATION",
+      "name": "水分移動",
+      "expression": "diffusion_coeff * (aw_core - aw_surface) * structure_factor",
+      "variables": {
+        "diffusion_coeff": "拡散係数",
+        "aw_core": "中心水分活性",
+        "aw_surface": "表面水分活性",
+        "structure_factor": "構造因子"
+      },
+      "output": "水分勾配"
+    },
+    {
+      "id": "FN_HEAT_TRANSFER",
+      "name": "熱移動",
+      "expression": "k * (surface_temp - core_temp) * structure_factor",
+      "variables": {
+        "k": "熱伝達係数",
+        "surface_temp": "表面温度",
+        "core_temp": "中心温度",
+        "structure_factor": "構造因子"
+      },
+      "output": "中心温度変化"
+    },
+    {
+      "id": "FN_ACRYLAMIDE_PENALTY",
+      "name": "アクリルアミド安全ペナルティ",
+      "expression": "max(0, (acrylamide_ppb - threshold_ppb) / threshold_ppb)",
+      "variables": {
+        "acrylamide_ppb": "アクリルアミド濃度",
+        "threshold_ppb": "許容閾値"
+      },
+      "output": "安全ペナルティ"
+    },
+    {
+      "id": "FN_TOTAL_SCORE",
+      "name": "総合品質スコア",
+      "expression": "sensory * 0.70 + nutrition * 0.20 + safety * 0.10",
+      "variables": {
+        "sensory": "官能スコア",
+        "nutrition": "栄養スコア",
+        "safety": "安全スコア"
+      },
+      "output": "総合品質スコア"
+    }
+  ]
+}

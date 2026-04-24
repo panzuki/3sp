@@ -1,0 +1,218 @@
+{
+  "agents": [
+    {
+      "id": "BIO-YEAST-001",
+      "name": "Saccharomyces cerevisiae (bread yeast)",
+      "name_ja": "パン酵母",
+      "type": "yeast",
+      "tsv_ref": "ドライイースト（3g）",
+      "viability": {
+        "temp_min_c": 5,
+        "temp_max_c": 60,
+        "temp_optimal_c": 28,
+        "death_temp_c": 55,
+        "pH_min": 3.5,
+        "pH_max": 8.0
+      },
+      "enzymes": [
+        {
+          "substance_id": "SUB-0089",
+          "tsv_ref": "20a",
+          "activity_function": "FN_INVERTASE_ACTIVITY"
+        },
+        {
+          "substance_id": "SUB-0098",
+          "tsv_ref": "20b",
+          "activity_function": "FN_ZYMASE_ACTIVITY"
+        }
+      ],
+      "metabolism": [
+        {
+          "pathway": "sucrose_hydrolysis",
+          "substrate": "SUB-0049",
+          "products": [
+            {
+              "substance_id": "SUB-0048",
+              "yield_mol_per_mol": 1.0
+            },
+            {
+              "substance_id": "SUB-0055",
+              "yield_mol_per_mol": 1.0
+            }
+          ],
+          "rate_function": "FN_INVERTASE_ACTIVITY"
+        },
+        {
+          "pathway": "glycolysis_fermentation",
+          "substrate": "SUB-0048",
+          "products": [
+            {
+              "substance_id": "SUB-0231",
+              "yield_mol_per_mol": 2.0
+            },
+            {
+              "substance_id": "SUB-0013",
+              "yield_mol_per_mol": 2.0
+            }
+          ],
+          "rate_function": "FN_FERMENT_RATE"
+        },
+        {
+          "pathway": "ester_synthesis",
+          "substrate": "SUB-0231",
+          "products": [
+            {
+              "substance_id": "SUB-0164",
+              "yield_mol_per_mol": 0.02
+            }
+          ],
+          "rate_function": "FN_ESTER_SYNTH_RATE"
+        }
+      ],
+      "growth": {
+        "doubling_time_min": 90,
+        "yield_coefficient": 0.1,
+        "growth_function": "FN_YEAST_GROWTH"
+      }
+    },
+    {
+      "id": "BIO-ENZYME-AMYLASE",
+      "name": "amylase complex",
+      "name_ja": "アミラーゼ複合",
+      "type": "enzyme",
+      "tsv_ref": "26,27",
+      "viability": {
+        "temp_optimal_c": 55,
+        "temp_inactivation_c": 80,
+        "pH_optimal": 5.5
+      },
+      "enzymes": [
+        {
+          "substance_id": "SUB-0083",
+          "tsv_ref": "26",
+          "activity_function": "FN_AMYLASE_RATE"
+        },
+        {
+          "substance_id": "SUB-0085",
+          "tsv_ref": "27",
+          "activity_function": "FN_AMYLASE_RATE"
+        }
+      ],
+      "metabolism": [
+        {
+          "pathway": "starch_saccharification",
+          "substrate": "SUB-0042",
+          "products": [
+            {
+              "substance_id": "SUB-0061",
+              "yield_function": "FN_AMYLASE_YIELD"
+            },
+            {
+              "substance_id": "SUB-0063",
+              "yield_function": "FN_AMYLASE_YIELD"
+            }
+          ],
+          "rate_function": "FN_AMYLASE_RATE"
+        },
+        {
+          "pathway": "starch_saccharification_amylose",
+          "substrate": "SUB-0044",
+          "products": [
+            {
+              "substance_id": "SUB-0061",
+              "yield_function": "FN_AMYLASE_YIELD"
+            },
+            {
+              "substance_id": "SUB-0063",
+              "yield_function": "FN_AMYLASE_YIELD"
+            }
+          ],
+          "rate_function": "FN_AMYLASE_RATE"
+        }
+      ]
+    },
+    {
+      "id": "BIO-ENZYME-PROTEASE",
+      "name": "protease system",
+      "name_ja": "プロテアーゼ系",
+      "type": "enzyme",
+      "tsv_ref": "28",
+      "viability": {
+        "temp_optimal_c": 45,
+        "temp_inactivation_c": 75,
+        "pH_optimal": 5.4
+      },
+      "enzymes": [
+        {
+          "substance_id": "SUB-0100",
+          "tsv_ref": "28",
+          "activity_function": "FN_PROTEASE_RATE"
+        }
+      ],
+      "metabolism": [
+        {
+          "pathway": "protein_hydrolysis",
+          "substrate": "SUB-0092",
+          "products": [
+            {
+              "substance_id": "SUB-0101",
+              "yield_mol_per_mol": 0.5
+            },
+            {
+              "substance_id": "SUB-0126",
+              "yield_mol_per_mol": 0.2
+            }
+          ],
+          "rate_function": "FN_PROTEASE_RATE"
+        },
+        {
+          "pathway": "protein_hydrolysis_gliadin",
+          "substrate": "SUB-0091",
+          "products": [
+            {
+              "substance_id": "SUB-0101",
+              "yield_mol_per_mol": 0.5
+            },
+            {
+              "substance_id": "SUB-0126",
+              "yield_mol_per_mol": 0.2
+            }
+          ],
+          "rate_function": "FN_PROTEASE_RATE"
+        }
+      ]
+    },
+    {
+      "id": "BIO-ENZYME-LIPASE",
+      "name": "lipase system",
+      "name_ja": "リパーゼ系",
+      "type": "enzyme",
+      "tsv_ref": "29",
+      "viability": {
+        "temp_optimal_c": 40,
+        "temp_inactivation_c": 75,
+        "pH_optimal": 7.0
+      },
+      "enzymes": [
+        {
+          "substance_id": "SUB-0103",
+          "tsv_ref": "29",
+          "activity_function": "FN_LIPASE_RATE"
+        }
+      ],
+      "metabolism": [
+        {
+          "pathway": "lipid_hydrolysis",
+          "substrate": "SUB-0142",
+          "products": [
+            {
+              "substance_id": "SUB-0156",
+              "yield_mol_per_mol": 0.4
+            }
+          ],
+          "rate_function": "FN_LIPASE_RATE"
+        }
+      ]
+    }
+  ]
+}

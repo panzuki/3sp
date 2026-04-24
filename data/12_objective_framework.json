@@ -1,0 +1,34 @@
+{
+  "objective_function": "FN_TOTAL_SCORE",
+  "weights": {
+    "sensory": 0.7,
+    "nutrition": 0.2,
+    "safety": 0.1
+  },
+  "sensory_sub_weights": {
+    "aroma": 0.4,
+    "taste": 0.3,
+    "texture": 0.2,
+    "appearance": 0.1
+  },
+  "safety_penalties": [
+    {
+      "substance_id": "SUB-0218",
+      "threshold_ppb": 500,
+      "penalty_function": "FN_ACRYLAMIDE_PENALTY"
+    }
+  ],
+  "optimization_targets": [
+    {
+      "parameter": "control:FERMENT_TIME",
+      "direction": "maximize",
+      "target": "aroma_score"
+    },
+    {
+      "parameter": "control:BAKE_TEMP",
+      "direction": "maximize",
+      "target": "sensory_score",
+      "constraint": "safety_score > 0.8"
+    }
+  ]
+}
