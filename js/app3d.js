@@ -85,35 +85,8 @@ async function fetchJSON(urls) {
   return null;
 }
 
-async function loadAll() {
-  GR = await fetchJSON(['data/14_graph_runtime.json','data/graph_data.json']);
-  if (!GR) throw new Error('data/14_graph_runtime.json が見つかりません');
-  SM = await fetchJSON('data/01_substance_master.json');
-  if (SM) SM.substances.forEach(s => { SUB_MASTER_MAP[s.id]=s; });
-}
-
-loadAll().then(() => {
-  // Snapshot マップ初期化
-  (GR.snapshots||[]).forEach(s => { SNAP_MAP[s.id]=s; });
-  buildAdjacency();
-  initScene();
-  buildGraph();
-  initUI();
-  initNav();
-  animate();
-  const m = GR.meta||{};
-  setEl('stat-sub',  m.substance_instance_count ?? (GR.nodes||[]).filter(n=>n.type==='substance_instance').length ?? '—');
-  setEl('stat-rxn',  m.reaction_node_count ?? (GR.nodes||[]).filter(n=>n.type==='reaction').length ?? '—');
-  setEl('stat-edge', m.edge_count ?? (GR.edges||[]).length ?? '—');
-  setEl('stat-param',m.param_count ?? (GR.params||[]).length ?? '—');
-}).catch(err => {
-  console.error('[fatal]',err);
-  document.body.insertAdjacentHTML('beforeend',
-    `<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-      background:#070a08;color:#e85353;font-family:monospace;font-size:13px;z-index:9999;padding:30px;text-align:center">
-      <div>❌ データ読み込み失敗<br><br>
-      <code style="color:#aaa;font-size:11px">${err.message}</code></div></div>`);
-});
+// loadAll() は下部の FLOW-RUNTIME OVERRIDES セクションで定義（SimSpec込み完全版）
+// 起動エントリポイントもそちらに統合済み
 
 function setEl(id,v) { const e=document.getElementById(id); if(e) e.textContent=v; }
 
@@ -1293,6 +1266,72 @@ function initParamsView() {
 var FLOW_SIM_SPEC = null;
 var FLOW_SIM_RUNTIME = null;
 
+// ── §B1. substance_id=null の補完 ────────────────────────────
+// ingredient flow（9件）は ingredient_id を持つが substance_id が null。
+// origin_node から ingredient_id を使ってラベルを補完する。
+function inferSubstanceId(flow) {
+  if (flow.substance_id) return flow.substance_id;
+  // ingredient_id を代替IDとして返す（トレース・表示用）
+  return flow.ingredient_id || flow.origin_node || null;
+}
+
+// ── §B2. Flow History の動的生成 ─────────────────────────────
+// JSONに history フィールドは存在しないため、
+// 同一 substance_id を持つ flow をスナップショット順に並べて
+// 各 flow への input edge の reaction を via として生成する。
+var FLOW_HISTORY_MAP = {};  // substance_id → history[]
+var FLOW_INPUT_RXN = {};    // flow_id → reaction_id[]
+
+function buildFlowHistory(graph) {
+  const flows = graph.flows || [];
+  const edges = graph.edges || [];
+  const snapOrder = {};
+  (graph.snapshots || []).forEach((s, i) => { snapOrder[s.id] = i; });
+
+  // flow_id → input reaction マップ
+  FLOW_INPUT_RXN = {};
+  edges.forEach(e => {
+    if (e.type === 'input' && e.flow_id && e.reaction) {
+      (FLOW_INPUT_RXN[e.flow_id] = FLOW_INPUT_RXN[e.flow_id] || []).push(e.reaction);
+    }
+  });
+
+  // substance_id ごとにgrouping
+  const bySubId = {};
+  flows.forEach(f => {
+    const sid = inferSubstanceId(f);
+    if (!sid) return;
+    (bySubId[sid] = bySubId[sid] || []).push(f);
+  });
+
+  FLOW_HISTORY_MAP = {};
+  Object.entries(bySubId).forEach(([sid, flist]) => {
+    // snapshot順にソート（snapshot=nullはstage=ingredient_componentとして先頭）
+    const sorted = flist.slice().sort((a, b) => {
+      const oa = a.snapshot ? (snapOrder[a.snapshot] ?? 99) : -1;
+      const ob = b.snapshot ? (snapOrder[b.snapshot] ?? 99) : -1;
+      return oa - ob;
+    });
+    FLOW_HISTORY_MAP[sid] = sorted.map(f => ({
+      flow_id:   f.id,
+      snapshot:  f.snapshot || null,
+      stage:     f.stage || null,
+      quantity:  f.quantity_g ?? 0,
+      via:       (FLOW_INPUT_RXN[f.id] || []).length > 0 ? FLOW_INPUT_RXN[f.id] : null
+    }));
+  });
+}
+
+// substance node / flow からhistoryを取得
+function getFlowHistory(node) {
+  const sid = node?.substance_id
+    || (node?.flow_ref ? (GR?.flows || []).find(f => f.id === node.flow_ref)?.substance_id : null)
+    || node?.ref
+    || node?.master_id;
+  return sid ? (FLOW_HISTORY_MAP[sid] || null) : null;
+}
+
+// ── §B3. loadAll（統合・起動エントリポイント）───────────────
 function loadAll() {
   return Promise.all([
     fetchJSON(['data/14_graph_runtime.json', 'data/graph_data.json']),
@@ -1305,12 +1344,48 @@ function loadAll() {
     SUB_MASTER_MAP = {};
     if (SM && Array.isArray(SM.substances)) SM.substances.forEach(s => { SUB_MASTER_MAP[s.id] = s; });
     FLOW_SIM_SPEC = simSpec || null;
-    if (window.FlowEngine && GR) {
+
+    // substance_id=null の補完
+    (GR.flows || []).forEach(f => {
+      if (!f.substance_id) f.substance_id = inferSubstanceId(f);
+    });
+
+    // flow history を事前生成
+    buildFlowHistory(GR);
+
+    // Snapshot マップ
+    (GR.snapshots || []).forEach(s => { SNAP_MAP[s.id] = s; });
+    buildAdjacency();
+    initScene();
+    buildGraph();
+    if (!window.__ui_initialized__) {
+      initUI();
+      window.__ui_initialized__ = true;
+    }
+    initNav();
+    animate();
+
+    if (window.FlowEngine) {
       FLOW_SIM_RUNTIME = FlowEngine.buildBaseRuntime(GR, FLOW_SIM_SPEC);
       FlowEngine.syncGraphWithRuntime(GR, FLOW_SIM_RUNTIME);
     }
+
+    const m = GR.meta || {};
+    setEl('stat-sub',  m.substance_instance_count ?? (GR.nodes||[]).filter(n=>n.type==='substance_instance').length ?? '—');
+    setEl('stat-rxn',  m.reaction_node_count       ?? (GR.nodes||[]).filter(n=>n.type==='reaction').length           ?? '—');
+    setEl('stat-edge', m.edge_count                ?? (GR.edges||[]).length                                          ?? '—');
+    setEl('stat-param',m.param_count               ?? (GR.params||[]).length                                         ?? '—');
   });
 }
+
+loadAll().catch(err => {
+  console.error('[fatal]', err);
+  document.body.insertAdjacentHTML('beforeend',
+    `<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+      background:#070a08;color:#e85353;font-family:monospace;font-size:13px;z-index:9999;padding:30px;text-align:center">
+      <div>❌ データ読み込み失敗<br><br>
+      <code style="color:#aaa;font-size:11px">${err.message}</code></div></div>`);
+});
 
 function getFlow(flowRef) {
   return (window.FlowEngine && GR && flowRef) ? FlowEngine.getFlow(GR, flowRef) : null;
@@ -1585,56 +1660,8 @@ function buildGraph() {
   refreshFlowVisuals();
 }
 
-function trace(nodeId) {
-  const entry = nodeMap[nodeId];
-  if (!entry) return { combined: new Set(), upstream: new Set(), downstream: new Set() };
-  const node = entry.node;
-  const combined = new Set([nodeId]);
-  const upstream = new Set([nodeId]);
-  const downstream = new Set([nodeId]);
-
-  function addFlowTrace(flowId) {
-    if (!window.FlowEngine || !GR || !flowId) return;
-    const traced = FlowEngine.traceFlow(GR, flowId);
-    traced.combined.forEach(fid => {
-      const flow = FlowEngine.getFlow(GR, fid);
-      if (flow?.origin_node) combined.add(flow.origin_node);
-    });
-    traced.upstream.forEach(fid => {
-      const flow = FlowEngine.getFlow(GR, fid);
-      if (flow?.origin_node) upstream.add(flow.origin_node);
-    });
-    traced.downstream.forEach(fid => {
-      const flow = FlowEngine.getFlow(GR, fid);
-      if (flow?.origin_node) downstream.add(flow.origin_node);
-    });
-  }
-
-  if (node.flow_ref) {
-    addFlowTrace(node.flow_ref);
-    return { combined, upstream, downstream };
-  }
-
-  if (node.type === 'reaction') {
-    (bwdMap[nodeId] || []).forEach(e => {
-      const srcNode = nodeMap[e.source]?.node;
-      if (srcNode?.flow_ref) addFlowTrace(srcNode.flow_ref);
-      combined.add(e.source);
-      upstream.add(e.source);
-    });
-    (fwdMap[nodeId] || []).forEach(e => {
-      const tgtNode = nodeMap[e.target]?.node;
-      if (tgtNode?.flow_ref) addFlowTrace(tgtNode.flow_ref);
-      combined.add(e.target);
-      downstream.add(e.target);
-    });
-    combined.add(nodeId);
-    upstream.add(nodeId);
-    downstream.add(nodeId);
-  }
-
-  return { combined, upstream, downstream };
-}
+// trace() は上部 §10.4 (v8.4) の定義を使用
+// FlowEngine.traceFlow() によるflow-base展開は使用しない（暴走防止）
 
 function applyHighlight() {
   allMeshes.forEach(({ mesh }) => {
@@ -1764,6 +1791,27 @@ function detailSub(panel, n) {
     ${smE.sensory?.odor_threshold_ppm != null ? `臭気閾値: ${smE.sensory.odor_threshold_ppm} ppm<br>` : ''}
     ${smE.sensory?.descriptors?.length ? `香り: ${smE.sensory.descriptors.join(', ')}<br>` : ''}
     </div></div>` : '';
+
+  // §B2 flow history（工程横断トレース）
+  const hist = getFlowHistory(n);
+  const histHTML = hist && hist.length > 1 ? `<div class="detail-section">
+    <div class="detail-section-title">工程履歴 (${hist.length} スナップショット)</div>
+    ${hist.filter(h => h.snapshot).map(h => {
+      const snap = SNAP_MAP[h.snapshot] || {};
+      const stageCol = STEP_COLORS_CSS[snap.stage || h.stage] || '#555';
+      const viaLinks = (h.via || []).map(rxnId => {
+        const rxnNodeId = `node-RXN-${rxnId}-${h.snapshot}`;
+        return `<span style="cursor:pointer;color:var(--accent3);font-size:8px" onclick="_jumpTo('${rxnNodeId}')">[${rxnId}]</span>`;
+      }).join(' ');
+      return `<div style="font-size:9px;color:var(--text3);margin-bottom:3px;display:flex;align-items:baseline;gap:4px">
+        <span style="color:${stageCol};font-size:8px">●</span>
+        <span style="color:var(--text2)">${snap.label_ja || h.stage || h.snapshot}</span>
+        <span style="color:var(--accent)">${formatQty(h.quantity)}</span>
+        ${viaLinks ? `<span style="color:var(--text3)">via</span> ${viaLinks}` : ''}
+      </div>`;
+    }).join('')}
+  </div>` : '';
+
   panel.innerHTML = `<div class="detail-card">
     ${hasBack ? _backBtnHTML() : ''}
     <div class="detail-id">${n.id}</div>
@@ -1780,6 +1828,7 @@ function detailSub(panel, n) {
       <div>温度 <span style="color:var(--accent2)">${Number(env.temperature_c ?? env.temperature ?? 24).toFixed(1)}℃</span></div>
       <div>水分活性 <span style="color:var(--accent2)">${Number(env.water_activity ?? 0.95).toFixed(3)}</span></div>
     </div>
+    ${histHTML}
     ${physHTML}
     ${(inEdges.length || outEdges.length) ? `<div class="detail-section"><div class="detail-section-title">接続フロー</div>${inEdges.slice(0, 5).map(e => makeEdgeLine(e, 'in')).join('')}${outEdges.slice(0, 5).map(e => makeEdgeLine(e, 'out')).join('')}</div>` : ''}
   </div>`;
