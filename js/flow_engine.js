@@ -1,5 +1,5 @@
 (function (global) {
-  const CACHE_KEY = '__flow_engine_index__';
+  const CACHE_KEY = '__flow_engine_index_v2__';
 
   function deepClone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -14,67 +14,58 @@
     return Number.isFinite(parsed) ? parsed : fallback;
   }
 
+  function uniq(arr) {
+    return Array.from(new Set((arr || []).filter(Boolean)));
+  }
+
   function getIndex(graph) {
     if (!graph[CACHE_KEY]) {
       const nodeById = {};
       const flowById = {};
+      const reactionById = {};
       const flowToNode = {};
-      const flowAdjOut = {};
-      const flowAdjIn = {};
-      const reactionIn = {};
-      const reactionOut = {};
-
+      const reactionToNodes = {};
+      const flowsBySnapshot = {};
+      const reactionsByProcess = {};
+      const snapshotsById = {};
       (graph.nodes || []).forEach((node) => {
         nodeById[node.id] = node;
-        if (node.flow_ref) {
-          flowToNode[node.flow_ref] = node.id;
+        if (node.flow_ref) flowToNode[node.flow_ref] = node.id;
+        if (node.type === 'reaction' && node.ref) {
+          reactionToNodes[node.ref] = reactionToNodes[node.ref] || [];
+          reactionToNodes[node.ref].push(node.id);
         }
       });
       (graph.flows || []).forEach((flow) => {
         flowById[flow.id] = flow;
-        flowAdjOut[flow.id] = flowAdjOut[flow.id] || [];
-        flowAdjIn[flow.id] = flowAdjIn[flow.id] || [];
-      });
-
-      (graph.edges || []).forEach((edge) => {
-        const sourceNode = nodeById[edge.source] || {};
-        const targetNode = nodeById[edge.target] || {};
-        if (targetNode.type === 'reaction') {
-          reactionIn[targetNode.id] = reactionIn[targetNode.id] || [];
-          if (sourceNode.flow_ref) reactionIn[targetNode.id].push(sourceNode.flow_ref);
-        }
-        if (sourceNode.type === 'reaction') {
-          reactionOut[sourceNode.id] = reactionOut[sourceNode.id] || [];
-          if (targetNode.flow_ref) reactionOut[sourceNode.id].push(targetNode.flow_ref);
-        }
-        if (sourceNode.flow_ref && targetNode.flow_ref) {
-          flowAdjOut[sourceNode.flow_ref] = flowAdjOut[sourceNode.flow_ref] || [];
-          flowAdjIn[targetNode.flow_ref] = flowAdjIn[targetNode.flow_ref] || [];
-          flowAdjOut[sourceNode.flow_ref].push(targetNode.flow_ref);
-          flowAdjIn[targetNode.flow_ref].push(sourceNode.flow_ref);
+        if (flow.snapshot_id || flow.snapshot) {
+          const sid = flow.snapshot_id || flow.snapshot;
+          flowsBySnapshot[sid] = flowsBySnapshot[sid] || [];
+          flowsBySnapshot[sid].push(flow.id);
         }
       });
-
-      Object.keys(reactionIn).forEach((reactionId) => {
-        const ins = reactionIn[reactionId] || [];
-        const outs = reactionOut[reactionId] || [];
-        ins.forEach((srcFlow) => {
-          outs.forEach((dstFlow) => {
-            flowAdjOut[srcFlow] = flowAdjOut[srcFlow] || [];
-            flowAdjIn[dstFlow] = flowAdjIn[dstFlow] || [];
-            flowAdjOut[srcFlow].push(dstFlow);
-            flowAdjIn[dstFlow].push(srcFlow);
-          });
-        });
+      (graph.reactions || []).forEach((reaction) => {
+        reactionById[reaction.id] = reaction;
+        const pid = reaction.process_instance_id;
+        if (pid) {
+          reactionsByProcess[pid] = reactionsByProcess[pid] || [];
+          reactionsByProcess[pid].push(reaction.id);
+        }
       });
-
-      graph[CACHE_KEY] = { nodeById, flowById, flowToNode, flowAdjOut, flowAdjIn, reactionIn, reactionOut };
+      (graph.snapshots || []).forEach((snap) => {
+        snapshotsById[snap.id] = snap;
+      });
+      graph[CACHE_KEY] = { nodeById, flowById, reactionById, flowToNode, reactionToNodes, flowsBySnapshot, reactionsByProcess, snapshotsById };
     }
     return graph[CACHE_KEY];
   }
 
   function getFlow(graph, flowId) {
     return getIndex(graph).flowById[flowId] || null;
+  }
+
+  function getReaction(graph, reactionId) {
+    return getIndex(graph).reactionById[reactionId] || null;
   }
 
   function getFlowByNode(graph, nodeOrId) {
@@ -88,44 +79,132 @@
     return flow ? num(flow.quantity_g, 0) : 0;
   }
 
+  function toNodeResult(graph, result) {
+    const idx = getIndex(graph);
+    const nodeIds = new Set();
+    result.flowIds.forEach((fid) => {
+      const nodeId = idx.flowToNode[fid];
+      if (nodeId) nodeIds.add(nodeId);
+    });
+    result.reactionIds.forEach((rid) => {
+      (idx.reactionToNodes[rid] || []).forEach((nid) => nodeIds.add(nid));
+    });
+    result.nodeIds = nodeIds;
+    result.combined = new Set([...result.flowIds, ...result.reactionIds]);
+    return result;
+  }
+
   function traceFlow(graph, flowId) {
     const idx = getIndex(graph);
-    const combined = new Set();
-    const upstream = new Set();
-    const downstream = new Set();
+    const seed = idx.flowById[flowId];
+    const result = {
+      seed_flow_id: flowId,
+      flowIds: new Set(),
+      reactionIds: new Set(),
+      upstreamFlowIds: new Set(),
+      downstreamFlowIds: new Set(),
+      upstreamReactionIds: new Set(),
+      downstreamReactionIds: new Set(),
+    };
+    if (!seed) return toNodeResult(graph, result);
 
-    function walkOut(start) {
-      const queue = [start];
-      while (queue.length) {
-        const current = queue.shift();
-        if (downstream.has(current)) continue;
-        downstream.add(current);
-        combined.add(current);
-        (idx.flowAdjOut[current] || []).forEach((nextFlow) => {
-          if (!downstream.has(nextFlow)) queue.push(nextFlow);
-        });
+    const upFlowVisited = new Set();
+    const downFlowVisited = new Set();
+    const upReactionVisited = new Set();
+    const downReactionVisited = new Set();
+
+    function walkUp(fid) {
+      if (!fid || upFlowVisited.has(fid)) return;
+      upFlowVisited.add(fid);
+      result.flowIds.add(fid);
+      result.upstreamFlowIds.add(fid);
+      const flow = idx.flowById[fid];
+      if (!flow) return;
+      const producer = flow.produced_by;
+      if (producer && idx.reactionById[producer] && !upReactionVisited.has(producer)) {
+        upReactionVisited.add(producer);
+        result.reactionIds.add(producer);
+        result.upstreamReactionIds.add(producer);
+        (idx.reactionById[producer].input_flows || []).forEach(walkUp);
       }
+      (flow.parent_flows || []).forEach(walkUp);
     }
 
-    function walkIn(start) {
-      const queue = [start];
-      while (queue.length) {
-        const current = queue.shift();
-        if (upstream.has(current)) continue;
-        upstream.add(current);
-        combined.add(current);
-        (idx.flowAdjIn[current] || []).forEach((prevFlow) => {
-          if (!upstream.has(prevFlow)) queue.push(prevFlow);
-        });
-      }
+    function walkDown(fid) {
+      if (!fid || downFlowVisited.has(fid)) return;
+      downFlowVisited.add(fid);
+      result.flowIds.add(fid);
+      result.downstreamFlowIds.add(fid);
+      const flow = idx.flowById[fid];
+      if (!flow) return;
+      (flow.consumed_in || []).forEach((rid) => {
+        if (rid && idx.reactionById[rid] && !downReactionVisited.has(rid)) {
+          downReactionVisited.add(rid);
+          result.reactionIds.add(rid);
+          result.downstreamReactionIds.add(rid);
+          (idx.reactionById[rid].output_flows || []).forEach(walkDown);
+        }
+      });
+      (flow.downstream_flows || []).forEach(walkDown);
     }
 
-    if (!flowId || !idx.flowById[flowId]) {
-      return { combined, upstream, downstream };
-    }
-    walkIn(flowId);
-    walkOut(flowId);
-    return { combined, upstream, downstream };
+    walkUp(flowId);
+    walkDown(flowId);
+    return toNodeResult(graph, result);
+  }
+
+  function traceByProcess(graph, processInstanceId) {
+    const idx = getIndex(graph);
+    const result = {
+      process_instance_id: processInstanceId,
+      flowIds: new Set(),
+      reactionIds: new Set(),
+      snapshotIds: new Set(),
+    };
+    const reactionIds = idx.reactionsByProcess[processInstanceId] || [];
+    reactionIds.forEach((rid) => {
+      result.reactionIds.add(rid);
+      const reaction = idx.reactionById[rid] || {};
+      [...(reaction.input_flows || []), ...(reaction.output_flows || [])].forEach((fid) => {
+        result.flowIds.add(fid);
+        const flow = idx.flowById[fid];
+        const sid = flow && (flow.snapshot_id || flow.snapshot);
+        if (sid) result.snapshotIds.add(sid);
+      });
+    });
+    return result;
+  }
+
+  function traceTransition(graph, flowId) {
+    const idx = getIndex(graph);
+    const flow = idx.flowById[flowId];
+    if (!flow) return null;
+    return {
+      flow_id: flowId,
+      transition: deepClone(flow.transition || {}),
+      parent_flows: deepClone(flow.parent_flows || []),
+      downstream_flows: deepClone(flow.downstream_flows || []),
+      produced_by: flow.produced_by || null,
+      consumed_in: deepClone(flow.consumed_in || []),
+      process_instance_id: flow.process_instance_id || null,
+      snapshot_id: flow.snapshot_id || flow.snapshot || null,
+    };
+  }
+
+  function compareSnapshots(graph, snapA, snapB) {
+    const idx = getIndex(graph);
+    const a = new Set(idx.flowsBySnapshot[snapA] || []);
+    const b = new Set(idx.flowsBySnapshot[snapB] || []);
+    const added = [];
+    const removed = [];
+    const common = [];
+    b.forEach((fid) => { if (!a.has(fid)) added.push(fid); else common.push(fid); });
+    a.forEach((fid) => { if (!b.has(fid)) removed.push(fid); });
+    const changed = common.filter((fid) => {
+      const flow = idx.flowById[fid] || {};
+      return !!(flow.transition && flow.transition.change_type && flow.transition.change_type !== 'carry_forward');
+    });
+    return { snapshot_a: snapA, snapshot_b: snapB, added, removed, common, changed };
   }
 
   function classifyFlow(flow) {
@@ -253,7 +332,7 @@
     nextFlows.forEach((flowState) => {
       const graphFlow = idx.flowById[flowState.id];
       if (!graphFlow) return;
-      graphFlow.quantity_g = num(flowState.quantity_g, graphFlow.quantity_g || 0);
+      graphFlow.quantity_g = num(flowState.quantity_g, 0);
       graphFlow.state = Object.assign({}, graphFlow.state || {}, flowState.state || {}, runtime.current_environment || {});
       const nodeId = idx.flowToNode[graphFlow.id];
       const node = nodeId ? idx.nodeById[nodeId] : null;
@@ -279,7 +358,6 @@
     frames.forEach((snap) => {
       if (timeSec >= num(snap.time_sec, 0)) currentSnapshot = snap.id;
     });
-
     nextRuntime.reaction_log = [];
     nextRuntime.process_log = [];
     const context = { reaction_log: nextRuntime.reaction_log, process_log: nextRuntime.process_log };
@@ -297,10 +375,14 @@
     applyProcess,
     applyReaction,
     buildBaseRuntime,
+    compareSnapshots,
     getFlow,
     getFlowByNode,
     getFlowQuantity,
+    getReaction,
+    traceByProcess,
     traceFlow,
+    traceTransition,
     simulateStep,
     syncGraphWithRuntime,
   };
