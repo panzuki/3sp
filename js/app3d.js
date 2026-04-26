@@ -54,7 +54,7 @@ function getStageY(po) { return BASE_Y - po * STAGE_GAP; }
 // ─── トレース設定（§10.3）────────────────────────────────────
 // ingredient_input / input / output を主対象にトレース
 // 旧データ互換のため mass_flow も残す
-const TRACEABLE_TYPES = new Set(['ingredient_input','input','output','mass_flow']);
+const TRACEABLE_TYPES = new Set(['ingredient_input','input','output','mass_flow','flow_split']);
 
 // ─── グローバル状態 ───────────────────────────────────────────
 let GR = null, SM = null;
@@ -136,72 +136,52 @@ function getNodeType(nodeId) {
 }
 
 function trace(nodeId) {
-  const visited = new Set();
-  const upSet   = new Set();
-  const dnSet   = new Set();
-
-  const startType  = getNodeType(nodeId);
+  const startType = getNodeType(nodeId);
   const startIsHub = isUNRHub(nodeId);
   const startIsIngredient = (startType === 'raw_material' || startType === 'ingredient_component');
 
-  // ── 上流トレース ──────────────────────────────────────────────
-  // ingredient_input は上流方向に辿らない（RAW汚染を防ぐ）
-  // UNRハブに到達したらそこで停止（ハブは表示するが展開しない）
+  const upVisited = new Set();
+  const dnVisited = new Set();
+
   function dfsUp(n, depth) {
-    if (depth > 300 || visited.has(n)) return;
-    visited.add(n); upSet.add(n);
-
-    if (isUNRHub(n) && !startIsHub) return; // ハブで停止
-
-    for (const e of (bwdMap[n]||[])) {
-      if (e.type === 'ingredient_input') continue; // 上流では ingredient_input を辿らない
-      if (e.type !== 'input' && e.type !== 'output' && e.type !== 'mass_flow') continue;
-      if (!visited.has(e.source)) dfsUp(e.source, depth + 1);
+    if (!n || depth > 400 || upVisited.has(n)) return;
+    upVisited.add(n);
+    if (isUNRHub(n) && !startIsHub) return;
+    for (const e of (bwdMap[n] || [])) {
+      if (!['ingredient_input', 'input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) continue;
+      dfsUp(e.source, depth + 1);
     }
   }
 
-  // ── 下流トレース ──────────────────────────────────────────────
-  // RAW/COMP 起点:
-  //   ingredient_input チェーンのみ辿る（RAW→COMP→SUB で停止）
-  //   SUBノードに到達した時点でそこで打ち止め（reactionへは展開しない）
-  // SUB/RXN 起点:
-  //   input・output・mass_flow のみ（ingredient_input は辿らない）
-  //   UNRハブに到達したら停止
-  function dfsDn(n, depth, ingChain) {
-    if (depth > 300 || visited.has(n)) return;
-    visited.add(n); dnSet.add(n);
-
+  function dfsDn(n, depth, mode = 'normal') {
+    if (!n || depth > 400 || dnVisited.has(n)) return;
+    dnVisited.add(n);
     const ntype = getNodeType(n);
-    const isIngNode = (ntype === 'raw_material' || ntype === 'ingredient_component');
+    if (isUNRHub(n) && !startIsHub) return;
 
-    // RAW/COMP 起点 (ingChain=true): SUBに到達したら展開を終了
-    if (ingChain && ntype === 'substance_instance') return;
-
-    // SUB/RXN 起点: UNRハブで停止
-    if (!ingChain && isUNRHub(n) && !startIsHub) return;
-
-    for (const e of (fwdMap[n]||[])) {
-      if (ingChain) {
-        // ingredient_input チェーンのみ追う
-        if (e.type !== 'ingredient_input') continue;
-      } else {
-        // input/output/mass_flow のみ（ingredient_input は辿らない）
-        if (e.type !== 'input' && e.type !== 'output' && e.type !== 'mass_flow') continue;
+    for (const e of (fwdMap[n] || [])) {
+      if (mode === 'ingredient') {
+        if (e.type === 'ingredient_input') {
+          const ttype = getNodeType(e.target);
+          const nextMode = (ttype === 'raw_material' || ttype === 'ingredient_component') ? 'ingredient' : 'normal';
+          dfsDn(e.target, depth + 1, nextMode);
+          continue;
+        }
+        if (ntype === 'substance_instance' || ntype === 'reaction' || ntype === 'unreaction') {
+          if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) dfsDn(e.target, depth + 1, 'normal');
+        }
+        continue;
       }
-      if (!visited.has(e.target)) dfsDn(e.target, depth + 1, ingChain);
+      if (!['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) continue;
+      dfsDn(e.target, depth + 1, 'normal');
     }
   }
 
-  if (startIsIngredient) {
-    // RAW/COMP 起点: ingredient_input チェーンのみ下流展開（SUBで打ち止め）
-    dfsDn(nodeId, 0, true);
-    visited.add(nodeId); upSet.add(nodeId); // 自分自身は上流セットに
-  } else {
-    dfsUp(nodeId, 0);
-    dfsDn(nodeId, 0, false);
-  }
+  dfsUp(nodeId, 0);
+  dfsDn(nodeId, 0, startIsIngredient ? 'ingredient' : 'normal');
 
-  return { combined: visited, upstream: upSet, downstream: dnSet };
+  const combined = new Set([...upVisited, ...dnVisited, nodeId]);
+  return { combined, upstream: upVisited, downstream: dnVisited };
 }
 
 // ─── シード乱数 ──────────────────────────────────────────────
@@ -761,7 +741,7 @@ function updateDetail(node,type) {
     navStack=[];
     panel.innerHTML=`<div class="detail-empty">
       ノードをクリックすると詳細表示<br><br>
-      <b style="color:var(--text2)">トレース（v8.3 UNR-HUB）</b><br>
+      <b style="color:var(--text2)">トレース（RAW / COMP / SUB 完全対応）</b><br>
       🔶 原材料 → ▼下流全経路<br>
       🟤 成分ノード → ▲▼双方向<br>
       🔵 物質 → ▲▼双方向<br>
@@ -772,7 +752,7 @@ function updateDetail(node,type) {
       <b style="color:var(--text2)">エッジ色</b><br>
       <span style="color:#8b6a3e">■</span> ingredient_input（原材料→成分→物質）<br>
       <span style="color:#ff8844">■</span> input（物質→反応 / 物質→UNRハブ）<br>
-      <span style="color:#44ccdd">■</span> output（反応 / UNRハブ→物質）<br><br>
+      <span style="color:#44ccdd">■</span> output（反応 / UNRハブ→物質）<br>      <span style="color:#88aaff">■</span> flow_split（工程間の連続）<br><br>
       <b style="color:var(--text2)">操作</b><br>
       ドラッグ→回転 / ホイール→ズーム<br>右ドラッグ→パン
     </div>`;
