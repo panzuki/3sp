@@ -46,7 +46,32 @@
         "M16",
         "M18"
       ],
-      "activates": []
+      "activates": [],
+      "process_type": "physical_processing",
+      "process_subtype": "mixing",
+      "process_instance_id": "PROC-MIXING",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 20,
+          "max": 30,
+          "target": 24
+        },
+        "time_sec": {
+          "min": 300,
+          "max": 900,
+          "target": 600
+        },
+        "humidity_percent": {
+          "min": null,
+          "max": null,
+          "target": null
+        }
+      },
+      "parameters": {
+        "temperature_c": 24,
+        "time_sec": 600,
+        "humidity_percent": null
+      }
     },
     {
       "id": "PROC-FERMENT1",
@@ -87,7 +112,32 @@
       ],
       "activates": [
         "BIO-YEAST-001"
-      ]
+      ],
+      "process_type": "bioprocess",
+      "process_subtype": "bulk_fermentation",
+      "process_instance_id": "PROC-FERMENT1",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 24,
+          "max": 30,
+          "target": 26
+        },
+        "time_sec": {
+          "min": 2400,
+          "max": 7200,
+          "target": 4500
+        },
+        "humidity_percent": {
+          "min": 65,
+          "max": 85,
+          "target": 75
+        }
+      },
+      "parameters": {
+        "temperature_c": 26,
+        "time_sec": 4500,
+        "humidity_percent": 75
+      }
     },
     {
       "id": "PROC-BENCH",
@@ -131,7 +181,32 @@
         "MD1-4",
         "MD1-5"
       ],
-      "activates": []
+      "activates": [],
+      "process_type": "physical_processing",
+      "process_subtype": "shaping",
+      "process_instance_id": "PROC-BENCH",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 20,
+          "max": 30,
+          "target": 25
+        },
+        "time_sec": {
+          "min": 900,
+          "max": 2400,
+          "target": 1800
+        },
+        "humidity_percent": {
+          "min": 40,
+          "max": 75,
+          "target": 60
+        }
+      },
+      "parameters": {
+        "temperature_c": 25,
+        "time_sec": 1800,
+        "humidity_percent": 60
+      }
     },
     {
       "id": "PROC-PROOF",
@@ -175,7 +250,32 @@
       ],
       "activates": [
         "BIO-YEAST-001"
-      ]
+      ],
+      "process_type": "bioprocess",
+      "process_subtype": "final_proof",
+      "process_instance_id": "PROC-PROOF",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 32,
+          "max": 42,
+          "target": 38
+        },
+        "time_sec": {
+          "min": 1800,
+          "max": 3600,
+          "target": 2700
+        },
+        "humidity_percent": {
+          "min": 65,
+          "max": 90,
+          "target": 75
+        }
+      },
+      "parameters": {
+        "temperature_c": 38,
+        "time_sec": 2700,
+        "humidity_percent": 75
+      }
     },
     {
       "id": "PROC-BAKE",
@@ -240,7 +340,163 @@
         "F19",
         "F20"
       ],
-      "activates": []
+      "activates": [],
+      "process_type": "thermal_processing",
+      "process_subtype": "baking",
+      "process_instance_id": "PROC-BAKE",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 170,
+          "max": 220,
+          "target": 190
+        },
+        "time_sec": {
+          "min": 1200,
+          "max": 2400,
+          "target": 1800
+        },
+        "humidity_percent": {
+          "min": 10,
+          "max": 40,
+          "target": 30
+        }
+      },
+      "parameters": {
+        "temperature_c": null,
+        "time_sec": 1800,
+        "humidity_percent": 30,
+        "temperature_curve": [
+          {
+            "time_sec": 0,
+            "temp_c": 180
+          },
+          {
+            "time_sec": 300,
+            "temp_c": 210
+          },
+          {
+            "time_sec": 1200,
+            "temp_c": 210
+          },
+          {
+            "time_sec": 1800,
+            "temp_c": 190
+          }
+        ]
+      }
     }
-  ]
+  ],
+  "schema_version": "v1.0-process-instance-link",
+  "process_type_definitions": {
+    "mixing": {
+      "label": "ミキシング",
+      "process_type": "physical_processing",
+      "process_subtype": "mixing",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 20,
+          "max": 30,
+          "target": 24
+        },
+        "time_sec": {
+          "min": 300,
+          "max": 900,
+          "target": 600
+        },
+        "humidity_percent": {
+          "min": null,
+          "max": null,
+          "target": null
+        }
+      }
+    },
+    "fermentation_1": {
+      "label": "一次発酵",
+      "process_type": "bioprocess",
+      "process_subtype": "bulk_fermentation",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 24,
+          "max": 30,
+          "target": 26
+        },
+        "time_sec": {
+          "min": 2400,
+          "max": 7200,
+          "target": 4500
+        },
+        "humidity_percent": {
+          "min": 65,
+          "max": 85,
+          "target": 75
+        }
+      }
+    },
+    "dividing_bench_shaping": {
+      "label": "分割・ベンチ・成形",
+      "process_type": "physical_processing",
+      "process_subtype": "shaping",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 20,
+          "max": 30,
+          "target": 25
+        },
+        "time_sec": {
+          "min": 900,
+          "max": 2400,
+          "target": 1800
+        },
+        "humidity_percent": {
+          "min": 40,
+          "max": 75,
+          "target": 60
+        }
+      }
+    },
+    "proof": {
+      "label": "ホイロ",
+      "process_type": "bioprocess",
+      "process_subtype": "final_proof",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 32,
+          "max": 42,
+          "target": 38
+        },
+        "time_sec": {
+          "min": 1800,
+          "max": 3600,
+          "target": 2700
+        },
+        "humidity_percent": {
+          "min": 65,
+          "max": 90,
+          "target": 75
+        }
+      }
+    },
+    "baking": {
+      "label": "焼成",
+      "process_type": "thermal_processing",
+      "process_subtype": "baking",
+      "parameter_ranges": {
+        "temperature_c": {
+          "min": 170,
+          "max": 220,
+          "target": 190
+        },
+        "time_sec": {
+          "min": 1200,
+          "max": 2400,
+          "target": 1800
+        },
+        "humidity_percent": {
+          "min": 10,
+          "max": 40,
+          "target": 30
+        }
+      }
+    }
+  }
 }
