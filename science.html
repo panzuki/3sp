@@ -93,8 +93,11 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
   .hstat strong { font-size: 11px; }
   .nav-tab { padding: 0 7px; font-size: 8px; }
 }
-@media (max-width: 420px) {
-  .nav-tab[data-view="params"] { display: none; }
+@media (max-width: 520px) {
+  .hstats { display: none; }
+  .nav-tabs { margin-left: 0; flex: 1; overflow-x: auto; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { flex: 0 0 auto; padding: 0 6px; font-size: 8px; }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -173,6 +176,38 @@ body.sb-open .view.active { left: var(--sidebar-w); }
 #detail-panel { flex: 1; overflow-y: auto; padding: 12px; }
 #detail-panel::-webkit-scrollbar { width: 3px; }
 #detail-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.legend-accordion {
+  margin-top: auto;
+  padding: 0;
+  flex-shrink: 0;
+}
+.legend-accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 9px 12px;
+  font-size: 9px;
+  color: var(--text2);
+  border-top: 1px solid var(--border);
+}
+.legend-accordion summary::-webkit-details-marker { display: none; }
+.legend-accordion summary::after {
+  content: '▾';
+  float: right;
+  color: var(--text3);
+}
+.legend-accordion:not([open]) summary::after {
+  content: '▸';
+}
+.legend-accordion .step-legend {
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 0 12px 10px;
+}
+#detail-panel { min-height: 280px; }
+@media (max-width: 700px) {
+  :root { --sidebar-w: min(82vw, 320px); }
+  #detail-panel { min-height: 220px; }
+}
 
 .detail-empty {
   color: var(--text3); font-size: 10px; line-height: 1.95; margin-top: 10px;
@@ -533,13 +568,9 @@ body.sb-open #snapshot-timeline-wrap {
       <button class="filter-btn" data-filter="reactions">反応のみ</button>
     </div>
   </div>
-  <div class="sb-section">
-    <h3>工程レイヤー</h3>
-    <div class="step-legend" id="step-legend"></div>
-  </div>
-  <div class="sb-section">
+  <div class="sb-section" style="padding-bottom:6px">
     <h3>Snapshot（状態確定点）</h3>
-    <div id="snap-info" style="font-size:9px;color:var(--text3);line-height:1.8">
+    <div id="snap-info" style="font-size:9px;color:var(--text3);line-height:1.7">
       下部タイムラインで工程を選択<br>
       <span style="color:var(--accent2)">数字</span>＝物質数（title に反応 / UNR 数を表示）
     </div>
@@ -564,34 +595,14 @@ body.sb-open #snapshot-timeline-wrap {
       ドラッグ→回転 / ホイール→ズーム<br>右ドラッグ→パン
     </div>
   </div>
+  <details class="sb-section legend-accordion">
+    <summary>凡例 / 工程レイヤー</summary>
+    <div class="step-legend" id="step-legend"></div>
+  </details>
 </div>
 
 
-  <div class="sim-panel" id="sim-panel">
-    <h3>PHYSICAL SIMULATION</h3>
-    <p>温度・時間・水分を変えると、flow quantity とエッジ太さをその場で再計算します。</p>
-    <div class="sim-row">
-      <label for="sim-temp">温度</label>
-      <input id="sim-temp" type="range" min="18" max="230" step="1" value="24">
-      <div class="sim-value" id="sim-temp-val">24℃</div>
-    </div>
-    <div class="sim-row">
-      <label for="sim-time">時間</label>
-      <input id="sim-time" type="range" min="0" max="13500" step="30" value="0">
-      <div class="sim-value" id="sim-time-val">0s</div>
-    </div>
-    <div class="sim-row">
-      <label for="sim-moisture">水分</label>
-      <input id="sim-moisture" type="range" min="0.20" max="1.00" step="0.01" value="0.95">
-      <div class="sim-value" id="sim-moisture-val">0.95 aw</div>
-    </div>
-    <div class="sim-actions">
-      <button type="button" id="sim-apply">simulateStep()</button>
-      <button type="button" id="sim-reset">reset</button>
-    </div>
-    <div id="sim-status-card">runtime 待機中…</div>
-  </div>
-
+  
 
 <!-- Snapshot Timeline Bar (v2.0) -->
 <div id="snapshot-timeline-wrap">
@@ -646,7 +657,32 @@ body.sb-open #snapshot-timeline-wrap {
 </div>
 
 <div class="view" id="params-view" style="background:rgba(7,10,8,.93);backdrop-filter:blur(14px);">
-  <div class="view-inner"><div class="params-grid" id="params-grid"></div></div>
+  <div class="view-inner"><div class="sim-panel" id="sim-panel">
+    <h3>PHYSICAL SIMULATION</h3>
+    <p>温度・時間・水分を変えると、flow quantity とエッジ太さをその場で再計算します。</p>
+    <div class="sim-row">
+      <label for="sim-temp">温度</label>
+      <input id="sim-temp" type="range" min="18" max="230" step="1" value="24">
+      <div class="sim-value" id="sim-temp-val">24℃</div>
+    </div>
+    <div class="sim-row">
+      <label for="sim-time">時間</label>
+      <input id="sim-time" type="range" min="0" max="13500" step="30" value="0">
+      <div class="sim-value" id="sim-time-val">0s</div>
+    </div>
+    <div class="sim-row">
+      <label for="sim-moisture">水分</label>
+      <input id="sim-moisture" type="range" min="0.20" max="1.00" step="0.01" value="0.95">
+      <div class="sim-value" id="sim-moisture-val">0.95 aw</div>
+    </div>
+    <div class="sim-actions">
+      <button type="button" id="sim-apply">simulateStep()</button>
+      <button type="button" id="sim-reset">reset</button>
+    </div>
+    <div id="sim-status-card">runtime 待機中…</div>
+  </div>
+    <div class="params-grid" id="params-grid"></div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
