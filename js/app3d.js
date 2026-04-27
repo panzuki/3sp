@@ -1,10 +1,11 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v8.5  Trace Unified Fix
-// 仕様: トレース完全統一版
-//   - traceUnified() で反応ノード・物質ノード・RAW/COMP を一本化
-//   - 反応一覧クリックとツリークリックが同一トレース結果を返すよう修正
-//   - 上流トレースで ingredient_input を逆向きに辿り RAW/COMP まで遡れるように修正
-//   - onNodeClick を selectNode() に委譲し IIFE/キャンバス経路を統一
+// bread for myself — app3d.js  v8.6  RAW upstream trace fix
+// 仕様: 原材料ノードまでの上流トレース完全修正版
+//   - dfsUp から fromIngredientEdge フラグを廃止
+//   - bwdMap の ingredient_input を単純に逆向き辿るだけにして
+//     COMP → RAW まで完全に遡れるよう修正
+//   - onNodeClick を selectNode() に委譲しトレース経路を統一
+//   - 反応一覧クリックとツリークリックが同一結果を返すよう保証
 //   - UNRハブは substance_instance 起点では展開停止
 // データ: 14_graph_runtime.json  schema v3.3-unreaction-hub
 // Three.js r128
@@ -107,23 +108,29 @@ function buildAdjacency() {
   });
 }
 
-// ─── §10.4 トレースロジック v8.5 ──────────────────────────────
+// ─── §10.4 トレースロジック v8.6 ──────────────────────────────
 //
-// 【修正方針 v8.5】
-//   ① 上流方向（dfsUp）:
-//      - input / output / mass_flow / flow_split を辿る（SUB→RXN→SUB の因果チェーン）
-//      - ingredient_input も逆方向に辿る（SUB→COMP→RAW まで遡れるように）
-//        ただし「ingredient_input の source 側」が RAW/COMP の場合のみ展開を許可し、
-//        そこから更に ingredient_input 下流へ展開しない（爆発防止）
-//   ② 下流方向（dfsDn）:
-//      - RAW/COMP 起点: ingredient_input 下流のみ展開
-//      - SUB/RXN 起点: input / output / mass_flow / flow_split のみ展開
-//   ③ UNRハブ: 起点がハブ以外の場合は展開停止（隣接表示のみ）
+// 【実データ確認済みのエッジ構造】
+//   RAW --ingredient_input--> COMP --ingredient_input--> SUB
+//   SUB --input--> RXN --output--> SUB
+//   ※ RAW の bwdMap は空（RAW より上流ノードは存在しない）
 //
-// 【統一エントリ: traceUnified()】
-//   反応ノード起点の場合、入力物質 (input エッジの source) を seed として
-//   dfsUp/dfsDn を実行することで、反応一覧クリックとツリークリックの
-//   トレース結果を完全一致させる。
+// 【v8.5 のバグ】
+//   dfsUp(COMP, fromIngredientEdge=true) で isIngNode=true かつ
+//   fromIngredientEdge=true → return してしまい、COMP から RAW へ
+//   辿る前に停止していた。
+//
+// 【v8.6 修正方針】
+//   dfsUp: fromIngredientEdge フラグを廃止し、シンプルに
+//     「bwdMap の ingredient_input / input / output / mass_flow / flow_split
+//      を再帰的に逆向きに辿る」だけにする。
+//     RAW の bwdMap は空なので自然停止。爆発も起きない
+//     （dfsUp は fwdMap を一切触らないため ingredient_input 下流には展開しない）。
+//
+//   dfsDn: ingredient モード（RAW/COMP 起点）では ingredient_input のみ展開。
+//          normal モード（SUB/RXN 起点）では input/output/mass_flow/flow_split のみ展開。
+//
+//   反応ノード起点: 入力物質→dfsUp、出力物質→dfsDn(normal) で統一。
 // ──────────────────────────────────────────────────────────────
 
 function isUNRHub(nodeId) {
@@ -139,11 +146,10 @@ function trace(nodeId) {
   return traceUnified(nodeId);
 }
 
-// 統一トレース関数（v8.5）
-// 反応ノード・物質ノード・RAW/COMP すべてをこれ一本で処理する
+// 統一トレース関数（v8.6）
 function traceUnified(nodeId) {
   const startType = getNodeType(nodeId);
-  const startIsHub = isUNRHub(nodeId);
+  const startIsHub        = isUNRHub(nodeId);
   const startIsIngredient = (startType === 'raw_material' || startType === 'ingredient_component');
   const startIsReaction   = (startType === 'reaction' || startType === 'unreaction');
 
@@ -151,71 +157,58 @@ function traceUnified(nodeId) {
   const dnVisited = new Set();
 
   // ── 上流DFS ──────────────────────────────────────────────────
-  // SUB/RXN から逆向きに input/output/mass_flow を辿り、
-  // ingredient_input エッジを逆向きに辿って COMP→RAW まで遡る。
-  // ただし COMP/RAW に到達したら「そこを上流集合に追加するだけ」で
-  // そこからの ingredient_input 下流への展開はしない（爆発防止）。
-  function dfsUp(n, depth, fromIngredientEdge) {
+  // bwdMap を逆向きに辿るだけ。
+  // ingredient_input も辿るので SUB←COMP←RAW まで完全に遡れる。
+  // fwdMap は一切触らないので ingredient_input 下流への爆発は起きない。
+  // RAW の bwdMap は空なので自然停止。
+  function dfsUp(n, depth) {
     if (!n || depth > 400 || upVisited.has(n)) return;
     upVisited.add(n);
     if (isUNRHub(n) && !startIsHub) return;
-
-    const ntype = getNodeType(n);
-    const isIngNode = (ntype === 'raw_material' || ntype === 'ingredient_component');
-
-    // COMP/RAW に到達したら更に上流は辿らない（ただし追加はする）
-    if (isIngNode && fromIngredientEdge) return;
-
     for (const e of (bwdMap[n] || [])) {
-      if (e.type === 'ingredient_input') {
-        // ingredient_input を逆向きに辿って COMP/RAW まで遡る
-        dfsUp(e.source, depth + 1, true);
-      } else if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) {
-        dfsUp(e.source, depth + 1, false);
+      if (['ingredient_input', 'input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) {
+        dfsUp(e.source, depth + 1);
       }
     }
   }
 
   // ── 下流DFS ──────────────────────────────────────────────────
+  // mode='ingredient': RAW/COMP 起点。ingredient_input のみ辿る。
+  //                    SUB に到達したら 'normal' に切替。
+  // mode='normal'    : SUB/RXN 起点。input/output/mass_flow/flow_split のみ辿る。
+  //                    ingredient_input は辿らない（爆発防止）。
   function dfsDn(n, depth, mode) {
     if (!n || depth > 400 || dnVisited.has(n)) return;
     dnVisited.add(n);
-    const ntype = getNodeType(n);
     if (isUNRHub(n) && !startIsHub) return;
-
     for (const e of (fwdMap[n] || [])) {
       if (mode === 'ingredient') {
-        // RAW/COMP 起点: ingredient_input のみ下流へ展開
         if (e.type === 'ingredient_input') {
           const ttype = getNodeType(e.target);
-          const nextMode = (ttype === 'raw_material' || ttype === 'ingredient_component') ? 'ingredient' : 'normal';
+          const nextMode = (ttype === 'raw_material' || ttype === 'ingredient_component')
+            ? 'ingredient' : 'normal';
           dfsDn(e.target, depth + 1, nextMode);
         }
-        // SUB に到達したら通常モードに切り替わるのでそちらで処理
-        continue;
-      }
-      // 通常モード: input/output/mass_flow/flow_split のみ
-      if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) {
-        dfsDn(e.target, depth + 1, 'normal');
+      } else {
+        if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) {
+          dfsDn(e.target, depth + 1, 'normal');
+        }
       }
     }
   }
 
   if (startIsReaction) {
-    // 反応ノード起点: 自分自身を両方に追加し、
-    // 入力物質から上流、出力物質から下流をそれぞれ展開
+    // 反応ノード起点: 入力物質から上流、出力物質から下流
     upVisited.add(nodeId);
     dnVisited.add(nodeId);
-    // 入力物質（input エッジの source）→ 上流トレース
     for (const e of (bwdMap[nodeId] || [])) {
-      if (e.type === 'input') dfsUp(e.source, 0, false);
+      if (e.type === 'input') dfsUp(e.source, 0);
     }
-    // 出力物質（output エッジの target）→ 下流トレース
     for (const e of (fwdMap[nodeId] || [])) {
       if (e.type === 'output') dfsDn(e.target, 0, 'normal');
     }
   } else {
-    dfsUp(nodeId, 0, false);
+    dfsUp(nodeId, 0);
     dfsDn(nodeId, 0, startIsIngredient ? 'ingredient' : 'normal');
   }
 
