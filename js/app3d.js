@@ -1,8 +1,10 @@
 // ══════════════════════════════════════════════════════════════
-// bread for myself — app3d.js  v8.4  Trace ingChain fix
-// 仕様: トレース暴走完全修正版
-//   - ingredient_input は下流方向のみ（RAW→COMP→SUBで打ち止め）
-//   - 上流トレースで ingredient_input を辿らない（RAW汚染防止）
+// bread for myself — app3d.js  v8.5  Trace Unified Fix
+// 仕様: トレース完全統一版
+//   - traceUnified() で反応ノード・物質ノード・RAW/COMP を一本化
+//   - 反応一覧クリックとツリークリックが同一トレース結果を返すよう修正
+//   - 上流トレースで ingredient_input を逆向きに辿り RAW/COMP まで遡れるように修正
+//   - onNodeClick を selectNode() に委譲し IIFE/キャンバス経路を統一
 //   - UNRハブは substance_instance 起点では展開停止
 // データ: 14_graph_runtime.json  schema v3.3-unreaction-hub
 // Three.js r128
@@ -105,25 +107,23 @@ function buildAdjacency() {
   });
 }
 
-// ─── §10.4 トレースロジック v8.4 ──────────────────────────────
+// ─── §10.4 トレースロジック v8.5 ──────────────────────────────
 //
-// 【根本原因の修正】
-// 旧版の問題: ingredient_input エッジが TRACEABLE に含まれていたため、
-//   物質(SUB) → 上流 → COMP → RAW → 下流 → RAWの全COMP → 全物質
-//   という経路で無関係な物質まで全てトレースされていた。
+// 【修正方針 v8.5】
+//   ① 上流方向（dfsUp）:
+//      - input / output / mass_flow / flow_split を辿る（SUB→RXN→SUB の因果チェーン）
+//      - ingredient_input も逆方向に辿る（SUB→COMP→RAW まで遡れるように）
+//        ただし「ingredient_input の source 側」が RAW/COMP の場合のみ展開を許可し、
+//        そこから更に ingredient_input 下流へ展開しない（爆発防止）
+//   ② 下流方向（dfsDn）:
+//      - RAW/COMP 起点: ingredient_input 下流のみ展開
+//      - SUB/RXN 起点: input / output / mass_flow / flow_split のみ展開
+//   ③ UNRハブ: 起点がハブ以外の場合は展開停止（隣接表示のみ）
 //
-// 【修正方針】
-//   (A) ingredient_input は「下流専用」: 上流トレースでは辿らない
-//       → RAW→COMP→SUB の一方通行を保証
-//   (B) RAW/COMP 起点: ingredient_input 下流のみ展開（上流なし）
-//   (C) substance_instance 起点: input/output のみ辿る（ingredient_input は無視）
-//   (D) UNRハブ: substance_instance 起点ではハブ自体を表示するが展開停止
-//       → ハブ経由で他の289物質に波及しない
-//
-// 【エッジ通過ルール】
-//   上流方向: input・output・mass_flow のみ（ingredient_input は辿らない）
-//   下流方向: RAW/COMP起点 → ingredient_input のみ
-//             SUB/RXN起点  → input・output・mass_flow のみ
+// 【統一エントリ: traceUnified()】
+//   反応ノード起点の場合、入力物質 (input エッジの source) を seed として
+//   dfsUp/dfsDn を実行することで、反応一覧クリックとツリークリックの
+//   トレース結果を完全一致させる。
 // ──────────────────────────────────────────────────────────────
 
 function isUNRHub(nodeId) {
@@ -136,24 +136,48 @@ function getNodeType(nodeId) {
 }
 
 function trace(nodeId) {
+  return traceUnified(nodeId);
+}
+
+// 統一トレース関数（v8.5）
+// 反応ノード・物質ノード・RAW/COMP すべてをこれ一本で処理する
+function traceUnified(nodeId) {
   const startType = getNodeType(nodeId);
   const startIsHub = isUNRHub(nodeId);
   const startIsIngredient = (startType === 'raw_material' || startType === 'ingredient_component');
+  const startIsReaction   = (startType === 'reaction' || startType === 'unreaction');
 
   const upVisited = new Set();
   const dnVisited = new Set();
 
-  function dfsUp(n, depth) {
+  // ── 上流DFS ──────────────────────────────────────────────────
+  // SUB/RXN から逆向きに input/output/mass_flow を辿り、
+  // ingredient_input エッジを逆向きに辿って COMP→RAW まで遡る。
+  // ただし COMP/RAW に到達したら「そこを上流集合に追加するだけ」で
+  // そこからの ingredient_input 下流への展開はしない（爆発防止）。
+  function dfsUp(n, depth, fromIngredientEdge) {
     if (!n || depth > 400 || upVisited.has(n)) return;
     upVisited.add(n);
     if (isUNRHub(n) && !startIsHub) return;
+
+    const ntype = getNodeType(n);
+    const isIngNode = (ntype === 'raw_material' || ntype === 'ingredient_component');
+
+    // COMP/RAW に到達したら更に上流は辿らない（ただし追加はする）
+    if (isIngNode && fromIngredientEdge) return;
+
     for (const e of (bwdMap[n] || [])) {
-      if (!['ingredient_input', 'input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) continue;
-      dfsUp(e.source, depth + 1);
+      if (e.type === 'ingredient_input') {
+        // ingredient_input を逆向きに辿って COMP/RAW まで遡る
+        dfsUp(e.source, depth + 1, true);
+      } else if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) {
+        dfsUp(e.source, depth + 1, false);
+      }
     }
   }
 
-  function dfsDn(n, depth, mode = 'normal') {
+  // ── 下流DFS ──────────────────────────────────────────────────
+  function dfsDn(n, depth, mode) {
     if (!n || depth > 400 || dnVisited.has(n)) return;
     dnVisited.add(n);
     const ntype = getNodeType(n);
@@ -161,24 +185,39 @@ function trace(nodeId) {
 
     for (const e of (fwdMap[n] || [])) {
       if (mode === 'ingredient') {
+        // RAW/COMP 起点: ingredient_input のみ下流へ展開
         if (e.type === 'ingredient_input') {
           const ttype = getNodeType(e.target);
           const nextMode = (ttype === 'raw_material' || ttype === 'ingredient_component') ? 'ingredient' : 'normal';
           dfsDn(e.target, depth + 1, nextMode);
-          continue;
         }
-        if (ntype === 'substance_instance' || ntype === 'reaction' || ntype === 'unreaction') {
-          if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) dfsDn(e.target, depth + 1, 'normal');
-        }
+        // SUB に到達したら通常モードに切り替わるのでそちらで処理
         continue;
       }
-      if (!['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) continue;
-      dfsDn(e.target, depth + 1, 'normal');
+      // 通常モード: input/output/mass_flow/flow_split のみ
+      if (['input', 'output', 'mass_flow', 'flow_split'].includes(e.type)) {
+        dfsDn(e.target, depth + 1, 'normal');
+      }
     }
   }
 
-  dfsUp(nodeId, 0);
-  dfsDn(nodeId, 0, startIsIngredient ? 'ingredient' : 'normal');
+  if (startIsReaction) {
+    // 反応ノード起点: 自分自身を両方に追加し、
+    // 入力物質から上流、出力物質から下流をそれぞれ展開
+    upVisited.add(nodeId);
+    dnVisited.add(nodeId);
+    // 入力物質（input エッジの source）→ 上流トレース
+    for (const e of (bwdMap[nodeId] || [])) {
+      if (e.type === 'input') dfsUp(e.source, 0, false);
+    }
+    // 出力物質（output エッジの target）→ 下流トレース
+    for (const e of (fwdMap[nodeId] || [])) {
+      if (e.type === 'output') dfsDn(e.target, 0, 'normal');
+    }
+  } else {
+    dfsUp(nodeId, 0, false);
+    dfsDn(nodeId, 0, startIsIngredient ? 'ingredient' : 'normal');
+  }
 
   const combined = new Set([...upVisited, ...dnVisited, nodeId]);
   return { combined, upstream: upVisited, downstream: dnVisited };
@@ -1980,10 +2019,12 @@ window.simulateStep = applyBreadSimulationStep;
 
   const __baseApplyHighlight = applyHighlight;
   applyHighlight = function (result) {
-    if (result) {
-      traceSet = result.combined ? new Set(result.combined) : null;
-      traceUpSet = result.upstream ? new Set(result.upstream) : null;
-      traceDnSet = result.downstream ? new Set(result.downstream) : null;
+    // result が渡された場合のみグローバルを更新する
+    // selectNode() はグローバルに直接書き込むため result なしで呼ばれる
+    if (result && result.combined) {
+      traceSet    = result.combined ? new Set(result.combined) : null;
+      traceUpSet  = result.upstream ? new Set(result.upstream) : null;
+      traceDnSet  = result.downstream ? new Set(result.downstream) : null;
     }
     return __baseApplyHighlight();
   };
@@ -2000,21 +2041,9 @@ window.simulateStep = applyBreadSimulationStep;
 
   onNodeClick = function (node) {
     if (!node) return;
-    selectedId = node.id;
-    let result = null;
-    if (node.type === 'reaction') {
-      result = traceReactionNode(node);
-    } else if (node.flow_ref) {
-      result = traceFlow(node.flow_ref);
-    } else {
-      const base = trace(node.id);
-      result = { combined: base.combined, upstream: base.upstream, downstream: base.downstream, flowIds: new Set(), reactionIds: new Set(), nodeIds: new Set(base.combined) };
-    }
-    traceOrigin = { id: node.id, node, type: node.type, traceSet: new Set(result.combined || []), traceUpSet: new Set(result.upstream || []), traceDnSet: new Set(result.downstream || []), msg: buildTraceMessage(node, node.type, result), icon: node.type === 'reaction' ? '🔷' : '🔵' };
-    navStack = [];
-    applyHighlight(result);
-    showTraceBar(traceOrigin.msg, traceOrigin.icon);
-    updateDetail(node, node.type);
+    // 反応ノード・物質ノード・RAW/COMP いずれも selectNode() に委譲して
+    // 反応一覧クリックとツリークリックのトレース結果を完全一致させる
+    selectNode(node.id, node, node.type);
   };
 
   const __baseCanvasClick = onCanvasClick;
