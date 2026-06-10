@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>UI作成支援テキスト作成ツール</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --panel: #ffffff;
+      --line: #cccccc;
+      --text: #222222;
+      --muted: #666666;
+      --primary: #2196f3;
+      --primary-soft: #e3f2fd;
+      --danger: #e53935;
+      --success: #2e7d32;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --gap: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-rows: auto minmax(320px, 1fr) minmax(220px, 0.42fr);
+      gap: var(--gap);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #ededed;
+      background: #fafafa;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      padding: 16px;
+    }
+
+    .input-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea:focus,
+    button:focus {
+      outline: 2px solid rgba(33, 150, 243, 0.18);
+      outline-offset: 1px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      transform: none;
+    }
+
+    .secondary {
+      background: #546e7a;
+    }
+
+    .ghost-btn {
+      background: #ffffff;
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .status {
+      display: none;
+      margin: 0 16px 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.info {
+      background: #eef6ff;
+      color: #0d47a1;
+      border: 1px solid #bbdefb;
+    }
+
+    .status.warn {
+      background: #fff8e1;
+      color: #8d6e00;
+      border: 1px solid #ffe082;
+    }
+
+    .status.error {
+      background: #ffebee;
+      color: #b71c1c;
+      border: 1px solid #ffcdd2;
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: var(--gap);
+      padding: 16px;
+      height: calc(100% - 57px);
+      min-height: 0;
+    }
+
+    .scroll-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+      border: 1px solid #ebebeb;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .scroll-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eeeeee;
+      background: #fcfcfc;
+    }
+
+    .scroll-panel-header h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .scroll-panel-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 14px;
+      background: #fafafa;
+    }
+
+    .screen-root-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 100%;
+    }
+
+    .screen-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      min-height: 56px;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .screen-card.drop-target {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.12);
+      background: #fafdff;
+    }
+
+    .screen-title {
+      font-size: 15px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .screen-path {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .assigned-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .assigned-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #ffd5d3;
+      background: #fff5f5;
+      color: #7f1d1d;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .assigned-chip:hover {
+      background: #ffeaea;
+    }
+
+    .assigned-chip .remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #ef5350;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      flex: 0 0 16px;
+    }
+
+    .children {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+      padding-left: 14px;
+      border-left: 2px solid #eceff1;
+    }
+
+    .data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .data-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .data-item:active {
+      cursor: grabbing;
+    }
+
+    .data-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .data-item-note {
+      color: var(--muted);
+      font-size: 11px;
+      flex: 0 0 auto;
+    }
+
+    .empty-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      padding: 10px;
+      border: 1px dashed #d7d7d7;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .drag-ghost {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.92;
+      border: 1px solid var(--primary);
+      background: var(--primary-soft);
+      color: #0d47a1;
+      border-radius: 12px;
+      padding: 12px 14px;
+      min-width: 140px;
+      box-shadow: 0 10px 24px rgba(33, 150, 243, 0.22);
+      font-size: 14px;
+      font-weight: 700;
+      transform: translate3d(0,0,0);
+    }
+
+    .output-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      height: calc(100% - 57px);
+      min-height: 0;
+    }
+
+    .output-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .counter {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    #outputArea {
+      flex: 1;
+      min-height: 160px;
+      height: 100%;
+      resize: none;
+      overflow: auto;
+      background: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        grid-template-rows: auto minmax(420px, 1fr) minmax(240px, auto);
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .input-grid {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+
+      .work-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(280px, 3fr) minmax(180px, 2fr);
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .panel-header,
+      .scroll-panel-header,
+      .output-wrap {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .counter {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <div class="panel-header">
+        <h1 class="panel-title">入力エリア</h1>
+        <div class="panel-subtitle">単一HTML・外部ライブラリ不使用・GitHub Pages対応</div>
+      </div>
+      <div id="statusBar" class="status" aria-live="polite"></div>
+      <div class="input-grid">
+        <div class="input-card">
+          <div class="label">画面構成入力</div>
+          <div class="hint">先頭空白で階層を表現します。半角スペース・全角スペース・タブに対応します。</div>
+          <textarea id="screenInput" spellcheck="false">共通画面
+  メンバー編集
+  日付編集
+
+トップ画面
+  シフト作成
+    サイドパネル</textarea>
+          <div class="button-row">
+            <button id="parseScreensBtn" type="button">画面生成</button>
+          </div>
+        </div>
+        <div class="input-card">
+          <div class="label">データ項目入力</div>
+          <div class="hint">空行は無視し、同名データは自動で重複除去します。</div>
+          <textarea id="dataInput" spellcheck="false">名前
+メール
+電話番号
+日付
+開始時間
+終了時間</textarea>
+          <div class="button-row">
+            <button id="createDataBtn" type="button">データ生成</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">ドラッグ＆ドロップエリア</h2>
+        <div class="panel-subtitle">画面ボックス 60% / データ一覧 40%</div>
+      </div>
+      <div class="work-grid">
+        <div class="scroll-panel">
+          <div class="scroll-panel-header">
+            <h3>画面ツリー</h3>
+            <div class="panel-subtitle" id="screenCount">0 画面</div>
+          </div>
+          <div class="scroll-panel-body" id="screenArea"></div>
+        </div>
+        <div class="scroll-panel">
+          <div class="scroll-panel-header">
+            <h3>データ一覧</h3>
+            <div class="panel-subtitle" id="dataCount">0 件</div>
+          </div>
+          <div class="scroll-panel-body" id="dataArea"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">クロス表出力</h2>
+        <div class="panel-subtitle">TSVをスプレッドシートへ貼り付け可能</div>
+      </div>
+      <div class="output-wrap">
+        <div class="output-actions">
+          <button id="generateCrossBtn" type="button">クロス表生成</button>
+          <button id="copyBtn" type="button" class="secondary">コピー</button>
+          <button id="clearOutputBtn" type="button" class="ghost-btn">出力クリア</button>
+          <div class="counter" id="outputCounter">0 文字</div>
+        </div>
+        <textarea id="outputArea" readonly placeholder="ここにTSV形式のクロス表が出力されます。"></textarea>
+        <div class="footer-note">配置済みデータは画面ボックス内の「✕ データ名」から削除できます。クロス表生成時、配置済みセルは「○」、未配置セルは空欄で出力します。</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const state = {
+        screens: [],
+        roots: [],
+        screenMap: new Map(),
+        dataItems: [],
+        dataMap: new Map(),
+        warnings: []
+      };
+
+      const els = {
+        screenInput: document.getElementById('screenInput'),
+        dataInput: document.getElementById('dataInput'),
+        screenArea: document.getElementById('screenArea'),
+        dataArea: document.getElementById('dataArea'),
+        outputArea: document.getElementById('outputArea'),
+        screenCount: document.getElementById('screenCount'),
+        dataCount: document.getElementById('dataCount'),
+        outputCounter: document.getElementById('outputCounter'),
+        statusBar: document.getElementById('statusBar'),
+        parseScreensBtn: document.getElementById('parseScreensBtn'),
+        createDataBtn: document.getElementById('createDataBtn'),
+        generateCrossBtn: document.getElementById('generateCrossBtn'),
+        copyBtn: document.getElementById('copyBtn'),
+        clearOutputBtn: document.getElementById('clearOutputBtn')
+      };
+
+      let dragState = null;
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function showStatus(type, message) {
+        els.statusBar.className = 'status show ' + type;
+        els.statusBar.textContent = message;
+      }
+
+      function clearStatus() {
+        els.statusBar.className = 'status';
+        els.statusBar.textContent = '';
+      }
+
+      function normalizeIndent(rawIndent) {
+        return rawIndent.replace(/\t/g, '  ').replace(/　/g, '  ');
+      }
+
+      function pathOf(screen) {
+        const names = [];
+        let current = screen;
+        while (current) {
+          names.unshift(current.name);
+          current = current.parentId ? state.screenMap.get(current.parentId) : null;
+        }
+        return names.join('/');
+      }
+
+      function getAllScreensPreOrder() {
+        const result = [];
+        function walk(nodes) {
+          nodes.forEach(node => {
+            result.push(node);
+            if (node.children.length) walk(node.children);
+          });
+        }
+        walk(state.roots);
+        return result;
+      }
+
+      function updateCounters() {
+        els.screenCount.textContent = `${state.screens.length} 画面`;
+        els.dataCount.textContent = `${state.dataItems.length} 件`;
+        els.outputCounter.textContent = `${els.outputArea.value.length} 文字`;
+      }
+
+      function refreshButtons() {
+        const ready = state.screens.length > 0 && state.dataItems.length > 0;
+        els.generateCrossBtn.disabled = !ready;
+        els.copyBtn.disabled = !els.outputArea.value;
+      }
+
+      function renderScreens() {
+        if (!state.roots.length) {
+          els.screenArea.innerHTML = '<div class="empty-note">画面構成が未生成です。上段の「画面生成」を実行してください。</div>';
+          updateCounters();
+          refreshButtons();
+          return;
+        }
+
+        function renderNode(node) {
+          const assignedHtml = node.assignedIds.length
+            ? `<div class="assigned-list">${node.assignedIds.map(dataId => {
+                const data = state.dataMap.get(dataId);
+                if (!data) return '';
+                return `<button type="button" class="assigned-chip" data-screen-id="${escapeHtml(node.id)}" data-data-id="${escapeHtml(data.id)}" title="削除">
+                  <span class="remove">✕</span>
+                  <span>${escapeHtml(data.name)}</span>
+                </button>`;
+              }).join('')}</div>`
+            : '';
+
+          const childrenHtml = node.children.length
+            ? `<div class="children">${node.children.map(renderNode).join('')}</div>`
+            : '';
+
+          return `
+            <div class="screen-card" data-screen-id="${escapeHtml(node.id)}">
+              <div class="screen-title">${escapeHtml(node.name)}</div>
+              <div class="screen-path">${escapeHtml(node.path)}</div>
+              ${assignedHtml}
+              ${childrenHtml}
+            </div>
+          `;
+        }
+
+        els.screenArea.innerHTML = `<div class="screen-root-stack">${state.roots.map(renderNode).join('')}</div>`;
+        updateCounters();
+        refreshButtons();
+      }
+
+      function renderDataItems() {
+        if (!state.dataItems.length) {
+          els.dataArea.innerHTML = '<div class="empty-note">データ項目が未生成です。上段の「データ生成」を実行してください。</div>';
+          updateCounters();
+          refreshButtons();
+          return;
+        }
+
+        els.dataArea.innerHTML = `
+          <div class="data-list">
+            ${state.dataItems.map(item => `
+              <div class="data-item" data-id="${escapeHtml(item.id)}">
+                <div class="data-item-name">${escapeHtml(item.name)}</div>
+                <div class="data-item-note">ドラッグ</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        updateCounters();
+        refreshButtons();
+      }
+
+      function parseScreens() {
+        const raw = els.screenInput.value.replace(/\r\n/g, '\n');
+        const lines = raw.split('\n');
+        const warnings = [];
+        const roots = [];
+        const screens = [];
+        const screenMap = new Map();
+        const indentHistory = [];
+        const nodeStack = [];
+        let sequence = 0;
+
+        lines.forEach((line, index) => {
+          if (!line.trim()) return;
+          const name = line.trim();
+          const indentMatch = line.match(/^[\s　]*/);
+          const rawIndent = indentMatch ? indentMatch[0] : '';
+          const indentCount = normalizeIndent(rawIndent).length;
+          let level = 0;
+
+          if (screens.length === 0) {
+            level = 0;
+            indentHistory[0] = indentCount;
+          } else {
+            const previousLevel = nodeStack.length - 1;
+            const previousIndent = indentHistory[previousLevel];
+
+            if (indentCount > previousIndent) {
+              level = previousLevel + 1;
+              indentHistory[level] = indentCount;
+            } else if (indentCount === previousIndent) {
+              level = previousLevel;
+            } else {
+              const exactLevel = indentHistory.lastIndexOf(indentCount);
+              if (exactLevel >= 0) {
+                level = exactLevel;
+              } else {
+                let fallbackLevel = 0;
+                for (let i = indentHistory.length - 1; i >= 0; i--) {
+                  if (typeof indentHistory[i] === 'number' && indentHistory[i] < indentCount) {
+                    fallbackLevel = i + 1;
+                    break;
+                  }
+                }
+                level = fallbackLevel;
+                warnings.push(`行 ${index + 1}: 不正な階層のため近い階層へ補正しました。(${name})`);
+                indentHistory[level] = indentCount;
+              }
+            }
+          }
+
+          nodeStack.length = level;
+          indentHistory.length = Math.max(level + 1, 1);
+
+          const parent = level > 0 ? nodeStack[level - 1] : null;
+          const node = {
+            id: `screen-${++sequence}`,
+            name,
+            level,
+            parentId: parent ? parent.id : null,
+            children: [],
+            assignedIds: [],
+            path: ''
+          };
+
+          if (parent) {
+            parent.children.push(node);
+          } else {
+            roots.push(node);
+          }
+
+          nodeStack[level] = node;
+          screens.push(node);
+          screenMap.set(node.id, node);
+        });
+
+        screens.forEach(screen => {
+          screen.path = buildPath(screen, screenMap);
+        });
+
+        state.screens = screens;
+        state.roots = roots;
+        state.screenMap = screenMap;
+        state.warnings = warnings;
+
+        renderScreens();
+
+        if (!screens.length) {
+          showStatus('warn', '画面構成を読み取れませんでした。1件以上入力してください。');
+          return;
+        }
+
+        if (warnings.length) {
+          showStatus('warn', `画面を生成しました。\n${warnings.join('\n')}`);
+            } else {
+          showStatus('info', `画面を生成しました。${screens.length}件の画面を読み込みました。`);
+        }
+      }
+
+      function buildPath(screen, map) {
+        const names = [];
+        let current = screen;
+        while (current) {
+          names.unshift(current.name);
+          current = current.parentId ? map.get(current.parentId) : null;
+        }
+        return names.join('/');
+      }
+
+      function createDataItems() {
+        const raw = els.dataInput.value.replace(/\r\n/g, '\n');
+        const unique = new Map();
+        let sequence = 0;
+
+        raw.split('\n').forEach(line => {
+          const name = line.trim();
+          if (!name) return;
+          if (unique.has(name)) return;
+          unique.set(name, { id: `data-${++sequence}`, name });
+        });
+
+        state.dataItems = Array.from(unique.values());
+        state.dataMap = new Map(state.dataItems.map(item => [item.id, item]));
+
+        const existingIds = new Set(state.dataItems.map(item => item.id));
+        state.screens.forEach(screen => {
+          screen.assignedIds = screen.assignedIds.filter(id => existingIds.has(id));
+        });
+
+        renderDataItems();
+        renderScreens();
+
+        if (!state.dataItems.length) {
+          showStatus('warn', 'データ項目を読み取れませんでした。1件以上入力してください。');
+        } else {
+          showStatus('info', `データ項目を生成しました。${state.dataItems.length}件を読み込みました。`);
+        }
+      }
+
+      function addAssignment(screenId, dataId) {
+        const screen = state.screenMap.get(screenId);
+        if (!screen) return;
+        if (!state.dataMap.has(dataId)) return;
+        if (screen.assignedIds.includes(dataId)) return;
+        screen.assignedIds.push(dataId);
+        renderScreens();
+        showStatus('info', `「${screen.name}」へデータを配置しました。`);
+      }
+
+      function removeAssignment(screenId, dataId) {
+        const screen = state.screenMap.get(screenId);
+        const data = state.dataMap.get(dataId);
+        if (!screen || !data) return;
+        screen.assignedIds = screen.assignedIds.filter(id => id !== dataId);
+        renderScreens();
+        showStatus('info', `「${screen.name}」から「${data.name}」を削除しました。`);
+      }
+
+      function generateCrossTable() {
+        if (!state.screens.length) {
+          showStatus('error', '画面が未生成のため、クロス表を生成できません。');
+          return;
+        }
+        if (!state.dataItems.length) {
+          showStatus('error', 'データ項目が未生成のため、クロス表を生成できません。');
+          return;
+        }
+
+        const screens = getAllScreensPreOrder();
+        const header = ['データ項目', ...screens.map(screen => screen.path)];
+        const rows = state.dataItems.map(data => {
+          const cols = screens.map(screen => screen.assignedIds.includes(data.id) ? '○' : '');
+          return [data.name, ...cols];
+        });
+
+        const tsv = [header, ...rows].map(row => row.join('\t')).join('\n');
+        els.outputArea.value = tsv;
+        updateCounters();
+        refreshButtons();
+        showStatus('info', 'クロス表を生成しました。コピーしてスプレッドシートへ貼り付けできます。');
+      }
+
+      async function copyOutput() {
+        const value = els.outputArea.value;
+        if (!value) {
+          showStatus('warn', 'コピー対象がありません。先にクロス表を生成してください。');
+          return;
+        }
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(value);
+          } else {
+            els.outputArea.focus();
+            els.outputArea.select();
+            document.execCommand('copy');
+            els.outputArea.setSelectionRange(0, 0);
+            els.outputArea.blur();
+          }
+          showStatus('info', 'TSVをコピーしました。');
+        } catch (error) {
+          showStatus('error', 'コピーに失敗しました。テキストエリアの内容を手動でコピーしてください。');
+        }
+      }
+
+      function clearOutput() {
+        els.outputArea.value = '';
+        updateCounters();
+        refreshButtons();
+        showStatus('info', '出力をクリアしました。');
+      }
+
+      function findScreenTarget(clientX, clientY) {
+        const target = document.elementFromPoint(clientX, clientY);
+        return target ? target.closest('.screen-card') : null;
+      }
+
+      function clearDropTarget() {
+        if (dragState && dragState.activeTarget) {
+          dragState.activeTarget.classList.remove('drop-target');
+          dragState.activeTarget = null;
+        }
+      }
+
+      function startDrag(event, itemEl) {
+        const dataId = itemEl.dataset.id;
+        const data = state.dataMap.get(dataId);
+        if (!data) return;
+
+        event.preventDefault();
+        clearStatus();
+
+        const rect = itemEl.getBoundingClientRect();
+        const ghost = document.createElement('div');
+        ghost.className = 'drag-ghost';
+        ghost.textContent = data.name;
+        ghost.style.width = `${Math.max(rect.width, 140)}px`;
+        document.body.appendChild(ghost);
+
+        dragState = {
+          pointerId: event.pointerId,
+          sourceEl: itemEl,
+          dataId,
+          ghost,
+          offsetX: event.clientX - rect.left,
+          offsetY: event.clientY - rect.top,
+          activeTarget: null
+        };
+
+        if (itemEl.setPointerCapture) {
+          try {
+            itemEl.setPointerCapture(event.pointerId);
+          } catch (_) {
+            // ignore
+          }
+        }
+
+        moveGhost(event.clientX, event.clientY);
+      }
+
+      function moveGhost(clientX, clientY) {
+        if (!dragState) return;
+        dragState.ghost.style.transform = `translate3d(${clientX - dragState.offsetX}px, ${clientY - dragState.offsetY}px, 0)`;
+
+        const target = findScreenTarget(clientX, clientY);
+        if (dragState.activeTarget !== target) {
+          clearDropTarget();
+          if (target) {
+            target.classList.add('drop-target');
+            dragState.activeTarget = target;
+          }
+        }
+      }
+
+      function endDrag(clientX, clientY) {
+        if (!dragState) return;
+
+        const target = findScreenTarget(clientX, clientY) || dragState.activeTarget;
+        const dataId = dragState.dataId;
+        const sourceEl = dragState.sourceEl;
+
+        clearDropTarget();
+        if (dragState.ghost && dragState.ghost.parentNode) {
+          dragState.ghost.parentNode.removeChild(dragState.ghost);
+        }
+
+        if (sourceEl && sourceEl.releasePointerCapture) {
+          try {
+            sourceEl.releasePointerCapture(dragState.pointerId);
+          } catch (_) {
+            // ignore
+          }
+        }
+
+        const screenId = target ? target.dataset.screenId : null;
+        dragState = null;
+
+        if (screenId) {
+          addAssignment(screenId, dataId);
+        }
+      }
+
+      els.parseScreensBtn.addEventListener('click', parseScreens);
+      els.createDataBtn.addEventListener('click', createDataItems);
+      els.generateCrossBtn.addEventListener('click', generateCrossTable);
+      els.copyBtn.addEventListener('click', copyOutput);
+      els.clearOutputBtn.addEventListener('click', clearOutput);
+
+      els.dataArea.addEventListener('pointerdown', event => {
+        const item = event.target.closest('.data-item');
+        if (!item) return;
+        startDrag(event, item);
+      });
+
+      document.addEventListener('pointermove', event => {
+        if (!dragState) return;
+        event.preventDefault();
+        moveGhost(event.clientX, event.clientY);
+      }, { passive: false });
+
+      document.addEventListener('pointerup', event => {
+        if (!dragState) return;
+        event.preventDefault();
+        endDrag(event.clientX, event.clientY);
+      }, { passive: false });
+
+      document.addEventListener('pointercancel', () => {
+        if (!dragState) return;
+        clearDropTarget();
+        if (dragState.ghost && dragState.ghost.parentNode) {
+          dragState.ghost.parentNode.removeChild(dragState.ghost);
+        }
+        dragState = null;
+      });
+
+      els.screenArea.addEventListener('click', event => {
+        const chip = event.target.closest('.assigned-chip');
+        if (!chip) return;
+        removeAssignment(chip.dataset.screenId, chip.dataset.dataId);
+      });
+
+      window.addEventListener('resize', () => {
+        if (dragState && dragState.activeTarget) {
+          dragState.activeTarget.classList.remove('drop-target');
+          dragState.activeTarget = null;
+        }
+      });
+
+      parseScreens();
+      createDataItems();
+      refreshButtons();
+      updateCounters();
+    })();
+  </script>
+</body>
+</html>
